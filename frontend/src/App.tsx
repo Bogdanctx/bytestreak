@@ -1,4 +1,5 @@
 import LandingPage from './pages/LandingPage'
+import LoginPage from './pages/LoginPage'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
@@ -11,19 +12,31 @@ const COLOR_ROSE_TAUPE = "#785964";
 
 const theme = createTheme({
 	palette: {
-		mode: "dark",
-		primary: {
-			main: COLOR_NIGHT
-		},
-		secondary: {
-			main: COLOR_EMERALD
-		},
-		background: {
-			default: COLOR_NIGHT
-		},
-		divider: COLOR_PURPUREUS
-	},
+        mode: "dark",
+        
+        primary: {
+            main: COLOR_PURPUREUS, // Mov
+        },
+        
+        secondary: {
+            main: COLOR_EMERALD,
+        },
 
+        background: {
+            default: COLOR_NIGHT,
+            paper: COLOR_ROSE_TAUPE,
+        },
+
+        text: {
+            primary: COLOR_GHOST_WHITE,
+        },
+        
+        success: {
+            main: COLOR_EMERALD,
+        },
+
+		divider: COLOR_GHOST_WHITE,
+    }
 });
 
 function App() {
@@ -33,6 +46,7 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route path = "/" element = { <LandingPage /> } />
+					<Route path = "/login" element = { <LoginPage /> } />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>
