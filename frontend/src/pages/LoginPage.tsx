@@ -1,7 +1,8 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
-import { useTheme } from "@mui/material";
-import "../fonts.css";
 import { useForm, Controller } from "react-hook-form";
+import ByteStreakLogo from "../ByteStreak.logo";
+import { colors } from "../colors";
+import "../fonts.css";
 
 type LoginFormInputs = {
     email: string;
@@ -9,8 +10,6 @@ type LoginFormInputs = {
 };
 
 function LoginPage() {
-    const theme = useTheme();
-
     const { handleSubmit, control, formState: { errors } } = useForm<LoginFormInputs>({
         defaultValues: {
             email: "",
@@ -21,22 +20,11 @@ function LoginPage() {
 
     return (
         <Box height = {"100vh"} width = {"100vw"} display = {"flex"} justifyContent = {"center"} alignItems = {"center"}> {/* Fullscreen Centered Box */ }
-            <Box padding={2} border={1} borderRadius={5} borderColor={theme.palette.secondary.main}> {/* Container Box */ }
+            <Box padding={2} border={1} borderRadius={5} borderColor={colors.emerald}> {/* Container Box */ }
                 <Box textAlign = {"center"}> {/* Header Section */ }
-                    <Typography 
-                        variant = "h1" 
-                        fontFamily = "VT323"
-                        color = {theme.palette.text.primary} 
-                        sx = {{
-                            letterSpacing: "5px",
-                            fontSize: 80,
-                        }}
-                    >
-                        ByteStreak
-                    </Typography>
+                    <ByteStreakLogo size={80} />
                     <Typography 
                         variant = "h6"
-                        color = {theme.palette.text.primary}
                         fontFamily = {"Momo Trust Display"}
                         gutterBottom
                     >
@@ -81,12 +69,13 @@ function LoginPage() {
                             render={({ field }) => (
                                 <TextField 
                                     {...field}
+                                    fullWidth
+                                    type = "password"
                                     id = "login-password"
                                     label = "Password"
                                     variant = "outlined"
                                     placeholder = "Enter your password"
                                     margin = "normal"
-                                    fullWidth
                                     error = { !!errors.password?.message }
                                     helperText = { errors.password?.message }
                                 />
@@ -97,8 +86,11 @@ function LoginPage() {
                         <Button 
                             fullWidth 
                             variant = "contained" 
-                            color = "secondary" 
-                            sx={{ marginTop: 2, fontFamily: "Momo Trust Display" }}
+                            sx={{ 
+                                marginTop: 2, 
+                                fontFamily: "Momo Trust Display", 
+                                backgroundColor: colors.emerald,
+                            }}
                             type = "submit">
                             Login
                         </Button>

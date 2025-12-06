@@ -2,15 +2,17 @@ import { Box, Button, Typography, Stack, Divider, useMediaQuery } from '@mui/mat
 import { useTheme } from "@mui/material/styles";
 import { Link } from 'react-router-dom';
 import "../fonts.css";
+import { colors } from '../colors';
+import ByteStreakLogo from "../ByteStreak.logo"
+
 
 function LandingPage() {
     const theme = useTheme();
-    const isMdUp = useMediaQuery(theme.breakpoints.up('md')); // true if md or larger
+    const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
         <Box 
-            height = {"100vh"} 
-            bgcolor = {theme.palette.background.default}
+            height = {"100vh"}
         >
             <Stack 
                 direction = {{ xs: 'column', sm: 'column', md: 'row' }} 
@@ -18,24 +20,13 @@ function LandingPage() {
                 justifyContent = "space-evenly" 
                 alignItems = "center" 
                 spacing = {{ xs: 0, sm: 0, md: 5 }}
-                divider = {isMdUp ? <Divider orientation = "vertical" sx = {{ height: "50vh", color: `${theme.palette.divider}` }} /> : null}
+                divider = {isMdUp ? <Divider orientation = "vertical" sx = {{ height: "50vh", color: "gray" }} /> : null}
             >
                 <Box>
-                    <Typography 
-                        variant = "h1" 
-                        color = "textPrimary" 
-                        fontFamily = "VT323" 
-                        sx = {{
-                            letterSpacing: "5px",
-                            fontSize: 128
-                        }}
-                        gutterBottom
-                    >
-                        ByteStreak
-                    </Typography>
+                    <ByteStreakLogo size={128} />
                 </Box>
                 <Box>
-                    <Typography variant="h5" color="textPrimary" fontFamily={"Momo Trust Display"} gutterBottom>
+                    <Typography variant="h5" fontFamily={"Momo Trust Display"} gutterBottom>
                         Problem solving made collaborative and fun
                     </Typography>
                     <Stack direction = "row" spacing = {2}>
@@ -43,8 +34,10 @@ function LandingPage() {
                             component = {Link}
                             variant = "contained" 
                             fullWidth
-                            color = "secondary"
-                            sx = {{ fontFamily: "Momo Trust Display" }}
+                            sx = {{ 
+                                backgroundColor: colors.emerald, 
+                                fontFamily: "Momo Trust Display" 
+                            }}
                             to = "/login"
                         >
                             Login
@@ -53,8 +46,11 @@ function LandingPage() {
                             component = {Link}
                             variant = "outlined" 
                             fullWidth
-                            color = "secondary"
-                            sx = {{ fontFamily: "Momo Trust Display" }}
+                            sx = {{ 
+                                fontFamily: "Momo Trust Display",
+                                color: colors.white,
+                                borderColor: colors.yellow,
+                            }}
                             to = "/signup"
                         >
                             Sign Up
