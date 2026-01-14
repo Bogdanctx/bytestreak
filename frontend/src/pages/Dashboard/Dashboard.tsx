@@ -1,8 +1,8 @@
-import { Box, Button, List, Stack } from "@mui/material"
+import { Box, Button, Stack } from "@mui/material"
 import { lighten, darken } from '@mui/material';
-import { colors } from "../colors"
+import { colors } from "../../colors"
 import "./Dashboard.style.css" 
-import ByteStreakLogo from "../ByteStreak.logo";
+import ByteStreakLogo from "../../ByteStreak.logo";
 
 function Dashboard() {
     return (

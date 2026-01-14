@@ -1,8 +1,8 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import ByteStreakLogo from "../ByteStreak.logo";
-import { colors } from "../colors";
-import "../fonts.css";
+import ByteStreakLogo from "../../ByteStreak.logo";
+import { colors } from "../../colors";
+import "../../fonts.css";
 
 type LoginFormInputs = {
     email: string;
@@ -19,13 +19,25 @@ function LoginPage() {
     });
 
     return (
-        <Box height = {"100vh"} width = {"100vw"} display = {"flex"} justifyContent = {"center"} alignItems = {"center"}> {/* Fullscreen Centered Box */ }
+        <Box 
+            height = {"100vh"} 
+            width = {"100vw"} 
+            display = {"flex"} 
+            justifyContent = {"center"} 
+            alignItems = {"center"}
+            sx={{
+                backgroundColor: `${colors.night}`
+            }}
+        > {/* Fullscreen Centered Box */ }
             <Box padding={2} border={1} borderRadius={5} borderColor={colors.emerald}> {/* Container Box */ }
                 <Box textAlign = {"center"}> {/* Header Section */ }
                     <ByteStreakLogo size={80} />
                     <Typography 
                         variant = "h6"
                         fontFamily = {"Momo Trust Display"}
+                        sx={{
+                            color: `${colors.white}`
+                        }}
                         gutterBottom
                     >
                         - Login -

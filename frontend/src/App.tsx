@@ -1,26 +1,18 @@
 import LandingPage from './pages/LandingPage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import Dashboard from './pages/Dashboard'
+import LoginPage from './pages/Auth/LoginPage'
+import RegisterPage from './pages/Auth/RegisterPage'
+import Dashboard from './pages/Dashboard/Dashboard'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { CssBaseline, createTheme, ThemeProvider } from '@mui/material'
+import { CssBaseline } from '@mui/material'
 import { colors } from './colors'
-
-const theme = createTheme({
-    palette: {
-        mode: 'dark',
-        background: {
-            default: colors.night,
-            paper: colors.night
-        },
-    },
-});
+import NotificationQueue from './components/Notifications/NotificationQueue'
 
 function App() {
 	return (
-        <ThemeProvider theme={theme}>
+        <>
             <CssBaseline />
+            <NotificationQueue />
             <BrowserRouter>
                 <Routes>
                     <Route path = "/" element = { <LandingPage /> } />
@@ -29,7 +21,7 @@ function App() {
                     <Route path = "/dashboard" element = { <Dashboard /> } />
                 </Routes>
             </BrowserRouter>
-        </ThemeProvider>
+        </>
     )
 }
 

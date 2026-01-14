@@ -13,6 +13,7 @@ function LandingPage() {
     return (
         <Box 
             height = {"100vh"}
+            bgcolor={ colors.night }
         >
             <Stack 
                 direction = {{ xs: 'column', sm: 'column', md: 'row' }} 
@@ -26,7 +27,13 @@ function LandingPage() {
                     <ByteStreakLogo size={128} />
                 </Box>
                 <Box>
-                    <Typography variant="h5" fontFamily={"Momo Trust Display"} gutterBottom>
+                    <Typography 
+                        variant="h5" 
+                        fontFamily={"Momo Trust Display"} 
+                        sx={{
+                            color: `${colors.white}`
+                        }}
+                        gutterBottom>
                         Problem solving made collaborative and fun
                     </Typography>
                     <Stack direction = "row" spacing = {2}>
