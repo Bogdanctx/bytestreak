@@ -1,0 +1,7 @@
+#coding-problems-container {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 70%;
+    height: calc(100vh - 100px);
+    background-color: #111111;
+    border-radius: 16px;
+}

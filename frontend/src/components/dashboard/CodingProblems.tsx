@@ -1,8 +1,9 @@
 import { Box } from '@mui/material';
+import "./CodingProblems.style.css"
 
 function CodingProblems() {
     return (
-        <Box>
+        <Box id="coding-problems-container">
             coding problems
         </Box>
     )
