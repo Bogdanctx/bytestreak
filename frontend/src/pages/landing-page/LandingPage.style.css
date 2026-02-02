@@ -42,3 +42,8 @@
     height: 50vh;
     align-self: center;
 }
+
+.landing-back-btn {
+    margin-top: 1vw;
+    color: white;
+}

@@ -1,7 +1,5 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import ByteStreakLogo from "../../ByteStreak.logo";
-import { colors } from "../../colors";
 import "../../fonts.css";
 import './LoginPage.style.css';
 
