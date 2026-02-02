@@ -26,18 +26,12 @@ function LandingPage() {
                         <Slide direction="down" in={showAuthState === 'login'} mountOnEnter unmountOnExit>
                             <Box>
                                 <LoginPage />
-                                <Button className="landing-back-btn" onClick={() => setShowAuthState(null)} fullWidth>
-                                    Back
-                                </Button>
                             </Box>
                         </Slide>
 
                         <Slide direction="down" in={showAuthState === 'register'} mountOnEnter unmountOnExit>
                             <Box>
-                                <RegisterPage />
-                                <Button className="landing-back-btn" onClick={() => setShowAuthState(null)} fullWidth>
-                                    Back
-                                </Button>
+                                <RegisterPage setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
