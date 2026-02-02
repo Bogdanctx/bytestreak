@@ -7,6 +7,7 @@ type registerFormInputs = {
     username: string;
     email: string;
     password: string;
+    confirmPassword: string;
 };
 
 type RegisterPageProps = {
@@ -18,7 +19,8 @@ function RegisterPage(props: RegisterPageProps) {
     const {
         control,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
+        getValues
     } = useForm<registerFormInputs>();
 
     const onSubmit = (data: registerFormInputs) => {
@@ -113,6 +115,31 @@ function RegisterPage(props: RegisterPageProps) {
                                 margin = "normal"
                                 error = { !!errors.password }
                                 helperText = { errors.password ? errors.password.message : "" }
+                            />
+                        )}
+                    />
+
+                    { /* Confirm password */ }
+                    <Controller
+                        control = { control }
+                        name = "confirmPassword"
+                        rules = {{
+                            required: "Please confirm your password",
+                            validate: (value: string) => 
+                                value === getValues("password") || "Passwords do not match"
+                        }}
+                        render={({ field }) => (
+                            <TextField 
+                                {...field}
+                                fullWidth
+                                className="register-textfield"
+                                type = "password"
+                                label = "Re-enter Password"
+                                variant = "outlined"
+                                placeholder = "Confirm your password"
+                                margin = "normal"
+                                error = { !!errors.confirmPassword }
+                                helperText = { errors.confirmPassword ? errors.confirmPassword.message : "" }
                             />
                         )}
                     />
