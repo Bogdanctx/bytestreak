@@ -13,6 +13,18 @@
     height: 100vh;
 }
 
+#landing-auth-content {
+    display: grid;
+    width: 100%;
+    place-items: center;
+}
+
+#landing-auth-content > * {
+    grid-area: 1 / 1;
+    width: 100%;
+    max-width: 30vw;
+}
+
 #landing-auth-container {
     width: 50vw;
     justify-content: center;

@@ -25,24 +25,18 @@ function LandingPage() {
                     <Box id="landing-auth-content">
                         <Slide direction="down" in={showAuthState === 'login'} mountOnEnter unmountOnExit>
                             <Box>
-                                <LoginPage />
-                                <Button className="landing-back-btn" onClick={() => setShowAuthState(null)} fullWidth>
-                                    Back
-                                </Button>
+                                <LoginPage setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
                         <Slide direction="down" in={showAuthState === 'register'} mountOnEnter unmountOnExit>
                             <Box>
-                                <RegisterPage />
-                                <Button className="landing-back-btn" onClick={() => setShowAuthState(null)} fullWidth>
-                                    Back
-                                </Button>
+                                <RegisterPage setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
                         <Slide direction="up" in={showAuthState === null} mountOnEnter unmountOnExit>
-                            <Box>
+                            <Box sx={{ textAlign: 'center' }}>
                                 <Typography id="landing-tagline" variant="h5">
                                     Problem solving made collaborative and fun
                                 </Typography>

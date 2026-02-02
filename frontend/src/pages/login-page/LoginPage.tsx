@@ -1,22 +1,26 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import "../../fonts.css";
-import './LoginPage.style.css';
+import './loginPage.style.css';
 
-type LoginFormInputs = {
+type loginFormInputs = {
     email: string;
     password: string;
 };
 
-function LoginPage() {
+type loginPageProps = {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+};
+
+function LoginPage(props: loginPageProps) {
 
     const {
         control,
         handleSubmit,
         formState: { errors }
-    } = useForm<LoginFormInputs>();
+    } = useForm<loginFormInputs>();
 
-    const onSubmit = (data: LoginFormInputs) => {
+    const onSubmit = (data: loginFormInputs) => {
         // Handle login logic here
     }
 
@@ -24,7 +28,7 @@ function LoginPage() {
         <Box id="login-container">
             <Box id="login-header">
                 <Typography id="login-title">
-                    Please Login to Your Account
+                    Login to Your Account
                 </Typography>
             </Box>
             <Box id="login-form-container">
@@ -51,6 +55,7 @@ function LoginPage() {
                                     errors.email ? errors.email.message : ""
                                 }
                                 error = { !!errors.email }
+                                margin="normal"
                                 fullWidth
                             />
                         )}
@@ -81,7 +86,10 @@ function LoginPage() {
 
                     
                     <Button id="login-button" variant = "contained" type = "submit" fullWidth>
-                        Login
+                        login
+                    </Button>
+                    <Button id="login-back-button" onClick={() => props.setShowAuthState(null)} variant = "contained" fullWidth>
+                        back
                     </Button>
                 </form>
             </Box>
