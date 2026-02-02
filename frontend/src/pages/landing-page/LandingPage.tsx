@@ -36,7 +36,7 @@ function LandingPage() {
                         </Slide>
 
                         <Slide direction="up" in={showAuthState === null} mountOnEnter unmountOnExit>
-                            <Box>
+                            <Box sx={{ textAlign: 'center' }}>
                                 <Typography id="landing-tagline" variant="h5">
                                     Problem solving made collaborative and fun
                                 </Typography>
