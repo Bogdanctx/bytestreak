@@ -1,0 +1,44 @@
+#landing-root {
+    background-color: #0C0C0C;
+}
+
+#landing-logo-container {
+    width: 50vw;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#landing-stack {
+    height: 100vh;
+}
+
+#landing-auth-container {
+    width: 50vw;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#landing-tagline {
+    color: white;
+    font-family: "Momo Trust Display";
+    margin-bottom: 0.5vw;
+}
+
+#landing-login-btn {
+    background-color: #23CE6B;
+    font-family: "Momo Trust Display";
+}
+
+#landing-signup-btn {
+    font-family: "Momo Trust Display";
+    color: white;
+    border-color: #E7BB41;
+}
+
+#landing-page-stack-divider {
+    background-color: #333333;
+    height: 50vh;
+    align-self: center;
+}

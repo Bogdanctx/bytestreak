@@ -7,21 +7,14 @@
     align-items: center;
 }
 
-#login-container {
-    padding: 20px;
-    border: 1px solid; 
-    border-radius: 5px;
-    border-color: #23CE6B;
-}
-
 #login-header {
     text-align: center;
 }
 
 #login-title {
-    font-family: "VT323";
+    font-family: "Momo Trust Display";
     color: white;
-    font-size: 32px;
+    font-size: 18px;
     margin-bottom: 2vw;
 }
 
