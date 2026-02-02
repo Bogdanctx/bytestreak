@@ -1,7 +1,7 @@
-import LandingPage from './pages/LandingPage'
-import LoginPage from './pages/Auth/LoginPage'
-import RegisterPage from './pages/Auth/RegisterPage'
-import Dashboard from './pages/Dashboard/Dashboard'
+import LandingPage from './pages/LandingPage.tsx';
+import LoginPage from './pages/Login/Login.tsx';
+import RegisterPage from './pages/Auth/RegisterPage.tsx';
+import Dashboard from './pages/Dashboard/Dashboard.tsx';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
