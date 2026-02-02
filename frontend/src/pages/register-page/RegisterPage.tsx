@@ -13,7 +13,7 @@ type RegisterPageProps = {
     setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
 };
 
-function registerPage(props: RegisterPageProps) {
+function RegisterPage(props: RegisterPageProps) {
 
     const {
         control,
@@ -130,4 +130,4 @@ function registerPage(props: RegisterPageProps) {
     );
 }
 
-export default registerPage;
+export default RegisterPage;

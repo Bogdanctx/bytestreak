@@ -25,7 +25,7 @@ function LandingPage() {
                     <Box id="landing-auth-content">
                         <Slide direction="down" in={showAuthState === 'login'} mountOnEnter unmountOnExit>
                             <Box>
-                                <LoginPage />
+                                <LoginPage setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
