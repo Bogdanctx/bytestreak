@@ -35,8 +35,16 @@ function LoginPage() {
                     <Controller
                         control = { control }
                         name = "email"
+                        rules = {{
+                            required: "Email is required",
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                message: "Invalid email address"
+                            }
+                        }}
                         render={({ field }) => (
-                            <TextField {...field} 
+                            <TextField 
+                                {...field} 
                                 className="login-textfield"
                                 label = "Email"
                                 variant = "outlined"
@@ -44,6 +52,7 @@ function LoginPage() {
                                 helperText = {
                                     errors.email ? errors.email.message : ""
                                 }
+                                error = { !!errors.email }
                                 fullWidth
                             />
                         )}
@@ -66,6 +75,8 @@ function LoginPage() {
                                 variant = "outlined"
                                 placeholder = "Enter your password"
                                 margin = "normal"
+                                error = { !!errors.password }
+                                helperText = { errors.password ? errors.password.message : "" }
                             />
                         )}
                     />
