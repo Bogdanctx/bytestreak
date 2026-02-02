@@ -4,7 +4,7 @@ import ByteStreakLogo from "../../ByteStreak.logo";
 import Navbar from "../../components/navbar/Navbar";
 import AccountDetails from "../../components/dashboard/AccountDetails";
 import DailyChallanges from "../../components/dashboard/DailyChallanges";
-import CodingProblems from "../../components/dashboard/CodingProblems";
+import CodingProblems from "../../components/dashboard/coding-problems-section/CodingProblems";
 
 function Dashboard() {
     return (
