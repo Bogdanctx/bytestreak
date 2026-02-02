@@ -1,5 +1,5 @@
 import LandingPage from './pages/landing-page/LandingPage.tsx';
-import Dashboard from './pages/Dashboard/Dashboard.tsx';
+import Dashboard from './pages/dashboard-page/Dashboard.tsx';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
