@@ -1,7 +1,55 @@
 #coding-problems-container {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     width: 70%;
-    height: calc(100vh - 100px);
+    
+    height: calc(100vh - 100px); 
     background-color: #111111;
     border-radius: 16px;
+    padding: 24px;
+    
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+#coding-problems-header {
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+#coding-problems-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 16px;
+}
+
+#coding-problems-list::-webkit-scrollbar {
+    width: 6px;
+}
+#coding-problems-list::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+#coding-problems-list::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+#coding-problems-footer {
+    padding-top: 16px;
+    border-top: 1px solid #333333;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#coding-problems-pagination .MuiPaginationItem-root {
+    color: white;
+    border-color: #333;
+}
+
+#coding-problems-pagination .Mui-selected {
+    background-color: #23CE6B !important;
+    color: black;
+    font-weight: bold;
 }
