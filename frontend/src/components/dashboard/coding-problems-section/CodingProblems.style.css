@@ -111,3 +111,20 @@
 .filter-menu-item.Mui-selected:hover {
     background-color: rgba(35, 206, 107, 0.3) !important;
 }
+
+.show-tags-switch .MuiSwitch-track {
+    background-color: gray !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked {
+    color: #23CE6B !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked:hover {
+    background-color: rgba(35, 206, 107, 0.08) !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+    background-color: #23CE6B !important;
+    opacity: 1 !important;
+}

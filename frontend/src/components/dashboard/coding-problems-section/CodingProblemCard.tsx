@@ -9,6 +9,8 @@ type CodingProblemCardProps = {
     title: string;
     difficulty: Difficulty;
     acceptanceRate: number;
+    tags: string[];
+    showTags: boolean;
 }
 
 const getDifficultyColor = (difficulty: Difficulty) => {
@@ -49,8 +51,25 @@ function CodingProblemCard(props: CodingProblemCardProps) {
                         </Typography>
                         
                         {/* Optional: Add a dot separator if you add tags later */}
-                        {/* <Typography variant="caption" sx={{ color: '#444' }}>•</Typography> */}
-                        {/* <Typography variant="caption" sx={{ color: '#888' }}>Arrays</Typography> */}
+                        {props.showTags && <>
+                            <Typography variant="caption" sx={{ color: '#444' }}>•</Typography>
+                            {/* <Typography variant="caption" sx={{ color: '#888' }}>Arrays</Typography> */}
+                            <Stack direction="row" spacing={0.5} >
+                                {props.tags.map((tag, index) => (
+                                    <Chip 
+                                        key={`${tag}-${index}`} 
+                                        label={tag}
+                                        size="small"
+                                        className="tag-chip"
+                                        sx={{
+                                            borderColor: '#555',
+                                            color: '#ccc',
+                                            backgroundColor: '#55555520',
+                                        }}
+                                    />
+                                ))}
+                            </Stack>
+                        </>}
                     </Stack>
                 </Stack>
             </Box>
