@@ -1,12 +1,14 @@
 import { Box, Typography, Chip, Stack } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; // Optional: Adds a subtle icon
 import "./CodingProblemCard.style.css"
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
 type CodingProblemCardProps = {
     title: string;
-    difficulty?: Difficulty;
+    difficulty: Difficulty;
+    acceptanceRate: number;
 }
 
 const getDifficultyColor = (difficulty: Difficulty) => {
@@ -18,24 +20,44 @@ const getDifficultyColor = (difficulty: Difficulty) => {
     }
 }
 
-function CodingProblemCard({ title, difficulty = 'Medium' }: CodingProblemCardProps) {
-    const difficultyColor = getDifficultyColor(difficulty);
+const getAcceptanceColor = (rate: number) => {
+    if (rate >= 70) return '#00b8a3'; // High acceptance (Easy)
+    if (rate >= 40) return '#ffc01e'; // Medium
+    return '#ff375f'; // Low (Hard)
+}
+
+function CodingProblemCard(props: CodingProblemCardProps) {
+    const difficultyColor = getDifficultyColor(props.difficulty);
+    const acceptanceColor = getAcceptanceColor(props.acceptanceRate);
 
     return (
         <Box className="coding-problem-card">
             <Box className="card-content-left">
                 <Box className="difficulty-indicator" sx={{ backgroundColor: difficultyColor }} />
+                
                 <Stack spacing={0.5}>
                     <Typography className="problem-title" variant="h6">
-                        {title}
+                        {props.title}
                     </Typography>
-                    {/* add tags here */}
+                    
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <Typography variant="caption" sx={{ color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            Acceptance: 
+                            <span style={{ color: '#ccc', fontWeight: 'bold' }}>
+                                {props.acceptanceRate}%
+                            </span>
+                        </Typography>
+                        
+                        {/* Optional: Add a dot separator if you add tags later */}
+                        {/* <Typography variant="caption" sx={{ color: '#444' }}>•</Typography> */}
+                        {/* <Typography variant="caption" sx={{ color: '#888' }}>Arrays</Typography> */}
+                    </Stack>
                 </Stack>
             </Box>
 
             <Box className="card-content-right">
                 <Chip 
-                    label={difficulty} 
+                    label={props.difficulty} 
                     size="small" 
                     className="difficulty-chip"
                     sx={{ 
