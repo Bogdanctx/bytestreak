@@ -1,0 +1,130 @@
+#coding-problems-container {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 70%;
+    
+    height: calc(100vh - 100px); 
+    background-color: #111111;
+    border-radius: 16px;
+    padding: 24px;
+    
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+#coding-problems-header {
+    margin-bottom: 24px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#coding-problems-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 16px;
+}
+
+#coding-problems-list::-webkit-scrollbar {
+    width: 6px;
+}
+#coding-problems-list::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+#coding-problems-list::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+#coding-problems-footer {
+    padding-top: 16px;
+    border-top: 1px solid #333333;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#coding-problems-pagination .MuiPaginationItem-root {
+    color: white;
+    border-color: #333;
+}
+
+#coding-problems-pagination .Mui-selected {
+    background-color: #23CE6B !important;
+    color: black;
+    font-weight: bold;
+}
+
+.problem-filter-select {
+    background-color: #1a1a1a;
+    color: white !important;
+    border-radius: 8px;
+    height: 40px;
+    min-width: 160px;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.875rem !important;
+}
+
+.problem-filter-select .MuiOutlinedInput-notchedOutline {
+    border: none !important;
+}
+
+.problem-filter-select:hover .MuiOutlinedInput-notchedOutline {
+    border-color: transparent !important;
+}
+
+.problem-filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #23CE6B !important;
+    border-width: 1px;
+}
+
+.problem-filter-select .MuiSvgIcon-root {
+    color: gray;
+}
+
+.filter-menu-paper {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333;
+    border-radius: 8px !important;
+    margin-top: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+}
+
+.filter-menu-item {
+    color: white !important;
+    font-size: 0.875rem !important;
+}
+
+.filter-menu-item:hover {
+    background-color: #23CE6B !important;
+    color: black !important;
+    font-weight: bold;
+}
+
+.filter-menu-item.Mui-selected {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+    color: #23CE6B !important;
+}
+
+.filter-menu-item.Mui-selected:hover {
+    background-color: rgba(35, 206, 107, 0.3) !important;
+}
+
+.show-tags-switch .MuiSwitch-track {
+    background-color: gray !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked {
+    color: #23CE6B !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked:hover {
+    background-color: rgba(35, 206, 107, 0.08) !important;
+}
+
+.show-tags-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+    background-color: #23CE6B !important;
+    opacity: 1 !important;
+}
