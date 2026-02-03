@@ -1,4 +1,5 @@
-import { Box, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Pagination, Stack, Typography, Select, MenuItem, type SelectChangeEvent, FormControl, InputLabel, FormHelperText } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import "./CodingProblems.style.css"
 import { useState } from 'react';
 
@@ -6,6 +7,7 @@ import CodingProblemCard from './CodingProblemCard';
 
 function CodingProblems() {
     const [page, setPage] = useState(1);
+    const [filter, setFilter] = useState('All');
     const itemsPerPage = 15;
 
     const [problems] = useState([
@@ -31,23 +33,58 @@ function CodingProblems() {
         { title: "Serialize and Deserialize Binary Tree", difficulty: "Hard" },
     ]);
 
-    const count = Math.ceil(problems.length / itemsPerPage);
+    const filteredProblems = problems.filter(problem => {
+        if (filter === 'All') return true;
+        return problem.difficulty === filter;
+    });
+
+    const count = Math.ceil(filteredProblems.length / itemsPerPage);
     const startIndex = (page - 1) * itemsPerPage;
-    const currentProblems = problems.slice(startIndex, startIndex + itemsPerPage);
+    const currentProblems = filteredProblems.slice(startIndex, startIndex + itemsPerPage);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
 
+    const handleFilterChange = (event: SelectChangeEvent) => {
+        setFilter(event.target.value);
+        setPage(1);
+    };
+
     return (
         <Box id="coding-problems-container">
             <Box id="coding-problems-header">
-                <Typography variant="h6" sx={{ color: 'white', fontFamily: '"Momo Trust Display", sans-serif' }}>
-                    Problem Set
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'gray' }}>
-                    {problems.length} problems available
-                </Typography>
+                <Box>
+                    <Typography variant="h6" sx={{ color: 'white', fontFamily: '"Momo Trust Display", sans-serif' }}>
+                        Problem Set
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'gray' }}>
+                        {filteredProblems.length} problems available
+                    </Typography>
+                </Box>
+
+                <FormControl>
+                    <Select
+                        value={filter}
+                        onChange={handleFilterChange}
+                        className="problem-filter-select"
+                        IconComponent={KeyboardArrowDownIcon}
+                        displayEmpty
+                        labelId="problem-filter-label"
+                        label="Difficulty"
+                        MenuProps={{
+                            PaperProps: {
+                                className: 'filter-menu-paper'
+                            }
+                        }}
+                    >
+                        <MenuItem className="filter-menu-item" value="All">All</MenuItem>
+                        <MenuItem value="Easy" className="filter-menu-item" sx={{ color: '#00b8a3 !important' }}>Easy</MenuItem>
+                        <MenuItem value="Medium" className="filter-menu-item" sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
+                        <MenuItem value="Hard" className="filter-menu-item" sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
+                    </Select>
+                    <FormHelperText sx={{ color: 'gray', marginLeft: '0px' }}>Filter by Difficulty</FormHelperText>
+                </FormControl>
             </Box>
 
             <Box id="coding-problems-list">

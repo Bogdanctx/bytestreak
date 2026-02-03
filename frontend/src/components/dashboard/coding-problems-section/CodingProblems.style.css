@@ -13,8 +13,11 @@
 }
 
 #coding-problems-header {
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #coding-problems-list {
@@ -52,4 +55,59 @@
     background-color: #23CE6B !important;
     color: black;
     font-weight: bold;
+}
+
+.problem-filter-select {
+    background-color: #1a1a1a;
+    color: white !important;
+    border-radius: 8px;
+    height: 40px;
+    min-width: 160px;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.875rem !important;
+}
+
+.problem-filter-select .MuiOutlinedInput-notchedOutline {
+    border: none !important;
+}
+
+.problem-filter-select:hover .MuiOutlinedInput-notchedOutline {
+    border-color: transparent !important;
+}
+
+.problem-filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #23CE6B !important;
+    border-width: 1px;
+}
+
+.problem-filter-select .MuiSvgIcon-root {
+    color: gray;
+}
+
+.filter-menu-paper {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333;
+    border-radius: 8px !important;
+    margin-top: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+}
+
+.filter-menu-item {
+    color: white !important;
+    font-size: 0.875rem !important;
+}
+
+.filter-menu-item:hover {
+    background-color: #23CE6B !important;
+    color: black !important;
+    font-weight: bold;
+}
+
+.filter-menu-item.Mui-selected {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+    color: #23CE6B !important;
+}
+
+.filter-menu-item.Mui-selected:hover {
+    background-color: rgba(35, 206, 107, 0.3) !important;
 }
