@@ -58,12 +58,10 @@ function CodingProblems() {
                     <Typography variant="h6" sx={{ color: 'white', fontFamily: '"Momo Trust Display", sans-serif' }}>
                         Problem Set
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'gray' }}>
-                        {filteredProblems.length} problems available
-                    </Typography>
                 </Box>
 
                 <FormControl>
+                    <FormHelperText sx={{ color: 'gray', marginLeft: '0px' }}>Filter by Difficulty</FormHelperText>
                     <Select
                         value={filter}
                         onChange={handleFilterChange}
@@ -83,7 +81,6 @@ function CodingProblems() {
                         <MenuItem value="Medium" className="filter-menu-item" sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
                         <MenuItem value="Hard" className="filter-menu-item" sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
                     </Select>
-                    <FormHelperText sx={{ color: 'gray', marginLeft: '0px' }}>Filter by Difficulty</FormHelperText>
                 </FormControl>
             </Box>
 
