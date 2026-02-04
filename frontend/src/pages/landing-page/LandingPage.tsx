@@ -4,7 +4,6 @@ import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
-import '../../fonts.css';
 import './LandingPage.style.css'
 
 function LandingPage() {
