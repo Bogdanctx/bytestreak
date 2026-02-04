@@ -1,4 +1,4 @@
-#coding-problems-container {
+#problems-section-container {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     width: 70%;
     
@@ -12,7 +12,7 @@
     box-sizing: border-box;
 }
 
-#coding-problems-header {
+#problems-section-header {
     margin-bottom: 24px;
     flex-shrink: 0;
     display: flex;
@@ -20,25 +20,25 @@
     align-items: center;
 }
 
-#coding-problems-list {
+#problems-section-list {
     flex-grow: 1;
     overflow-y: auto;
     padding-right: 8px;
     margin-bottom: 16px;
 }
 
-#coding-problems-list::-webkit-scrollbar {
+#problems-section-list::-webkit-scrollbar {
     width: 6px;
 }
-#coding-problems-list::-webkit-scrollbar-track {
+#problems-section-list::-webkit-scrollbar-track {
     background: #1a1a1a;
 }
-#coding-problems-list::-webkit-scrollbar-thumb {
+#problems-section-list::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 4px;
 }
 
-#coding-problems-footer {
+#problems-section-footer {
     padding-top: 16px;
     border-top: 1px solid #333333;
     flex-shrink: 0;
@@ -46,12 +46,12 @@
     justify-content: center;
 }
 
-#coding-problems-pagination .MuiPaginationItem-root {
+#problems-section-pagination .MuiPaginationItem-root {
     color: white;
     border-color: #333;
 }
 
-#coding-problems-pagination .Mui-selected {
+#problems-section-pagination .Mui-selected {
     background-color: #23CE6B !important;
     color: black;
     font-weight: bold;

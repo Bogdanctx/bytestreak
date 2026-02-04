@@ -1,12 +1,10 @@
 import { Box, Pagination, Stack, Typography, Select, MenuItem, type SelectChangeEvent, FormControl, FormHelperText, Switch, FormLabel, FormControlLabel } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import "./CodingProblems.style.css"
+import "./ProblemsSection.style.css"
 import { useState } from 'react';
+import ProblemCard from './ProblemCard/ProblemCard';
 
-import CodingProblemCard from './CodingProblemCard';
-import { Form } from 'react-hook-form';
-
-function CodingProblems() {
+function ProblemsSection() {
     const [problems] = useState([
         { title: "Two Sum", difficulty: "Easy", acceptanceRate: 45.3, tags: ["Array", "Hash Table"] },
         { title: "Shortest Path in Binary Matrix", difficulty: "Medium", acceptanceRate: 38.7, tags: ["BFS", "Matrix"] },
@@ -70,8 +68,8 @@ function CodingProblems() {
     };
 
     return (
-        <Box id="coding-problems-container">
-            <Box id="coding-problems-header">
+        <Box id="problems-section-container">
+            <Box id="problems-section-header">
                 <Box>
                     <Typography variant="h6" sx={{ color: 'white', fontFamily: '"Momo Trust Display", sans-serif' }}>
                         Problem Set
@@ -134,9 +132,9 @@ function CodingProblems() {
                 </Box>
             </Box>
 
-            <Box id="coding-problems-list">
+            <Box id="problems-section-list">
                 {currentProblems.map((problem, index) => (
-                    <CodingProblemCard
+                    <ProblemCard
                         key={`${problem.title}-${index}`}
                         title={problem.title}
                         difficulty={problem.difficulty as 'Easy' | 'Medium' | 'Hard'}
@@ -147,10 +145,10 @@ function CodingProblems() {
                 ))}
             </Box>
 
-            <Box id="coding-problems-footer">
+            <Box id="problems-section-footer">
                 <Stack spacing={2} alignItems="center">
                     <Pagination 
-                        id="coding-problems-pagination"
+                        id="problems-section-pagination"
                         count={count} 
                         page={page} 
                         onChange={handlePageChange} 
@@ -162,4 +160,4 @@ function CodingProblems() {
     )
 }
 
-export default CodingProblems;
+export default ProblemsSection;

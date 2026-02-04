@@ -1,17 +1,14 @@
 import { Box } from "@mui/material"
 import "./Dashboard.style.css" 
-import ByteStreakLogo from "../../ByteStreak.logo";
 import Navbar from "../../components/navbar/Navbar";
-import AccountDetails from "../../components/dashboard/AccountDetails";
-import DailyChallanges from "../../components/dashboard/DailyChallanges";
-import CodingProblems from "../../components/dashboard/coding-problems-section/CodingProblems";
+import ProblemsSection from "../../features/Dashboard/ProblemsSection/ProblemsSection";
 
 function Dashboard() {
     return (
         <Box id="dashboard-container">
             <Navbar />
             <Box id="dashboard-content">
-                <CodingProblems />
+                <ProblemsSection />
             </Box>
         </Box>
     )
