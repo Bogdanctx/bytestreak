@@ -3,7 +3,7 @@ import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
 import LoginForm from '../../features/Auth/Login/LoginForm';
-import RegisterPage from '../register-page/RegisterPage';
+import RegisterForm from '../../features/Auth/Register/RegisterForm';
 import '../../fonts.css';
 import './LandingPage.style.css'
 
@@ -31,7 +31,7 @@ function LandingPage() {
 
                         <Slide direction="down" in={showAuthState === 'register'} mountOnEnter unmountOnExit>
                             <Box>
-                                <RegisterPage setShowAuthState={setShowAuthState} />
+                                <RegisterForm setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 

@@ -1,7 +1,7 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import "../../fonts.css";
-import './registerPage.style.css';
+import './RegisterForm.style.css';
 
 type registerFormInputs = {
     username: string;
@@ -10,11 +10,11 @@ type registerFormInputs = {
     confirmPassword: string;
 };
 
-type RegisterPageProps = {
+type RegisterFormProps = {
     setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
 };
 
-function RegisterPage(props: RegisterPageProps) {
+function RegisterForm(props: RegisterFormProps) {
 
     const {
         control,
@@ -157,4 +157,4 @@ function RegisterPage(props: RegisterPageProps) {
     );
 }
 
-export default RegisterPage;
+export default RegisterForm;
