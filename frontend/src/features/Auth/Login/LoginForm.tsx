@@ -2,7 +2,7 @@ import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './LoginForm.style.css';
 
-type loginFormInputs = {
+type LoginFormInputs = {
     email: string;
     password: string;
 };
@@ -17,9 +17,9 @@ function LoginForm(props: LoginFormProps) {
         control,
         handleSubmit,
         formState: { errors }
-    } = useForm<loginFormInputs>();
+    } = useForm<LoginFormInputs>();
 
-    const onSubmit = (data: loginFormInputs) => {
+    const onSubmit = (data: LoginFormInputs) => {
         // Handle login logic here
     }
 

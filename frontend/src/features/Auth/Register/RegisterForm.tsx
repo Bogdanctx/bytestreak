@@ -2,7 +2,7 @@ import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './RegisterForm.style.css';
 
-type registerFormInputs = {
+type RegisterFormInputs = {
     username: string;
     email: string;
     password: string;
@@ -20,9 +20,9 @@ function RegisterForm(props: RegisterFormProps) {
         handleSubmit,
         formState: { errors },
         getValues
-    } = useForm<registerFormInputs>();
+    } = useForm<RegisterFormInputs>();
 
-    const onSubmit = (data: registerFormInputs) => {
+    const onSubmit = (data: RegisterFormInputs) => {
         // Handle register logic here
     }
 
