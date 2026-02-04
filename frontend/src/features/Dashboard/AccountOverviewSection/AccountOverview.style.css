@@ -1,0 +1,100 @@
+#account-overview-container {
+    background-color: #111111;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 28%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#account-overview-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.account-overview-avatar {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.account-overview-info-column {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.account-overview-username {
+    font-family: "Momo Trust Display", sans-serif !important;
+    color: white;
+    margin-bottom: 4px !important;
+    letter-spacing: 0.5px;
+}
+
+.account-overview-rank-label-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 6px;
+}
+
+.account-overview-rank-text {
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.account-overview-level-text {
+    color: #888;
+}
+
+.account-overview-xp-progress-bar {
+    height: 8px !important;
+    border-radius: 4px;
+    background-color: #333 !important;
+}
+
+.account-overview-xp-progress-bar .MuiLinearProgress-bar {
+    border-radius: 4px;
+}
+
+.account-overview-divider {
+    background-color: #333;
+    margin-bottom: 20px !important;
+}
+
+#account-overview-stats-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.account-overview-stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-overview-stat-value {
+    font-family: "Momo Trust Display", sans-serif !important;
+    color: white;
+    margin-bottom: 4px !important;
+}
+
+.account-overview-streak-value {
+    color: #E7BB41 !important;
+}
+
+.account-overview-stat-label {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.7rem !important;
+    letter-spacing: 1px;
+}
