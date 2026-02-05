@@ -32,8 +32,12 @@ function RegisterForm(props: RegisterFormProps) {
         axios
             .post('/api/auth/register', account)
             .then(response => {
-                console.log("Registration successful:", response.data);
-                props.setShowAuthState('login');
+                if(response.status === 200) {
+                    props.setShowAuthState("login");
+                }
+                else {
+                    
+                }
             })
             .catch(error => {
                 console.error("Registration error:", error);
