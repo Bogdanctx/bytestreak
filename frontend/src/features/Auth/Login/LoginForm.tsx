@@ -1,26 +1,25 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import "../../fonts.css";
-import './loginPage.style.css';
+import './LoginForm.style.css';
 
-type loginFormInputs = {
+type LoginFormInputs = {
     email: string;
     password: string;
 };
 
-type loginPageProps = {
+type LoginFormProps = {
     setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
 };
 
-function LoginPage(props: loginPageProps) {
+function LoginForm(props: LoginFormProps) {
 
     const {
         control,
         handleSubmit,
         formState: { errors }
-    } = useForm<loginFormInputs>();
+    } = useForm<LoginFormInputs>();
 
-    const onSubmit = (data: loginFormInputs) => {
+    const onSubmit = (data: LoginFormInputs) => {
         // Handle login logic here
     }
 
@@ -97,4 +96,4 @@ function LoginPage(props: loginPageProps) {
     );
 }
 
-export default LoginPage;
+export default LoginForm;

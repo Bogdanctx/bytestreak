@@ -1,29 +1,28 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import "../../fonts.css";
-import './registerPage.style.css';
+import './RegisterForm.style.css';
 
-type registerFormInputs = {
+type RegisterFormInputs = {
     username: string;
     email: string;
     password: string;
     confirmPassword: string;
 };
 
-type RegisterPageProps = {
+type RegisterFormProps = {
     setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
 };
 
-function RegisterPage(props: RegisterPageProps) {
+function RegisterForm(props: RegisterFormProps) {
 
     const {
         control,
         handleSubmit,
         formState: { errors },
         getValues
-    } = useForm<registerFormInputs>();
+    } = useForm<RegisterFormInputs>();
 
-    const onSubmit = (data: registerFormInputs) => {
+    const onSubmit = (data: RegisterFormInputs) => {
         // Handle register logic here
     }
 
@@ -157,4 +156,4 @@ function RegisterPage(props: RegisterPageProps) {
     );
 }
 
-export default RegisterPage;
+export default RegisterForm;

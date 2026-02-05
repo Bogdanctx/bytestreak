@@ -12,7 +12,7 @@
     min-width: min-content;
     min-height: min-content;
     background-color: transparent;
-    margin-left: 2%;
+    margin-left: 16px;
 }
 
 #navbar-logo-button:hover {

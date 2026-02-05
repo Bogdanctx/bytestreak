@@ -2,9 +2,8 @@ import { Box, Button, Typography, Stack, Divider } from '@mui/material';
 import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
-import LoginPage from '../login-page/LoginPage';
-import RegisterPage from '../register-page/RegisterPage';
-import '../../fonts.css';
+import LoginForm from '../../features/Auth/Login/LoginForm';
+import RegisterForm from '../../features/Auth/Register/RegisterForm';
 import './LandingPage.style.css'
 
 function LandingPage() {
@@ -25,13 +24,13 @@ function LandingPage() {
                     <Box id="landing-auth-content">
                         <Slide direction="down" in={showAuthState === 'login'} mountOnEnter unmountOnExit>
                             <Box>
-                                <LoginPage setShowAuthState={setShowAuthState} />
+                                <LoginForm setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
                         <Slide direction="down" in={showAuthState === 'register'} mountOnEnter unmountOnExit>
                             <Box>
-                                <RegisterPage setShowAuthState={setShowAuthState} />
+                                <RegisterForm setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 
