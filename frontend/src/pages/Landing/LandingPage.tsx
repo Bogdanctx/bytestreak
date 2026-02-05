@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Stack, Divider } from '@mui/material';
+import { Box, Button, Typography, Stack, Divider, useMediaQuery, useTheme } from '@mui/material';
 import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
@@ -8,13 +8,16 @@ import './LandingPage.style.css'
 
 function LandingPage() {
     const [showAuthState, setShowAuthState] = useState<'login' | 'register' | null>(null);
+    const theme = useTheme();
+    const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
 
+    // <Divider orientation="vertical"  id="landing-page-stack-divider" flexItem />
     return (
         <Box id="landing-root">
             <Stack 
                 id="landing-stack"
                 direction={{ xs: 'column', md: 'row' }}
-                divider={<Divider orientation="vertical"  id="landing-page-stack-divider" flexItem />}
+                divider={ isMdUp ? <Divider orientation="vertical" id="landing-page-stack-divider" flexItem /> : null }
                 spacing={2}
             >
                 <Box id="landing-logo-container">
