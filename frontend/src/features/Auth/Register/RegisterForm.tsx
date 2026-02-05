@@ -1,29 +1,48 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './RegisterForm.style.css';
-
-type RegisterFormInputs = {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-};
-
-type RegisterFormProps = {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
-};
+import axios from "axios";
+import type { AccountCredentials } from "../auth.types";
+import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
 
 function RegisterForm(props: RegisterFormProps) {
-
     const {
         control,
         handleSubmit,
         formState: { errors },
         getValues
-    } = useForm<RegisterFormInputs>();
+    } = useForm<RegisterFormInputs>({
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
+    });
 
     const onSubmit = (data: RegisterFormInputs) => {
-        // Handle register logic here
+        console.log("Register form data:", data);
+
+        var account: AccountCredentials = {
+            username: data.username,
+            email: data.email,
+            password: data.password
+        };
+
+        axios
+            .post('/api/auth/register', account)
+            .then(response => {
+                console.log("Registration successful:", response.data);
+                props.setShowAuthState('login');
+            })
+            .catch(error => {
+                console.error("Registration error:", error);
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert(`Registration failed: ${error.response.data.message}`);
+                } else {
+                    alert("Registration failed: An unexpected error occurred.");
+                }
+            });
     }
 
     return (
@@ -52,7 +71,7 @@ function RegisterForm(props: RegisterFormProps) {
                         }}
                         render={({ field }) => (
                             <TextField 
-                                {...field} 
+                                {...field}
                                 className="register-textfield"
                                 label = "Username"
                                 variant = "outlined"
