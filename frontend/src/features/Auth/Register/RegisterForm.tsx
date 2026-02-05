@@ -4,6 +4,8 @@ import './RegisterForm.style.css';
 import axios from "axios";
 import type { AccountCredentials } from "../auth.types";
 import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
+import notify from "../../../components/ui/ToastNotification";
+
 
 function RegisterForm(props: RegisterFormProps) {
     const {
@@ -29,23 +31,22 @@ function RegisterForm(props: RegisterFormProps) {
             password: data.password
         };
 
+        notify("Processing your registration...", "info");
+
         axios
             .post('/api/auth/register', account)
             .then(response => {
                 if(response.status === 200) {
+                    notify("Your account has been registered, please log in.", "success");
                     props.setShowAuthState("login");
                 }
                 else {
-                    
+
                 }
             })
             .catch(error => {
+                notify("Registration failed. Please try again.", "error");
                 console.error("Registration error:", error);
-                if (error.response && error.response.data && error.response.data.message) {
-                    alert(`Registration failed: ${error.response.data.message}`);
-                } else {
-                    alert("Registration failed: An unexpected error occurred.");
-                }
             });
     }
 

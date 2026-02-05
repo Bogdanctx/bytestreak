@@ -3,13 +3,13 @@ import Dashboard from './pages/Dashboard/Dashboard.tsx';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
-import NotificationQueue from './components/Notifications/NotificationQueue'
+import { ToastContainer } from 'react-toastify';
 
 function App() {
 	return (
         <>
             <CssBaseline />
-            <NotificationQueue />
+            <ToastContainer />
             <BrowserRouter>
                 <Routes>
                     <Route path = "/" element = { <LandingPage /> } /> 
