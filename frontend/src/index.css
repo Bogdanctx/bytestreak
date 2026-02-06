@@ -1,0 +1,39 @@
+.Toastify__toast-theme--colored.Toastify__toast--success {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 4px 2px 2px 2px #23CE6B;
+    width: fit-content;
+    max-width: 600px;
+}
+
+.Toastify__close-button {
+    display: none;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--info {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 4px 2px 2px 2px #e7e7e5;
+    width: fit-content;
+    max-width: 600px;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--error {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 4px 2px 2px 2px #da3208;
+    width: fit-content;
+    max-width: 600px;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--warning {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 4px 2px 2px 2px #E7BB41;
+    width: fit-content;
+    max-width: 600px;
+}

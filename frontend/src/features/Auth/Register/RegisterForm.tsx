@@ -1,29 +1,53 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './RegisterForm.style.css';
+import axios from "axios";
+import type { AccountCredentials } from "../auth.types";
+import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
+import notify from "../../../components/ui/ToastNotification";
 
-type RegisterFormInputs = {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-};
-
-type RegisterFormProps = {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
-};
 
 function RegisterForm(props: RegisterFormProps) {
-
     const {
         control,
         handleSubmit,
         formState: { errors },
         getValues
-    } = useForm<RegisterFormInputs>();
+    } = useForm<RegisterFormInputs>({
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
+    });
 
     const onSubmit = (data: RegisterFormInputs) => {
-        // Handle register logic here
+        console.log("Register form data:", data);
+
+        var account: AccountCredentials = {
+            username: data.username,
+            email: data.email,
+            password: data.password
+        };
+
+        notify("Processing your registration...", "info");
+
+        axios
+            .post('/api/auth/register', account)
+            .then(response => {
+                if(response.status === 200) {
+                    notify("Your account has been registered. Please log in.", "success");
+                    props.setShowAuthState("login");
+                }
+                else {
+                    notify("Registration failed. Please try again.", "error");
+                }
+            })
+            .catch(error => {
+                notify("Registration failed. Please try again.", "error");
+                console.error("Registration error:", error);
+            });
     }
 
     return (
@@ -52,7 +76,7 @@ function RegisterForm(props: RegisterFormProps) {
                         }}
                         render={({ field }) => (
                             <TextField 
-                                {...field} 
+                                {...field}
                                 className="register-textfield"
                                 label = "Username"
                                 variant = "outlined"
