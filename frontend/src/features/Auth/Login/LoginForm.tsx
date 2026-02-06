@@ -1,15 +1,9 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './LoginForm.style.css';
-
-type LoginFormInputs = {
-    email: string;
-    password: string;
-};
-
-type LoginFormProps = {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
-};
+import type { LoginFormInputs, LoginFormProps } from "./Login.types";
+import notify from "../../../components/ui/ToastNotification";
+import { api } from "../../../api";
 
 function LoginForm(props: LoginFormProps) {
 
@@ -17,10 +11,30 @@ function LoginForm(props: LoginFormProps) {
         control,
         handleSubmit,
         formState: { errors }
-    } = useForm<LoginFormInputs>();
+    } = useForm<LoginFormInputs>({
+        defaultValues: {
+            email: "",
+            password: ""
+        }
+    });
 
     const onSubmit = (data: LoginFormInputs) => {
-        // Handle login logic here
+        api
+            .post("/api/auth/login", data)
+            .then((response) => {
+                if(response.status === 200) {
+                    notify("Login successful!", "success");
+                    
+                    
+                }
+                else {
+                    notify(`${response.data.message}`, "error");
+                }
+            })
+            .catch((error) => {
+                console.error("Login error:", error);
+                notify("An error occurred during login.", "error");
+            });
     }
 
     return (
