@@ -37,11 +37,11 @@ function RegisterForm(props: RegisterFormProps) {
             .post('/api/auth/register', account)
             .then(response => {
                 if(response.status === 200) {
-                    notify("Your account has been registered, please log in.", "success");
+                    notify("Your account has been registered. Please log in.", "success");
                     props.setShowAuthState("login");
                 }
                 else {
-
+                    notify("Registration failed. Please try again.", "error");
                 }
             })
             .catch(error => {
