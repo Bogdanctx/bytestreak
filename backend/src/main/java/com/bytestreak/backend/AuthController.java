@@ -20,7 +20,7 @@ import org.springframework.security.core.Authentication;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
     private final AccountRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -70,7 +70,7 @@ public class AuthController {
                 .secure(false)
                 .path("/")
                 .maxAge(24 * 60 * 60)
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -93,6 +93,15 @@ public class AuthController {
             String rawPassword = account.getPassword();
             String encodedPassword = passwordEncoder.encode(rawPassword);
             account.setPassword(encodedPassword);
+
+            account.setLevel(0);
+            account.setCurrentXP(0);
+            account.setProblemsSolved(0);
+            account.setQuizzesSolved(0);
+            account.setStreakLength(0);
+            account.setFriendsCount(0);
+            account.setProfilePictureUrl("");
+
 
             repository.save(account);
         } 

@@ -20,7 +20,7 @@ function LoginForm(props: LoginFormProps) {
 
     const onSubmit = (data: LoginFormInputs) => {
         api
-            .post("/api/auth/login", data)
+            .post("auth/login", data)
             .then((response) => {
                 if(response.status === 200) {
                     notify("Login successful!", "success");
