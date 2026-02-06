@@ -25,7 +25,10 @@ function LoginForm(props: LoginFormProps) {
                 if(response.status === 200) {
                     notify("Login successful!", "success");
                     
-                    
+                    // Redirect
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 1500);
                 }
                 else {
                     notify(`${response.data.message}`, "error");
