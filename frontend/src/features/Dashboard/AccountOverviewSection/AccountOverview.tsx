@@ -1,5 +1,6 @@
-import { Box, Typography, Avatar, LinearProgress, Divider } from '@mui/material';
+import { Box, Typography, Avatar, LinearProgress, Divider, Button } from '@mui/material';
 import "./AccountOverview.style.css";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 
 const rankLevels: { [key: string]: number } = {
@@ -55,9 +56,16 @@ function AccountOverview(props: { account: any }) {
                 <Avatar src={props.account.avatarUrl} alt={props.account.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
 
                 <Box className="account-overview-info-column">
-                    <Typography variant="h5" className="account-overview-username">
+                    <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+                        <Typography variant="h5" className="account-overview-username">
                         {props.account.username}
-                    </Typography>
+                        </Typography>
+                        <Box>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => alert("Settings coming soon!")}>
+                                <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
+                            </Button>
+                        </Box>
+                    </Box>
 
                     <Box className="account-overview-rank-label-container">
                         <Typography variant="caption" className="account-overview-rank-text" sx={{ color: `${color}`}}>
