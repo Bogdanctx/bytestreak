@@ -77,7 +77,6 @@ function ProblemsSection() {
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                    
                     <FormControl component="fieldset" variant="standard">
                         <FormControlLabel
                             control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)}/>}
@@ -155,7 +154,7 @@ function ProblemsSection() {
                         shape="rounded"
                     />
                 </Stack>
-            </Box>     
+            </Box>
         </Box>
     )
 }
