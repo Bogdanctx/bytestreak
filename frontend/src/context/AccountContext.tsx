@@ -5,14 +5,12 @@ import {
     useEffect, 
     type ReactNode 
 } from "react";
-import { api } from "../api"; // Your existing axios instance
+import { api } from "../api";
 
-// Define the shape of your Account data
 interface Account {
-    username: string; // Note: Your backend Account entity needs this field if you use it!
+    username: string;
     email: string;
     profilePictureUrl?: string;
-    // Add other fields from your backend Account entity
 }
 
 interface AccountContextType {
@@ -33,7 +31,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
             .then(response => {
                 if (response.status === 200) {
                     setAccount(response.data);
-                } else {
+                } 
+                else {
                     setAccount(null);
                 }
             })
