@@ -8,22 +8,77 @@ import {
     Avatar
 } from "@mui/material";
 import './Account.settings.css'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import LockIcon from '@mui/icons-material/Lock';
 import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { api } from "../../api";
+import { useAccount } from "../../context/AccountContext";
+import notify from "../../components/ui/ToastNotification";
+
 
 function Account() {
+    const { account, isLoading, refreshAccount } = useAccount();
 
     const [formData, setFormData] = useState({
-        username: "john_doe",
-        email: "bogdan@bytestreak.com",
+        username: "",
+        email: "",
         avatar: "",
-        password: "password123" 
+        password: "" 
     });
+
+    useEffect(() => {
+        if (account) {
+            setFormData({
+                username: account.username,
+                email: account.email,
+                avatar: account.profilePictureUrl || "",
+                password: "" // Password is not fetched for security reasons
+            })
+        }
+    }, [account]);
+
+    const handleSaveChanges = () => {
+        api.patch('/accounts/update', formData)
+            .then(response => {
+                if (response.status === 200) {
+                    refreshAccount();
+                    notify("Your account has been updated successfully.", "success");
+                }
+            })
+            .catch(error => {
+                notify("Failed to update your account.", "error");
+                console.error("Update account error:", error);
+            });
+    }
+
+    const handleDeleteAccount = () => {
+        api.delete('/accounts/delete')
+            .then(response => {
+                if (response.status === 200) {
+                    notify("Your account has been deleted.", "success");
+
+                    setTimeout(() => {
+                        window.location.href = "/"; // Redirect to homepage after deletion
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                notify("Failed to delete your account.", "error");
+                console.error("Delete account error:", error);
+            });
+    }
+
+    if (isLoading) {
+        return (
+            <Box id="account-container">
+                <Typography>Loading...</Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box id="account-container">
@@ -109,7 +164,7 @@ function Account() {
                     />
                 </Box>
 
-                <Button className="account-save-btn" variant="outlined">
+                <Button className="account-save-btn" variant="outlined" onClick={handleSaveChanges}>
                     Save Changes
                 </Button>
             </Box>
@@ -134,6 +189,11 @@ function Account() {
                         variant="outlined" 
                         color="error"
                         className="delete-account-btn"
+                        onClick={() => {
+                            if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                                handleDeleteAccount();
+                            }
+                        }}
                     >
                         Delete Account
                     </Button>
