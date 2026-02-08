@@ -1,6 +1,14 @@
-import { Box, Typography, Avatar, LinearProgress, Divider, Button } from '@mui/material';
+import { 
+    Box, 
+    Typography, 
+    Avatar, 
+    LinearProgress, 
+    Divider, 
+    Button
+} from '@mui/material';
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
+import { useState } from 'react';
 
 
 const rankLevels: { [key: string]: number } = {
@@ -50,6 +58,8 @@ function AccountOverview(props: { account: any }) {
     const color = getRankColor(accountRank);
     const progress = (props.account.currentXP / maxXP) * 100;
 
+    const [showSettings, setShowSettings] = useState(false);
+
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
@@ -61,7 +71,7 @@ function AccountOverview(props: { account: any }) {
                         {props.account.username}
                         </Typography>
                         <Box>
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => alert("Settings coming soon!")}>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => window.location.href = "/settings"}>
                                 <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
                             </Button>
                         </Box>
@@ -87,7 +97,6 @@ function AccountOverview(props: { account: any }) {
             <Box id="account-overview-stats-container">
                 
                 <Box className="account-overview-stat-item">
-
                     {props.account.streakLength > 0 ? (
                         <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
                             {props.account.streakLength}

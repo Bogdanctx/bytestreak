@@ -57,9 +57,15 @@ public class AuthController {
 
         Account account = repository.findByEmail(email);
 
-        if (account == null || !passwordEncoder.matches(password, account.getPassword())) {
+        if (account == null) {
             return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "An account with the provided email does not exist."));
+        }
+
+        if (!passwordEncoder.matches(password, account.getPassword())) {
+            return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
                         .body(Collections.singletonMap("message", "Invalid email or password."));
         }
 

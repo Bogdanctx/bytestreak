@@ -35,8 +35,10 @@ function LoginForm(props: LoginFormProps) {
                 }
             })
             .catch((error) => {
+                const errorMessage = error.response?.data?.message || "An error occurred during login.";
+                
                 console.error("Login error:", error);
-                notify("An error occurred during login.", "error");
+                notify(errorMessage, "error");
             });
     }
 

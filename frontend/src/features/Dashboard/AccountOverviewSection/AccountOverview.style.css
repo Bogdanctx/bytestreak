@@ -3,12 +3,6 @@
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    width: 28%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    margin: 0 auto;
 }
 
 #account-overview-header {
@@ -71,15 +65,14 @@
 
 #account-overview-stats-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 0 10px;
+    justify-content: space-around;
+    gap: 32px;
 }
 
 .account-overview-stat-item {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .account-overview-stat-value {
