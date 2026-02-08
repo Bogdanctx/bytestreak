@@ -71,7 +71,7 @@ function AccountOverview(props: { account: any }) {
                         {props.account.username}
                         </Typography>
                         <Box>
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => setShowSettings(!showSettings)}>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => window.location.href = "/settings"}>
                                 <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
                             </Button>
                         </Box>
