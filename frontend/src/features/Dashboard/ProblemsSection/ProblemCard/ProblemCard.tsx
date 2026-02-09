@@ -29,7 +29,6 @@ const getAcceptanceColor = (rate: number) => {
 
 function ProblemCard(props: ProblemCardProps) {
     const difficultyColor = getDifficultyColor(props.difficulty);
-    const acceptanceColor = getAcceptanceColor(props.acceptanceRate);
 
     return (
         <Box className="problem-card">
