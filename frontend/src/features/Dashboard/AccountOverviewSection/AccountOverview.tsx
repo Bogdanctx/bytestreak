@@ -8,8 +8,7 @@ import {
 } from '@mui/material';
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
-
+import { useAccountContext } from '../../../context/AccountContext';
 
 const rankLevels: { [key: string]: number } = {
     "Bit": 0,
@@ -52,23 +51,27 @@ const getLevelMaxXP = (level: number) => {
     return 100 + (level * 20);
 }
 
-function AccountOverview(props: { account: any }) {
-    const maxXP = getLevelMaxXP(props.account.level);
-    const accountRank = getRankByLevel(props.account.level);
-    const color = getRankColor(accountRank);
-    const progress = (props.account.currentXP / maxXP) * 100;
+function AccountOverview() {
+    const { account } = useAccountContext();
 
-    const [showSettings, setShowSettings] = useState(false);
+    if (!account) {
+        return null;
+    }
+
+    const maxXP = getLevelMaxXP(account.level);
+    const accountRank = getRankByLevel(account.level);
+    const color = getRankColor(accountRank);
+    const progress = (account.currentXP / maxXP) * 100;
 
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
-                <Avatar src={props.account.avatarUrl} alt={props.account.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
+                <Avatar src={account.profilePictureUrl} alt={account.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
 
                 <Box className="account-overview-info-column">
                     <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
                         <Typography variant="h5" className="account-overview-username">
-                        {props.account.username}
+                            {account.username}
                         </Typography>
                         <Box>
                             <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => window.location.href = "/settings"}>
@@ -82,7 +85,7 @@ function AccountOverview(props: { account: any }) {
                             {accountRank}
                         </Typography>
                         <Typography variant="caption" className="account-overview-level-text">
-                            Lvl {props.account.level} • {props.account.currentXP}/{maxXP} XP
+                            Lvl {account.level} • {account.currentXP}/{maxXP} XP
                         </Typography>
                     </Box>
 
@@ -97,14 +100,14 @@ function AccountOverview(props: { account: any }) {
             <Box id="account-overview-stats-container">
                 
                 <Box className="account-overview-stat-item">
-                    {props.account.streakLength > 0 ? (
+                    {account.streakLength > 0 ? (
                         <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
-                            {props.account.streakLength}
+                            {account.streakLength}
                             <span style={{ fontSize: '1rem' }}>🔥</span>
                         </Typography>
                     ) : (
                         <Typography variant="h4" className="account-overview-stat-value">
-                            {props.account.streakLength}
+                            {account.streakLength}
                         </Typography>
                     )}
                     <Typography variant="caption" className="account-overview-stat-label">
@@ -114,7 +117,7 @@ function AccountOverview(props: { account: any }) {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {props.account.problemsSolved}
+                        {account.problemsSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems
@@ -123,7 +126,7 @@ function AccountOverview(props: { account: any }) {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {props.account.quizzesSolved}
+                        {account.quizzesSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Quizzes
@@ -132,7 +135,7 @@ function AccountOverview(props: { account: any }) {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {props.account.friendsCount}
+                        {account.friendsCount}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Friends

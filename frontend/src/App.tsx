@@ -7,21 +7,25 @@ import { CssBaseline } from '@mui/material'
 import { ToastContainer } from 'react-toastify';
 import Navbar from "./components/navbar/Navbar";
 import { Box } from '@mui/material';
+import { AccountProvider } from './context/AccountContext.tsx';
 
 function App() {
+
 	return (
         <Box bgcolor={"#0C0C0C"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
             <CssBaseline />
             <ToastContainer />
             <Navbar />
             <Box flex={1} overflow={"hidden"}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path = "/" element = { <LandingPage /> } /> 
-                        <Route path = "/dashboard" element = { <Dashboard /> } />
-                        <Route path = "/settings" element = { <Settings /> } />
-                    </Routes>
-                </BrowserRouter>
+                <AccountProvider>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path = "/" element = { <LandingPage /> } /> 
+                            <Route path = "/dashboard" element = { <Dashboard /> } />
+                            <Route path = "/settings" element = { <Settings /> } />
+                        </Routes>
+                    </BrowserRouter>
+                </AccountProvider>
             </Box>
         </Box>
     )

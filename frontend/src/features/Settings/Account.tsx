@@ -7,7 +7,7 @@ import {
     Button,
     Avatar
 } from "@mui/material";
-import './Account.settings.css'
+import './Account.style.css'
 import { useEffect, useState } from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -16,17 +16,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { api } from "../../api";
-import { useAccount } from "../../context/AccountContext";
 import notify from "../../components/ui/ToastNotification";
+import { useAccountContext } from "../../context/AccountContext";
 
 
 function Account() {
-    const { account, isLoading, refreshAccount } = useAccount();
+    const { account, setAccount } = useAccountContext();
 
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        avatar: "",
+        username: account.username,
+        email: account.email,
+        avatar: account.profilePictureUrl || "",
         password: "" 
     });
 
@@ -45,7 +45,7 @@ function Account() {
         api.patch('/accounts/update', formData)
             .then(response => {
                 if (response.status === 200) {
-                    refreshAccount();
+                    setAccount(response.data);
                     notify("Your account has been updated successfully.", "success");
                 }
             })
@@ -72,12 +72,16 @@ function Account() {
             });
     }
 
-    if (isLoading) {
-        return (
-            <Box id="account-container">
-                <Typography>Loading...</Typography>
-            </Box>
-        );
+    const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setFormData(prev => ({ ...prev, avatar: base64String }));
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     return (
@@ -104,9 +108,16 @@ function Account() {
                             sx={{ color: '#23CE6B', borderColor: '#23CE6B' }}
                             variant="outlined"
                             size="small"
+                            onClick={() => { document.getElementById('avatar-upload')?.click() }}
                         >
                             Change Avatar
                         </Button>
+                        <input id="avatar-upload" 
+                                type="file" 
+                                accept="image/*" 
+                                style={{ display: 'none' }}
+                                onChange={handleAvatarChange}
+                                />
                     </Box>
                 </Box>
 

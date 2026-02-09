@@ -6,7 +6,6 @@ import notify from "../../../components/ui/ToastNotification";
 import { api } from "../../../api";
 
 function LoginForm(props: LoginFormProps) {
-
     const {
         control,
         handleSubmit,

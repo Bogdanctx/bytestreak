@@ -4,40 +4,42 @@ import ProblemsSection from "../../features/Dashboard/ProblemsSection/ProblemsSe
 import AccountOverview from "../../features/Dashboard/AccountOverviewSection/AccountOverview";
 import DailyChallanges from "../../features/Dashboard/DailyChallanges/DailyChallanges";
 import { api } from "../../api"
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useAccountContext } from "../../context/AccountContext";
 
 function Dashboard() {
-    const [account, setAccount] = useState(null);
+    const { account, setAccount } = useAccountContext();
 
     useEffect(() => {
-        api.get("/auth/me")
-            .then(response => {
-                if(response.status == 200) {
-                    setAccount(response.data);
-                }
-                else if(response.status == 401) {
-                    // Redirect to login page
+        if(!account) {
+            api.get("/auth/me")
+                .then(response => {
+                    if(response.status == 200) {
+                        setAccount(response.data);
+                    }
+                    else if(response.status == 401) {
+                        window.location.href = "/";
+                    }
+                    else {
+                        window.location.href = "/";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching account info:", error);
                     window.location.href = "/";
-                }
-                else {
-                    window.location.href = "/";
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching account info:", error);
-                window.location.href = "/";
-            });
-    }, []);
+                });
+        }
+    }, [account, setAccount]);
 
-    if(account === null) {
-        return;
+    if (!account) {
+        return null;
     }
 
     return (
         <Box id="dashboard-container">
             <ProblemsSection />
             <Box display={"flex"} flexDirection={"column"} gap={"16px"} flex={1} maxWidth={"25%"}>
-                <AccountOverview account={account} />
+                <AccountOverview />
                 <DailyChallanges />
             </Box>
         </Box>

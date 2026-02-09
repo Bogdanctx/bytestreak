@@ -173,3 +173,50 @@
 .account-change-avatar-button:hover {
     background-color: rgba(35, 206, 107, 0.1) !important;
 }
+
+
+
+
+/* Container for the upload area */
+.account-avatar-upload {
+    margin-top: 16px;
+    padding: 20px;
+    background-color: #0a0a0a;
+    border: 1px dashed #333;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.account-avatar-upload:hover {
+    border-color: #23CE6B;
+    background-color: rgba(35, 206, 107, 0.02);
+}
+
+/* Custom "Choose File" button style */
+.custom-file-upload-label {
+    display: inline-block;
+    padding: 8px 16px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #F7F7F9;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.custom-file-upload-label:hover {
+    background-color: #23CE6B;
+    color: #000;
+    border-color: #23CE6B;
+}
+
+/* Hide the default ugly input */
+input[type="file"] {
+    display: none;
+}
