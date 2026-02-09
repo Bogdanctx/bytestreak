@@ -4,22 +4,7 @@ import ProblemsSection from "../../features/Dashboard/ProblemsSection/ProblemsSe
 import AccountOverview from "../../features/Dashboard/AccountOverviewSection/AccountOverview";
 import DailyChallanges from "../../features/Dashboard/DailyChallanges/DailyChallanges";
 
-import { useAccountContext } from "../../context/AccountContext";
-import { useEffect } from "react";
-
 function Dashboard() {
-    const { account, isLoading } = useAccountContext();
-
-    useEffect(() => {
-        if (!isLoading && !account) {
-            window.location.href = "/";
-        }
-    }, [account, isLoading]);
-
-    if (!account) {
-        return null;
-    }
-
     return (
         <Box id="dashboard-container">
             <ProblemsSection />

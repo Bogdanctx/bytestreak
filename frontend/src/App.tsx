@@ -8,22 +8,32 @@ import { ToastContainer } from 'react-toastify';
 import Navbar from "./components/navbar/Navbar";
 import { Box } from '@mui/material';
 import { AccountProvider } from './context/AccountContext.tsx';
+import ProtectedRoute from './components/ProtectedRoute.tsx';
 
 function App() {
-
+    const location = window.location.pathname;
+    
 	return (
         <Box bgcolor={"#0C0C0C"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
             <CssBaseline />
             <ToastContainer />
 
             <BrowserRouter>
-                {window.location.pathname !== "/" && <Navbar />}
+
+                {location !== "/" && <Navbar />}
+
                 <Box flex={1} overflow={"hidden"}>
                     <AccountProvider>
                         <Routes>
+                            {/* public routes */}
                             <Route path = "/" element = { <LandingPage /> } /> 
-                            <Route path = "/dashboard" element = { <Dashboard /> } />
-                            <Route path = "/settings" element = { <Settings /> } />
+
+                            {/* protected routes */}
+                            <Route element = { <ProtectedRoute /> }>
+                                <Route path = "/dashboard" element = { <Dashboard /> } />
+                                <Route path = "/settings" element = { <Settings /> } />
+                            </Route>
+
                         </Routes>
                     </AccountProvider>
                 </Box>
