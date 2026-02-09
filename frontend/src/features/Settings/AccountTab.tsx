@@ -48,8 +48,8 @@ function Account() {
 
         const profilePictureLength = formData.profilePictureUrl.length;
 
-        if(profilePictureLength > 10485760) {
-            notify("Profile picture is too large. Please choose an image smaller than 10MB.", "error");
+        if(profilePictureLength > 5242880) { // 5MB in bytes
+            notify("Profile picture is too large. Please choose an image smaller than 5MB.", "error");
             return;
         }
 
@@ -152,7 +152,7 @@ function Account() {
 
                     <TextField 
                         className="account-input-field"
-                        label="Email Address" 
+                        label="Email" 
                         variant="outlined"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -184,6 +184,7 @@ function Account() {
                             }
                         }}
                     />
+
                 </Box>
 
                 <Button className="account-save-btn" variant="outlined" onClick={handleSaveChanges}>

@@ -17,7 +17,6 @@
     border-radius: 8px;
     box-shadow: 4px 2px 2px 2px #e7e7e5;
     width: fit-content;
-    max-width: 600px;
 }
 
 .Toastify__toast-theme--colored.Toastify__toast--error {
@@ -26,7 +25,6 @@
     border-radius: 8px;
     box-shadow: 4px 2px 2px 2px #da3208;
     width: fit-content;
-    max-width: 600px;
 }
 
 .Toastify__toast-theme--colored.Toastify__toast--warning {
@@ -35,5 +33,4 @@
     border-radius: 8px;
     box-shadow: 4px 2px 2px 2px #E7BB41;
     width: fit-content;
-    max-width: 600px;
 }

@@ -1,4 +1,3 @@
-/* --- Variables & Typography --- */
 .account-header-title {
     color: #F7F7F9;
     font-family: "Momo Trust Display", sans-serif !important;
@@ -22,7 +21,7 @@
 }
 
 #account-container {
-    padding: 24px 32px;
+    padding: 24px;
     height: 100%;
     display: flex;
     flex-direction: column;
