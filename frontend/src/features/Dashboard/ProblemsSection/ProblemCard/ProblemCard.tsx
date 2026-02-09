@@ -10,6 +10,7 @@ type ProblemCardProps = {
     acceptanceRate: number;
     tags: string[];
     showTags: boolean;
+    pid: number;
 }
 
 const getDifficultyColor = (difficulty: Difficulty) => {
@@ -21,23 +22,17 @@ const getDifficultyColor = (difficulty: Difficulty) => {
     }
 }
 
-const getAcceptanceColor = (rate: number) => {
-    if (rate >= 70) return '#00b8a3'; // High acceptance (Easy)
-    if (rate >= 40) return '#ffc01e'; // Medium
-    return '#ff375f'; // Low (Hard)
-}
-
 function ProblemCard(props: ProblemCardProps) {
     const difficultyColor = getDifficultyColor(props.difficulty);
 
     return (
         <Box className="problem-card">
-            <Box className="card-content-left">
+            <Box className="problem-card-content-left">
                 <Box className="difficulty-indicator" sx={{ backgroundColor: difficultyColor }} />
                 
                 <Stack spacing={0.5}>
-                    <Typography className="problem-title" variant="h6">
-                        {props.title}
+                    <Typography className="problem-card-title" variant="h6">
+                        {props.pid}. {props.title}
                     </Typography>
                     
                     <Stack direction="row" alignItems="center" spacing={1}>
@@ -72,7 +67,7 @@ function ProblemCard(props: ProblemCardProps) {
                 </Stack>
             </Box>
 
-            <Box className="card-content-right">
+            <Box className="problem-card-content-right">
                 <Chip 
                     label={props.difficulty} 
                     size="small" 
