@@ -1,7 +1,7 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import './RegisterForm.style.css';
-import axios from "axios";
+import { api } from "../../../api";
 import type { AccountCredentials } from "../auth.types";
 import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
 import notify from "../../../components/ui/ToastNotification";
@@ -33,8 +33,8 @@ function RegisterForm(props: RegisterFormProps) {
 
         notify("Processing your registration...", "info");
 
-        axios
-            .post('/api/auth/register', account)
+        api
+            .post('auth/register', account)
             .then(response => {
                 if(response.status === 200) {
                     notify("Your account has been registered. Please log in.", "success");

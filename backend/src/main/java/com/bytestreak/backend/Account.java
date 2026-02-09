@@ -2,17 +2,22 @@ package com.bytestreak.backend;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "accounts")
+@Getter
+@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +36,17 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private int level;
+    private int currentXP;
+    private int problemsSolved;
+    private int quizzesSolved;
+    private int streakLength;
+    private int friendsCount;
+
+    // Base64 encoded profile picture
+    @Column(length = 5242880) // max 5mb
+    private String profilePictureUrl;
+
     protected Account() {}
 
     public Account(String username, String email, String password) {
@@ -47,25 +63,5 @@ public class Account {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

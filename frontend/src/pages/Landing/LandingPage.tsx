@@ -1,15 +1,29 @@
 import { Box, Button, Typography, Stack, Divider, useMediaQuery, useTheme } from '@mui/material';
 import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
 import './LandingPage.style.css'
+import { api } from '../../api';
 
 function LandingPage() {
     const [showAuthState, setShowAuthState] = useState<'login' | 'register' | null>(null);
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+    useEffect(() => {
+        api.get("/auth/me")
+            .then(response => {
+                if(response.status === 200) {
+                    // Redirect to dashboard
+                    window.location.href = "/dashboard";
+                }
+            })
+            .catch(error => {
+                console.error("Error checking authentication status:", error);
+            });
+    }, []);
 
     // <Divider orientation="vertical"  id="landing-page-stack-divider" flexItem />
     return (

@@ -1,17 +1,26 @@
-import { Box, Typography, Avatar, LinearProgress, Divider } from '@mui/material';
+import { 
+    Box, 
+    Typography, 
+    Avatar, 
+    LinearProgress, 
+    Divider, 
+    Button
+} from '@mui/material';
 import "./AccountOverview.style.css";
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAccountContext } from '../../../context/AccountContext';
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { useNavigate } from 'react-router-dom';
 
-const userData = {
-    username: "Bogdan",
-    avatarUrl: "https://i.pravatar.cc/150?img=11",
-    rank: "Terabyte",
-    level: 34,
-    currentXP: 900,
-    maxXP: 1000,
-    problemsSolved: 42,
-    quizzesDone: 15,
-    streak: 7,
-    friends: 8
+const rankLevels: { [key: string]: number } = {
+    "Bit": 0,
+    "Byte": 4,
+    "Kilobyte": 8,
+    "Megabyte": 16,
+    "Gigabyte": 24,
+    "Terabyte": 36
 };
 
 const getRankColor = (rank: string) => {
@@ -33,30 +42,80 @@ const getRankColor = (rank: string) => {
     }
 };
 
+const getRankByLevel = (level: number) => {
+    if(level >= rankLevels["Terabyte"]) return "Terabyte";
+    if(level >= rankLevels["Gigabyte"]) return "Gigabyte";
+    if(level >= rankLevels["Megabyte"]) return "Megabyte";
+    if(level >= rankLevels["Kilobyte"]) return "Kilobyte";
+    if(level >= rankLevels["Byte"]) return "Byte";
+    return "Bit";
+}
+
+const getLevelMaxXP = (level: number) => {
+    return 100 + (level * 20);
+}
+
 function AccountOverview() {
-    const progress = (userData.currentXP / userData.maxXP) * 100;
-    const color = getRankColor(userData.rank);
+    const { account } = useAccountContext();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        api.post("/auth/logout")
+            .then((response) => {
+                if(response.status === 200) {
+                    notify("Logging out...", "success");
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 2000);
+                }
+                else {
+                    notify("Logout failed. Please try again.", "error");
+                }
+            })
+            .catch((error) => {
+                notify("Logout failed. Please try again.", "error");
+                console.error("Logout error:", error);
+            });
+    }
+
+    const maxXP = getLevelMaxXP(account.level);
+    const accountRank = getRankByLevel(account.level);
+    const color = getRankColor(accountRank);
+    const progress = (account.currentXP / maxXP) * 100;
 
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
-                <Avatar src={userData.avatarUrl} alt={userData.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
+                <Avatar src={account.profilePictureUrl} alt={account.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
 
                 <Box className="account-overview-info-column">
-                    <Typography variant="h5" className="account-overview-username">
-                        {userData.username}
-                    </Typography>
+                    <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+                        <Typography variant="h5" className="account-overview-username">
+                            {account.username}
+                        </Typography>
+                        <Box display={"flex"} alignItems={"center"} gap={1}>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => navigate("/settings")}>
+                                <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
+                            </Button>
+
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={handleLogout}>
+                                <LogoutIcon fontSize="small" sx={{ color: `${color}` }} />
+                            </Button>
+                        </Box>
+                    </Box>
 
                     <Box className="account-overview-rank-label-container">
                         <Typography variant="caption" className="account-overview-rank-text" sx={{ color: `${color}`}}>
-                            {userData.rank}
+                            {accountRank}
                         </Typography>
                         <Typography variant="caption" className="account-overview-level-text">
-                            Lvl {userData.level} • {userData.currentXP}/{userData.maxXP} XP
+                            Lvl {account.level} • {account.currentXP}/{maxXP} XP
                         </Typography>
                     </Box>
 
-                    <LinearProgress variant="determinate" value={progress} className="account-overview-xp-progress-bar" sx={{ '& .MuiLinearProgress-bar': { backgroundColor: `${getRankColor(userData.rank)}` } }} />
+                    <LinearProgress variant="determinate" value={progress} 
+                                    className="account-overview-xp-progress-bar" 
+                                    sx={{ '& .MuiLinearProgress-bar': { backgroundColor: `${color}` } }} />
                 </Box>
             </Box>
 
@@ -65,10 +124,16 @@ function AccountOverview() {
             <Box id="account-overview-stats-container">
                 
                 <Box className="account-overview-stat-item">
-                    <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
-                        {userData.streak}
-                        <span style={{ fontSize: '1rem' }}>🔥</span>
-                    </Typography>
+                    {account.streakLength > 0 ? (
+                        <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
+                            {account.streakLength}
+                            <span style={{ fontSize: '1rem' }}>🔥</span>
+                        </Typography>
+                    ) : (
+                        <Typography variant="h4" className="account-overview-stat-value">
+                            {account.streakLength}
+                        </Typography>
+                    )}
                     <Typography variant="caption" className="account-overview-stat-label">
                         Day Streak
                     </Typography>
@@ -76,7 +141,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {userData.problemsSolved}
+                        {account.problemsSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems
@@ -85,7 +150,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {userData.quizzesDone}
+                        {account.quizzesSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Quizzes
@@ -94,7 +159,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {userData.friends}
+                        {account.friendsCount}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Friends

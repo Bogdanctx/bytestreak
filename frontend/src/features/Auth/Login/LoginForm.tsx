@@ -6,7 +6,6 @@ import notify from "../../../components/ui/ToastNotification";
 import { api } from "../../../api";
 
 function LoginForm(props: LoginFormProps) {
-
     const {
         control,
         handleSubmit,
@@ -20,12 +19,10 @@ function LoginForm(props: LoginFormProps) {
 
     const onSubmit = (data: LoginFormInputs) => {
         api
-            .post("/api/auth/login", data)
+            .post("auth/login", data)
             .then((response) => {
                 if(response.status === 200) {
                     notify("Login successful!", "success");
-                    
-                    // Redirect
                     setTimeout(() => {
                         window.location.href = "/dashboard";
                     }, 1500);
@@ -35,8 +32,10 @@ function LoginForm(props: LoginFormProps) {
                 }
             })
             .catch((error) => {
+                const errorMessage = error.response?.data?.message || "An error occurred during login.";
+                
                 console.error("Login error:", error);
-                notify("An error occurred during login.", "error");
+                notify(errorMessage, "error");
             });
     }
 

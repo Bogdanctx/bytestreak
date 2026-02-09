@@ -20,7 +20,7 @@ import org.springframework.security.core.Authentication;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
     private final AccountRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -49,6 +49,20 @@ public class AuthController {
         return ResponseEntity.ok(account);
     }
     
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok(Collections.singletonMap("message", "Logged out successfully"));
+    }
     
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
@@ -57,9 +71,15 @@ public class AuthController {
 
         Account account = repository.findByEmail(email);
 
-        if (account == null || !passwordEncoder.matches(password, account.getPassword())) {
+        if (account == null) {
             return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "An account with the provided email does not exist."));
+        }
+
+        if (!passwordEncoder.matches(password, account.getPassword())) {
+            return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
                         .body(Collections.singletonMap("message", "Invalid email or password."));
         }
 
@@ -70,7 +90,7 @@ public class AuthController {
                 .secure(false)
                 .path("/")
                 .maxAge(24 * 60 * 60)
-                .sameSite("Strict")
+                .sameSite("Lax")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -93,6 +113,15 @@ public class AuthController {
             String rawPassword = account.getPassword();
             String encodedPassword = passwordEncoder.encode(rawPassword);
             account.setPassword(encodedPassword);
+
+            account.setLevel(0);
+            account.setCurrentXP(0);
+            account.setProblemsSolved(0);
+            account.setQuizzesSolved(0);
+            account.setStreakLength(0);
+            account.setFriendsCount(0);
+            account.setProfilePictureUrl("");
+
 
             repository.save(account);
         } 
