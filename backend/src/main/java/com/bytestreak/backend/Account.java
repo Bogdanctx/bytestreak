@@ -42,9 +42,9 @@ public class Account {
     private int quizzesSolved;
     private int streakLength;
     private int friendsCount;
-    
+
     // Base64 encoded profile picture
-    @Column(length = 10485760) // max 10mb
+    @Column(length = 5242880) // max 5mb
     private String profilePictureUrl;
 
     protected Account() {}

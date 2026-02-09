@@ -1,15 +1,25 @@
 import { 
     Box,
     Typography,
-    Divider,
     Button
 } from "@mui/material";
 import './Settings.style.css'
 import { useState } from "react";
-import Account from "../../features/Settings/Account";
+import Account from "../../features/Settings/AccountTab";
+import { useAccountContext } from "../../context/AccountContext";
 
 function Settings() {
     const [selectedTab, setSelectedTab] = useState("account");
+    const { account, isLoading } = useAccountContext();
+
+    if (isLoading) {
+        return null;
+    }
+
+    if(!account) {
+        window.location.href = "/";
+        return null;
+    }
 
     return (
         <Box id="settings-container">

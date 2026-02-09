@@ -18,7 +18,7 @@
 }
 
 .account-section-title.danger {
-    color: #ff4444; /* Red for danger title */
+    color: #ff4444;
 }
 
 #account-container {
@@ -26,10 +26,9 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Allow scrolling if content gets tall */
+    overflow-y: auto;
 }
 
-/* --- Header & Separator --- */
 #account-header {
     margin-bottom: 16px;
 }
@@ -42,7 +41,6 @@
     opacity: 0.7;
 }
 
-/* --- Section Layouts --- */
 .account-section {
     background-color: rgba(255, 255, 255, 0.02);
     border-radius: 12px;
@@ -56,7 +54,6 @@
     background-color: rgba(255, 68, 68, 0.02);
 }
 
-/* --- General Section: Avatar --- */
 .account-avatar-wrapper {
     display: flex;
     align-items: center;
@@ -82,7 +79,6 @@
     border-color: #E7BB41;
 }
 
-/* --- General Section: Inputs --- */
 .account-input-group {
     display: flex;
     flex-direction: column;
@@ -175,9 +171,6 @@
 }
 
 
-
-
-/* Container for the upload area */
 .account-avatar-upload {
     margin-top: 16px;
     padding: 20px;
@@ -196,7 +189,6 @@
     background-color: rgba(35, 206, 107, 0.02);
 }
 
-/* Custom "Choose File" button style */
 .custom-file-upload-label {
     display: inline-block;
     padding: 8px 16px;
@@ -216,7 +208,6 @@
     border-color: #23CE6B;
 }
 
-/* Hide the default ugly input */
 input[type="file"] {
     display: none;
 }

@@ -7,7 +7,7 @@ import {
     Button,
     Avatar
 } from "@mui/material";
-import './Account.style.css'
+import './AccountTab.style.css'
 import { useEffect, useState } from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';

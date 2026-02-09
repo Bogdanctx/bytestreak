@@ -6,6 +6,7 @@ import {
     type ReactNode 
 } from "react";
 import { api } from "../api";
+import { set } from "react-hook-form";
 
 export interface Account {
     username: string;
@@ -21,6 +22,7 @@ export interface Account {
 
 interface AccountContextType {
     account: Account | null;
+    isLoading: boolean;
     setAccount: (account: Account | null) => void;
 }
 
@@ -28,9 +30,12 @@ export const AccountContext = createContext<AccountContextType | null>(null);
 
 export function AccountProvider({ children }: { children: ReactNode }) {
     const [account, setAccount] = useState<Account | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (!account) {
+            setIsLoading(true);
+
             api.get("/auth/me")
                 .then((response) => {
                     if(response.status === 200) {
@@ -42,12 +47,18 @@ export function AccountProvider({ children }: { children: ReactNode }) {
                 })
                 .catch((error) => {
                     console.error("Failed to fetch account data:", error);
+                })
+                .finally(() => {
+                    setIsLoading(false);
                 });
+        }
+        else {
+            setIsLoading(false);
         }
     }, []);
 
     return (
-        <AccountContext.Provider value={{ account, setAccount }}>
+        <AccountContext.Provider value={{ account, isLoading, setAccount }}>
             {children}
         </AccountContext.Provider>
     );
