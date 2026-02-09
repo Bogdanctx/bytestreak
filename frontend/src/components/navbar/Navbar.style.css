@@ -28,3 +28,42 @@
     gap: 24px;
     margin-left: 32px;
 }
+
+.navbar-link-button {
+    color: #888888 !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-link-button:hover {
+    color: #F7F7F9 !important;
+    background-color: transparent !important;
+}
+
+.navbar-link-button::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background-color: #23CE6B;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-link-button:hover::after, .navbar-selected-link::after {
+    width: 50%;
+}
+
+.navbar-selected-link {
+    color: white !important;
+}

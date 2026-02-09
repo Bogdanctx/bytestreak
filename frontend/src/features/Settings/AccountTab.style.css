@@ -76,6 +76,7 @@
 .account-avatar:hover {
     box-shadow: 0 0 20px rgba(231, 187, 65, 0.4);
     border-color: #E7BB41;
+    cursor: default;
 }
 
 .account-input-group {
