@@ -63,7 +63,7 @@ function AccountOverview() {
         api.post("/auth/logout")
             .then((response) => {
                 if(response.status === 200) {
-                    notify("You have been logged out successfully.", "success");
+                    notify("Logging out...", "success");
                     setTimeout(() => {
                         window.location.href = "/";
                     }, 2000);
