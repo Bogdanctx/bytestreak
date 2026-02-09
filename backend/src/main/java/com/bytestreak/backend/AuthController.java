@@ -49,6 +49,20 @@ public class AuthController {
         return ResponseEntity.ok(account);
     }
     
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok(Collections.singletonMap("message", "Logged out successfully"));
+    }
     
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {

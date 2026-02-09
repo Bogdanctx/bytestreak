@@ -6,6 +6,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     margin: 0 auto;
     margin-top: 8px;
+
+    display: flex;
+    justify-content: space-between;
 }
 
 #navbar-logo-button {
@@ -18,4 +21,10 @@
 
 #navbar-logo-button:hover {
     background-color: transparent;
+}
+
+#navbar-links {
+    display: flex;
+    gap: 24px;
+    margin-left: 32px;
 }

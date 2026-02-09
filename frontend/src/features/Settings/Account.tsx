@@ -22,26 +22,37 @@ import { useAccountContext } from "../../context/AccountContext";
 
 function Account() {
     const { account, setAccount } = useAccountContext();
-
     const [formData, setFormData] = useState({
-        username: account.username,
-        email: account.email,
-        avatar: account.profilePictureUrl || "",
-        password: "" 
+        username: "",
+        email: "",
+        profilePictureUrl: "",
+        password: ""
     });
-
     useEffect(() => {
         if (account) {
             setFormData({
                 username: account.username,
                 email: account.email,
-                avatar: account.profilePictureUrl || "",
-                password: "" // Password is not fetched for security reasons
+                profilePictureUrl: account.profilePictureUrl || "",
+                password: ""
             })
         }
     }, [account]);
 
+    if (!account) {
+        return null;
+    }
+
     const handleSaveChanges = () => {
+        console.log("Form data to be sent:", formData);
+
+        const profilePictureLength = formData.profilePictureUrl.length;
+
+        if(profilePictureLength > 10485760) {
+            notify("Profile picture is too large. Please choose an image smaller than 10MB.", "error");
+            return;
+        }
+
         api.patch('/accounts/update', formData)
             .then(response => {
                 if (response.status === 200) {
@@ -78,7 +89,7 @@ function Account() {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64String = reader.result as string;
-                setFormData(prev => ({ ...prev, avatar: base64String }));
+                setFormData(prev => ({ ...prev, profilePictureUrl: base64String }));
             };
             reader.readAsDataURL(file);
         }
@@ -100,7 +111,7 @@ function Account() {
                 </Typography>
 
                 <Box className="account-avatar-wrapper">
-                    <Avatar className="account-avatar" />
+                    <Avatar className="account-avatar" src={formData.profilePictureUrl} />
                     <Box>
                         <Button
                             className="account-change-avatar-button"

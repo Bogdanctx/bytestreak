@@ -2,6 +2,7 @@ package com.bytestreak.backend;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -41,6 +42,9 @@ public class Account {
     private int quizzesSolved;
     private int streakLength;
     private int friendsCount;
+    
+    // Base64 encoded profile picture
+    @Column(length = 10485760) // max 10mb
     private String profilePictureUrl;
 
     protected Account() {}

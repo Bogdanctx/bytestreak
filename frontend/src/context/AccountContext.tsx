@@ -1,9 +1,11 @@
 import { 
     createContext, 
     useContext, 
+    useEffect, 
     useState, 
     type ReactNode 
 } from "react";
+import { api } from "../api";
 
 export interface Account {
     username: string;
@@ -26,6 +28,23 @@ export const AccountContext = createContext<AccountContextType | null>(null);
 
 export function AccountProvider({ children }: { children: ReactNode }) {
     const [account, setAccount] = useState<Account | null>(null);
+
+    useEffect(() => {
+        if (!account) {
+            api.get("/auth/me")
+                .then((response) => {
+                    if(response.status === 200) {
+                        setAccount(response.data);
+                    }
+                    else {
+                        window.location.href = "/";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch account data:", error);
+                });
+        }
+    }, []);
 
     return (
         <AccountContext.Provider value={{ account, setAccount }}>

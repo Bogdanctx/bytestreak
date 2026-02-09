@@ -8,7 +8,11 @@ import {
 } from '@mui/material';
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useAccountContext } from '../../../context/AccountContext';
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { useNavigate } from 'react-router-dom';
 
 const rankLevels: { [key: string]: number } = {
     "Bit": 0,
@@ -53,9 +57,29 @@ const getLevelMaxXP = (level: number) => {
 
 function AccountOverview() {
     const { account } = useAccountContext();
+    const navigate = useNavigate();
 
     if (!account) {
         return null;
+    }
+
+    const handleLogout = () => {
+        api.post("/auth/logout")
+            .then((response) => {
+                if(response.status === 200) {
+                    notify("You have been logged out successfully.", "success");
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 2000);
+                }
+                else {
+                    notify("Logout failed. Please try again.", "error");
+                }
+            })
+            .catch((error) => {
+                notify("Logout failed. Please try again.", "error");
+                console.error("Logout error:", error);
+            });
     }
 
     const maxXP = getLevelMaxXP(account.level);
@@ -73,9 +97,13 @@ function AccountOverview() {
                         <Typography variant="h5" className="account-overview-username">
                             {account.username}
                         </Typography>
-                        <Box>
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => window.location.href = "/settings"}>
+                        <Box display={"flex"} alignItems={"center"} gap={1}>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => navigate("/settings")}>
                                 <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
+                            </Button>
+
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={handleLogout}>
+                                <LogoutIcon fontSize="small" sx={{ color: `${color}` }} />
                             </Button>
                         </Box>
                     </Box>

@@ -15,18 +15,19 @@ function App() {
         <Box bgcolor={"#0C0C0C"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
             <CssBaseline />
             <ToastContainer />
-            <Navbar />
-            <Box flex={1} overflow={"hidden"}>
-                <AccountProvider>
-                    <BrowserRouter>
+
+            <BrowserRouter>
+                {window.location.pathname !== "/" && <Navbar />}
+                <Box flex={1} overflow={"hidden"}>
+                    <AccountProvider>
                         <Routes>
                             <Route path = "/" element = { <LandingPage /> } /> 
                             <Route path = "/dashboard" element = { <Dashboard /> } />
                             <Route path = "/settings" element = { <Settings /> } />
                         </Routes>
-                    </BrowserRouter>
-                </AccountProvider>
-            </Box>
+                    </AccountProvider>
+                </Box>
+            </BrowserRouter>
         </Box>
     )
 }
