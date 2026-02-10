@@ -141,12 +141,37 @@
 }
 
 .problem-editor-section {
-    padding: 12px;
     background-color: #111111;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     width: 100%;
 
-    resize: vertical;
-    overflow: auto;
+    overflow: hidden;
+}
+
+.problem-editor-header {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.problem-editor-title {
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.7rem !important;
+    color: #F7F7F9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.problem-editor-light-switch .MuiSwitch-track {
+    background-color: black !important;
+    opacity: 1 !important;
+}
+
+.problem-editor-light-switch .Mui-checked + .MuiSwitch-track {
+    background-color: #23CE6B !important;
 }

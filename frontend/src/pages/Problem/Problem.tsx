@@ -2,15 +2,20 @@ import {
     Box,
     Typography,
     Button,
-    Popover
+    Popover,
+    Switch,
+    FormGroup,
+    FormControlLabel
 } from '@mui/material';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
 import './Problem.style.css';
 import Editor from '@monaco-editor/react';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SunnyIcon from '@mui/icons-material/Sunny';
 
 const MOCK_PROBLEM = {
     "title": "Advanced Palindrome Analyzer",
@@ -99,6 +104,7 @@ function Problem() {
     const [problem, setProblem] = useState<any>(MOCK_PROBLEM);
     const [activeTab, setActiveTab] = useState("description");
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [lightMode, setLightMode] = useState(false);
 
     useEffect(() => {
         // Fetch logic here...
@@ -183,7 +189,20 @@ function Problem() {
             </Box>
 
             <Box className="problem-editor-section">
-                <Editor theme="vs-dark"
+                <Box className="problem-editor-header">
+                    <Typography variant="h6" className="problem-editor-title">
+                        <EditNoteIcon />Code Editor
+                    </Typography>
+
+                    <Box display="flex" alignItems="center">
+                        <Switch className='problem-editor-light-switch' color="default" checked={lightMode} onChange={() => setLightMode(!lightMode)} />
+                        <SunnyIcon fontSize="small"
+                                    sx={{
+                                        color: lightMode ? '#f5c518' : '#cfcfcf',
+                                    }} />
+                    </Box>
+                </Box>
+                <Editor theme={lightMode ? "light" : "vs-dark"}
                         className='problem-editor'
                         options={{
                             fontSize: 14,
@@ -193,7 +212,7 @@ function Problem() {
                             scrollBeyondLastLine: false,
                             automaticLayout: true,
                             padding: {
-                                top: 16
+                                top: 8
                             }
                         }}
                 />
