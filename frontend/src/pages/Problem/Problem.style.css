@@ -9,7 +9,6 @@
 }
 
 .problem-description-panel {
-    width: 45%;
     height: 100%;
     background-color: #111111;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -17,6 +16,8 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    min-width: 35%;
 }
 
 .problem-header-tabs {
@@ -137,4 +138,15 @@
     border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: #cfcfcf;
+}
+
+.problem-editor-section {
+    padding: 12px;
+    background-color: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    width: 100%;
+
+    resize: vertical;
+    overflow: auto;
 }

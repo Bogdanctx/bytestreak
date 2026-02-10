@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
 import './Problem.style.css';
-
+import Editor from '@monaco-editor/react';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -182,6 +182,22 @@ function Problem() {
                 </Box>
             </Box>
 
+            <Box className="problem-editor-section">
+                <Editor theme="vs-dark"
+                        className='problem-editor'
+                        options={{
+                            fontSize: 14,
+                            minimap: {
+                                enabled: false
+                            },
+                            scrollBeyondLastLine: false,
+                            automaticLayout: true,
+                            padding: {
+                                top: 16
+                            }
+                        }}
+                />
+            </Box>
             
         </Box>
     )
