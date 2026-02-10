@@ -233,7 +233,8 @@ function Problem() {
                 <Editor theme={lightMode ? "light" : "vs-dark"}
                         className='problem-editor'
                         height="100%"
-                        defaultLanguage="c++"
+                        language={programmingLanguage}
+                        defaultLanguage="cpp"
                         options={{
                             fontSize: 14,
                             minimap: { enabled: false },
