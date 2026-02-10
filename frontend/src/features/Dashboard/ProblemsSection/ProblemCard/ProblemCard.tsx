@@ -2,7 +2,7 @@ import { Box, Typography, Chip, Stack } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "./ProblemCard.style.css"
 
-export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
 type ProblemCardProps = {
     title: string;
@@ -15,10 +15,10 @@ type ProblemCardProps = {
 
 const getDifficultyColor = (difficulty: Difficulty) => {
     switch (difficulty) {
-        case 'Easy': return '#00b8a3';
-        case 'Medium': return '#ffc01e';
-        case 'Hard': return '#ff375f';
-        default: return 'gray';
+        case 'EASY': return '#00b8a3';
+        case 'MEDIUM': return '#ffc01e';
+        case 'HARD': return '#ff375f';
+        default: return 'GRAY';
     }
 }
 

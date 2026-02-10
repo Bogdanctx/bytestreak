@@ -31,14 +31,11 @@ function Problem() {
     useEffect(() => {
         api.get(`/problems/${id}/description`)
             .then(response => {
-                var difficulty = response.data.difficulty.toLowerCase();
-                difficulty = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-                
-                response.data.difficulty = difficulty;
-                response.data.tags = response.data.tags.split(",");
+                response.data.tags = response.data.tags.split(',');
+                response.data.starterCode = response.data.starterCode.replace(/\\n/g, '\n');
 
                 setProblem(response.data);
-                setCode(response.data.starterCode || ""); 
+                setCode(response.data.starterCode); 
             })
             .catch(error => {
                 console.error("Error fetching problem data:", error);
@@ -206,6 +203,7 @@ function Problem() {
                     <Editor theme={lightMode ? "light" : "vs-dark"}
                         height="100%"
                         language={programmingLanguage}
+                        value={code}
                         defaultLanguage="cpp"
                         onChange={handleEditorChange}
                         options={{

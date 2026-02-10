@@ -129,9 +129,9 @@ function ProblemsSection() {
                             MenuProps={{ PaperProps: { className: 'filter-menu-paper' } }}
                         >
                             <MenuItem className="filter-menu-item" value="All">All</MenuItem>
-                            <MenuItem className="filter-menu-item" value="Easy" sx={{ color: '#00b8a3 !important' }}>Easy</MenuItem>
-                            <MenuItem className="filter-menu-item" value="Medium" sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
-                            <MenuItem className="filter-menu-item" value="Hard" sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
+                            <MenuItem className="filter-menu-item" value="EASY" sx={{ color: '#00b8a3 !important' }}>Easy</MenuItem>
+                            <MenuItem className="filter-menu-item" value="MEDIUM" sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
+                            <MenuItem className="filter-menu-item" value="HARD" sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -142,7 +142,7 @@ function ProblemsSection() {
                     <ButtonBase key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)}>
                         <ProblemCard
                             title={problem.title}
-                            difficulty={problem.difficulty as 'Easy' | 'Medium' | 'Hard'}
+                            difficulty={problem.difficulty as 'EASY' | 'MEDIUM' | 'HARD'}
                             acceptanceRate={problem.acceptanceRate}
                             showTags={showTags}
                             tags={problem.tags}
