@@ -4,8 +4,9 @@ import {
     Button,
     Popover,
     Switch,
-    FormGroup,
-    FormControlLabel
+    Select,
+    MenuItem,
+    FormControl
 } from '@mui/material';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
 import './Problem.style.css';
@@ -105,10 +106,16 @@ function Problem() {
     const [activeTab, setActiveTab] = useState("description");
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [lightMode, setLightMode] = useState(false);
+    const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
 
     useEffect(() => {
         // Fetch logic here...
     }, [id]);
+
+    const handleProgrammingLanguageChange = (event: any) => {
+        const selectedLanguage = event.target.value;
+        setProgrammingLanguage(selectedLanguage);
+    };
 
     const getDifficultyColorClass = (diff: string) => {
         switch(diff) {
@@ -201,19 +208,38 @@ function Problem() {
                                         color: lightMode ? '#f5c518' : '#cfcfcf',
                                     }} />
                     </Box>
+                    
+                    <FormControl>
+                        <Select
+                            className='language-select'
+                            labelId="language-select-label"
+                            onChange={handleProgrammingLanguageChange}
+                            value={programmingLanguage}
+                            label="C++"
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        backgroundColor: "#1f1f1f",
+                                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                                    }
+                                }
+                            }}
+                        >
+                            <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
+                            <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
                 <Editor theme={lightMode ? "light" : "vs-dark"}
                         className='problem-editor'
+                        height="100%"
+                        defaultLanguage="c++"
                         options={{
                             fontSize: 14,
-                            minimap: {
-                                enabled: false
-                            },
+                            minimap: { enabled: false },
                             scrollBeyondLastLine: false,
                             automaticLayout: true,
-                            padding: {
-                                top: 8
-                            }
+                            padding: { top: 8 }
                         }}
                 />
             </Box>
