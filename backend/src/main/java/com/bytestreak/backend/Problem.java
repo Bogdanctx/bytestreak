@@ -9,11 +9,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "problems")
@@ -25,7 +23,8 @@ public class Problem {
     }
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @NotBlank(message = "Title is required")
@@ -38,14 +37,19 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    private List<String> tags;
+    @Column(columnDefinition = "TEXT")
+    private String starterCode;
+
+    @Column(columnDefinition = "TEXT")
+    private String tags; 
 
     protected Problem() {}
 
-    public Problem(String title, String description, Difficulty difficulty, List<String> tags) {
+    public Problem(String title, String description, String difficulty, String starterCode, String tags) {
         this.title = title;
         this.description = description;
-        this.difficulty = difficulty;
+        this.difficulty = Difficulty.valueOf(difficulty);
+        this.starterCode = starterCode;
         this.tags = tags;
     }
 }

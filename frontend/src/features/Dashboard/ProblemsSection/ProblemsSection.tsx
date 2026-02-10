@@ -13,38 +13,31 @@ import {
     FormControlLabel, } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import "./ProblemsSection.style.css"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProblemCard from './ProblemCard/ProblemCard';
+import { api } from '../../../api';
 
 function ProblemsSection() {
-    const [problems] = useState([
-        { id: 1, title: "Two Sum", difficulty: "Easy", acceptanceRate: 45.3, tags: ["Array", "Hash Table"] },
-        { id: 2, title: "Shortest Path in Binary Matrix", difficulty: "Medium", acceptanceRate: 38.7, tags: ["BFS", "Matrix"] },
-        { id: 3, title: "Median of Two Sorted Arrays", difficulty: "Hard", acceptanceRate: 29.1, tags: ["Array", "Binary Search", "Divide & Conquer"] },
-        { id: 4, title: "Valid Parentheses", difficulty: "Easy", acceptanceRate: 42.5, tags: ["String", "Stack"] },
-        { id: 5, title: "Merge Two Sorted Lists", difficulty: "Easy", acceptanceRate: 40.2, tags: ["Linked List", "Recursion"] },
-        { id: 6, title: "Best Time to Buy and Sell Stock", difficulty: "Easy", acceptanceRate: 37.8, tags: ["Array", "Dynamic Programming"] },
-        { id: 7, title: "Binary Search", difficulty: "Easy", acceptanceRate: 44.1, tags: ["Array", "Binary Search"] },
-        { id: 8, title: "3Sum", difficulty: "Medium", acceptanceRate: 30.4, tags: ["Array", "Two Pointers", "Sorting"] },
-        { id: 9, title: "Longest Substring Without Repeating Characters", difficulty: "Medium", acceptanceRate: 32.6, tags: ["Hash Table", "String", "Sliding Window"] },
-        { id: 10, title: "Group Anagrams", difficulty: "Medium", acceptanceRate: 35.9, tags: ["Array", "Hash Table", "String"] },
-        { id: 11, title: "Top K Frequent Elements", difficulty: "Medium", acceptanceRate: 33.2, tags: ["Hash Table", "Heap", "Sorting"] },
-        { id: 12, title: "Number of Islands", difficulty: "Medium", acceptanceRate: 31.7, tags: ["Array", "DFS", "BFS", "Matrix"] },
-        { id: 13, title: "Coin Change", difficulty: "Medium", acceptanceRate: 28.5, tags: ["Array", "Dynamic Programming", "BFS"] },
-        { id: 14, title: "Search in Rotated Sorted Array", difficulty: "Medium", acceptanceRate: 29.8, tags: ["Array", "Binary Search"] },
-        { id: 15, title: "Trapping Rain Water", difficulty: "Hard", acceptanceRate: 27.3, tags: ["Array", "Two Pointers", "DP", "Stack"] },
-        { id: 16, title: "Merge k Sorted Lists", difficulty: "Hard", acceptanceRate: 25.6, tags: ["Linked List", "Divide & Conquer", "Heap"] },
-        { id: 17, title: "Word Ladder", difficulty: "Hard", acceptanceRate: 26.4, tags: ["Hash Table", "String", "BFS"] },
-        { id: 18, title: "LRU Cache", difficulty: "Hard", acceptanceRate: 24.9, tags: ["Hash Table", "Linked List", "Design"] },
-        { id: 19, title: "Regular Expression Matching", difficulty: "Hard", acceptanceRate: 22.1, tags: ["String", "Dynamic Programming", "Recursion"] },
-        { id: 20, title: "Serialize and Deserialize Binary Tree", difficulty: "Hard", acceptanceRate: 23.5, tags: ["String", "Tree", "DFS", "BFS"] },
-    ]);
+    const [problems, setProblems] = useState<any[]>([]);
     const navigate = useNavigate();
     const [showTags, setShowTags] = useState(false);
     const [page, setPage] = useState(1);
     const [difficultyFilter, setDifficultyFilter] = useState('All');
     const [sortOrder, setSortOrder] = useState('none');
+    
+    
+    useEffect(() => {
+        api.get('/problems/retrieve/all')
+            .then(response => {
+                setProblems(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching problems:", error);
+            });
+    }, []);
+
+    
     const itemsPerPage = 12;
 
     const filteredProblems = problems.filter(problem => {

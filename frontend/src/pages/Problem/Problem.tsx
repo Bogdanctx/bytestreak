@@ -17,100 +17,37 @@ import { useEffect, useState } from "react";
 import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SunnyIcon from '@mui/icons-material/Sunny';
-
-const MOCK_PROBLEM = {
-    "title": "Advanced Palindrome Analyzer",
-    "difficulty": "MEDIUM",
-    "tags": [
-        "Math",
-        "Number Theory",
-        "Two Pointers",
-        "Integer Manipulation",
-        "Overflow Handling",
-        "Algorithm Optimization"
-    ],
-    "description": `
-Given an integer \`x\`, determine whether it is a palindrome **without converting the integer to a string**.
-
-Additionally, extend the functionality with the following requirements:
-
-1. Return an object with:
-   - \`isPalindrome\`: boolean indicating whether \`x\` is a palindrome.
-   - \`reversed\`: the reversed integer value of \`x\` (if overflow occurs during reversal, return 0).
-   - \`digitCount\`: total number of digits in \`x\`.
-   - \`halfReversed\`: the reversed value of only the second half of the digits (used for optimized palindrome checking).
-
-2. Your algorithm must:
-   - Run in **O(log10(n))** time.
-   - Use **O(1)** extra space.
-   - Avoid using string conversion.
-   - Correctly handle negative numbers.
-   - Correctly handle integer overflow when reversing.
-
----
-
-### Examples
-
-**Example 1:**
-- **Input:** x = 1221
-- **Output:**
-  {
-    isPalindrome: true,
-    reversed: 1221,
-    digitCount: 4,
-    halfReversed: 12
-  }
-
-**Example 2:**
-- **Input:** x = -121
-- **Output:**
-  {
-    isPalindrome: false,
-    reversed: -121,
-    digitCount: 3,
-    halfReversed: 12
-  }
-
-**Example 3:**
-- **Input:** x = 10
-- **Output:**
-  {
-    isPalindrome: false,
-    reversed: 1,
-    digitCount: 2,
-    halfReversed: 0
-  }
-
----
-
-### Follow-Up Questions
-
-1. Can you optimize the solution to stop reversing once half the digits are processed?
-2. How would your solution change if the integer type were 64-bit?
-3. What is the mathematical reasoning behind reversing only half of the digits?
-
----
-
-### Constraints:
-- -2^31 <= x <= 2^31 - 1
-- Do not use built-in string conversion.
-- If reversing causes overflow outside signed 32-bit integer range, return 0 for the reversed value.
-    `,
-};
-
-
+import { api } from '../../api';
 
 function Problem() {
     const { id } = useParams<{ id: string }>();
-    const [problem, setProblem] = useState<any>(MOCK_PROBLEM);
+    const [problem, setProblem] = useState<any>(null);
     const [activeTab, setActiveTab] = useState("description");
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [lightMode, setLightMode] = useState(false);
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
+    const [code, setCode] = useState("");
 
     useEffect(() => {
-        // Fetch logic here...
+        api.get(`/problems/${id}/description`)
+            .then(response => {
+                var difficulty = response.data.difficulty.toLowerCase();
+                difficulty = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+                
+                response.data.difficulty = difficulty;
+                response.data.tags = response.data.tags.split(",");
+
+                setProblem(response.data);
+                setCode(response.data.starterCode || ""); 
+            })
+            .catch(error => {
+                console.error("Error fetching problem data:", error);
+            });
     }, [id]);
+
+    if (!problem) {
+        return <Typography>Loading...</Typography>;
+    }
 
     const handleProgrammingLanguageChange = (event: any) => {
         const selectedLanguage = event.target.value;
@@ -118,7 +55,29 @@ function Problem() {
     };
 
     const handleSubmitSolution = () => {
-        // Submission logic here...
+        const submissionData = {
+            code: code,
+            programmingLanguage: programmingLanguage,
+            problemId: id
+        };
+
+        api.post(`/problems/submit`, submissionData)
+            .then(response => {
+                // Handle successful submission (e.g., show results, update UI)
+                console.log("Submission successful:", response.data);
+            })
+            .catch(error => {
+                // Handle submission error (e.g., show error message)
+                console.error("Submission failed:", error);
+            });
+    }
+
+    const handleEditorChange = (value: string | undefined) => {
+        setCode(value || "");
+    }
+
+    const handleResetCode = () => {
+        // Reset code logic here...
     }
 
     const getDifficultyColorClass = (diff: string) => {
@@ -234,6 +193,13 @@ function Problem() {
                             <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
                         </Select>
                     </FormControl>
+
+                    <Button className='reset-button' 
+                            variant="outlined"
+                            onClick={() => handleResetCode()}
+                            >
+                        Reset
+                    </Button>
                 </Box>
 
                 <Box className="problem-editor-container">
@@ -241,6 +207,7 @@ function Problem() {
                         height="100%"
                         language={programmingLanguage}
                         defaultLanguage="cpp"
+                        onChange={handleEditorChange}
                         options={{
                             fontSize: 14,
                             minimap: { enabled: false },
