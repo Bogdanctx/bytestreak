@@ -146,6 +146,9 @@
     border-radius: 12px;
     width: 100%;
 
+    display: flex;
+    flex-direction: column;
+
     overflow: hidden;
 }
 
@@ -213,4 +216,34 @@
 .language-select-item.Mui-selected {
     background-color: rgba(35, 206, 107, 0.1) !important;
     color: #23CE6B !important;
+}
+
+.problem-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.problem-editor-footer {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    margin-top: auto;
+    padding: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.problem-submit-button {
+    color: #F7F7F9 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(35, 206, 107, 0.7) !important;
+    height: 32px !important;
+}
+
+.monaco-editor {
+    position: absolute !important;
 }

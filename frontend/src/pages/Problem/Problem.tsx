@@ -117,6 +117,10 @@ function Problem() {
         setProgrammingLanguage(selectedLanguage);
     };
 
+    const handleSubmitSolution = () => {
+        // Submission logic here...
+    }
+
     const getDifficultyColorClass = (diff: string) => {
         switch(diff) {
             case "EASY": return "diff-easy";
@@ -196,6 +200,7 @@ function Problem() {
             </Box>
 
             <Box className="problem-editor-section">
+
                 <Box className="problem-editor-header">
                     <Typography variant="h6" className="problem-editor-title">
                         <EditNoteIcon />Code Editor
@@ -230,8 +235,9 @@ function Problem() {
                         </Select>
                     </FormControl>
                 </Box>
-                <Editor theme={lightMode ? "light" : "vs-dark"}
-                        className='problem-editor'
+
+                <Box className="problem-editor-container">
+                    <Editor theme={lightMode ? "light" : "vs-dark"}
                         height="100%"
                         language={programmingLanguage}
                         defaultLanguage="cpp"
@@ -239,10 +245,18 @@ function Problem() {
                             fontSize: 14,
                             minimap: { enabled: false },
                             scrollBeyondLastLine: false,
-                            automaticLayout: true,
-                            padding: { top: 8 }
-                        }}
-                />
+                            padding: { top: 8 },
+                            automaticLayout: true
+                        }}/>
+                </Box>
+
+                <Box className="problem-editor-footer">
+                    <Button variant="outlined" 
+                            className='problem-submit-button'
+                            onClick={() => handleSubmitSolution() }>
+                        Submit
+                    </Button>
+                </Box>
             </Box>
             
         </Box>
