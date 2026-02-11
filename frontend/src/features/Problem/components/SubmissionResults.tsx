@@ -139,10 +139,17 @@ const MOCK_SUBMISSION_RESULTS = {
     ]
 };
 
+interface SubmissionResultsProps {
+    testCases: {
+        test: number;
+        status: string;
+        executionTime: string;
+    }[];
+}
 
-function SubmissionResults() {
-    const totalTests = MOCK_SUBMISSION_RESULTS.testCases.length;
-    const passedTests = MOCK_SUBMISSION_RESULTS.testCases.filter(tc => tc.status === "Accepted").length;
+function SubmissionResults({ testCases = MOCK_SUBMISSION_RESULTS.testCases }: SubmissionResultsProps) {
+    const totalTests = testCases.length;
+    const passedTests = testCases.filter(tc => tc.status === "Accepted").length;
     const passPercentage = (passedTests / totalTests) * 100;
 
 
@@ -173,7 +180,7 @@ function SubmissionResults() {
             </Box>
 
             <Box className="submission-testcases-results">
-                {MOCK_SUBMISSION_RESULTS.testCases.map((testCase) => (
+                {testCases.map((testCase) => (
                     <Tooltip key={testCase.test} 
                             title={`Execution Time: ${testCase.executionTime}`} 
                             placement="top" 
