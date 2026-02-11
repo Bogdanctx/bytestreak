@@ -17,7 +17,6 @@ function Problem() {
         api.get(`/problems/${id}/description`)
             .then(response => {
                 response.data.tags = response.data.tags.split(',');
-
                 response.data.codeTemplatesJson = JSON.parse(response.data.codeTemplatesJson);
                 response.data.description = response.data.description.replace(/\\n/g, '\n');
 

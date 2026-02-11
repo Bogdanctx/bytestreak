@@ -51,11 +51,9 @@ function CodeEditorWindow({ problemId, codeTemplates }: CodeEditorWindowProps) {
 
         api.post(`/problems/submit`, submissionData)
             .then(response => {
-                // Handle successful submission (e.g., show results, update UI)
                 console.log("Submission successful:", response.data);
             })
             .catch(error => {
-                // Handle submission error (e.g., show error message)
                 console.error("Submission failed:", error);
             });
     }
