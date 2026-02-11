@@ -2,7 +2,7 @@ import { Box, Typography, Chip, Stack } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "./ProblemCard.style.css"
 
-export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
 type ProblemCardProps = {
     title: string;
@@ -10,21 +10,16 @@ type ProblemCardProps = {
     acceptanceRate: number;
     tags: string[];
     showTags: boolean;
+    pid: number;
 }
 
 const getDifficultyColor = (difficulty: Difficulty) => {
     switch (difficulty) {
-        case 'Easy': return '#00b8a3';
-        case 'Medium': return '#ffc01e';
-        case 'Hard': return '#ff375f';
-        default: return 'gray';
+        case 'EASY': return '#00b8a3';
+        case 'MEDIUM': return '#ffc01e';
+        case 'HARD': return '#ff375f';
+        default: return 'GRAY';
     }
-}
-
-const getAcceptanceColor = (rate: number) => {
-    if (rate >= 70) return '#00b8a3'; // High acceptance (Easy)
-    if (rate >= 40) return '#ffc01e'; // Medium
-    return '#ff375f'; // Low (Hard)
 }
 
 function ProblemCard(props: ProblemCardProps) {
@@ -32,12 +27,12 @@ function ProblemCard(props: ProblemCardProps) {
 
     return (
         <Box className="problem-card">
-            <Box className="card-content-left">
+            <Box className="problem-card-content-left">
                 <Box className="difficulty-indicator" sx={{ backgroundColor: difficultyColor }} />
                 
                 <Stack spacing={0.5}>
-                    <Typography className="problem-title" variant="h6">
-                        {props.title}
+                    <Typography className="problem-card-title" variant="h6">
+                        {props.pid}. {props.title}
                     </Typography>
                     
                     <Stack direction="row" alignItems="center" spacing={1}>
@@ -72,7 +67,7 @@ function ProblemCard(props: ProblemCardProps) {
                 </Stack>
             </Box>
 
-            <Box className="card-content-right">
+            <Box className="problem-card-content-right">
                 <Chip 
                     label={props.difficulty} 
                     size="small" 

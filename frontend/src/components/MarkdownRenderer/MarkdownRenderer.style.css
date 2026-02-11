@@ -1,0 +1,42 @@
+.markdown-renderer-container h1, 
+.markdown-renderer-container h2, 
+.markdown-renderer-container h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    color: #F7F7F9;
+}
+
+.markdown-renderer-container h1 { 
+    font-size: 1.2rem; 
+    border-bottom: 1px solid #333; 
+    padding-bottom: 8px; 
+}
+.markdown-renderer-container h2 { 
+    font-size: 1.5rem; 
+}
+.markdown-renderer-container h3 { 
+    font-size: 1.25rem; 
+}
+
+.markdown-renderer-container p {
+    color: #cfcfcf;
+}
+
+.markdown-renderer-container hr {
+    border: none;
+    border-top: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.markdown-renderer-container code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.markdown-renderer-container li {
+    margin-bottom: 8px;
+    color: #cfcfcf;
+}
+

@@ -1,6 +1,7 @@
 import LandingPage from './pages/Landing/LandingPage.tsx';
 import Dashboard from './pages/Dashboard/Dashboard.tsx';
 import Settings from './pages/Settings/Settings.tsx';
+import Problem from './pages/Problem/Problem.tsx';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline } from '@mui/material'
@@ -32,6 +33,7 @@ function App() {
                             <Route element = { <ProtectedRoute /> }>
                                 <Route path = "/dashboard" element = { <Dashboard /> } />
                                 <Route path = "/settings" element = { <Settings /> } />
+                                <Route path = "/problems/:id/description" element = { <Problem /> } />
                             </Route>
 
                         </Routes>

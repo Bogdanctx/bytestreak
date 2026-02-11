@@ -1,0 +1,45 @@
+.submission-result-container {
+    padding: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    height: 100%;
+}
+
+.submission-testcases-results {
+    border-radius: 12px;
+    padding: 4px;
+    background-color: #181818;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 2px;
+    overflow-y: auto;
+}
+
+.testcase {
+    border-radius: 12px;
+    color: white;
+    font-size: 0.75rem !important;
+}
+
+.submission-result-testcase {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+}
+
+.testcase-status {
+    font-size: 0.55rem !important;
+    font-weight: 500 !important;
+}
+
+.submission-result-overview {
+    background-color: #181818;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}

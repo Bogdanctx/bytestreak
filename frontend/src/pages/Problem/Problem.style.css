@@ -1,0 +1,9 @@
+.problem-page-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background-color: #0C0C0C;
+    overflow: hidden;
+}

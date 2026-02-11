@@ -1,0 +1,118 @@
+
+.problem-editor-section {
+    background-color: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.problem-editor-header {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.problem-editor-title {
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.7rem !important;
+    color: #F7F7F9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.problem-editor-light-switch .MuiSwitch-track {
+    background-color: black !important;
+    opacity: 1 !important;
+}
+
+.problem-editor-light-switch .Mui-checked + .MuiSwitch-track {
+    background-color: #23CE6B !important;
+}
+
+.language-select {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #F7F7F9 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    border: 0;
+    height: 30px !important;
+}
+
+.language-select .MuiSvgIcon-root {
+    color: #F7F7F9 !important;
+}
+
+.language-select .MuiOutlinedInput-notchedOutline {
+    border: 0 !important;
+}
+
+.language-select-item {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #cfcfcf !important;
+}
+
+.language-select-item {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #cfcfcf !important;
+}
+
+.language-select-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.language-select-item.Mui-selected {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+    color: #23CE6B !important;
+}
+
+.reset-button {
+    color: #F7F7F9 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(255, 255, 255, 0.08) !important;
+    height: 32px !important;
+}
+
+.problem-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.problem-editor-footer {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    margin-top: auto;
+    padding: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.problem-submit-button {
+    color: #F7F7F9 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(35, 206, 107, 0.7) !important;
+    height: 32px !important;
+}
+
+.monaco-editor {
+    position: absolute !important;
+}
