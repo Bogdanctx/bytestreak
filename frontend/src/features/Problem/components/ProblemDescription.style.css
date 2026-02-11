@@ -1,0 +1,133 @@
+.problem-description-panel {
+    height: 100%;
+    background-color: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    min-width: 35%;
+}
+
+.problem-header-tabs {
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 24px;
+}
+
+.problem-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    height: 100%;
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+
+.problem-tab.active {
+    color: #F7F7F9;
+}
+
+.problem-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #23CE6B;
+    box-shadow: 0 -2px 8px rgba(35, 206, 107, 0.4);
+}
+
+.problem-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.problem-title-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.problem-title {
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 1.8rem !important;
+    color: #F7F7F9;
+    margin-bottom: 8px !important;
+}
+
+
+.problem-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.difficulty-chip {
+    font-family: "Inter", sans-serif !important;
+    font-size: 0.6rem !important;
+    font-weight: 600 !important;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.05);
+    letter-spacing: 0.5px;
+}
+
+.diff-easy { 
+    color: #23CE6B; 
+    background-color: rgba(35, 206, 107, 0.1); 
+}
+.diff-medium { 
+    color: #E7BB41; 
+    background-color: rgba(231, 187, 65, 0.1); 
+}
+.diff-hard { 
+    color: #FF4444; 
+    background-color: rgba(255, 68, 68, 0.1); 
+}
+
+.problem-tags-button {
+    color: #F7F7F9 !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    padding: 4px 12px !important;
+    border-radius: 12px !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border: 2px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.tags-popover-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background-color: #111111;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #cfcfcf;
+}
+
+.problem-footer {
+    height: 6%;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 0.9rem;
+}

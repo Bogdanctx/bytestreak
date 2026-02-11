@@ -38,18 +38,18 @@ public class Problem {
     private Difficulty difficulty;
 
     @Column(columnDefinition = "TEXT")
-    private String starterCode;
+    private String codeTemplatesJson;
 
     @Column(columnDefinition = "TEXT")
     private String tags; 
 
     protected Problem() {}
 
-    public Problem(String title, String description, String difficulty, String starterCode, String tags) {
+    public Problem(String title, String description, String difficulty, String codeTemplatesJson, String tags) {
         this.title = title;
         this.description = description;
         this.difficulty = Difficulty.valueOf(difficulty);
-        this.starterCode = starterCode;
+        this.codeTemplatesJson = codeTemplatesJson;
         this.tags = tags;
     }
 }
