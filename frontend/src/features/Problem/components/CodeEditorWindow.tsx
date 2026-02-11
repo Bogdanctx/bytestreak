@@ -17,9 +17,10 @@ import './CodeEditor.style.css';
 interface CodeEditorWindowProps {
     problemId: string;
     codeTemplates: any;
+    setActiveTab: (tab: string) => void;
 }
 
-function CodeEditorWindow({ problemId, codeTemplates }: CodeEditorWindowProps) {
+function CodeEditorWindow({ problemId, codeTemplates, setActiveTab }: CodeEditorWindowProps) {
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
@@ -48,6 +49,8 @@ function CodeEditorWindow({ problemId, codeTemplates }: CodeEditorWindowProps) {
             programmingLanguage: programmingLanguage,
             problemId: problemId
         };
+        
+        setActiveTab("results");
 
         api.post(`/problems/submit`, submissionData)
             .then(response => {

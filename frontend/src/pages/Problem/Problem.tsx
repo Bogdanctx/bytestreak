@@ -5,7 +5,7 @@ import './Problem.style.css';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from '../../api';
-import ProblemDescription from '../../features/Problem/components/ProblemDescription';
+import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
 import CodeEditorWindow from '../../features/Problem/components/CodeEditorWindow';
 
 function Problem() {
@@ -33,8 +33,8 @@ function Problem() {
 
     return (
         <Box className="problem-page-container">
-            <ProblemDescription problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} />
-            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplatesJson} />
+            <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} />
+            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplatesJson} setActiveTab={setActiveTab} />
         </Box>
     )
 }
