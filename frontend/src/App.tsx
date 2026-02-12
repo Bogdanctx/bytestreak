@@ -10,6 +10,7 @@ import Navbar from "./components/navbar/Navbar";
 import { Box } from '@mui/material';
 import { AccountProvider } from './context/AccountContext.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
+import Creator from './pages/Creator/Creator.tsx';
 
 function App() {
     const location = window.location.pathname;
@@ -23,7 +24,7 @@ function App() {
 
                 {location !== "/" && <Navbar />}
 
-                <Box flex={1} overflow={"hidden"}>
+                <Box flex={1} overflow={"hidden"} padding={2}>
                     <AccountProvider>
                         <Routes>
                             {/* public routes */}
@@ -34,6 +35,7 @@ function App() {
                                 <Route path = "/dashboard" element = { <Dashboard /> } />
                                 <Route path = "/settings" element = { <Settings /> } />
                                 <Route path = "/problems/:id/description" element = { <Problem /> } />
+                                <Route path = "/creator" element = { <Creator /> } />
                             </Route>
 
                         </Routes>

@@ -20,6 +20,12 @@ function Navbar() {
                     disableRipple>
                     Dashboard
                 </Button>
+                <Button 
+                    className={`navbar-link-button ${currentPath === "/creator" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/creator")}
+                    disableRipple>
+                    Creator
+                </Button>
                 {/* <Button className="navbar-link-button" onClick={() => navigate("/")} disableRipple>
                     Problems
                 </Button> */}

@@ -1,0 +1,32 @@
+meta {
+  name: judge0-submission-test
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:2358/submissions/?base64_encoded=false&wait=true
+  body: json
+  auth: inherit
+}
+
+params:query {
+  base64_encoded: false
+  wait: true
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "source_code": "print(\"Hello\")",
+    "language_id": 71
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}
