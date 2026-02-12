@@ -41,15 +41,19 @@ public class Problem {
     private String codeTemplatesJson;
 
     @Column(columnDefinition = "TEXT")
+    private String testCasesJson;
+
+    @Column(columnDefinition = "TEXT")
     private String tags; 
 
     protected Problem() {}
 
-    public Problem(String title, String description, String difficulty, String codeTemplatesJson, String tags) {
+    public Problem(String title, String description, String difficulty, String codeTemplatesJson, String tags, String testCasesJson) {
         this.title = title;
         this.description = description;
         this.difficulty = Difficulty.valueOf(difficulty);
         this.codeTemplatesJson = codeTemplatesJson;
         this.tags = tags;
+        this.testCasesJson = testCasesJson;
     }
 }

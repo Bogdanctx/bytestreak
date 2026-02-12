@@ -1,12 +1,10 @@
 #settings-container {
-
     margin: 16px auto;
-
-    width: 98%;
-    height: 96%;
 
     border-radius: 16px;
     display: flex;
+
+    height: 100%;
 
     gap: 16px;
 }
