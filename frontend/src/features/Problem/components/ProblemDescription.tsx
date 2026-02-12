@@ -15,6 +15,8 @@ interface ProblemDescriptionProps {
 function ProblemDescription({ problem }: ProblemDescriptionProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+    console.log("Rendering ProblemDescription with problem data:", problem);
+
     const getDifficultyColorClass = (diff: string) => {
         switch(diff) {
             case "EASY": return "diff-easy";

@@ -16,13 +16,20 @@ import TestCasesTab from '../../features/Creator/components/TestCasesTab';
 import MetadataTab from '../../features/Creator/components/MetadataTab';
 import { type TestCase } from './interfaces';
 import { api } from '../../api';
+import notify from '../../components/ui/ToastNotification';
 
 function Creator() {
     const [activeTab, setActiveTab] = useState("markdown");
-    const [problemDescription, setProblemDescription] = useState("# Problem Description\n\nWrite your problem description here...");
+    const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({});
-    const [driverCode, setDriverCode] = useState({});
+    const [starterCode, setStarterCode] = useState({
+        "cpp": "",
+        "python": ""
+    });
+    const [driverCode, setDriverCode] = useState({
+        "cpp": "",
+        "python": ""
+    });
     const [testCases, setTestCases] = useState<TestCase[]>([]);
 
     const [title, setTitle] = useState("");
@@ -31,27 +38,72 @@ function Creator() {
 
 
     const handleCreateNewProblem = () => {
-        const problemData = {
-            description: problemDescription,
-            starterCode,
-            driverCode,
-            testCases
+        if(!title) {
+            notify("Please provide a title for the problem.", "error");
+            return;
+        }
+        if(!difficulty) {
+            notify("Please select a difficulty level for the problem.", "error");
+            return;
+        }
+        if(tags.length === 0) {
+            notify("Please add at least one tag to the problem.", "error");
+            return;
+        }
+        if (!description) {
+            notify("Problem description cannot be empty.", "error");
+            return;
+        }
+        if(!starterCode.cpp || !starterCode.python) {
+            notify("Please provide a starting code in Starter Code tab.", "error");
+            return;
+        }
+        if(!driverCode.cpp || !driverCode.python) {
+            notify("Please provide a driver code in Driver Code tab.", "error");
+            return;
+        }
+        if(testCases.length === 0) {
+            notify("Please add at least one test case in Test Cases tab.", "error");
+            return;
+        }
+
+        const codeTemplates = {
+            cpp: {
+                starterCode: starterCode.cpp,
+                driverCode: driverCode.cpp
+            },
+            python: {
+                starterCode: starterCode.python,
+                driverCode: driverCode.python
+            }
         };
 
+        const problemData = {
+            title,
+            description,
+            difficulty,
+            codeTemplatesJson: JSON.stringify(codeTemplates), 
+            testCasesJson: JSON.stringify(testCases),
+            tags: tags.join(',') 
+        };
+        
         api.post('/problems/new', problemData)
             .then(response => {
-                console.log('Problem created successfully:', response.data);
-                // Optionally, reset the form or navigate to another page
+                if(response.status === 200) {
+                    notify("Problem created successfully!", "success");
+                }
+                else {
+                    notify("Failed to create problem. Please try again.", "error");
+                }
             })
             .catch(error => {
                 console.error('Error creating problem:', error);
-                // Optionally, show an error message to the user
             });
     }
 
     const handleEditorChange = (value: string | undefined) => {
         if(activeTab === "markdown") {
-            setProblemDescription(value || "");
+            setDescription(value || "");
         }
         else if(activeTab === "starter-code") {
             setStarterCode((prev: any) => ({
@@ -106,7 +158,7 @@ function Creator() {
                                     }}
                                 >
                                     <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
-                                    <MenuItem className='language-select-item' value={"python"}>Python3</MenuItem>
+                                    <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
                                 </Select>
                             </FormControl>
                         )}
@@ -147,6 +199,7 @@ function Creator() {
                         <Editor
                             height="100%"
                             theme='vs-dark'
+                            language={programmingLanguage}
                             defaultLanguage={programmingLanguage}
                             value={activeTab === "starter-code" ? starterCode[programmingLanguage] || "" : driverCode[programmingLanguage] || ""}
                             onChange={handleEditorChange}
@@ -162,7 +215,7 @@ function Creator() {
 
             {activeTab === "markdown" && (
                 <Box className="problem-builder-markdown-preview">
-                    <MarkdownRenderer content={problemDescription} />
+                    <MarkdownRenderer content={description} />
                 </Box>
             )}
         </Box>

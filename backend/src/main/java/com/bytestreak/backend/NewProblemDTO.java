@@ -10,5 +10,6 @@ public class NewProblemDTO {
     private String description;
     private String difficulty;
     private String codeTemplatesJson;
+    private String testCasesJson;
     private String tags;
 }

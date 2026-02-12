@@ -46,7 +46,31 @@ public class ProblemController {
         return ResponseEntity.ok("Submission successful");
     }
 
-    @PostMapping("/create")
+    @PostMapping("/new")
+    public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO) {
+        try {
+            Problem problem = new Problem(
+                newProblemDTO.getTitle(),
+                newProblemDTO.getDescription(),
+                newProblemDTO.getDifficulty().toUpperCase(),
+                newProblemDTO.getCodeTemplatesJson(),
+                newProblemDTO.getTags(),
+                newProblemDTO.getTestCasesJson()
+            );
+
+            repository.save(problem);
+
+            return ResponseEntity.ok("Problem created successfully with ID: " + problem.getId());
+
+        } 
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid Difficulty level");
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error creating problem");
+        }
+    }
 
     @GetMapping("retrieve/all")
     public ResponseEntity<List<Problem>> getAllProblems() {
