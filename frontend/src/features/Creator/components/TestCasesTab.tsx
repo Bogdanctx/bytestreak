@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from "react";
 import './TestCasesTab.style.css'
-import { type TestCase } from '../interfaces';
+import { type TestCase } from '../../../pages/Creator/interfaces';
 
 interface TestCaseProps {
     testCases: TestCase[];
