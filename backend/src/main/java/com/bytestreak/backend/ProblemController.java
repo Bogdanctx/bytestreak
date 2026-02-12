@@ -46,6 +46,8 @@ public class ProblemController {
         return ResponseEntity.ok("Submission successful");
     }
 
+    @PostMapping("/create")
+
     @GetMapping("retrieve/all")
     public ResponseEntity<List<Problem>> getAllProblems() {
         List<Problem> problems = repository.findAll();

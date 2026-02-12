@@ -61,7 +61,7 @@ function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
                     </Typography>
                 </Box>
 
-                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', width: "80%", margin: "auto" }} />
+                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', width: "80%", margin: "auto", marginBottom: "8px" }} />
 
                 <Box className="testcases-list">
                     {testCases.map((testCase, index) => (

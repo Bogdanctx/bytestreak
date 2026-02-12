@@ -14,6 +14,8 @@ import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer
 import PublishIcon from '@mui/icons-material/Publish';
 import TestCasesTab from './components/TestCasesTab';
 import { type TestCase } from './interfaces';
+import { api } from '../../api';
+import MetadataTab from './components/MetadataTab';
 
 function ProblemBuilder() {
     const [activeTab, setActiveTab] = useState("markdown");
@@ -23,9 +25,28 @@ function ProblemBuilder() {
     const [driverCode, setDriverCode] = useState({});
     const [testCases, setTestCases] = useState<TestCase[]>([]);
 
+    const [title, setTitle] = useState("");
+    const [difficulty, setDifficulty] = useState("");
+    const [tags, setTags] = useState<string[]>([]);
+
 
     const handleCreateNewProblem = () => {
-        
+        const problemData = {
+            description: problemDescription,
+            starterCode,
+            driverCode,
+            testCases
+        };
+
+        api.post('/problems/new', problemData)
+            .then(response => {
+                console.log('Problem created successfully:', response.data);
+                // Optionally, reset the form or navigate to another page
+            })
+            .catch(error => {
+                console.error('Error creating problem:', error);
+                // Optionally, show an error message to the user
+            });
     }
 
     const handleEditorChange = (value: string | undefined) => {
@@ -50,6 +71,7 @@ function ProblemBuilder() {
         <Box className="problem-builder-container">
 
             <Box className="problem-builder-main">
+                {/* Header */}
                 <Box className="problem-builder-header">
                     <Box display="flex" alignItems="center" gap={2}>
                         <Tabs value={activeTab} 
@@ -63,6 +85,7 @@ function ProblemBuilder() {
                             <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
                             <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
                             <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={() => setActiveTab("testcases")} />
+                            <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={() => setActiveTab("metadata")} />
                         </Tabs>
 
                         {(activeTab === "starter-code" || activeTab === "driver-code") && (
@@ -109,6 +132,7 @@ function ProblemBuilder() {
                     </Button>
                 </Box>
 
+                {/* Content */}
                 <Box className="problem-builder-content">
                     {activeTab === "markdown" && (
                         <Editor
@@ -130,6 +154,9 @@ function ProblemBuilder() {
                     )}
 
                     {activeTab === "testcases" && ( <TestCasesTab testCases={testCases} setTestCases={setTestCases} /> )}
+
+                    {activeTab === "metadata" && ( <MetadataTab title={title} difficulty={difficulty} tags={tags}
+                                                                setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} /> )}
                 </Box>
             </Box>
 

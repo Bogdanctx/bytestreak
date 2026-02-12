@@ -1,0 +1,144 @@
+.metadata-container {
+    padding: 32px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+}
+
+.metadata-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metadata-label {
+    color: #888;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Custom TextField Styling */
+.metadata-input .MuiOutlinedInput-root {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    color: #F7F7F9;
+    transition: all 0.2s;
+}
+
+.metadata-input .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.metadata-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.metadata-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #23CE6B;
+}
+
+.metadata-input input {
+    padding: 12px 14px;
+}
+
+.metadata-chip {
+    background-color: rgba(35, 206, 107, 0.15) !important;
+    color: #23CE6B !important;
+    border: 1px solid rgba(35, 206, 107, 0.3) !important;
+    font-weight: 600 !important;
+}
+
+.metadata-chip .MuiChip-deleteIcon {
+    color: #23CE6B !important;
+    opacity: 0.7;
+}
+
+.metadata-chip .MuiChip-deleteIcon:hover {
+    opacity: 1;
+}
+
+.difficulty-select {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #F7F7F9 !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    height: 40px !important;
+    min-width: 150px !important;
+}
+
+.difficulty-select .MuiSvgIcon-root {
+    color: #888 !important;
+}
+
+.difficulty-select .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    transition: border-color 0.2s;
+}
+
+.difficulty-select:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.difficulty-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #23CE6B !important;
+    border-width: 1px !important;
+}
+
+.difficulty-select-item {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    padding: 8px 16px !important;
+}
+
+.difficulty-select-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.difficulty-select-item.Mui-selected {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+}
+
+
+.MuiAutocomplete-paper {
+    background-color: #1f1f1f !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 8px !important;
+    margin-top: 8px !important;
+}
+
+.MuiAutocomplete-listbox {
+    padding: 4px !important;
+}
+
+.MuiAutocomplete-option {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important; 
+    color: #cfcfcf !important;
+    border-radius: 4px !important;
+    transition: all 0.1s !important;
+    margin-bottom: 2px !important;
+}
+
+.MuiAutocomplete-option[aria-selected="true"],
+.MuiAutocomplete-option.Mui-focused,
+.MuiAutocomplete-option:hover {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+    color: #23CE6B !important;
+}
+
+.MuiAutocomplete-noOptions {
+    background-color: #1f1f1f !important;
+    color: #888 !important;
+    font-size: 0.8rem !important;
+}
