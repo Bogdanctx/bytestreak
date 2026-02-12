@@ -1,30 +1,19 @@
 import {
     Box,
-    Typography,
     Button,
     Tabs,
     Tab,
     FormControl,
     Select,
-    MenuItem,
-    Divider,
-    IconButton,
-    TextField
+    MenuItem
 } from '@mui/material';
 import { useState } from 'react';
 import './ProblemBuilder.style.css';
 import Editor from '@monaco-editor/react';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
 import PublishIcon from '@mui/icons-material/Publish';
-
-interface TestCase {
-    fileName: string;
-    input: string;
-    output: string;
-}
+import TestCasesTab from './components/TestCasesTab';
+import { type TestCase } from './interfaces';
 
 function ProblemBuilder() {
     const [activeTab, setActiveTab] = useState("markdown");
@@ -32,27 +21,11 @@ function ProblemBuilder() {
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [starterCode, setStarterCode] = useState({});
     const [driverCode, setDriverCode] = useState({});
-    const [testCases, setTestCases] = useState<TestCase[]>([
-        { fileName: "test1.txt", input: "121", output: "true" },
-        { fileName: "test2.txt", input: "-121", output: "false" }
-    ]);
-    const [selectedCaseIndex, setSelectedCaseIndex] = useState(0);
+    const [testCases, setTestCases] = useState<TestCase[]>([]);
 
 
     const handleCreateNewProblem = () => {
         
-    }
-
-    const updateTestCase = (field: 'input' | 'output', value: string) => {
-        setTestCases((prev) => {
-            const updated = [...prev];
-            const current = updated[selectedCaseIndex] || { input: '', output: '' };
-            updated[selectedCaseIndex] = {
-                ...current,
-                [field]: value
-            };
-            return updated;
-        });
     }
 
     const handleEditorChange = (value: string | undefined) => {
@@ -73,16 +46,6 @@ function ProblemBuilder() {
         }
     }
 
-    const handleDeleteTestCase = (index: number) => {
-        setTestCases((prev) => prev.filter((_, i) => i !== index));
-        if (index === selectedCaseIndex) {
-            setSelectedCaseIndex(-1); // Deselect if the deleted case was selected
-        } 
-        else if (index < selectedCaseIndex) {
-            setSelectedCaseIndex((prev) => prev - 1); // Shift selection index if a preceding case was deleted
-        }
-    }
-
     return (
         <Box className="problem-builder-container">
 
@@ -90,7 +53,6 @@ function ProblemBuilder() {
                 <Box className="problem-builder-header">
                     <Box display="flex" alignItems="center" gap={2}>
                         <Tabs value={activeTab} 
-                            className="problem-builder-tabs"
                             slotProps={{
                                 indicator: {
                                     style: { backgroundColor: '#23CE6B' }
@@ -148,7 +110,6 @@ function ProblemBuilder() {
                 </Box>
 
                 <Box className="problem-builder-content">
-
                     {activeTab === "markdown" && (
                         <Editor
                             height="100%"
@@ -158,7 +119,6 @@ function ProblemBuilder() {
                             onChange={handleEditorChange}
                         />
                     )}
-
                     {(activeTab === "starter-code" || activeTab === "driver-code") && (
                         <Editor
                             height="100%"
@@ -169,92 +129,7 @@ function ProblemBuilder() {
                         />
                     )}
 
-                    {activeTab === "testcases" && (
-                        <Box className="testcases-container">
-
-                            <Box className="testcases-left-panel">
-                                <Box className="testcases-left-panel-header">
-                                    <Typography fontFamily={"Momo Trust Display"} variant="h6" color="white">
-                                        Test Cases
-                                    </Typography>
-                                </Box>
-
-                                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', width: "80%", margin: "auto" }} />
-
-                                <Box className="testcases-list">
-                                    {testCases.map((testCase, index) => (
-                                        <Box 
-                                            key={index} 
-                                            className={`testcase-item ${index === selectedCaseIndex ? 'active' : ''}`}
-                                            onClick={() => setSelectedCaseIndex(index)}
-                                        >
-                                            <Typography variant="body2" fontWeight={600}>{testCase.fileName}</Typography>
-                                            <IconButton 
-                                                size="small" 
-                                                onClick={(e) => { e.stopPropagation(); handleDeleteTestCase(index); }}
-                                                sx={{ color: '#666', '&:hover': { color: '#FF4444' } }}
-                                            >
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
-                                        </Box>
-                                    ))}
-                                </Box>
-
-                                <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', width: "80%", margin: "auto" }} />
-
-                                <Box className="testcases-left-panel-footer">
-                                    <Button
-                                        className="add-testcase-button"
-                                        variant="outlined"
-                                        startIcon={<AddIcon />}
-                                    >
-                                        Add test case
-                                    </Button>
-                                </Box>
-
-                            </Box>
-
-                            <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255, 255, 255, 0.08)' }} />
-
-                            <Box className="testcases-right-panel">
-                                <Typography color="white" fontFamily={"Momo Trust Display"} >
-                                    {selectedCaseIndex >= 0 ? testCases[selectedCaseIndex].fileName : "Test Case Details"}
-                                </Typography>
-
-                                <Divider orientation="horizontal" flexItem sx={{ borderColor: 'rgba(255, 255, 255, 0.08)' }} />
-
-                                {testCases.length > 0 && selectedCaseIndex >= 0 ? (
-                                    <Box className="testcases-inputs">
-                                        <Typography className="input-label">Input</Typography>
-                                        <TextField
-                                            multiline
-                                            minRows={12}
-                                            maxRows={12}
-                                            className="code-input-field"
-                                            value={testCases[selectedCaseIndex]?.input || ""}
-                                            onChange={(e) => updateTestCase('input', e.target.value)}
-                                            placeholder="Enter input (e.g., 121)"
-                                        />
-
-                                        <Typography className="input-label" sx={{ mt: 2 }}>Expected Output</Typography>
-                                        <TextField
-                                            multiline
-                                            minRows={12}
-                                            maxRows={12}
-                                            className="code-input-field"
-                                            value={testCases[selectedCaseIndex]?.output || ""}
-                                            onChange={(e) => updateTestCase('output', e.target.value)}
-                                            placeholder="Enter expected output (e.g., true)"
-                                        />
-                                    </Box>
-                                ) : (
-                                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" color="#666">
-                                        <Typography>No test case selected</Typography>
-                                    </Box>
-                                )}
-                            </Box>
-                        </Box>
-                    )}
+                    {activeTab === "testcases" && ( <TestCasesTab testCases={testCases} setTestCases={setTestCases} /> )}
                 </Box>
             </Box>
 
