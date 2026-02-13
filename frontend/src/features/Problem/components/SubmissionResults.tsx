@@ -9,147 +9,29 @@ import './SubmissionResults.style.css';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
-const MOCK_SUBMISSION_RESULTS = {
-    testCases: [
-        {
-            test: 1,
-            status: "Accepted",
-            executionTime: "0.123s",
-        },
-        {
-            test: 2,
-            status: "Wrong Answer",
-            executionTime: "0.456s",
-        },
-        {
-            test: 3,
-            status: "Time Limit Exceeded",
-            executionTime: "1.000s",
-        },
-        {
-            test: 4,
-            status: "Runtime Error",
-            executionTime: "0.789s",
-        },
-        {
-            test: 5,
-            status: "Accepted",
-            executionTime: "0.321s",
-        },
-        {
-            test: 6,
-            status: "Wrong Answer",
-            executionTime: "0.654s",
-        },
-        {
-            test: 7,
-            status: "Accepted",
-            executionTime: "0.098s",
-        },
-        {
-            test: 8,
-            status: "Memory Limit Exceeded",
-            executionTime: "0.842s",
-        },
-        {
-            test: 9,
-            status: "Accepted",
-            executionTime: "0.210s",
-        },
-        {
-            test: 10,
-            status: "Time Limit Exceeded",
-            executionTime: "1.000s",
-        },
-        {
-            test: 11,
-            status: "Runtime Error",
-            executionTime: "0.567s",
-        },
-        {
-            test: 12,
-            status: "Accepted",
-            executionTime: "0.145s",
-        },
-        {
-            test: 13,
-            status: "Wrong Answer",
-            executionTime: "0.433s",
-        },
-        {
-            test: 14,
-            status: "Accepted",
-            executionTime: "0.187s",
-        },
-        {
-            test: 15,
-            status: "Memory Limit Exceeded",
-            executionTime: "0.911s",
-        },
-        {
-            test: 16,
-            status: "Accepted",
-            executionTime: "0.123s",
-        },
-        {
-            test: 17,
-            status: "Wrong Answer",
-            executionTime: "0.456s",
-        },
-        {
-            test: 18,
-            status: "Time Limit Exceeded",
-            executionTime: "1.000s",
-        },
-        {
-            test: 19,
-            status: "Runtime Error",
-            executionTime: "0.789s",
-        },
-        {
-            test: 20,
-            status: "Accepted",
-            executionTime: "0.321s",
-        },
-        {
-            test: 21,
-            status: "Wrong Answer",
-            executionTime: "0.654s",
-        },
-        {
-            test: 22,
-            status: "Accepted",
-            executionTime: "0.098s",
-        },
-        {
-            test: 23,
-            status: "Memory Limit Exceeded",
-            executionTime: "0.842s",
-        },
-        {
-            test: 24,
-            status: "Memory Limit Exceeded",
-            executionTime: "0.842s",
-        },
-        {
-            test: 25,
-            status: "Memory Limit Exceeded",
-            executionTime: "0.842s",
-        },
-    ]
-};
 
 interface SubmissionResultsProps {
     testCases: {
-        test: number;
-        status: string;
-        executionTime: string;
+        testCaseId: number;
+        statusId: number;
+        statusDescription: string;
+        executionTime: number;
     }[];
 }
 
-function SubmissionResults({ testCases = MOCK_SUBMISSION_RESULTS.testCases }: SubmissionResultsProps) {
+function SubmissionResults({ testCases }: SubmissionResultsProps) {
+    if (testCases.length === 0) {
+        return (
+            <Box className="submission-result-container">
+                <Typography variant="body1" sx={{ color: '#bdbdbd' }}>
+                    Running your code against the test cases. Please wait for the results to be displayed here.
+                </Typography>
+            </Box>
+        )
+    }
+
     const totalTests = testCases.length;
-    const passedTests = testCases.filter(tc => tc.status === "Accepted").length;
+    const passedTests = testCases.filter(tc => tc.statusId === 3).length;
     const passPercentage = (passedTests / totalTests) * 100;
 
 
@@ -181,17 +63,17 @@ function SubmissionResults({ testCases = MOCK_SUBMISSION_RESULTS.testCases }: Su
 
             <Box className="submission-testcases-results">
                 {testCases.map((testCase) => (
-                    <Tooltip key={testCase.test} 
-                            title={`Execution Time: ${testCase.executionTime}`} 
+                    <Tooltip key={testCase.testCaseId} 
+                            title={`Execution Time: ${testCase.executionTime} ms`} 
                             placement="top" 
                             slots={{ transition: Zoom }}
                             arrow>
                         <Box className="submission-result-testcase">
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                                {testCase.status === "Accepted" ? <CheckIcon fontSize={"0.5rem"} color="success" /> : <CloseIcon fontSize={"0.5rem"} color="error" />}
+                                {testCase.statusId === 3 ? <CheckIcon fontSize={"0.5rem"} color="success" /> : <CloseIcon fontSize={"0.5rem"} color="error" />}
                                 <Typography className="testcase" variant="body1">
-                                    Test Case {testCase.test}
-                                    <Typography className="testcase-status">{testCase.status}</Typography>
+                                    Test Case {testCase.testCaseId}
+                                    <Typography className="testcase-status">{testCase.statusDescription}</Typography>
                                 </Typography>
                             </Box>
 

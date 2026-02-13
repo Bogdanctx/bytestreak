@@ -30,6 +30,8 @@ public class Problem {
     @NotBlank(message = "Title is required")
     private String title;
 
+    private String slug;
+
     @NotBlank(message = "Description is required")
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -39,21 +41,21 @@ public class Problem {
 
     @Column(columnDefinition = "TEXT")
     private String codeTemplatesJson;
-
-    @Column(columnDefinition = "TEXT")
-    private String testCasesJson;
+        
+    private String testCasesPath;
 
     @Column(columnDefinition = "TEXT")
     private String tags; 
 
     protected Problem() {}
 
-    public Problem(String title, String description, String difficulty, String codeTemplatesJson, String tags, String testCasesJson) {
+    public Problem(String title, String description, String difficulty, String codeTemplatesJson, String tags, String testCasesPath, String slug) {
         this.title = title;
         this.description = description;
         this.difficulty = Difficulty.valueOf(difficulty);
         this.codeTemplatesJson = codeTemplatesJson;
         this.tags = tags;
-        this.testCasesJson = testCasesJson;
+        this.slug = slug;
+        this.testCasesPath = testCasesPath;
     }
 }

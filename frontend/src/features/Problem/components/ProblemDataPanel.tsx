@@ -6,14 +6,16 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProblemDescription from "./ProblemDescription";
 import SubmissionResults from "./SubmissionResults";
 import './ProblemDataPanel.style.css';
+import { useState } from "react";
 
 interface ProblemDataPanelProps {
     problem: any;
     activeTab: string;
     setActiveTab: (tab: string) => void;
+    testCases: any[];
 }
 
-function ProblemDataPanel({ problem, activeTab, setActiveTab }: ProblemDataPanelProps) {
+function ProblemDataPanel({ problem, activeTab, setActiveTab, testCases }: ProblemDataPanelProps) {
     return (
         <Box className="problem-data-panel-container">
             <Box className="problem-header-tabs">
@@ -42,7 +44,7 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab }: ProblemDataPanel
             </Box>
 
             {activeTab === "description" && <ProblemDescription problem={problem} />}
-            {activeTab === "results" && <SubmissionResults />}
+            {activeTab === "results" && <SubmissionResults testCases={testCases} />}
 
             <Box className="problem-footer">
                 footer

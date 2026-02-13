@@ -32,7 +32,7 @@ function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
 
     const handleAddTestCase = () => {
         const newCase: TestCase = {
-            fileName: `test${testCases.length + 1}.txt`,
+            fileName: `test${testCases.length + 1}`,
             input: '',
             output: ''
         };
