@@ -18,9 +18,10 @@ interface CodeEditorWindowProps {
     problemId: string;
     codeTemplates: any;
     setActiveTab: (tab: string) => void;
+    setTestCases: (testCases: any) => void;
 }
 
-function CodeEditorWindow({ problemId, codeTemplates, setActiveTab }: CodeEditorWindowProps) {
+function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases }: CodeEditorWindowProps) {
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
@@ -54,7 +55,13 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab }: CodeEditor
 
         api.post(`/problems/submit`, submissionData)
             .then(response => {
-                console.log("Submission successful:", response.data);
+                if(response.status === 200) {
+                    console.log("Submission successful:", response.data);
+                    setTestCases(response.data);
+                } 
+                else {
+                    console.error("Submission failed with status:", response.status);
+                }
             })
             .catch(error => {
                 console.error("Submission failed:", error);

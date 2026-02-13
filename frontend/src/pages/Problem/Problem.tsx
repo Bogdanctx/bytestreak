@@ -12,6 +12,7 @@ function Problem() {
     const { id } = useParams<{ id: string }>();
     const [problem, setProblem] = useState<any>(null);
     const [activeTab, setActiveTab] = useState("description");
+    const [testCases, setTestCases] = useState([]);
 
     useEffect(() => {
         api.get(`/problems/${id}/description`)
@@ -33,8 +34,8 @@ function Problem() {
 
     return (
         <Box className="problem-page-container">
-            <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} />
-            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplatesJson} setActiveTab={setActiveTab} />
+            <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} testCases={testCases} />
+            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplatesJson} setActiveTab={setActiveTab} setTestCases={setTestCases} />
         </Box>
     )
 }
