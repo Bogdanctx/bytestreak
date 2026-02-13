@@ -15,6 +15,7 @@ interface SubmissionResultsProps {
         testCaseId: number;
         statusId: number;
         statusDescription: string;
+        executionTime: number;
     }[];
 }
 
@@ -63,7 +64,7 @@ function SubmissionResults({ testCases }: SubmissionResultsProps) {
             <Box className="submission-testcases-results">
                 {testCases.map((testCase) => (
                     <Tooltip key={testCase.testCaseId} 
-                            title={`Execution Time: 0`} 
+                            title={`Execution Time: ${testCase.executionTime} ms`} 
                             placement="top" 
                             slots={{ transition: Zoom }}
                             arrow>

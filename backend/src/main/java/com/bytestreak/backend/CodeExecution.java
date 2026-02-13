@@ -97,15 +97,18 @@ public class CodeExecution {
             int statusId = (int) status.get("id");
             String executionStatus = (String) status.get("description");
 
+            float executionTime = Float.parseFloat(responseBody.get("time").toString());
+
             return new ExecutionResultDTO(
                 statusId,
                 executionStatus,
-                testCaseId
+                testCaseId,
+                executionTime
             );
         }
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());
-            return new ExecutionResultDTO(0, "System Error", testCaseId);
+            return new ExecutionResultDTO(0, "System Error", testCaseId, 0);
         }
     }
 }

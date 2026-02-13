@@ -11,4 +11,5 @@ public class ExecutionResultDTO {
     private int statusId;
     private String statusDescription;
     private int testCaseId;
+    private float executionTime;
 }

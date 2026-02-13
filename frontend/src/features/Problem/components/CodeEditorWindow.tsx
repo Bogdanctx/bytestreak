@@ -51,6 +51,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
             problemId: problemId
         };
         
+        setTestCases([]);
         setActiveTab("results");
 
         api.post(`/problems/submit`, submissionData)
