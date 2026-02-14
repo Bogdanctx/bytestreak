@@ -7,11 +7,11 @@ import { useEffect, useState } from "react";
 import { api } from '../../api';
 import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
 import CodeEditorWindow from '../../features/Problem/components/CodeEditorWindow';
-import { type Problem } from '../../entities';
+import { type IProblem } from '../../entities';
 
 function Problem() {
     const { id } = useParams<{ id: string }>();
-    const [problem, setProblem] = useState<Problem | null>(null);
+    const [problem, setProblem] = useState<IProblem | null>(null);
     const [activeTab, setActiveTab] = useState("description");
     const [testCases, setTestCases] = useState([]);
 

@@ -1,5 +1,5 @@
-export interface Account {
-    accountId: number;
+export interface IAccount {
+    id: number;
     username: string;
     email: string;
     level: number;
@@ -8,14 +8,14 @@ export interface Account {
     quizzesSolved: number;
     streakLength: number;
     friendsCount: number;
-    createdProblems: Problem[];
-    solvedProblems: Problem[];
+    createdProblems: IProblem[];
+    solvedProblems: IProblem[];
     profilePictureUrl: string;
 }
 
-export interface Problem {
+export interface IProblem {
     id: number;
-    creator: Account;
+    creator: IAccount;
     title: string;
     slug: string;
     description: string;

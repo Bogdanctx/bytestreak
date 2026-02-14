@@ -27,11 +27,10 @@
 }
 
 .creator-page-create-new {
-    text-transform: none;
-    border: 1px solid #23CE6B;
-    color: #23CE6B;
+    border: 1px solid #23CE6B !important;
+    color: #23CE6B !important;
 }
 
 .creator-page-create-new:hover {
-    border-color: #E7BB41;
+    border-color: #E7BB41 !important;
 }

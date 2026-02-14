@@ -7,19 +7,19 @@ import {
 } from "react";
 import { api } from "../api";
 import { set } from "react-hook-form";
-import { type Account } from "../entities";
+import { type IAccount } from "../entities";
 
 
 interface AccountContextType {
-    account: Account | null;
+    account: IAccount | null;
     isLoading: boolean;
-    setAccount: (account: Account | null) => void;
+    setAccount: (account: IAccount | null) => void;
 }
 
 export const AccountContext = createContext<AccountContextType | null>(null);
 
 export function AccountProvider({ children }: { children: ReactNode }) {
-    const [account, setAccount] = useState<Account | null>(null);
+    const [account, setAccount] = useState<IAccount | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
