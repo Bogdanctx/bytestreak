@@ -1,223 +1,91 @@
 import {
     Box,
+    Typography,
     Button,
-    Tabs,
-    Tab,
-    FormControl,
-    Select,
-    MenuItem
-} from '@mui/material';
-import { useState } from 'react';
-import './Creator.style.css';
-import Editor from '@monaco-editor/react';
-import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
-import PublishIcon from '@mui/icons-material/Publish';
-import TestCasesTab from '../../features/Creator/components/TestCasesTab';
-import MetadataTab from '../../features/Creator/components/MetadataTab';
-import { type TestCase } from './interfaces';
-import { api } from '../../api';
-import notify from '../../components/ui/ToastNotification';
+    Divider
+} from "@mui/material";
+import "./Creator.style.css";
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAccountContext } from "../../context/AccountContext";
+import { type Problem } from "../../entities";
+import { api } from "../../api";
 
 function Creator() {
-    const [activeTab, setActiveTab] = useState("markdown");
-    const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
-    const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [driverCode, setDriverCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [testCases, setTestCases] = useState<TestCase[]>([]);
+    const navigate = useNavigate();
+    const [fetching, setFetching] = useState(false);
+    const [problems, setProblems] = useState<Problem[]>([]);
+    const { account } = useAccountContext();
 
-    const [title, setTitle] = useState("");
-    const [difficulty, setDifficulty] = useState("");
-    const [tags, setTags] = useState<string[]>([]);
-
-
-    const handleCreateNewProblem = () => {
-        if(!title) {
-            notify("Please provide a title for the problem.", "error");
-            return;
-        }
-        if(!difficulty) {
-            notify("Please select a difficulty level for the problem.", "error");
-            return;
-        }
-        if(tags.length === 0) {
-            notify("Please add at least one tag to the problem.", "error");
-            return;
-        }
-        if (!description) {
-            notify("Problem description cannot be empty.", "error");
-            return;
-        }
-        if(!starterCode.cpp || !starterCode.python) {
-            notify("Please provide a starting code in Starter Code tab.", "error");
-            return;
-        }
-        if(!driverCode.cpp || !driverCode.python) {
-            notify("Please provide a driver code in Driver Code tab.", "error");
-            return;
-        }
-        if(testCases.length === 0) {
-            notify("Please add at least one test case in Test Cases tab.", "error");
-            return;
-        }
-
-        const codeTemplates = {
-            cpp: {
-                starterCode: starterCode.cpp,
-                driverCode: driverCode.cpp
-            },
-            python: {
-                starterCode: starterCode.python,
-                driverCode: driverCode.python
-            }
-        };
-
-        const problemData = {
-            title,
-            description,
-            difficulty,
-            codeTemplatesJson: JSON.stringify(codeTemplates), 
-            testCasesJson: JSON.stringify(testCases),
-            tags: tags.join(',') 
-        };
-        
-        api.post('/problems/new', problemData)
-            .then(response => {
-                if(response.status === 200) {
-                    notify("Problem created successfully!", "success");
-                }
-                else {
-                    notify("Failed to create problem. Please try again.", "error");
-                }
-            })
-            .catch(error => {
-                console.error('Error creating problem:', error);
-            });
+    if (!account) {
+        return (
+            <Box className="creator-page">
+                <Typography variant="h6" color="error">You need to be logged in to access this page.</Typography>
+            </Box>
+        )
     }
 
-    const handleEditorChange = (value: string | undefined) => {
-        if(activeTab === "markdown") {
-            setDescription(value || "");
+    const fetchCreatedProblems = async () => {
+        if (fetching) {
+            return;
         }
-        else if(activeTab === "starter-code") {
-            setStarterCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
-        }
-        else if(activeTab === "driver-code") {
-            setDriverCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
-        }
+
+        setFetching(true);
+    
+        api.get(`/creator/problems?creator_id=${account.accountId}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log("Problems fetched successfully:", response.data.problems);
+                    setProblems(response.data.problems);
+                } 
+                else {
+                    console.error("Failed to fetch problems. Status code:", response.status);
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching problems:", error);
+            })
+            .finally(() => {
+                setFetching(false);
+            })
+        
+        setFetching(false);
+    }
+
+    useEffect(() => {
+        fetchCreatedProblems();
+
+    }, []);
+
+    if (!account) {
+        return (
+            <Box className="creator-page">
+                <Typography variant="h6" color="error">You need to be logged in to access this page.</Typography>
+            </Box>
+        )
     }
 
     return (
-        <Box className="problem-builder-container">
-
-            <Box className="problem-builder-main">
-                {/* Header */}
-                <Box className="problem-builder-header">
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <Tabs value={activeTab} 
-                            slotProps={{
-                                indicator: {
-                                    style: { backgroundColor: '#23CE6B' }
-                                }
-                            }}
-                            >
-                            <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={() => setActiveTab("markdown")} />
-                            <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
-                            <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
-                            <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={() => setActiveTab("testcases")} />
-                            <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={() => setActiveTab("metadata")} />
-                        </Tabs>
-
-                        {(activeTab === "starter-code" || activeTab === "driver-code") && (
-                            <FormControl>
-                                <Select
-                                    className='language-select'
-                                    labelId="language-select-label"
-                                    onChange={(event) => { setProgrammingLanguage(event.target.value); console.log(`Selected: ${event.target.value}`) }}
-                                    value={programmingLanguage}
-                                    label="C++"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: "#1f1f1f",
-                                                border: "1px solid rgba(255, 255, 255, 0.08)",
-                                            }
-                                        }
-                                    }}
-                                >
-                                    <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
-                                    <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
-                                </Select>
-                            </FormControl>
-                        )}
-                    </Box>
-
-                    <Button sx={{
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        fontSize: '10px',
-                        height: '25px',
-                        marginRight: '16px',
-                        borderColor: '#23CE6B',
-                        width: '80px',
-                        ':hover': {
-                            borderColor: '#E7BB41'
-                        }
-                    }}
-                        variant='outlined'
-                        onClick={() => handleCreateNewProblem()}
-                    >
-                        <PublishIcon sx={{ fontSize: '16px' }} />
-                        Submit
-                    </Button>
+        <Box className="creator-page">
+            <Box className="creator-page-header">
+                <Box>
+                    <Typography className="creator-page-header-title" variant="h6">Overview</Typography>
+                    <Typography className="creator-page-header-description" variant="body1">Manage and track the performance of your coding challanges.</Typography>
                 </Box>
-
-                {/* Content */}
-                <Box className="problem-builder-content">
-                    {activeTab === "markdown" && (
-                        <Editor
-                            height="100%"
-                            theme='vs-dark'
-                            defaultLanguage="markdown"
-                            defaultValue="# Write your problem description here..."
-                            onChange={handleEditorChange}
-                        />
-                    )}
-                    {(activeTab === "starter-code" || activeTab === "driver-code") && (
-                        <Editor
-                            height="100%"
-                            theme='vs-dark'
-                            language={programmingLanguage}
-                            defaultLanguage={programmingLanguage}
-                            value={activeTab === "starter-code" ? starterCode[programmingLanguage] || "" : driverCode[programmingLanguage] || ""}
-                            onChange={handleEditorChange}
-                        />
-                    )}
-
-                    {activeTab === "testcases" && ( <TestCasesTab testCases={testCases} setTestCases={setTestCases} /> )}
-
-                    {activeTab === "metadata" && ( <MetadataTab title={title} difficulty={difficulty} tags={tags}
-                                                                setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} /> )}
-                </Box>
+                <Button variant="outlined" 
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        className="creator-page-create-new"
+                        onClick={() => navigate("/creator/new") }
+                >Create new</Button>
             </Box>
 
-            {activeTab === "markdown" && (
-                <Box className="problem-builder-markdown-preview">
-                    <MarkdownRenderer content={description} />
-                </Box>
-            )}
+            <Divider orientation="horizontal" sx={{ borderColor: "#2d2d2d", width: "90%", margin: "auto" }} />
+            
+            <Box className="creator-page-content">
+
+            </Box>
         </Box>
     )
 }

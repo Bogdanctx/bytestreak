@@ -7,18 +7,20 @@ import { useEffect, useState } from "react";
 import { api } from '../../api';
 import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
 import CodeEditorWindow from '../../features/Problem/components/CodeEditorWindow';
+import { type Problem } from '../../entities';
 
 function Problem() {
     const { id } = useParams<{ id: string }>();
-    const [problem, setProblem] = useState<any>(null);
+    const [problem, setProblem] = useState<Problem | null>(null);
     const [activeTab, setActiveTab] = useState("description");
     const [testCases, setTestCases] = useState([]);
 
     useEffect(() => {
         api.get(`/problems/${id}/description`)
             .then(response => {
-                response.data.tags = response.data.tags.split(',');
-                response.data.codeTemplatesJson = JSON.parse(response.data.codeTemplatesJson);
+                console.log("Fetched problem data:", response.data);
+
+                response.data.codeTemplates = JSON.parse(response.data.codeTemplates);
                 response.data.description = response.data.description.replace(/\\n/g, '\n');
 
                 setProblem(response.data);
@@ -35,7 +37,7 @@ function Problem() {
     return (
         <Box className="problem-page-container">
             <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} testCases={testCases} />
-            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplatesJson} setActiveTab={setActiveTab} setTestCases={setTestCases} />
+            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplates} setActiveTab={setActiveTab} setTestCases={setTestCases} />
         </Box>
     )
 }

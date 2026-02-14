@@ -7,18 +7,8 @@ import {
 } from "react";
 import { api } from "../api";
 import { set } from "react-hook-form";
+import { type Account } from "../entities";
 
-export interface Account {
-    username: string;
-    email: string;
-    level: number;
-    currentXP: number;
-    problemsSolved: number;
-    quizzesSolved: number;
-    streakLength: number;
-    friendsCount: number;
-    profilePictureUrl: string;
-}
 
 interface AccountContextType {
     account: Account | null;

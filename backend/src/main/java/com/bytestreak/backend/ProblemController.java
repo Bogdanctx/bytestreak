@@ -57,7 +57,7 @@ public class ProblemController {
         String solutionCode = solutionDTO.getCode();
         String programmingLanguage = solutionDTO.getProgrammingLanguage();
 
-        String codeTemplates = problem.getCodeTemplatesJson();
+        String codeTemplates = problem.getCodeTemplates();
         JSONParser parser = new JSONParser(codeTemplates);
         
         try {
@@ -84,18 +84,19 @@ public class ProblemController {
     public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO) {
         try {
             String slug = newProblemDTO.getTitle().toLowerCase().replace(" ", "-");
-            String testsJSON = newProblemDTO.getTestCasesJson();
+            String testsJSON = newProblemDTO.getTestCases();
             
             String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
 
             Problem problem = new Problem(
                 newProblemDTO.getTitle(),
+                slug,
                 newProblemDTO.getDescription(),
-                newProblemDTO.getDifficulty().toUpperCase(),
-                newProblemDTO.getCodeTemplatesJson(),
-                newProblemDTO.getTags(),
+                Problem.Difficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()),
+                newProblemDTO.getCodeTemplates(),
                 testCasesPath,
-                slug
+                newProblemDTO.getTags(),
+                newProblemDTO.getCreator()
             );
 
             repository.save(problem);
@@ -116,5 +117,4 @@ public class ProblemController {
         List<Problem> problems = repository.findAll();
         return ResponseEntity.ok(problems);
     }
-
 }

@@ -15,7 +15,7 @@ import { api } from '../../../api';
 import './CodeEditor.style.css';
 
 interface CodeEditorWindowProps {
-    problemId: string;
+    problemId: number;
     codeTemplates: any;
     setActiveTab: (tab: string) => void;
     setTestCases: (testCases: any) => void;
@@ -57,7 +57,6 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
         api.post(`/problems/submit`, submissionData)
             .then(response => {
                 if(response.status === 200) {
-                    console.log("Submission successful:", response.data);
                     setTestCases(response.data);
                 } 
                 else {
