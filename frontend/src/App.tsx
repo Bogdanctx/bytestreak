@@ -39,6 +39,7 @@ function App() {
 
                                 <Route path = "/creator" element = { <Creator /> } />
                                 <Route path = "/creator/new" element = { <ProblemBuilder /> } />
+                                <Route path = "/creator/edit/:id" element = { <ProblemBuilder /> } />
                             </Route>
 
                         </Routes>

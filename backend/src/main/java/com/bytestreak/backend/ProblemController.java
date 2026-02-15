@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.ResponseEntity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/problems")
@@ -38,6 +41,18 @@ public class ProblemController {
         }
 
         return ResponseEntity.ok(problem);
+    }
+
+    @GetMapping("/testcases")
+    public ResponseEntity<List<TestCaseDTO>> getProblemTestCases(@RequestParam Long problemId) {
+        Problem problem = repository.findById(problemId).orElse(null);
+
+        if (problem == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<TestCaseDTO> testCases = fileStorageService.getTestCases(problem.getTestCasesPath());
+        return ResponseEntity.ok(testCases);
     }
 
     @PostMapping("/submit")
@@ -109,6 +124,36 @@ public class ProblemController {
         catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error creating problem");
+        }
+    }
+
+    @PutMapping("edit/{id}")
+    public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO) {
+        try {
+            Problem existingProblem = repository.findById(id).orElse(null);
+            
+            if (existingProblem == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String slug = problemDTO.getTitle().toLowerCase().replace(" ", "-");
+            String testsJSON = problemDTO.getTestCases();
+            String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
+
+            existingProblem.setTitle(problemDTO.getTitle());
+            existingProblem.setSlug(slug);
+            existingProblem.setDescription(problemDTO.getDescription());
+            existingProblem.setDifficulty(Problem.Difficulty.valueOf(problemDTO.getDifficulty().toUpperCase()));
+            existingProblem.setCodeTemplates(problemDTO.getCodeTemplates());
+            existingProblem.setTestCasesPath(testCasesPath);
+            existingProblem.setTags(problemDTO.getTags());
+            
+            repository.save(existingProblem);
+            
+            return ResponseEntity.ok("Problem updated successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating problem");
         }
     }
 

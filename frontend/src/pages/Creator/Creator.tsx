@@ -22,234 +22,10 @@ import { api } from "../../api";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export const mockProblems: IProblem[] = [
-  {
-    id: 1,
-    creator: {} as any,
-    title: "Two Sum",
-    slug: "",
-    description: "",
-    difficulty: "EASY",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 2,
-    creator: {} as any,
-    title: "Reverse Linked List",
-    slug: "",
-    description: "",
-    difficulty: "EASY",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 3,
-    creator: {} as any,
-    title: "Valid Anagram",
-    slug: "",
-    description: "",
-    difficulty: "EASY",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 4,
-    creator: {} as any,
-    title: "Maximum Subarray",
-    slug: "",
-    description: "",
-    difficulty: "EASY",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 5,
-    creator: {} as any,
-    title: "Climbing Stairs",
-    slug: "",
-    description: "",
-    difficulty: "EASY",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-
-  {
-    id: 6,
-    creator: {} as any,
-    title: "Longest Substring Without Repeating Characters",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 7,
-    creator: {} as any,
-    title: "Group Anagrams",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 8,
-    creator: {} as any,
-    title: "Product of Array Except Self",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 9,
-    creator: {} as any,
-    title: "Binary Tree Level Order Traversal",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 10,
-    creator: {} as any,
-    title: "Coin Change",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 11,
-    creator: {} as any,
-    title: "Top K Frequent Elements",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 12,
-    creator: {} as any,
-    title: "Number of Islands",
-    slug: "",
-    description: "",
-    difficulty: "MEDIUM",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-
-  {
-    id: 13,
-    creator: {} as any,
-    title: "Merge K Sorted Lists",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 14,
-    creator: {} as any,
-    title: "Trapping Rain Water",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 15,
-    creator: {} as any,
-    title: "Median of Two Sorted Arrays",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 16,
-    creator: {} as any,
-    title: "Word Ladder",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 17,
-    creator: {} as any,
-    title: "Regular Expression Matching",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 18,
-    creator: {} as any,
-    title: "LFU Cache",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 19,
-    creator: {} as any,
-    title: "Sliding Window Maximum",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  },
-  {
-    id: 20,
-    creator: {} as any,
-    title: "Minimum Window Substring",
-    slug: "",
-    description: "",
-    difficulty: "HARD",
-    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
-    testCasesPath: "",
-    tags: []
-  }
-];
 
 function Creator() {
     const navigate = useNavigate();
-    const [problems, setProblems] = useState<IProblem[]>(mockProblems);
+    const [problems, setProblems] = useState<IProblem[]>([]);
     const { account } = useAccountContext();
 
     const fetchCreatedProblems = async () => {
@@ -289,7 +65,7 @@ function Creator() {
 
     useEffect(() => {
         if (account) {
-            // fetchCreatedProblems();
+            fetchCreatedProblems();
         }
     }, [account]);
 
@@ -325,7 +101,7 @@ function Creator() {
                         </TableHead>
                         <TableBody>
                             {problems.map((problem) => (
-                                <TableRow key={problem.id} onClick={() => navigate(`/creator/${problem.id}/description`)} className="creator-table-row">
+                                <TableRow key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)} className="creator-table-row">
                                     <TableCell className="creator-table-cell">
                                         <Typography variant="body1">
                                             {problem.title}
@@ -349,7 +125,7 @@ function Creator() {
                                             <Button variant="outlined"
                                                     startIcon={<EditIcon sx={{ color: "#E7BB41" }} />} 
                                                     className="creator-table-action-button"
-                                                    onClick={() => navigate(`/creator/edit/${problem.id}`)}
+                                                    onClick={(event) => { event.stopPropagation(); navigate(`/creator/edit/${problem.id}`); }}
                                                     sx={{ color: "white" }}>
                                                 Edit
                                             </Button>
@@ -357,7 +133,7 @@ function Creator() {
                                                     color="error"
                                                     startIcon={<DeleteIcon />}
                                                     className="creator-table-action-button creator-table-delete-button"
-                                                    onClick={() => handleDeleteProblem(problem.id)}
+                                                    onClick={(event) => { event.stopPropagation(); handleDeleteProblem(problem.id); }}
                                             >
                                                 Delete
                                             </Button>

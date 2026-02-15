@@ -1,0 +1,15 @@
+meta {
+  name: problems/{id}/testcases
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/problems/1/testcases
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

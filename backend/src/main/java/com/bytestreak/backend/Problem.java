@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
 import lombok.Getter;
+import lombok.Setter;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "problems")
 @Getter
+@Setter
 public class Problem {
     public enum Difficulty {
         EASY, MEDIUM, HARD

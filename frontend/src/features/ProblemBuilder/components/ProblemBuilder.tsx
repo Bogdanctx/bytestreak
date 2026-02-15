@@ -7,44 +7,83 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccountContext } from '../../../context/AccountContext';
 import './ProblemBuilder.style.css';
 import Editor from '@monaco-editor/react';
 import PublishIcon from '@mui/icons-material/Publish';
 import TestCasesTab from './TestCasesTab';
 import MetadataTab from './MetadataTab';
-import { type TestCase } from '../../../pages/Creator/interfaces';
+import { type ITestCase } from '../../../entities';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
 import { type ProblemBuilderDTO } from './interfaces';
+import { useNavigate, useParams } from 'react-router-dom';
+import ConstructionIcon from '@mui/icons-material/Construction';
 
 function ProblemBuilder() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const isEditMode = Boolean(id);
+
     const [activeTab, setActiveTab] = useState("markdown");
+
+    // Problem data states
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [driverCode, setDriverCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [testCases, setTestCases] = useState<TestCase[]>([]);
-
+    const [starterCode, setStarterCode] = useState({ "cpp": "", "python": "" });
+    const [driverCode, setDriverCode] = useState({ "cpp": "", "python": "" });
+    const [testCases, setTestCases] = useState<ITestCase[]>([]);
     const [title, setTitle] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
 
     const { account } = useAccountContext();
 
-    if (!account) {
-        return <Box>Please log in to create a problem.</Box>;
-    }
+    useEffect(() => {
+        if(isEditMode) {
 
-    const handleCreateNewProblem = () => {
+            api.get(`/problems/${id}/description`)
+                .then(response => {
+                    const data = response.data;
+
+                    setTitle(data.title);
+                    setDescription(data.description);
+                    setDifficulty(data.difficulty);
+                    setTags(data.tags);
+
+                    const codeTemplates = JSON.parse(data.codeTemplates);
+                    setStarterCode({
+                        cpp: codeTemplates.cpp.starterCode,
+                        python: codeTemplates.python.starterCode
+                    });
+                    setDriverCode({
+                        cpp: codeTemplates.cpp.driverCode,
+                        python: codeTemplates.python.driverCode
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching problem description:', error);
+                });
+
+            api.get(`/problems/testcases?problemId=${id}`)
+                .then(response => {
+                    const data = response.data;
+                    for(let testCase of data) {
+                        testCase.input = testCase.input.replace(/\\n/g, '\n');
+                        testCase.output = testCase.output.replace(/\\n/g, '\n');
+                    }
+                    console.log("Fetched test cases:", data);
+                    setTestCases(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching problem test cases:', error);
+                });
+        }
+    }, [id, isEditMode]);
+
+    const handleSubmitProblem = () => {
         if(!title) {
             notify("Please provide a title for the problem.", "error");
             return;
@@ -95,18 +134,35 @@ function ProblemBuilder() {
             creator: account
         };
         
-        api.post('/problems/new', problemData)
-            .then(response => {
-                if(response.status === 200) {
-                    notify("Problem created successfully!", "success");
-                }
-                else {
-                    notify("Failed to create problem. Please try again.", "error");
-                }
-            })
-            .catch(error => {
-                console.error('Error creating problem:', error);
-            });
+        if(isEditMode) {
+            api.put(`/problems/edit/${id}`, problemData)
+                .then(response => {
+                    if(response.status === 200) {
+                        notify("Problem updated successfully!", "success");
+                        navigate("/dashboard");
+                    }
+                    else {
+                        notify("Failed to update problem. Please try again.", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating problem:', error);
+                });
+        }
+        else {
+            api.post('/problems/new', problemData)
+                .then(response => {
+                    if(response.status === 200) {
+                        notify("Problem created successfully!", "success");
+                    }
+                    else {
+                        notify("Failed to create problem. Please try again.", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating problem:', error);
+                });
+        }
     }
 
     const handleEditorChange = (value: string | undefined) => {
@@ -172,24 +228,45 @@ function ProblemBuilder() {
                         )}
                     </Box>
 
-                    <Button sx={{
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        fontSize: '10px',
-                        height: '25px',
-                        marginRight: '16px',
-                        borderColor: '#23CE6B',
-                        width: '80px',
-                        ':hover': {
-                            borderColor: '#E7BB41'
-                        }
-                    }}
-                        variant='outlined'
-                        onClick={() => handleCreateNewProblem()}
-                    >
-                        <PublishIcon sx={{ fontSize: '16px' }} />
-                        Submit
-                    </Button>
+                    {isEditMode ? (
+                        <Button sx={{
+                            backgroundColor: 'transparent',
+                            color: 'white',
+                            fontSize: '10px',
+                            height: '25px',
+                            marginRight: '16px',
+                            borderColor: '#23CE6B',
+                            width: '80px',
+                            ':hover': {
+                                borderColor: '#E7BB41'
+                            }
+                        }}
+                            variant='outlined'
+                            onClick={() => handleSubmitProblem()}
+                        >
+                            <ConstructionIcon sx={{ fontSize: '16px' }} />
+                            Update
+                        </Button>
+                    ) : (
+                        <Button sx={{
+                            backgroundColor: 'transparent',
+                            color: 'white',
+                            fontSize: '10px',
+                            height: '25px',
+                            marginRight: '16px',
+                            borderColor: '#23CE6B',
+                            width: '80px',
+                            ':hover': {
+                                borderColor: '#E7BB41'
+                            }
+                        }}
+                            variant='outlined'
+                            onClick={() => handleSubmitProblem()}
+                        >
+                            <PublishIcon sx={{ fontSize: '16px' }} />
+                            Submit
+                        </Button>
+                    )}
                 </Box>
 
                 {/* Content */}
@@ -199,7 +276,7 @@ function ProblemBuilder() {
                             height="100%"
                             theme='vs-dark'
                             defaultLanguage="markdown"
-                            defaultValue="# Write your problem description here..."
+                            value={description}
                             onChange={handleEditorChange}
                         />
                     )}

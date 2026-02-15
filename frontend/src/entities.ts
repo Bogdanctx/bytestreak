@@ -13,6 +13,12 @@ export interface IAccount {
     profilePictureUrl: string;
 }
 
+export interface ITestCase {
+    fileName: string;
+    input: string;
+    output: string;
+}
+
 export interface IProblem {
     id: number;
     creator: IAccount;
