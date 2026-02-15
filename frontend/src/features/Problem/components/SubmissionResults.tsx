@@ -61,7 +61,7 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
                             arrow>
                         <Box className="submission-result-testcase">
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                                {testCase.statusId === 3 ? <CheckIcon fontSize={"0.5rem"} color="success" /> : <CloseIcon fontSize={"0.5rem"} color="error" />}
+                                {testCase.statusId === 3 ? <CheckIcon sx={{ fontSize: "0.5rem" }} color="success" /> : <CloseIcon sx={{ fontSize: "0.5rem" }} color="error" />}
                                 <Typography className="testcase" variant="body1">
                                     Test Case {testCase.testCaseId}
                                     <Typography className="testcase-status">{testCase.statusDescription}</Typography>

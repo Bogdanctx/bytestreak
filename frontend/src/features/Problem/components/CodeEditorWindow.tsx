@@ -20,7 +20,7 @@ import {
 
 interface CodeEditorWindowProps {
     problemId: number;
-    codeTemplates: any;
+    codeTemplates: { [key: string]: { starterCode: string } };
     setActiveTab: (tab: string) => void;
     setResults: (results: ISubmissionResult[]) => void;
 }
