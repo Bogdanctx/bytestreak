@@ -7,10 +7,9 @@ import {
 import { useState } from 'react';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
 import './ProblemDescription.style.css';
-
-interface ProblemDescriptionProps {
-    problem: any;
-}
+import {
+    type IProblem
+} from "../../../entities"
 
 function getDifficultyColorClass(diff: string) {
     switch(diff) {
@@ -21,7 +20,7 @@ function getDifficultyColorClass(diff: string) {
     }
 };
 
-function ProblemDescription({ problem }: ProblemDescriptionProps) {
+function ProblemDescription({ problem }: { problem: IProblem }) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     return (
