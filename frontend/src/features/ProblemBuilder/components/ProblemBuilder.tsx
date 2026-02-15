@@ -41,6 +41,10 @@ function ProblemBuilder() {
 
     const { account } = useAccountContext();
 
+    if(!account) {
+        return null;
+    }
+
     useEffect(() => {
         if(isEditMode) {
 

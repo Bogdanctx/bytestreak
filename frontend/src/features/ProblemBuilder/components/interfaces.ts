@@ -1,4 +1,4 @@
-import { type Account } from "../../../entities";
+import { type IAccount } from "../../../entities";
 
 export interface ProblemBuilderDTO {
     title: string;
@@ -7,5 +7,5 @@ export interface ProblemBuilderDTO {
     codeTemplates: string;
     testCases: string;
     tags: string[];
-    creator: Account;
+    creator: IAccount;
 }
