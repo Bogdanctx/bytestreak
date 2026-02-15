@@ -4,7 +4,7 @@ import {
     Button
 } from "@mui/material";
 import './Settings.style.css'
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Account from "../../features/Settings/AccountTab";
 
 function Settings() {

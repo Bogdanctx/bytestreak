@@ -28,6 +28,7 @@ function Account() {
         profilePictureUrl: "",
         password: ""
     });
+    
     useEffect(() => {
         if (account) {
             setFormData({
