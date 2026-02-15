@@ -1,0 +1,54 @@
+export interface IAccount {
+    id: number;
+    username: string;
+    email: string;
+    level: number;
+    currentXP: number;
+    problemsSolved: number;
+    quizzesSolved: number;
+    streakLength: number;
+    friendsCount: number;
+    createdProblems: IProblem[];
+    solvedProblems: IProblem[];
+    profilePictureUrl: string;
+}
+
+export interface ITestCase {
+    fileName: string;
+    input: string;
+    output: string;
+}
+
+export interface ISubmissionResult {
+    testCaseId: number;
+    statusId: number;
+    statusDescription: string;
+    executionTime: number;
+}
+
+export interface IProblem {
+    id: number;
+    creator: IAccount;
+    title: string;
+    slug: string;
+    description: string;
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    codeTemplates: {
+        cpp: {
+            starterCode: string;
+            driverCode: string;
+        };
+        python: {
+            starterCode: string;
+            driverCode: string;
+        };
+    };
+    testCasesPath: string;
+    tags: string[];
+}
+
+export interface ISolution {
+    code: string;
+    programmingLanguage: string;
+    problemId: number;
+}

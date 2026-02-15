@@ -17,9 +17,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProblemCard from './ProblemCard/ProblemCard';
 import { api } from '../../../api';
+import { type IProblem } from '../../../entities';
 
 function ProblemsSection() {
-    const [problems, setProblems] = useState<any[]>([]);
+    const [problems, setProblems] = useState<IProblem[]>([]);
     const navigate = useNavigate();
     const [showTags, setShowTags] = useState(false);
     const [page, setPage] = useState(1);
@@ -28,7 +29,7 @@ function ProblemsSection() {
     
     
     useEffect(() => {
-        api.get('/problems/retrieve/all')
+        api.get('/problems/all')
             .then(response => {
                 setProblems(response.data);
             })
@@ -47,10 +48,12 @@ function ProblemsSection() {
 
     const sortedProblems = [...filteredProblems].sort((a, b) => {
         if (sortOrder === 'increasing') {
-            return a.acceptanceRate - b.acceptanceRate;
+            return 0;
+            //return a.acceptanceRate - b.acceptanceRate;
         } 
         else if (sortOrder === 'decreasing') {
-            return b.acceptanceRate - a.acceptanceRate;
+            return 0;
+            //return b.acceptanceRate - a.acceptanceRate;
         }
         return 0;
     });
@@ -143,7 +146,7 @@ function ProblemsSection() {
                         <ProblemCard
                             title={problem.title}
                             difficulty={problem.difficulty as 'EASY' | 'MEDIUM' | 'HARD'}
-                            acceptanceRate={problem.acceptanceRate}
+                            acceptanceRate={0}
                             showTags={showTags}
                             tags={problem.tags}
                             pid={problem.id}

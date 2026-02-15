@@ -9,10 +9,18 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -36,12 +44,23 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private int level;
-    private int currentXP;
-    private int problemsSolved;
-    private int quizzesSolved;
-    private int streakLength;
-    private int friendsCount;
+    private int level = 0;
+    private int currentXP = 0;
+    private int problemsSolved = 0;
+    private int quizzesSolved = 0;
+    private int streakLength = 0;
+    private int friendsCount = 0;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Problem> createdProblems = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "account_solved_problems",
+        joinColumns = @JoinColumn(name = "account_id"),
+        inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    private List<Problem> solvedProblems = new ArrayList<>();
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

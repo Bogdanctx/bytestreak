@@ -1,223 +1,168 @@
 import {
     Box,
+    Typography,
     Button,
-    Tabs,
-    Tab,
-    FormControl,
-    Select,
-    MenuItem
-} from '@mui/material';
-import { useState } from 'react';
-import './Creator.style.css';
-import Editor from '@monaco-editor/react';
-import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
-import PublishIcon from '@mui/icons-material/Publish';
-import TestCasesTab from '../../features/Creator/components/TestCasesTab';
-import MetadataTab from '../../features/Creator/components/MetadataTab';
-import { type TestCase } from './interfaces';
-import { api } from '../../api';
-import notify from '../../components/ui/ToastNotification';
+    Divider,
+    TableContainer,
+    Paper,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    Avatar
+} from "@mui/material";
+import "./Creator.style.css";
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAccountContext } from "../../context/AccountContext";
+import { type IProblem } from "../../entities";
+import { api } from "../../api";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 function Creator() {
-    const [activeTab, setActiveTab] = useState("markdown");
-    const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
-    const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [driverCode, setDriverCode] = useState({
-        "cpp": "",
-        "python": ""
-    });
-    const [testCases, setTestCases] = useState<TestCase[]>([]);
+    const navigate = useNavigate();
+    const [problems, setProblems] = useState<IProblem[]>([]);
+    const { account } = useAccountContext();
 
-    const [title, setTitle] = useState("");
-    const [difficulty, setDifficulty] = useState("");
-    const [tags, setTags] = useState<string[]>([]);
+    const fetchCreatedProblems = async () => {
+        if (!account) return; 
 
+        console.log("Fetching problems for creator with ID:", account.id);
 
-    const handleCreateNewProblem = () => {
-        if(!title) {
-            notify("Please provide a title for the problem.", "error");
-            return;
-        }
-        if(!difficulty) {
-            notify("Please select a difficulty level for the problem.", "error");
-            return;
-        }
-        if(tags.length === 0) {
-            notify("Please add at least one tag to the problem.", "error");
-            return;
-        }
-        if (!description) {
-            notify("Problem description cannot be empty.", "error");
-            return;
-        }
-        if(!starterCode.cpp || !starterCode.python) {
-            notify("Please provide a starting code in Starter Code tab.", "error");
-            return;
-        }
-        if(!driverCode.cpp || !driverCode.python) {
-            notify("Please provide a driver code in Driver Code tab.", "error");
-            return;
-        }
-        if(testCases.length === 0) {
-            notify("Please add at least one test case in Test Cases tab.", "error");
-            return;
-        }
-
-        const codeTemplates = {
-            cpp: {
-                starterCode: starterCode.cpp,
-                driverCode: driverCode.cpp
-            },
-            python: {
-                starterCode: starterCode.python,
-                driverCode: driverCode.python
-            }
-        };
-
-        const problemData = {
-            title,
-            description,
-            difficulty,
-            codeTemplatesJson: JSON.stringify(codeTemplates), 
-            testCasesJson: JSON.stringify(testCases),
-            tags: tags.join(',') 
-        };
-        
-        api.post('/problems/new', problemData)
-            .then(response => {
-                if(response.status === 200) {
-                    notify("Problem created successfully!", "success");
-                }
-                else {
-                    notify("Failed to create problem. Please try again.", "error");
-                }
+        api.get(`/creator/problems?creatorId=${account.id}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log("Problems fetched successfully:", response.data);
+                    setProblems(response.data);
+                } 
             })
-            .catch(error => {
-                console.error('Error creating problem:', error);
+            .catch((error) => {
+                console.error("Error fetching problems:", error);
             });
     }
 
-    const handleEditorChange = (value: string | undefined) => {
-        if(activeTab === "markdown") {
-            setDescription(value || "");
+    const handleDeleteProblem = (problemId: number) => {
+        if (window.confirm("Are you sure you want to delete this problem? This action cannot be undone.")) {
+            api.delete(`/creator/problems/${problemId}`)
+                .then((response) => {
+                    if (response.status === 200) {
+                        alert("Problem deleted successfully.");
+                        fetchCreatedProblems(); // Refresh the list after deletion
+                    } else {
+                        alert("Failed to delete problem. Please try again.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting problem:", error);
+                    alert("An error occurred while deleting the problem. Please try again.");
+                });
         }
-        else if(activeTab === "starter-code") {
-            setStarterCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
+    } 
+
+    useEffect(() => {
+        if (account) {
+            fetchCreatedProblems();
         }
-        else if(activeTab === "driver-code") {
-            setDriverCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
+    }, [account]);
+
+    const getDifficultyColor = (difficulty: string) => {
+        switch (difficulty) {
+            case 'EASY': return '#23CE6B';
+            case 'MEDIUM': return '#E7BB41';
+            case 'HARD': return '#FF4444';
+            default: return '#fff';
         }
-    }
+    };
 
     return (
-        <Box className="problem-builder-container">
-
-            <Box className="problem-builder-main">
-                {/* Header */}
-                <Box className="problem-builder-header">
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <Tabs value={activeTab} 
-                            slotProps={{
-                                indicator: {
-                                    style: { backgroundColor: '#23CE6B' }
-                                }
-                            }}
-                            >
-                            <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={() => setActiveTab("markdown")} />
-                            <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
-                            <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
-                            <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={() => setActiveTab("testcases")} />
-                            <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={() => setActiveTab("metadata")} />
-                        </Tabs>
-
-                        {(activeTab === "starter-code" || activeTab === "driver-code") && (
-                            <FormControl>
-                                <Select
-                                    className='language-select'
-                                    labelId="language-select-label"
-                                    onChange={(event) => { setProgrammingLanguage(event.target.value); console.log(`Selected: ${event.target.value}`) }}
-                                    value={programmingLanguage}
-                                    label="C++"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: "#1f1f1f",
-                                                border: "1px solid rgba(255, 255, 255, 0.08)",
-                                            }
-                                        }
-                                    }}
-                                >
-                                    <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
-                                    <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
-                                </Select>
-                            </FormControl>
-                        )}
-                    </Box>
-
-                    <Button sx={{
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        fontSize: '10px',
-                        height: '25px',
-                        marginRight: '16px',
-                        borderColor: '#23CE6B',
-                        width: '80px',
-                        ':hover': {
-                            borderColor: '#E7BB41'
-                        }
-                    }}
-                        variant='outlined'
-                        onClick={() => handleCreateNewProblem()}
-                    >
-                        <PublishIcon sx={{ fontSize: '16px' }} />
-                        Submit
-                    </Button>
-                </Box>
-
-                {/* Content */}
-                <Box className="problem-builder-content">
-                    {activeTab === "markdown" && (
-                        <Editor
-                            height="100%"
-                            theme='vs-dark'
-                            defaultLanguage="markdown"
-                            defaultValue="# Write your problem description here..."
-                            onChange={handleEditorChange}
-                        />
-                    )}
-                    {(activeTab === "starter-code" || activeTab === "driver-code") && (
-                        <Editor
-                            height="100%"
-                            theme='vs-dark'
-                            language={programmingLanguage}
-                            defaultLanguage={programmingLanguage}
-                            value={activeTab === "starter-code" ? starterCode[programmingLanguage] || "" : driverCode[programmingLanguage] || ""}
-                            onChange={handleEditorChange}
-                        />
-                    )}
-
-                    {activeTab === "testcases" && ( <TestCasesTab testCases={testCases} setTestCases={setTestCases} /> )}
-
-                    {activeTab === "metadata" && ( <MetadataTab title={title} difficulty={difficulty} tags={tags}
-                                                                setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} /> )}
+        <Box className="creator-page">
+            <Box className="creator-page-header">
+                <Box>
+                    <Typography className="creator-page-header-title" variant="h6">Overview</Typography>
+                    <Typography className="creator-page-header-description" variant="body1">Manage your coding challanges.</Typography>
                 </Box>
             </Box>
 
-            {activeTab === "markdown" && (
-                <Box className="problem-builder-markdown-preview">
-                    <MarkdownRenderer content={description} />
+            <Divider orientation="horizontal" sx={{ borderColor: "#2d2d2d", width: "90%", margin: "auto" }} />
+
+            <Box className="creator-page-content">
+                <TableContainer className="creator-table-container" component={Paper}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className="creator-table-header-cell">TITLE</TableCell>
+                                <TableCell className="creator-table-header-cell">DIFFICULTY</TableCell>
+                                <TableCell className="creator-table-header-cell" align="right">ACTIONS</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {problems.map((problem) => (
+                                <TableRow key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)} className="creator-table-row">
+                                    <TableCell className="creator-table-cell">
+                                        <Typography variant="body1">
+                                            {problem.title}
+                                        </Typography>
+                                    </TableCell>
+                                    
+                                    <TableCell className="creator-table-cell">
+                                        <Typography display={"inline-block"}
+                                                    color={getDifficultyColor(problem.difficulty)} 
+                                                    border={`1px solid ${getDifficultyColor(problem.difficulty)}`}
+                                                    borderRadius={"4px"}
+                                                    padding={"2px 4px"}
+                                                    fontSize={"0.75rem"}
+                                        >
+                                            {problem.difficulty}
+                                        </Typography>
+                                    </TableCell>
+                                    
+                                    <TableCell className="creator-table-cell">
+                                        <Box display="flex" justifyContent={"flex-end"} gap={1}>
+                                            <Button variant="outlined"
+                                                    startIcon={<EditIcon sx={{ color: "#E7BB41" }} />} 
+                                                    className="creator-table-action-button"
+                                                    onClick={(event) => { event.stopPropagation(); navigate(`/creator/edit/${problem.id}`); }}
+                                                    sx={{ color: "white" }}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="outlined"
+                                                    color="error"
+                                                    startIcon={<DeleteIcon />}
+                                                    className="creator-table-action-button creator-table-delete-button"
+                                                    onClick={(event) => { event.stopPropagation(); handleDeleteProblem(problem.id); }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+            <Box className="creator-page-footer">
+                <Box display="flex" alignItems="center" gap={2}>
+                    <Avatar src={account?.profilePictureUrl} sx={{ width: 48, height: 48, border: "2px solid #23CE6B" }} />
+                    <Box display="flex" flexDirection="column">
+                        <Typography variant="subtitle1" color="white" fontWeight="600" lineHeight="1">
+                            {account.username}
+                        </Typography>
+                        <Typography variant="caption" color="#888">
+                            {problems.length} {problems.length === 1 ? 'problem' : 'problems'} created
+                        </Typography>
+                    </Box>
                 </Box>
-            )}
+
+                <Button className="creator-page-create-new" variant="outlined" startIcon={<AddIcon />} onClick={() => navigate("/creator/new") }>
+                    Create new
+                </Button>
+            </Box>
         </Box>
     )
 }

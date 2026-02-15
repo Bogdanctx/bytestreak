@@ -54,4 +54,31 @@ public class FileStorageService {
 
         return problemDirectory.toString();
     }
+
+    public ArrayList<TestCaseDTO> getTestCases(String testCasesPath) {
+        ArrayList<TestCaseDTO> testCases = new ArrayList<>();
+
+        try {
+            Files.list(Paths.get(testCasesPath))
+                .filter(path -> path.toString().endsWith(".in"))
+                .forEach(inputPath -> {
+                    String fileName = inputPath.getFileName().toString().replace(".in", "");
+                    Path outputPath = inputPath.getParent().resolve(fileName + ".out");
+
+                    try {
+                        String input = Files.readString(inputPath);
+                        String output = Files.readString(outputPath);
+                        testCases.add(new TestCaseDTO(fileName, input, output));
+                    }
+                    catch (IOException e) {
+                        System.out.println("Error reading test case files: " + e.getMessage());
+                    }
+                });
+        }
+        catch (IOException e) {
+            System.out.println("Error listing test case directory: " + e.getMessage());
+        }
+
+        return testCases;
+    }
 }

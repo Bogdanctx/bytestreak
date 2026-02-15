@@ -7,24 +7,21 @@ import {
 import { useState } from 'react';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
 import './ProblemDescription.style.css';
+import {
+    type IProblem
+} from "../../../entities"
 
-interface ProblemDescriptionProps {
-    problem: any;
-}
+function getDifficultyColorClass(diff: string) {
+    switch(diff) {
+        case "EASY": return "diff-easy";
+        case "MEDIUM": return "diff-medium";
+        case "HARD": return "diff-hard";
+        default: return "";
+    }
+};
 
-function ProblemDescription({ problem }: ProblemDescriptionProps) {
+function ProblemDescription({ problem }: { problem: IProblem }) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    console.log("Rendering ProblemDescription with problem data:", problem);
-
-    const getDifficultyColorClass = (diff: string) => {
-        switch(diff) {
-            case "EASY": return "diff-easy";
-            case "MEDIUM": return "diff-medium";
-            case "HARD": return "diff-hard";
-            default: return "";
-        }
-    };
 
     return (
         <Box className="problem-content">

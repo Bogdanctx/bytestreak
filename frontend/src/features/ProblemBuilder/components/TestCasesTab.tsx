@@ -10,11 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from "react";
 import './TestCasesTab.style.css'
-import { type TestCase } from '../../../pages/Creator/interfaces';
+import { type ITestCase } from "../../../entities.ts";
 
 interface TestCaseProps {
-    testCases: TestCase[];
-    setTestCases: (testCases: TestCase[]) => void;
+    testCases: ITestCase[];
+    setTestCases: (testCases: ITestCase[]) => void;
 }
 
 function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
@@ -31,7 +31,7 @@ function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
     }
 
     const handleAddTestCase = () => {
-        const newCase: TestCase = {
+        const newCase: ITestCase = {
             fileName: `test${testCases.length + 1}`,
             input: '',
             output: ''

@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.ResponseEntity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/problems")
@@ -40,10 +43,22 @@ public class ProblemController {
         return ResponseEntity.ok(problem);
     }
 
+    @GetMapping("/testcases")
+    public ResponseEntity<List<TestCaseDTO>> getProblemTestCases(@RequestParam Long problemId) {
+        Problem problem = repository.findById(problemId).orElse(null);
+
+        if (problem == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<TestCaseDTO> testCases = fileStorageService.getTestCases(problem.getTestCasesPath());
+        return ResponseEntity.ok(testCases);
+    }
+
     @PostMapping("/submit")
-    public ResponseEntity<?> submitSolution(@RequestBody SolutionDTO solutionDTO) {
+    public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO) {
         if (solutionDTO.getCode() == null || solutionDTO.getProgrammingLanguage() == null || solutionDTO.getProblemId() == null) {
-            return ResponseEntity.badRequest().body("Missing required fields");
+            return ResponseEntity.badRequest().body(null);
         }
 
         Long id = solutionDTO.getProblemId();
@@ -57,7 +72,7 @@ public class ProblemController {
         String solutionCode = solutionDTO.getCode();
         String programmingLanguage = solutionDTO.getProgrammingLanguage();
 
-        String codeTemplates = problem.getCodeTemplatesJson();
+        String codeTemplates = problem.getCodeTemplates();
         JSONParser parser = new JSONParser(codeTemplates);
         
         try {
@@ -77,25 +92,26 @@ public class ProblemController {
             System.out.println("Error parsing code templates JSON: " + e.getMessage());
         }
 
-        return ResponseEntity.ok("Solution submitted successfully");
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("/new")
     public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO) {
         try {
             String slug = newProblemDTO.getTitle().toLowerCase().replace(" ", "-");
-            String testsJSON = newProblemDTO.getTestCasesJson();
+            String testsJSON = newProblemDTO.getTestCases();
             
             String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
 
             Problem problem = new Problem(
                 newProblemDTO.getTitle(),
+                slug,
                 newProblemDTO.getDescription(),
-                newProblemDTO.getDifficulty().toUpperCase(),
-                newProblemDTO.getCodeTemplatesJson(),
-                newProblemDTO.getTags(),
+                Problem.Difficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()),
+                newProblemDTO.getCodeTemplates(),
                 testCasesPath,
-                slug
+                newProblemDTO.getTags(),
+                newProblemDTO.getCreator()
             );
 
             repository.save(problem);
@@ -111,10 +127,39 @@ public class ProblemController {
         }
     }
 
-    @GetMapping("retrieve/all")
+    @PutMapping("edit/{id}")
+    public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO) {
+        try {
+            Problem existingProblem = repository.findById(id).orElse(null);
+            
+            if (existingProblem == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String slug = problemDTO.getTitle().toLowerCase().replace(" ", "-");
+            String testsJSON = problemDTO.getTestCases();
+            String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
+
+            existingProblem.setTitle(problemDTO.getTitle());
+            existingProblem.setSlug(slug);
+            existingProblem.setDescription(problemDTO.getDescription());
+            existingProblem.setDifficulty(Problem.Difficulty.valueOf(problemDTO.getDifficulty().toUpperCase()));
+            existingProblem.setCodeTemplates(problemDTO.getCodeTemplates());
+            existingProblem.setTestCasesPath(testCasesPath);
+            existingProblem.setTags(problemDTO.getTags());
+            
+            repository.save(existingProblem);
+            
+            return ResponseEntity.ok("Problem updated successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error updating problem");
+        }
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<Problem>> getAllProblems() {
         List<Problem> problems = repository.findAll();
         return ResponseEntity.ok(problems);
     }
-
 }

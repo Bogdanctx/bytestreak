@@ -8,19 +8,10 @@ import {
 import './SubmissionResults.style.css';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { type ISubmissionResult } from "../../../entities";
 
-
-interface SubmissionResultsProps {
-    testCases: {
-        testCaseId: number;
-        statusId: number;
-        statusDescription: string;
-        executionTime: number;
-    }[];
-}
-
-function SubmissionResults({ testCases }: SubmissionResultsProps) {
-    if (testCases.length === 0) {
+function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
+    if (results.length === 0) {
         return (
             <Box className="submission-result-container">
                 <Typography variant="body1" sx={{ color: '#bdbdbd' }}>
@@ -30,8 +21,8 @@ function SubmissionResults({ testCases }: SubmissionResultsProps) {
         )
     }
 
-    const totalTests = testCases.length;
-    const passedTests = testCases.filter(tc => tc.statusId === 3).length;
+    const totalTests = results.length;
+    const passedTests = results.filter(tc => tc.statusId === 3).length;
     const passPercentage = (passedTests / totalTests) * 100;
 
 
@@ -62,7 +53,7 @@ function SubmissionResults({ testCases }: SubmissionResultsProps) {
             </Box>
 
             <Box className="submission-testcases-results">
-                {testCases.map((testCase) => (
+                {results.map((testCase) => (
                     <Tooltip key={testCase.testCaseId} 
                             title={`Execution Time: ${testCase.executionTime} ms`} 
                             placement="top" 
@@ -70,7 +61,7 @@ function SubmissionResults({ testCases }: SubmissionResultsProps) {
                             arrow>
                         <Box className="submission-result-testcase">
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                                {testCase.statusId === 3 ? <CheckIcon fontSize={"0.5rem"} color="success" /> : <CloseIcon fontSize={"0.5rem"} color="error" />}
+                                {testCase.statusId === 3 ? <CheckIcon sx={{ fontSize: "0.5rem" }} color="success" /> : <CloseIcon sx={{ fontSize: "0.5rem" }} color="error" />}
                                 <Typography className="testcase" variant="body1">
                                     Test Case {testCase.testCaseId}
                                     <Typography className="testcase-status">{testCase.statusDescription}</Typography>
