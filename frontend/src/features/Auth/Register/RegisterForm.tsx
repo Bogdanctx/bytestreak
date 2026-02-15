@@ -33,8 +33,7 @@ function RegisterForm(props: RegisterFormProps) {
 
         notify("Processing your registration...", "info");
 
-        api
-            .post('auth/register', account)
+        api.post('auth/register', account)
             .then(response => {
                 if(response.status === 200) {
                     notify("Your account has been registered. Please log in.", "success");

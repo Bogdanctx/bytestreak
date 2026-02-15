@@ -19,6 +19,13 @@ export interface ITestCase {
     output: string;
 }
 
+export interface ISubmissionResult {
+    testCaseId: number;
+    statusId: number;
+    statusDescription: string;
+    executionTime: number;
+}
+
 export interface IProblem {
     id: number;
     creator: IAccount;
@@ -38,4 +45,10 @@ export interface IProblem {
     };
     testCasesPath: string;
     tags: string[];
+}
+
+export interface ISolution {
+    code: string;
+    programmingLanguage: string;
+    problemId: number;
 }

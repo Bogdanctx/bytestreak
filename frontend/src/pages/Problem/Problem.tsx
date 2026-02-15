@@ -7,13 +7,16 @@ import { useEffect, useState } from "react";
 import { api } from '../../api';
 import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
 import CodeEditorWindow from '../../features/Problem/components/CodeEditorWindow';
-import { type IProblem } from '../../entities';
+import { 
+    type IProblem, 
+    type ISubmissionResult 
+} from '../../entities';
 
 function Problem() {
     const { id } = useParams<{ id: string }>();
     const [problem, setProblem] = useState<IProblem | null>(null);
     const [activeTab, setActiveTab] = useState("description");
-    const [testCases, setTestCases] = useState([]);
+    const [results, setResults] = useState<ISubmissionResult[]>([]);
 
     useEffect(() => {
         api.get(`/problems/${id}/description`)
@@ -36,8 +39,8 @@ function Problem() {
 
     return (
         <Box className="problem-page-container">
-            <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} testCases={testCases} />
-            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplates} setActiveTab={setActiveTab} setTestCases={setTestCases} />
+            <ProblemDataPanel problem={problem} activeTab={activeTab} setActiveTab={setActiveTab} results={results} />
+            <CodeEditorWindow problemId={problem.id} codeTemplates={problem.codeTemplates} setActiveTab={setActiveTab} setResults={setResults} />
         </Box>
     )
 }

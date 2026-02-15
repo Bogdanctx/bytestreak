@@ -56,9 +56,9 @@ public class ProblemController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitSolution(@RequestBody SolutionDTO solutionDTO) {
+    public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO) {
         if (solutionDTO.getCode() == null || solutionDTO.getProgrammingLanguage() == null || solutionDTO.getProblemId() == null) {
-            return ResponseEntity.badRequest().body("Missing required fields");
+            return ResponseEntity.badRequest().body(null);
         }
 
         Long id = solutionDTO.getProblemId();
@@ -92,7 +92,7 @@ public class ProblemController {
             System.out.println("Error parsing code templates JSON: " + e.getMessage());
         }
 
-        return ResponseEntity.ok("Solution submitted successfully");
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("/new")
@@ -157,7 +157,7 @@ public class ProblemController {
         }
     }
 
-    @GetMapping("retrieve/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Problem>> getAllProblems() {
         List<Problem> problems = repository.findAll();
         return ResponseEntity.ok(problems);

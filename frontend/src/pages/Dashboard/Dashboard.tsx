@@ -3,8 +3,6 @@ import "./Dashboard.style.css"
 import ProblemsSection from "../../features/Dashboard/ProblemsSection/ProblemsSection";
 import AccountOverview from "../../features/Dashboard/AccountOverviewSection/AccountOverview";
 import DailyChallanges from "../../features/Dashboard/DailyChallanges/DailyChallanges";
-import { useAccountContext } from "../../context/AccountContext";
-
 
 function Dashboard() {
     return (

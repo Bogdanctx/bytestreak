@@ -13,15 +13,19 @@ import SunnyIcon from '@mui/icons-material/Sunny';
 import { useState, useEffect } from 'react';
 import { api } from '../../../api';
 import './CodeEditor.style.css';
+import { 
+    type ISolution,
+    type ISubmissionResult
+} from '../../../entities';
 
 interface CodeEditorWindowProps {
     problemId: number;
     codeTemplates: any;
     setActiveTab: (tab: string) => void;
-    setTestCases: (testCases: any) => void;
+    setResults: (results: ISubmissionResult[]) => void;
 }
 
-function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases }: CodeEditorWindowProps) {
+function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }: CodeEditorWindowProps) {
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
@@ -36,28 +40,20 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
         setCode(codeTemplates[selectedLanguage].starterCode);
     };
 
-    const handleEditorChange = (value: string | undefined) => {
-        setCode(value || "");
-    }
-
-    const handleResetCode = () => {
-        setCode(codeTemplates[programmingLanguage].starterCode);
-    }
-
     const handleSubmitSolution = () => {
-        const submissionData = {
+        const submissionData: ISolution = {
             code: code,
             programmingLanguage: programmingLanguage,
-            problemId: problemId
+            problemId: problemId,
         };
         
-        setTestCases([]);
+        setResults([]);
         setActiveTab("results");
 
         api.post(`/problems/submit`, submissionData)
             .then(response => {
                 if(response.status === 200) {
-                    setTestCases(response.data);
+                    setResults(response.data);
                 } 
                 else {
                     console.error("Submission failed with status:", response.status);
@@ -77,10 +73,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
 
                 <Box display="flex" alignItems="center">
                     <Switch className='problem-editor-light-switch' color="default" checked={lightMode} onChange={() => setLightMode(!lightMode)} />
-                    <SunnyIcon fontSize="small"
-                                sx={{
-                                    color: lightMode ? '#f5c518' : '#cfcfcf',
-                                }} />
+                    <SunnyIcon fontSize="small" sx={{ color: lightMode ? '#f5c518' : '#cfcfcf' }} />
                 </Box>
                 
                 <FormControl>
@@ -104,10 +97,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
                     </Select>
                 </FormControl>
 
-                <Button className='reset-button' 
-                        variant="outlined"
-                        onClick={() => handleResetCode()}
-                        >
+                <Button className='reset-button' variant="outlined" onClick={() => setCode(codeTemplates[programmingLanguage].starterCode)}>
                     Reset
                 </Button>
             </Box>
@@ -118,7 +108,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setTestCases
                     language={programmingLanguage}
                     value={code}
                     defaultLanguage="cpp"
-                    onChange={handleEditorChange}
+                    onChange={(value) => setCode(value || "")}
                     options={{
                         fontSize: 14,
                         minimap: { enabled: false },

@@ -12,17 +12,17 @@ interface ProblemDescriptionProps {
     problem: any;
 }
 
+function getDifficultyColorClass(diff: string) {
+    switch(diff) {
+        case "EASY": return "diff-easy";
+        case "MEDIUM": return "diff-medium";
+        case "HARD": return "diff-hard";
+        default: return "";
+    }
+};
+
 function ProblemDescription({ problem }: ProblemDescriptionProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    const getDifficultyColorClass = (diff: string) => {
-        switch(diff) {
-            case "EASY": return "diff-easy";
-            case "MEDIUM": return "diff-medium";
-            case "HARD": return "diff-hard";
-            default: return "";
-        }
-    };
 
     return (
         <Box className="problem-content">

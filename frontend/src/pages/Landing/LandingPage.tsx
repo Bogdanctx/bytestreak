@@ -1,31 +1,23 @@
 import { Box, Button, Typography, Stack, Divider, useMediaQuery, useTheme } from '@mui/material';
 import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useAccountContext } from '../../context/AccountContext';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
 import './LandingPage.style.css'
-import { api } from '../../api';
 
 function LandingPage() {
     const [showAuthState, setShowAuthState] = useState<'login' | 'register' | null>(null);
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+    const { account } = useAccountContext();
 
-    useEffect(() => {
-        api.get("/auth/me")
-            .then(response => {
-                if(response.status === 200) {
-                    // Redirect to dashboard
-                    window.location.href = "/dashboard";
-                }
-            })
-            .catch(error => {
-                console.error("Error checking authentication status:", error);
-            });
-    }, []);
+    if(account) {
+        window.location.href = "/dashboard";
+        return null;
+    }
 
-    // <Divider orientation="vertical"  id="landing-page-stack-divider" flexItem />
     return (
         <Box id="landing-root">
             <Stack 
@@ -37,7 +29,7 @@ function LandingPage() {
                 <Box id="landing-logo-container">
                     <ByteStreakLogo size={120} />
                 </Box>
-                <Box id="landing-auth-container" sx={{ overflow: 'hidden' }}> {/* Added overflow hidden to prevent scrollbars during animation */}
+                <Box id="landing-auth-container" overflow={"hidden"}>
                     <Box id="landing-auth-content">
                         <Slide direction="down" in={showAuthState === 'login'} mountOnEnter unmountOnExit>
                             <Box>

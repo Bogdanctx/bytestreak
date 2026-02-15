@@ -59,6 +59,10 @@ function AccountOverview() {
     const { account } = useAccountContext();
     const navigate = useNavigate();
 
+    if(!account) {
+        return null;
+    }
+
     const handleLogout = () => {
         api.post("/auth/logout")
             .then((response) => {
