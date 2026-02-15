@@ -6,10 +6,13 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProblemDescription from "./ProblemDescription";
 import SubmissionResults from "./SubmissionResults";
 import './ProblemDataPanel.style.css';
-import { type ISubmissionResult } from "../../../entities";
+import { 
+    type IProblem,
+    type ISubmissionResult 
+} from "../../../entities";
 
 interface ProblemDataPanelProps {
-    problem: any;
+    problem: IProblem;
     activeTab: string;
     setActiveTab: (tab: string) => void;
     results: ISubmissionResult[];
