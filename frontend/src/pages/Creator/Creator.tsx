@@ -9,7 +9,8 @@ import {
     TableHead,
     TableRow,
     TableCell,
-    TableBody
+    TableBody,
+    Avatar
 } from "@mui/material";
 import "./Creator.style.css";
 import AddIcon from '@mui/icons-material/Add';
@@ -18,37 +19,248 @@ import { useNavigate } from "react-router-dom";
 import { useAccountContext } from "../../context/AccountContext";
 import { type IProblem } from "../../entities";
 import { api } from "../../api";
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { IconButton, Tooltip } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
+export const mockProblems: IProblem[] = [
+  {
+    id: 1,
+    creator: {} as any,
+    title: "Two Sum",
+    slug: "",
+    description: "",
+    difficulty: "EASY",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 2,
+    creator: {} as any,
+    title: "Reverse Linked List",
+    slug: "",
+    description: "",
+    difficulty: "EASY",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 3,
+    creator: {} as any,
+    title: "Valid Anagram",
+    slug: "",
+    description: "",
+    difficulty: "EASY",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 4,
+    creator: {} as any,
+    title: "Maximum Subarray",
+    slug: "",
+    description: "",
+    difficulty: "EASY",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 5,
+    creator: {} as any,
+    title: "Climbing Stairs",
+    slug: "",
+    description: "",
+    difficulty: "EASY",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+
+  {
+    id: 6,
+    creator: {} as any,
+    title: "Longest Substring Without Repeating Characters",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 7,
+    creator: {} as any,
+    title: "Group Anagrams",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 8,
+    creator: {} as any,
+    title: "Product of Array Except Self",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 9,
+    creator: {} as any,
+    title: "Binary Tree Level Order Traversal",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 10,
+    creator: {} as any,
+    title: "Coin Change",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 11,
+    creator: {} as any,
+    title: "Top K Frequent Elements",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 12,
+    creator: {} as any,
+    title: "Number of Islands",
+    slug: "",
+    description: "",
+    difficulty: "MEDIUM",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+
+  {
+    id: 13,
+    creator: {} as any,
+    title: "Merge K Sorted Lists",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 14,
+    creator: {} as any,
+    title: "Trapping Rain Water",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 15,
+    creator: {} as any,
+    title: "Median of Two Sorted Arrays",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 16,
+    creator: {} as any,
+    title: "Word Ladder",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 17,
+    creator: {} as any,
+    title: "Regular Expression Matching",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 18,
+    creator: {} as any,
+    title: "LFU Cache",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 19,
+    creator: {} as any,
+    title: "Sliding Window Maximum",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  },
+  {
+    id: 20,
+    creator: {} as any,
+    title: "Minimum Window Substring",
+    slug: "",
+    description: "",
+    difficulty: "HARD",
+    codeTemplates: { cpp: { starterCode: "", driverCode: "" }, python: { starterCode: "", driverCode: "" } },
+    testCasesPath: "",
+    tags: []
+  }
+];
 
 function Creator() {
     const navigate = useNavigate();
-    const [problems, setProblems] = useState<IProblem[]>([]);
+    const [problems, setProblems] = useState<IProblem[]>(mockProblems);
     const { account } = useAccountContext();
 
-    if (!account) {
-        return (
-            <Box className="creator-page">
-                <Typography variant="h6" color="error">You need to be logged in to access this page.</Typography>
-            </Box>
-        )
-    }
-
     const fetchCreatedProblems = async () => {
-        // Safety check
         if (!account) return; 
 
         console.log("Fetching problems for creator with ID:", account.id);
 
-        // FIX 1: Use account.accountId (not account.id)
         api.get(`/creator/problems?creatorId=${account.id}`)
             .then((response) => {
                 if (response.status === 200) {
                     console.log("Problems fetched successfully:", response.data);
-                    // FIX 2: Set response.data directly (it's already the list)
                     setProblems(response.data);
                 } 
             })
@@ -57,56 +269,123 @@ function Creator() {
             });
     }
 
+    const handleDeleteProblem = (problemId: number) => {
+        if (window.confirm("Are you sure you want to delete this problem? This action cannot be undone.")) {
+            api.delete(`/creator/problems/${problemId}`)
+                .then((response) => {
+                    if (response.status === 200) {
+                        alert("Problem deleted successfully.");
+                        fetchCreatedProblems(); // Refresh the list after deletion
+                    } else {
+                        alert("Failed to delete problem. Please try again.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting problem:", error);
+                    alert("An error occurred while deleting the problem. Please try again.");
+                });
+        }
+    } 
+
     useEffect(() => {
         if (account) {
-            fetchCreatedProblems();
+            // fetchCreatedProblems();
         }
-        // FIX 3: Add account to dependency array so it runs when user loads
     }, [account]);
 
-    if(problems === null) {
-        return (
-            <Box className="creator-page">
-                <Box className="creator-page-header">
-                    <Box>
-                        <Typography className="creator-page-header-title" variant="h6">Overview</Typography>
-                        <Typography className="creator-page-header-description" variant="body1">Manage and track the performance of your coding challanges.</Typography>
-                    </Box>
-                    <Button variant="outlined" 
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            className="creator-page-create-new"
-                            onClick={() => navigate("/creator/new") }
-                    >Create new</Button>
-                </Box>
-
-                <Divider orientation="horizontal" sx={{ borderColor: "#2d2d2d", width: "90%", margin: "auto" }} />
-                
-                <Box className="creator-page-content">
-                    <Typography variant="body1" color="#888" textAlign="center" mt={4}>You haven't created any problems yet. Click the "Create new" button to get started!</Typography>
-                </Box>
-            </Box>
-        )
-    }
+    const getDifficultyColor = (difficulty: string) => {
+        switch (difficulty) {
+            case 'EASY': return '#23CE6B';
+            case 'MEDIUM': return '#E7BB41';
+            case 'HARD': return '#FF4444';
+            default: return '#fff';
+        }
+    };
 
     return (
         <Box className="creator-page">
             <Box className="creator-page-header">
                 <Box>
                     <Typography className="creator-page-header-title" variant="h6">Overview</Typography>
-                    <Typography className="creator-page-header-description" variant="body1">Manage and track the performance of your coding challanges.</Typography>
+                    <Typography className="creator-page-header-description" variant="body1">Manage your coding challanges.</Typography>
                 </Box>
-                <Button className="creator-page-create-new" 
-                        variant="outlined" 
-                        startIcon={<AddIcon />}
-                        onClick={() => navigate("/creator/new") }
-                >Create new</Button>
             </Box>
 
             <Divider orientation="horizontal" sx={{ borderColor: "#2d2d2d", width: "90%", margin: "auto" }} />
-            
+
             <Box className="creator-page-content">
-                
+                <TableContainer className="creator-table-container" component={Paper}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className="creator-table-header-cell">TITLE</TableCell>
+                                <TableCell className="creator-table-header-cell">DIFFICULTY</TableCell>
+                                <TableCell className="creator-table-header-cell" align="right">ACTIONS</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {problems.map((problem) => (
+                                <TableRow key={problem.id} onClick={() => navigate(`/creator/${problem.id}/description`)} className="creator-table-row">
+                                    <TableCell className="creator-table-cell">
+                                        <Typography variant="body1">
+                                            {problem.title}
+                                        </Typography>
+                                    </TableCell>
+                                    
+                                    <TableCell className="creator-table-cell">
+                                        <Typography display={"inline-block"}
+                                                    color={getDifficultyColor(problem.difficulty)} 
+                                                    border={`1px solid ${getDifficultyColor(problem.difficulty)}`}
+                                                    borderRadius={"4px"}
+                                                    padding={"2px 4px"}
+                                                    fontSize={"0.75rem"}
+                                        >
+                                            {problem.difficulty}
+                                        </Typography>
+                                    </TableCell>
+                                    
+                                    <TableCell className="creator-table-cell">
+                                        <Box display="flex" justifyContent={"flex-end"} gap={1}>
+                                            <Button variant="outlined"
+                                                    startIcon={<EditIcon sx={{ color: "#E7BB41" }} />} 
+                                                    className="creator-table-action-button"
+                                                    onClick={() => navigate(`/creator/edit/${problem.id}`)}
+                                                    sx={{ color: "white" }}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="outlined"
+                                                    color="error"
+                                                    startIcon={<DeleteIcon />}
+                                                    className="creator-table-action-button creator-table-delete-button"
+                                                    onClick={() => handleDeleteProblem(problem.id)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+            <Box className="creator-page-footer">
+                <Box display="flex" alignItems="center" gap={2}>
+                    <Avatar src={account?.profilePictureUrl} sx={{ width: 48, height: 48, border: "2px solid #23CE6B" }} />
+                    <Box display="flex" flexDirection="column">
+                        <Typography variant="subtitle1" color="white" fontWeight="600" lineHeight="1">
+                            {account.username}
+                        </Typography>
+                        <Typography variant="caption" color="#888">
+                            {problems.length} {problems.length === 1 ? 'problem' : 'problems'} created
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Button className="creator-page-create-new" variant="outlined" startIcon={<AddIcon />} onClick={() => navigate("/creator/new") }>
+                    Create new
+                </Button>
             </Box>
         </Box>
     )
