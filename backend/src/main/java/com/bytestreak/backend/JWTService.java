@@ -9,18 +9,17 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 
 @Service
-public class JwtService {
+public class JWTService {
     private String secret = "847b14c1fe6a7add809954e0b8f44cb3e93419223e2909050f540e23865b986f";
-    private long expiration = 86400000; // 1 day in milliseconds
+    private long expiration = 24 * 60 * 60 * 1000; // 1 day in milliseconds
 
-    private SecretKey key;
+    private SecretKey secretKey;
 
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    public JWTService() {
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String email) {
@@ -28,12 +27,14 @@ public class JwtService {
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + expiration))
-                .signWith(key)
+                .signWith(secretKey)
                 .compact();
     }
 
     public String getEmailFromToken(String token) {
-        return Jwts.parser().verifyWith(key).build()
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
@@ -41,9 +42,14 @@ public class JwtService {
 
     public boolean validateJwtToken(String token) {
         try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
+            Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token);
+            
+                return true;
+        } 
+        catch (Exception e) {
             return false;
         }
     }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Collections;
@@ -23,13 +24,12 @@ import org.springframework.security.core.Authentication;
 @RequestMapping("/auth")
 public class AuthController {
     private final AccountRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final JWTService jwtService;
 
-    public AuthController(AccountRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService) 
+    public AuthController(AccountRepository repository, JWTService jwtService) 
     {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 

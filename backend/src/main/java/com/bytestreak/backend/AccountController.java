@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Map;
 import java.util.List;
@@ -23,16 +24,13 @@ import java.util.List;
 public class AccountController {
     private final AccountRepository repository;
     private final ObjectMapper objectMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-    public AccountController(AccountRepository repository,
-                            ObjectMapper objectMapper,
-                            PasswordEncoder passwordEncoder) 
+    public AccountController(AccountRepository repository, ObjectMapper objectMapper) 
     {
         this.repository = repository;
         this.objectMapper = objectMapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PatchMapping("/update")

@@ -13,27 +13,22 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final JWTService jwtService;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JWTAuthenticationFilter(JWTService jwtService) {
         this.jwtService = jwtService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException 
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException 
     {
-
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("bytestreak_jwt".equals(cookie.getName())) {
-
+                if (cookie.getName().equals("bytestreak_jwt")) {
                     String token = cookie.getValue();
 
                     if (jwtService.validateJwtToken(token)) {
@@ -48,6 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                         SecurityContextHolder.getContext().setAuthentication(auth);
                     }
+
+                    break;
                 }
             }
         }
