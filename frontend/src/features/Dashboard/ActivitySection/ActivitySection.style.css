@@ -1,0 +1,119 @@
+
+
+#activity-section-container {
+    background-color: #1A1A1A;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden; 
+}
+
+.activity-section-title {
+    color: white;
+    font-family: "Momo Trust Display", sans-serif !important;
+    margin-bottom: 16px !important;
+    flex-shrink: 0;
+}
+
+.daily-items-container {
+    background-color: transparent;
+    flex-shrink: 0; 
+}
+
+.daily-item {
+    width: 100%;
+    background-color: #242424 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.daily-item:hover {
+    background-color: #2a2a2a !important;
+    border-color: #23CE6B !important;
+}
+
+.daily-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.daily-item-label {
+    color: #23CE6B;
+    font-size: 0.75rem !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.daily-item-title {
+    color: white;
+    font-size: 1rem !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+}
+
+.friends-section {
+    overflow-y: auto;
+}
+
+.friends-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.friends-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.friends-list::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 4px;
+}
+
+.friends-list::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+}
+
+.friend-list-item {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    margin-bottom: 4px !important;
+}
+
+.friend-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+.friend-avatar {
+    background-color: #333333 !important;
+    color: white !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1rem !important;
+}
+
+.friend-name {
+    color: white !important;
+    font-size: 0.9rem !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+}
+
+@media (max-height: 700px) {
+    #activity-section-container {
+        overflow-y: auto;
+    }
+
+    .friends-section {
+        min-height: 100px;
+    }
+}
