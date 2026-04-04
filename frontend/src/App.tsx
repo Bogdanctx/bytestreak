@@ -12,6 +12,7 @@ import { AccountProvider } from './context/AccountContext.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Creator from './pages/Creator/Creator.tsx';
 import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import Social from './pages/Social/Social.tsx';
 
 function App() {
     const location = window.location.pathname;
@@ -36,6 +37,7 @@ function App() {
                                 <Route path = "/dashboard" element = { <Dashboard /> } />
                                 <Route path = "/settings" element = { <Settings /> } />
                                 <Route path = "/problems/:id/description" element = { <Problem /> } />
+                                <Route path = "/social" element = { <Social /> } />
 
                                 <Route path = "/creator" element = { <Creator /> } />
                                 <Route path = "/creator/new" element = { <ProblemBuilder /> } />

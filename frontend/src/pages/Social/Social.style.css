@@ -1,0 +1,10 @@
+.social-container {
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.social-container-column {
+    background-color: var(--bg-2);
+    height: 100%;
+}
