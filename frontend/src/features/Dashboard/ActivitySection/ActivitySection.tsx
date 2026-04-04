@@ -46,13 +46,13 @@ function ActivitySection() {
                 </Box>
             </Box>
 
-            <Divider sx={{ backgroundColor: '#333333', my: 3 }} />
+            <Divider sx={{ backgroundColor: 'var(--bg-8)', my: 3 }} />
 
             <Box className="friends-section">
                 <Typography variant="h6" className="activity-section-title" sx={{
                     position: 'sticky',
                     top: 0,
-                    backgroundColor: '#1A1A1A',
+                    backgroundColor: 'var(--bg-2)',
                     zIndex: 1,
                 }}>
                     Friends

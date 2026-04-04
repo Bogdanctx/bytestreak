@@ -1,7 +1,7 @@
 
 
 #activity-section-container {
-    background-color: #1A1A1A;
+    background-color: var(--bg-2);
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -13,7 +13,7 @@
 }
 
 .activity-section-title {
-    color: white;
+    color: var(--text-primary);
     font-family: "Momo Trust Display", sans-serif !important;
     margin-bottom: 16px !important;
     flex-shrink: 0;
@@ -26,7 +26,7 @@
 
 .daily-item {
     width: 100%;
-    background-color: #242424 !important;
+    background-color: var(--bg-4) !important;
     border-radius: 8px !important;
     padding: 16px !important;
     justify-content: flex-start !important;
@@ -36,8 +36,8 @@
 }
 
 .daily-item:hover {
-    background-color: #2a2a2a !important;
-    border-color: #23CE6B !important;
+    background-color: var(--bg-3) !important;
+    border-color: var(--accent-main) !important;
 }
 
 .daily-item-content {
@@ -47,7 +47,7 @@
 }
 
 .daily-item-label {
-    color: #23CE6B;
+    color: var(--accent-main);
     font-size: 0.75rem !important;
     font-weight: bold !important;
     text-transform: uppercase;
@@ -55,7 +55,7 @@
 }
 
 .daily-item-title {
-    color: white;
+    color: var(--text-primary);
     font-size: 1rem !important;
     font-family: "Momo Trust Display", sans-serif !important;
 }
@@ -73,12 +73,12 @@
 }
 
 .friends-list::-webkit-scrollbar-thumb {
-    background: #333333;
+    background: var(--bg-8);
     border-radius: 4px;
 }
 
 .friends-list::-webkit-scrollbar-thumb:hover {
-    background: #555555;
+    background: var(--bg-7);
 }
 
 .friend-list-item {
@@ -95,15 +95,15 @@
 }
 
 .friend-avatar {
-    background-color: #333333 !important;
-    color: white !important;
+    background-color: var(--bg-8) !important;
+    color: var(--text-primary) !important;
     width: 36px !important;
     height: 36px !important;
     font-size: 1rem !important;
 }
 
 .friend-name {
-    color: white !important;
+    color: var(--text-primary) !important;
     font-size: 0.9rem !important;
     font-family: "Momo Trust Display", sans-serif !important;
 }
