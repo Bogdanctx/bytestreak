@@ -1,0 +1,14 @@
+:root {
+    /* Backgrounds */
+    --bg-base: #0C0C0C;
+    --bg-surface: #111111;
+    --bg-surface-elevated: #242424;
+
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #888888;
+
+    /* Accents */
+    --accent-main: #23CE6B;
+    --accent-hover: #1FA355;
+}

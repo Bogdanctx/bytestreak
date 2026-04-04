@@ -17,7 +17,7 @@ function App() {
     const location = window.location.pathname;
     
 	return (
-        <Box bgcolor={"#0C0C0C"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
+        <Box bgcolor={"var(--bg-base)"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
             <CssBaseline />
             <ToastContainer />
 
