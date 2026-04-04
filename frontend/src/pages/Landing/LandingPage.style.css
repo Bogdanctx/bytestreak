@@ -1,7 +1,3 @@
-#landing-root {
-    background-color: var(--bg-base);
-}
-
 #landing-logo-container {
     width: 50vw;
     justify-content: center;
@@ -62,7 +58,7 @@
 
 /* Stack Divider */
 #landing-page-stack-divider {
-    background-color: var(--bg-surface-elevated);
+    background-color: var(--bg-8);
     height: 50vh;
     align-self: center;
 }

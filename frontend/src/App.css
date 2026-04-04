@@ -1,8 +1,14 @@
 :root {
-    /* Backgrounds */
-    --bg-base: #0C0C0C;
-    --bg-surface: #111111;
-    --bg-surface-elevated: #242424;
+    --bg-0:  #0C0C0C;
+    --bg-1:  #101010;
+    --bg-2:  #141414;
+    --bg-3:  #181818;
+    --bg-4:  #1C1C1C;
+    --bg-5:  #202020;
+    --bg-6:  #242424;
+    --bg-7:  #282828;
+    --bg-8:  #2C2C2C;
+    --bg-9:  #303030;
 
     /* Text */
     --text-primary: #FFFFFF;
@@ -11,4 +17,10 @@
     /* Accents */
     --accent-main: #23CE6B;
     --accent-hover: #1FA355;
+
+
+    /* Difficulty Colors */
+    --difficulty-easy: #00b8a3;
+    --difficulty-medium: #ffc01e;
+    --difficulty-hard: #ff375f;
 }
