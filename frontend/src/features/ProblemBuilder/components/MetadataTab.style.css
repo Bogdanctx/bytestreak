@@ -40,7 +40,7 @@
 }
 
 .metadata-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #23CE6B;
+    border-color: var(--accent-main);
 }
 
 .metadata-input input {
@@ -49,13 +49,13 @@
 
 .metadata-chip {
     background-color: rgba(35, 206, 107, 0.15) !important;
-    color: #23CE6B !important;
+    color: var(--accent-main) !important;
     border: 1px solid rgba(35, 206, 107, 0.3) !important;
     font-weight: 600 !important;
 }
 
 .metadata-chip .MuiChip-deleteIcon {
-    color: #23CE6B !important;
+    color: var(--accent-main) !important;
     opacity: 0.7;
 }
 
@@ -65,7 +65,7 @@
 
 .difficulty-select {
     background-color: rgba(255, 255, 255, 0.05) !important;
-    color: #F7F7F9 !important;
+    color: var(--text-primary) !important;
     font-size: 0.85rem !important;
     font-weight: 500 !important;
     border-radius: 8px !important;
@@ -74,7 +74,7 @@
 }
 
 .difficulty-select .MuiSvgIcon-root {
-    color: #888 !important;
+    color: var(--text-secondary) !important;
 }
 
 .difficulty-select .MuiOutlinedInput-notchedOutline {
@@ -87,7 +87,7 @@
 }
 
 .difficulty-select.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #23CE6B !important;
+    border-color: var(--accent-main) !important;
     border-width: 1px !important;
 }
 
@@ -100,7 +100,7 @@
 
 .difficulty-select-item:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #fff !important;
+    color: var(--accent-main) !important;
 }
 
 .difficulty-select-item.Mui-selected {
@@ -109,7 +109,7 @@
 
 
 .MuiAutocomplete-paper {
-    background-color: #1f1f1f !important;
+    background-color: var(--bg-4) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5) !important;
     border-radius: 8px !important;
@@ -124,7 +124,7 @@
     font-family: 'Inter', sans-serif !important;
     font-size: 0.8rem !important;
     padding: 6px 12px !important; 
-    color: #cfcfcf !important;
+    color: var(--text-secondary) !important;
     border-radius: 4px !important;
     transition: all 0.1s !important;
     margin-bottom: 2px !important;
@@ -134,11 +134,11 @@
 .MuiAutocomplete-option.Mui-focused,
 .MuiAutocomplete-option:hover {
     background-color: rgba(35, 206, 107, 0.1) !important;
-    color: #23CE6B !important;
+    color: var(--accent-main) !important;
 }
 
 .MuiAutocomplete-noOptions {
-    background-color: #1f1f1f !important;
-    color: #888 !important;
+    background-color: var(--bg-4) !important;
+    color: var(--text-secondary) !important;
     font-size: 0.8rem !important;
 }

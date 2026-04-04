@@ -45,15 +45,15 @@ function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags
                         MenuProps={{
                             PaperProps: {
                                 sx: {
-                                    backgroundColor: "#1f1f1f",
+                                    backgroundColor: "var(--bg-4)",
                                     border: "1px solid rgba(255, 255, 255, 0.08)",
                                 }
                             }
                         }}
                     >
-                        <MenuItem className='difficulty-select-item' value={"EASY"} sx={{ color: '#00b8a3 !important' }}>Easy</MenuItem>
-                        <MenuItem className='difficulty-select-item' value={"MEDIUM"} sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
-                        <MenuItem className='difficulty-select-item' value={"HARD"} sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
+                        <MenuItem className='difficulty-select-item' value={"EASY"} sx={{ color: 'var(--difficulty-easy) !important' }}>Easy</MenuItem>
+                        <MenuItem className='difficulty-select-item' value={"MEDIUM"} sx={{ color: 'var(--difficulty-medium) !important' }}>Medium</MenuItem>
+                        <MenuItem className='difficulty-select-item' value={"HARD"} sx={{ color: 'var(--difficulty-hard) !important' }}>Hard</MenuItem>
                     </Select>
                 </FormControl>
             </Box>

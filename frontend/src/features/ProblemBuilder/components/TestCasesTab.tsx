@@ -74,7 +74,7 @@ function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
                             <IconButton 
                                 size="small" 
                                 onClick={(e) => { e.stopPropagation(); handleDeleteTestCase(index); }}
-                                sx={{ color: '#666', '&:hover': { color: '#FF4444' } }}
+                                sx={{ color: 'var(--text-secondary)', '&:hover': { color: '#FF4444' } }}
                             >
                                 <DeleteIcon fontSize="small" />
                             </IconButton>
@@ -131,7 +131,7 @@ function TestCasesTab({ testCases, setTestCases }: TestCaseProps) {
                         />
                     </Box>
                 ) : (
-                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" color="#666">
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%" color="var(--text-secondary)">
                         <Typography>No test case selected</Typography>
                     </Box>
                 )}
