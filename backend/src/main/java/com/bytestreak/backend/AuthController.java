@@ -114,15 +114,6 @@ public class AuthController {
             String encodedPassword = passwordEncoder.encode(rawPassword);
             account.setPassword(encodedPassword);
 
-            account.setLevel(0);
-            account.setCurrentXP(0);
-            account.setProblemsSolved(0);
-            account.setQuizzesSolved(0);
-            account.setStreakLength(0);
-            account.setFriendsCount(0);
-            account.setProfilePictureUrl("");
-
-
             repository.save(account);
         } 
         catch (Exception e) {

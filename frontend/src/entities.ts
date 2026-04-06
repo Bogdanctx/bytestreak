@@ -7,10 +7,10 @@ export interface IAccount {
     problemsSolved: number;
     quizzesSolved: number;
     streakLength: number;
-    friendsCount: number;
     createdProblems: IProblem[];
     solvedProblems: IProblem[];
     profilePictureUrl: string;
+    friends: IAccount[];
 }
 
 export interface ITestCase {

@@ -10,14 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Map;
 import java.util.List;
-
-
 
 @RestController
 @RequestMapping("/accounts")
@@ -31,6 +30,11 @@ public class AccountController {
     {
         this.repository = repository;
         this.objectMapper = objectMapper;
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllAccounts() {
+        return ResponseEntity.ok(repository.findAll());
     }
 
     @PatchMapping("/update")

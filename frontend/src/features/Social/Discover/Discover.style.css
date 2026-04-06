@@ -1,0 +1,134 @@
+.discover-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.discover-header {
+	margin-bottom: 24px;
+}
+
+.discover-title {
+	margin-bottom: 16px;
+	color: var(--text-primary);
+	font-weight: 600;
+}
+
+.discover-search-field .MuiInputBase-input {
+	color: var(--text-primary);
+	font-size: 0.9rem;
+}
+
+.discover-search-field .MuiOutlinedInput-root {
+	background-color: var(--bg-3);
+	border-radius: 8px;
+}
+
+.discover-search-field .MuiOutlinedInput-root fieldset {
+	border-color: var(--bg-4);
+}
+
+.discover-search-field .MuiOutlinedInput-root:hover fieldset {
+	border-color: var(--text-secondary);
+}
+
+.discover-search-field .MuiOutlinedInput-root.Mui-focused fieldset {
+	border-color: var(--accent-main);
+}
+
+.discover-search-icon {
+	color: var(--text-secondary);
+	font-size: 1.2rem;
+}
+
+.discover-section-label {
+	margin-bottom: 16px;
+	color: var(--text-secondary);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.5px;
+}
+
+.discover-users-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	overflow-y: auto;
+	flex-grow: 1;
+	padding-right: 4px;
+}
+
+.discover-user-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--bg-3);
+	padding: 12px;
+	border-radius: 10px;
+	border: 1px solid var(--bg-4);
+	transition: background-color 0.2s;
+}
+
+.discover-user-card:hover {
+	background-color: var(--bg-4);
+}
+
+.discover-user-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	overflow: hidden;
+}
+
+.discover-user-avatar {
+	width: 40px;
+	height: 40px;
+	background-color: var(--bg-5);
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.discover-user-meta {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.discover-user-name {
+	color: var(--text-primary);
+	font-weight: 600;
+}
+
+.discover-user-role {
+	color: var(--accent-main);
+	line-height: 1.2;
+}
+
+.discover-user-location {
+	margin-top: 2px;
+	color: var(--text-secondary);
+	line-height: 1.2;
+}
+
+.discover-add-button.MuiButton-root {
+	min-width: 32px;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	margin-left: 8px;
+	border-radius: 8px;
+	color: var(--accent-main);
+	border-color: var(--bg-5);
+	flex-shrink: 0;
+}
+
+.discover-add-button.MuiButton-root:hover {
+	border-color: var(--accent-hover);
+	background-color: rgba(35, 206, 107, 0.1);
+}
+
+.discover-empty-state {
+	margin-top: 32px;
+	color: var(--text-secondary);
+	text-align: center;
+}

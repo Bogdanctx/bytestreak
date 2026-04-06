@@ -26,7 +26,7 @@ function Master({ friendsList = [], selectedFriend, setSelectedFriend }: MasterP
         return null;
     }
 
-    const rankName = getRankByLevel(account.level || 1);
+    const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
 
     return (
@@ -39,7 +39,7 @@ function Master({ friendsList = [], selectedFriend, setSelectedFriend }: MasterP
                     {account.username}
                 </Typography>
                 <Typography variant="body2" color={rankColor} mt={0.5}>
-                    Level {account.level || 1} • {rankName}
+                    Level {account.level} • {rankName}
                 </Typography>
             </Box>
 

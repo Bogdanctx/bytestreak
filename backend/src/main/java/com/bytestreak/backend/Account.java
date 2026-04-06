@@ -49,7 +49,6 @@ public class Account {
     private int problemsSolved = 0;
     private int quizzesSolved = 0;
     private int streakLength = 0;
-    private int friendsCount = 0;
 
     @OneToMany(mappedBy = "creator")
     private List<Problem> createdProblems = new ArrayList<>();
@@ -64,7 +63,15 @@ public class Account {
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
-    private String profilePictureUrl;
+    private String profilePictureUrl = "";
+
+    @ManyToMany
+    @JoinTable(
+        name = "account_friends",
+        joinColumns = @JoinColumn(name = "account_id"),
+        inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private List<Account> friends = new ArrayList<>();
 
     protected Account() {}
 
