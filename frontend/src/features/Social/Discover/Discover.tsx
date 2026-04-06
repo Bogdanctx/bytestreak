@@ -17,6 +17,7 @@ import notify from '../../../components/ui/ToastNotification';
 function Discover({ myAccount }: { myAccount: IAccount }) {
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
+    const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(null);
     
     const [fetchedAccounts, setFetchedAccounts] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -25,14 +26,17 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
     const fetchAllAccounts = async () => {
         try {
             const response = await api.get('/accounts/all');
-            
+            setAccountsNextCursor(response.data.nextCursor);
+
             // remove me from the list
-            let filteredAccounts = response.data.filter((account: IAccount) => account.id !== myAccount.id);
+            let filteredAccounts = response.data.accounts.filter((account: IAccount) => account.id !== myAccount.id);
             
             // remove my friends from the list
-            filteredAccounts = filteredAccounts.filter((account: IAccount) => {
-                return !myAccount.friends.some((friend) => friend.id === account.id);
-            });
+            if (myAccount.friends.length > 0) {
+                filteredAccounts = filteredAccounts.filter((account: IAccount) => {
+                    return !myAccount.friends.some((friend) => friend.id === account.id);
+                });
+            }
 
             // set all the accounts
             setAccounts(filteredAccounts);
