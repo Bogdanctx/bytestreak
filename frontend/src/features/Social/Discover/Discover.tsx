@@ -18,14 +18,29 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(null);
-    
-    const [fetchedAccounts, setFetchedAccounts] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+        const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
 
-    const fetchAllAccounts = async () => {
+    useEffect(() => {
+        // debounce the seach input by 300ms to avoid filtering on every keystroke
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        fetchAccounts(accountsNextCursor, controller.signal);
+
+        return () => controller.abort();
+    }, []);
+
+    const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
         try {
-            const response = await api.get('/accounts/all');
+            const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });            
             setAccountsNextCursor(response.data.nextCursor);
 
             // remove me from the list
@@ -39,28 +54,12 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
             }
 
             // set all the accounts
-            setAccounts(filteredAccounts);
+            setAccounts((prevAccounts) => [...prevAccounts, ...filteredAccounts]);
         } 
         catch (error) {
             console.error('Error fetching accounts:', error);
         }
     };
-
-    useEffect(() => {
-        if (!fetchedAccounts) {
-            fetchAllAccounts();
-            setFetchedAccounts(true);
-        }
-    }, [fetchedAccounts]);
-
-    useEffect(() => {
-        // debounce the seach input by 300ms to avoid filtering on every keystroke
-        const handler = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 300);
-
-        return () => clearTimeout(handler);
-    }, [searchQuery]);
 
     const displayedAccounts = useMemo(() => {
         if (debouncedSearchQuery.trim() === "") {
@@ -74,7 +73,7 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
     }, [accounts, debouncedSearchQuery]);
 
     const handleAddFriend = async (accountId: number) => {
-        await api.post('social/friends/add', { friendId: accountId })
+        await api.post(`social/friends/add?friendId=${accountId}`)
             .then(response => {
                 if (response.status === 200) {
                     // if the friend request was successful, remove the account from the list
@@ -159,6 +158,14 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
                     </Typography>
+                )}
+
+                {accounts.length !== 0 && accountsNextCursor !== null && (
+                    <Button variant="text" size="small" className="discover-load-more-button"
+                            onClick={() => fetchAccounts(accountsNextCursor)}
+                    >
+                        Load More
+                    </Button>
                 )}
             </Box>
         </Box>

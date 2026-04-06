@@ -3,7 +3,7 @@ package com.bytestreak.backend;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +20,13 @@ public class SocialController {
     }
 
     @PostMapping("/friends/add")
-    public ResponseEntity<?> addFriend(@RequestBody AddFriendDTO addFriendDTO, Authentication authentication) {
+    public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Account account = accountRepository.findByEmail(authentication.getName());
-        Account friend = accountRepository.findById(addFriendDTO.getFriendId()).orElse(null);
+        Account friend = accountRepository.findById(friendId).orElse(null);
 
         if (account == null || friend == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
