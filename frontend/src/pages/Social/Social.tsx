@@ -37,7 +37,7 @@ function Social() {
                 className='social-container-column' 
                 sx={{ width: '20%', padding: 2 }}
             >
-                <Discover myAccountId={account.id} />
+                <Discover myAccount={account} />
             </Box>
         </Box>
     );

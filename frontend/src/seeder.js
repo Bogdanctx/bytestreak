@@ -24,7 +24,7 @@ async function seedAccounts() {
             console.error(`❌ Failed to create ${account.username}: ${errorMsg}`);
         }
 
-        await delay(250); // <-- THIS actually pauses
+        await delay(500); // <-- THIS actually pauses
     }
 }
 
