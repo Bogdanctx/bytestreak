@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +14,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import com.bytestreak.backend.dto.ExecutionResultDTO;
+import com.bytestreak.backend.dto.NewProblemDTO;
+import com.bytestreak.backend.dto.SolutionDTO;
+import com.bytestreak.backend.dto.TestCaseDTO;
+
+import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.CodeExecution;
+import com.bytestreak.backend.services.FileStorageService;
+import com.bytestreak.backend.entities.Problem;
 
 @RestController
 @RequestMapping("/problems")

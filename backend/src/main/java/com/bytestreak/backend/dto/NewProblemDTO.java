@@ -1,10 +1,14 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
+import com.bytestreak.backend.entities.Account;
+
+@AllArgsConstructor
 @Getter
 @Setter
 public class NewProblemDTO {

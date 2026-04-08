@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 
+import com.bytestreak.backend.dto.ExecutionResultDTO;
+
 @Service
 public class CodeExecution {
     private final ObjectMapper objectMapper = new ObjectMapper();

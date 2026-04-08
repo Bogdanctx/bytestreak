@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

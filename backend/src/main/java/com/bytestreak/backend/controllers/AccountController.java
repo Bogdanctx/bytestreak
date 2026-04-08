@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.controllers;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -19,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.data.domain.PageRequest;
+
+import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.repositories.AccountRepository;
 
 
 import java.util.Map;

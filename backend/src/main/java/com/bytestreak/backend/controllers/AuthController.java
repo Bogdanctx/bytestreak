@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +19,9 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 
+import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.services.JWTService;
 
 @RestController
 @RequestMapping("/auth")

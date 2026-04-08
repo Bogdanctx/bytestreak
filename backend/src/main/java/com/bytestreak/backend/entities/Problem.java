@@ -25,13 +25,13 @@ import com.bytestreak.backend.TagStringListConverter;
 import java.util.List;
 import java.util.ArrayList;
 
-enum Difficulty {
-    EASY, MEDIUM, HARD
-}
-
 @Entity
 @Table(name = "problems")
 public class Problem {
+    public enum Difficulty {
+        EASY, MEDIUM, HARD
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")

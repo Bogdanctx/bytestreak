@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.services;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

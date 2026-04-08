@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.services;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
