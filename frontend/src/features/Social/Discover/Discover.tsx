@@ -154,13 +154,13 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
                     </Box>
                 ))}
 
-                {accounts.length === 0 && searchQuery.trim() !== "" && (
+                {displayedAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
                     </Typography>
                 )}
 
-                {accounts.length !== 0 && accountsNextCursor !== null && (
+                {displayedAccounts.length !== 0 && accountsNextCursor !== null && (
                     <Button variant="text" size="small" className="discover-load-more-button"
                             onClick={() => fetchAccounts(accountsNextCursor)}
                     >

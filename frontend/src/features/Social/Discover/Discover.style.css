@@ -132,3 +132,12 @@
 	color: var(--text-secondary);
 	text-align: center;
 }
+
+.discover-load-more-button {
+	color: var(--accent-main) !important;
+}
+
+.discover-load-more-button:hover {
+	background-color: #1fa3561f;
+	border: 0; 
+}

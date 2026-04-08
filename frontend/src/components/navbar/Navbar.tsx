@@ -3,14 +3,18 @@ import './Navbar.style.css'
 import ByteStreakLogo from '../../ByteStreak.logo';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 function Navbar() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-
     const navigate = useNavigate();
+    const [hasNotifications, setHasNotifications] = useState(true);
+
+    const open = Boolean(anchorEl);
     const currentPath = window.location.pathname;
     const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
+
 
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -23,6 +27,12 @@ function Navbar() {
             </Button>
 
             <Box id="navbar-links">
+                <Button className='navbar-link-button' disableRipple>
+                    {!hasNotifications && <NotificationsIcon className='navbar-logo-button' />}
+                    {hasNotifications && <NotificationsActiveIcon className='navbar-logo-button' 
+                                        sx = {{ color: 'var(--text-primary)' }} />}
+                </Button>
+
                 <Button 
                     className={`navbar-link-button ${currentPath === "/dashboard" ? "navbar-selected-link" : ""}`}
                     onClick={() => navigate("/dashboard")}
