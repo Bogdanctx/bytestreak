@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -20,50 +20,50 @@ import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.bytestreak.backend.TagStringListConverter;
+
 import java.util.List;
 import java.util.ArrayList;
 
+enum Difficulty {
+    EASY, MEDIUM, HARD
+}
+
 @Entity
 @Table(name = "problems")
-@Getter
-@Setter
 public class Problem {
-    public enum Difficulty {
-        EASY, MEDIUM, HARD
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
-    private Long id;
+    @Getter private Long id;
 
     @NotBlank(message = "Title is required")
-    private String title;
+    @Getter @Setter private String title;
 
     @NotBlank(message = "Slug is required")
-    private String slug;
+    @Getter @Setter private String slug;
 
     @NotBlank(message = "Description is required")
     @Column(columnDefinition = "TEXT")
-    private String description;
+    @Getter @Setter private String description;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
+    @Getter @Setter private Difficulty difficulty;
 
 
     @Column(columnDefinition = "TEXT")
-    private String codeTemplates;
+    @Getter @Setter private String codeTemplates;
 
-    private String testCasesPath;
+    @Getter @Setter private String testCasesPath;
 
     @Convert(converter = TagStringListConverter.class)
-    private List<String> tags = new ArrayList<>();
+    @Getter @Setter private List<String> tags = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
     @JsonIgnore
-    private Account creator;
+    @Getter @Setter private Account creator;
 
     protected Problem() {}
 

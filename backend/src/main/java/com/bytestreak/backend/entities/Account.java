@@ -1,4 +1,4 @@
-package com.bytestreak.backend;
+package com.bytestreak.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,34 +24,32 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-@Getter
-@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Getter private Long id;
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-    private String username;
+    @Getter @Setter private String username;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    private String email;
+    @Getter @Setter private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
+    @Getter @Setter private String password;
 
-    private int level = 0;
-    private int currentXP = 0;
-    private int problemsSolved = 0;
-    private int quizzesSolved = 0;
-    private int streakLength = 0;
+    @Getter @Setter private int level = 0;
+    @Getter @Setter private int currentXP = 0;
+    @Getter @Setter private int problemsSolved = 0;
+    @Getter @Setter private int quizzesSolved = 0;
+    @Getter @Setter private int streakLength = 0;
 
     @OneToMany(mappedBy = "creator")
-    private List<Problem> createdProblems = new ArrayList<>();
+    @Getter @Setter private List<Problem> createdProblems = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -59,11 +57,11 @@ public class Account {
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "problem_id")
     )
-    private List<Problem> solvedProblems = new ArrayList<>();
+    @Getter @Setter private List<Problem> solvedProblems = new ArrayList<>();
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
-    private String profilePictureUrl = "";
+    @Getter @Setter private String profilePictureUrl = "";
 
     @ManyToMany
     @JoinTable(
@@ -71,7 +69,7 @@ public class Account {
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-    private List<Account> friends = new ArrayList<>();
+    @Getter @Setter private List<Account> friends = new ArrayList<>();
 
     protected Account() {}
 
