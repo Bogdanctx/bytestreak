@@ -12,6 +12,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Collections;
@@ -26,17 +27,14 @@ import com.bytestreak.backend.services.JWTService;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private final AccountRepository repository;
+    @Autowired
+    private AccountRepository repository;
+    @Autowired
+    private JWTService jwtService;
+
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private final JWTService jwtService;
 
-    public AuthController(AccountRepository repository, JWTService jwtService) 
-    {
-        this.repository = repository;
-        this.jwtService = jwtService;
-    }
-
-    @GetMapping("me")
+    @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -52,7 +50,7 @@ public class AuthController {
         return ResponseEntity.ok(account);
     }
     
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", "")
                 .httpOnly(true)
@@ -67,7 +65,7 @@ public class AuthController {
         return ResponseEntity.ok(Collections.singletonMap("message", "Logged out successfully"));
     }
     
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
@@ -102,7 +100,7 @@ public class AuthController {
     }
     
     
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Account account) {
         Account existingAccount = repository.findByEmail(account.getEmail());
 

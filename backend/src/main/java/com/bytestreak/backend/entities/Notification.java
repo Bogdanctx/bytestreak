@@ -16,6 +16,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Transient;
 
@@ -25,6 +26,7 @@ import lombok.Setter;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
+@Table(name = "notifications")
 public abstract class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

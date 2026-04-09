@@ -14,11 +14,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import com.bytestreak.backend.enums.FriendRequestStatus;
 
 @Entity
+@Table(name = "friend_requests")
 public class FriendRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

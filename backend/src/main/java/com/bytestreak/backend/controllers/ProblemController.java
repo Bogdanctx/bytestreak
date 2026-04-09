@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.util.LinkedHashMap;
@@ -27,19 +28,12 @@ import com.bytestreak.backend.entities.Problem;
 @RestController
 @RequestMapping("/problems")
 public class ProblemController {
-    private final ProblemRepository repository;
-    private final CodeExecution executionService;
-    private final FileStorageService fileStorageService;
-
-    public ProblemController(ProblemRepository repository, 
-                            CodeExecution executionService,
-                            FileStorageService fileStorageService) 
-    {
-        this.repository = repository;
-        this.executionService = executionService;
-        this.fileStorageService = fileStorageService;
-    }
-
+    @Autowired
+    private ProblemRepository repository;
+    @Autowired
+    private CodeExecution executionService;
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id) {
@@ -136,7 +130,7 @@ public class ProblemController {
         }
     }
 
-    @PutMapping("edit/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO) {
         try {
             Problem existingProblem = repository.findById(id).orElse(null);

@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
 import com.bytestreak.backend.entities.Account;
@@ -31,16 +31,12 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
-    private final AccountRepository repository;
-    private final ObjectMapper objectMapper;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-
-    public AccountController(AccountRepository repository, ObjectMapper objectMapper) 
-    {
-        this.repository = repository;
-        this.objectMapper = objectMapper;
-    }
+    @Autowired
+    private AccountRepository repository;
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) Long cursor) {
