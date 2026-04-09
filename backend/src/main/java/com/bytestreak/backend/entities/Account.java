@@ -27,29 +27,43 @@ import java.util.List;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter private Long id;
+    @Getter 
+    private Long id;
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-    @Getter @Setter private String username;
+    @Getter @Setter 
+    private String username;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Getter @Setter private String email;
+    @Getter @Setter 
+    private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Getter @Setter private String password;
+    @Getter @Setter 
+    private String password;
 
-    @Getter @Setter private int level = 0;
-    @Getter @Setter private int currentXP = 0;
-    @Getter @Setter private int problemsSolved = 0;
-    @Getter @Setter private int quizzesSolved = 0;
-    @Getter @Setter private int streakLength = 0;
+    @Getter @Setter 
+    private int level = 0;
+
+    @Getter @Setter 
+    private int currentXP = 0;
+
+    @Getter @Setter 
+    private int problemsSolved = 0;
+
+    @Getter @Setter 
+    private int quizzesSolved = 0;
+
+    @Getter @Setter 
+    private int streakLength = 0;
 
     @OneToMany(mappedBy = "creator")
-    @Getter @Setter private List<Problem> createdProblems = new ArrayList<>();
+    @Getter @Setter 
+    private List<Problem> createdProblems = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -57,11 +71,13 @@ public class Account {
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "problem_id")
     )
-    @Getter @Setter private List<Problem> solvedProblems = new ArrayList<>();
+    @Getter @Setter 
+    private List<Problem> solvedProblems = new ArrayList<>();
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
-    @Getter @Setter private String profilePictureUrl = "";
+    @Getter @Setter 
+    private String profilePictureUrl = "";
 
     @ManyToMany
     @JoinTable(
@@ -69,7 +85,8 @@ public class Account {
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-    @Getter @Setter private List<Account> friends = new ArrayList<>();
+    @Getter @Setter 
+    private List<Account> friends = new ArrayList<>();
 
     protected Account() {}
 
@@ -77,15 +94,5 @@ public class Account {
         this.username = username;
         this.email = email;
         this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
     }
 }

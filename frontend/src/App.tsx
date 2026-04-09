@@ -23,30 +23,29 @@ function App() {
             <ToastContainer />
 
             <BrowserRouter>
+                <AccountProvider>
+                    {location !== "/" && <Navbar />}
 
-                {location !== "/" && <Navbar />}
+                    <Box flex={1} overflow={"hidden"} padding={2}>
+                            <Routes>
+                                {/* public routes */}
+                                <Route path = "/" element = { <LandingPage /> } /> 
 
-                <Box flex={1} overflow={"hidden"} padding={2}>
-                    <AccountProvider>
-                        <Routes>
-                            {/* public routes */}
-                            <Route path = "/" element = { <LandingPage /> } /> 
+                                {/* protected routes */}
+                                <Route element = { <ProtectedRoute /> }>
+                                    <Route path = "/dashboard" element = { <Dashboard /> } />
+                                    <Route path = "/settings" element = { <Settings /> } />
+                                    <Route path = "/problems/:id/description" element = { <Problem /> } />
+                                    <Route path = "/social" element = { <Social /> } />
 
-                            {/* protected routes */}
-                            <Route element = { <ProtectedRoute /> }>
-                                <Route path = "/dashboard" element = { <Dashboard /> } />
-                                <Route path = "/settings" element = { <Settings /> } />
-                                <Route path = "/problems/:id/description" element = { <Problem /> } />
-                                <Route path = "/social" element = { <Social /> } />
+                                    <Route path = "/creator" element = { <Creator /> } />
+                                    <Route path = "/creator/new" element = { <ProblemBuilder /> } />
+                                    <Route path = "/creator/edit/:id" element = { <ProblemBuilder /> } />
+                                </Route>
 
-                                <Route path = "/creator" element = { <Creator /> } />
-                                <Route path = "/creator/new" element = { <ProblemBuilder /> } />
-                                <Route path = "/creator/edit/:id" element = { <ProblemBuilder /> } />
-                            </Route>
-
-                        </Routes>
-                    </AccountProvider>
-                </Box>
+                            </Routes>
+                    </Box>
+                </AccountProvider>
                 
             </BrowserRouter>
         </Box>

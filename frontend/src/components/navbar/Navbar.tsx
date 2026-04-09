@@ -2,19 +2,49 @@ import { Box, Button, Menu, MenuItem } from '@mui/material'
 import './Navbar.style.css'
 import ByteStreakLogo from '../../ByteStreak.logo';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAccountContext } from '../../context/AccountContext';
+import { api } from '../../api';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import { type NotificationType } from '../../entities';
 
 function Navbar() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
-    const [hasNotifications, setHasNotifications] = useState(true);
+    const [notifications, setNotifications] = useState<NotificationType[]>([]);
+    const { account } = useAccountContext();
+
+    const fetchNotifications = async () => {
+        await api.get('/social/notifications')
+                .then((response) => {
+                    if (response.status === 200) {
+                        console.log(response);
+                        setNotifications(response.data);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+    }
+
+    useEffect(() => {
+        fetchNotifications();
+        
+        const interval = setInterval(() => {
+            fetchNotifications();
+        }, 60000);
+    
+        return () => clearInterval(interval);
+    }, []);
 
     const open = Boolean(anchorEl);
     const currentPath = window.location.pathname;
     const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
 
+    if (!account) {
+        return;
+    }
 
     const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -28,8 +58,8 @@ function Navbar() {
 
             <Box id="navbar-links">
                 <Button className='navbar-link-button' disableRipple>
-                    {!hasNotifications && <NotificationsIcon className='navbar-logo-button' />}
-                    {hasNotifications && <NotificationsActiveIcon className='navbar-logo-button' 
+                    {notifications.length === 0 && <NotificationsIcon className='navbar-logo-button' />}
+                    {notifications.length > 0 && <NotificationsActiveIcon className='navbar-logo-button' 
                                         sx = {{ color: 'var(--text-primary)' }} />}
                 </Button>
 

@@ -18,13 +18,13 @@ async function seedAccounts() {
 
         try {
             await axios.post(API_URL, account);
-            console.log(`✅ Created user: ${account.username} (${account.email})`);
+            console.log(`✅ Created user: ${account.username} (${account.email}) | ${account.profilePictureUrl}`);
         } catch (error) {
             const errorMsg = error.response?.data?.message || error.message;
             console.error(`❌ Failed to create ${account.username}: ${errorMsg}`);
         }
 
-        await delay(500); // <-- THIS actually pauses
+        await delay(100); // <-- THIS actually pauses
     }
 }
 
