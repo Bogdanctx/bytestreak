@@ -5,25 +5,13 @@ import { useEffect, useState } from 'react';
 import Discover from '../../features/Social/Discover/Discover';
 import Feed from '../../features/Social/Feed/Feed';
 import Master from '../../features/Social/Master/Master';
-import { useAccountContext } from '../../context/AccountContext';
+import FriendPanel from '../../features/Social/FriendPanel/FriendPanel';
+import { type IAccount } from '../../entities';
 
 import './Social.style.css';
 
-import { type IAccount } from '../../entities';
-
 function Social() {
-    const [selectedFriend, setSelectedFriend] = useState<IAccount | null>(null);
-    const { account } = useAccountContext();
-
-    if (!account) {
-        return null;
-    }
-
-    useEffect(() => {
-        if (selectedFriend) {
-            // Will be used in the future when we implement the chat functionality
-        }
-    }, [selectedFriend]);
+    const [selectedFriend, setSelectedFriend] = useState<number | null>(null);
 
     return (
         <Box className='social-container'>
@@ -31,10 +19,10 @@ function Social() {
                 <Master setSelectedFriend={setSelectedFriend} />
             </Box>
             <Box className='social-container-column' sx={{ width: '60%' }}>
-                <Feed />
+                {selectedFriend ? <FriendPanel friendId={selectedFriend} /> : <Feed />}
             </Box>
             <Box className='social-container-column' sx={{ width: '20%', padding: 2 }}>
-                <Discover myAccount={account} />
+                <Discover />
             </Box>
         </Box>
     );

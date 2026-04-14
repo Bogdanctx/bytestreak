@@ -38,7 +38,17 @@ public class AccountController {
     
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @GetMapping("/all")
+    @GetMapping("/get")
+    public Account getAccount(@RequestParam Long accountId, Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        }
+
+        return repository.findById(accountId).orElse(null);
+    }
+    
+
+    @GetMapping
     public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) Long cursor) {
         int pageSize = 20;
         List<Account> accounts;

@@ -11,13 +11,13 @@ import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
 
-interface MasterProps {
-    setSelectedFriend: (friend: IAccount | null) => void;
-}
-
-function Master({ setSelectedFriend }: MasterProps) {
+function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<number | null>> }) {
     const { account, setAccount } = useAccountContext();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
+
+    if (!account) {
+        return null;
+    }
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
@@ -36,8 +36,6 @@ function Master({ setSelectedFriend }: MasterProps) {
                     ...account,
                     friends: account.friends.filter(f => f.id !== friendToRemove.id)
                 });
-                
-                setSelectedFriend(null);
             }
         } catch (error) {
             console.error('Error removing friend:', error);
@@ -45,10 +43,6 @@ function Master({ setSelectedFriend }: MasterProps) {
             setFriendToRemove(null); 
         }
     };
-
-    if (!account) {
-        return null;
-    }
     
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
@@ -76,8 +70,8 @@ function Master({ setSelectedFriend }: MasterProps) {
                 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
                     {account.friends.map((friend) => (
-                        <ListItem disablePadding key={friend.id}>
-                            <ListItemButton onClick={() => setSelectedFriend(friend)}>
+                        <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend.id)}>
+                            <ListItemButton>
                                 <ListItemAvatar sx={{ minWidth: 50 }}>
                                     <Avatar 
                                         src={friend.profilePictureUrl}

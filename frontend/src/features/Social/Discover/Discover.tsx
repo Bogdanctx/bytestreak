@@ -13,8 +13,11 @@ import './Discover.style.css';
 import { api } from '../../../api';
 import { type IAccount, type INotification } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
+import { useAccountContext } from '../../../context/AccountContext';
 
-function Discover({ myAccount }: { myAccount: IAccount }) {
+
+function Discover() {
+    const { account } = useAccountContext();
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(null);
@@ -22,11 +25,15 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [pendingConnections, setPendingConnections] = useState<number[]>([]);
 
+    if (!account) {
+        return null;
+    }
+
     const fetchPendingConnections = async () => {
-        api.get('/friends/pending')
+        await api.get('/friends/pending')
             .then(response => {
                 if (response.status === 200) {
-                    const pending = response.data.map((notification: INotification) => notification.sender.id === myAccount.id ? notification.receiver.id : notification.sender.id);
+                    const pending = response.data.map((notification: INotification) => notification.sender.id === account.id ? notification.receiver.id : notification.sender.id);
                     console.log('Fetched pending connections:', pending);
                     setPendingConnections(pending);
                 }
@@ -36,39 +43,18 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
             });
     }
 
-    useEffect(() => {
-        // debounce the seach input by 300ms to avoid filtering on every keystroke
-        const handler = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 300);
-
-        return () => clearTimeout(handler);
-    }, [searchQuery]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-
-        fetchAccounts(accountsNextCursor, controller.signal);
-
-        return () => controller.abort();
-    }, []);
-
-    useEffect(() => {
-        fetchPendingConnections();
-    }, []);
-
     const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
         try {
             const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });            
             setAccountsNextCursor(response.data.nextCursor);
 
             // remove me from the list
-            let filteredAccounts = response.data.accounts.filter((account: IAccount) => account.id !== myAccount.id);
+            let filteredAccounts = response.data.accounts.filter((account: IAccount) => account.id !== account.id);
             
             // remove my friends from the list
-            if (myAccount.friends.length > 0) {
+            if (account.friends.length > 0) {
                 filteredAccounts = filteredAccounts.filter((account: IAccount) => {
-                    return !myAccount.friends.some((friend) => friend.id === account.id);
+                    return !account.friends.some((friend) => friend.id === account.id);
                 });
             }
 
@@ -109,6 +95,24 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
                 console.error('Error sending friend request:', error);
             });
     }
+
+    useEffect(() => {
+        // debounce the seach input by 300ms to avoid filtering on every keystroke
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        fetchAccounts(accountsNextCursor, controller.signal);
+        fetchPendingConnections();
+
+        return () => controller.abort();
+    }, []);
 
     return (
         <Box className="discover-container">
