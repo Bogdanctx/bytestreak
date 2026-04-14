@@ -123,7 +123,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-item">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.friendsCount}
+                        {account.friends.length}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Friends

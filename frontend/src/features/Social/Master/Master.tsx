@@ -25,8 +25,10 @@ function Master({ setSelectedFriend }: MasterProps) {
     };
 
     const handleDeleteFriend = async () => {
-        if (!friendToRemove || !account) return;
-
+        if (!friendToRemove || !account) {
+            return;
+        }
+        
         try {
             const response = await api.post(`/social/friends/remove?friendId=${friendToRemove.id}`);
             if (response.status === 200) {
@@ -99,7 +101,7 @@ function Master({ setSelectedFriend }: MasterProps) {
                                 <IconButton
                                     size="small"
                                     className='master-delete-friend-button'
-                                    onClick={(e) => confirmDelete(friend, e)} // Trigger dialog instead of immediate delete
+                                    onClick={(e) => confirmDelete(friend, e)}
                                     sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-hard)' } }}
                                 >
                                     <DeleteOutlineIcon fontSize="small" />

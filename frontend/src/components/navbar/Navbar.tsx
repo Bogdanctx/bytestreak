@@ -120,6 +120,14 @@ function Navbar() {
                             Social
                         </Button>
                     </MenuItem>
+                    <MenuItem>
+                        <Button 
+                            className={`navbar-link-button ${currentPath === "/people" ? "navbar-selected-link" : ""}`}
+                            onClick={() => navigate("/settings")}
+                            disableRipple>
+                            Settings
+                        </Button>
+                    </MenuItem>
                 </Menu>
             </Box>
         </Box>

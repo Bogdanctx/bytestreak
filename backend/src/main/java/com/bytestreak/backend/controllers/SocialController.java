@@ -17,6 +17,7 @@ import com.bytestreak.backend.enums.NotificationType;
 import com.bytestreak.backend.repositories.NotificationRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/social")
@@ -43,9 +44,8 @@ public class SocialController {
 
         Notification notification = new Notification();
         notification.setSender(sender);
-        notification.setReceiver(receiver);
         notification.setType(NotificationType.FRIEND_REQUEST);
-        notification.setPayload(null);
+        notification.setPayload(Map.of());
 
         notificationRepository.save(notification);
 
@@ -58,21 +58,26 @@ public class SocialController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account me = accountRepository.findByEmail(authentication.getName());
         Notification notification = notificationRepository.findById(requestId).orElse(null);
 
+        Account me = accountRepository.findByEmail(authentication.getName());
+        Account sender = notification.getSender();
+        
         if (me == null || notification == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        if (notification.getReceiver() != me) {
+        if (notification.getSender() != me) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         notificationRepository.delete(notification);
-        me.getFriends().add(notification.getSender());
-
+        
+        me.getFriends().add(sender);
+        sender.getFriends().add(me);
+        
         accountRepository.save(me);
+        accountRepository.save(sender);
 
         return ResponseEntity.ok().build();
     }
@@ -84,13 +89,14 @@ public class SocialController {
         }
 
         Account me = accountRepository.findByEmail(authentication.getName());
+        
         Notification notification = notificationRepository.findById(requestId).orElse(null);
 
         if (me == null || notification == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        if (notification.getReceiver() != me) {
+        if (notification.getSender() != me) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -138,7 +144,7 @@ public class SocialController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        List<Notification> notifications = notificationRepository.findByReceiverOrderByTimestampDesc(me);
+        List<Notification> notifications = notificationRepository.findBySenderOrderByTimestampDesc(me);
 
         return ResponseEntity.ok(notifications);
     }

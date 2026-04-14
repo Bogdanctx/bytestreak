@@ -28,12 +28,7 @@ public class Notification {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    @Getter @Setter
-    private Account receiver;
-
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = false)
     @Getter @Setter
     private Account sender;
 

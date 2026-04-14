@@ -154,6 +154,12 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
                     </Box>
                 ))}
 
+                {displayedAccounts.length === 0 && searchQuery.trim() === "" && (
+                    <Typography variant="body2" className="discover-empty-state">
+                        <br /> No connections available. <br /> <br /> Invite your friends to join ByteStreak and connect with them here!
+                    </Typography>
+                )}
+
                 {displayedAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
