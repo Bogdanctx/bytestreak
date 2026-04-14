@@ -11,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.bytestreak.backend.repositories.AccountRepository;
-import com.bytestreak.backend.repositories.FriendRequestRepository;
-import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.entities.Account;
-import com.bytestreak.backend.entities.FriendRequest;
-import com.bytestreak.backend.entities.FriendRequestNotification;
 import com.bytestreak.backend.entities.Notification;
+import com.bytestreak.backend.enums.NotificationType;
+import com.bytestreak.backend.repositories.NotificationRepository;
 
 import java.util.List;
 
@@ -29,9 +27,6 @@ public class SocialController {
 
     @Autowired
     private NotificationRepository notificationRepository;
-
-    @Autowired
-    private FriendRequestRepository friendRequestRepository;
 
     @PostMapping("/friends/add")
     public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
@@ -46,16 +41,12 @@ public class SocialController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        FriendRequest request = new FriendRequest();
-        request.setSender(sender);
-        request.setReceiver(receiver);
-        request = friendRequestRepository.save(request); // salveaza request-ul
-
-        // creez notificarea si o salvez
-        FriendRequestNotification notification = new FriendRequestNotification();
-        notification.setReceiver(receiver);
+        Notification notification = new Notification();
         notification.setSender(sender);
-        notification.setFriendRequest(request);
+        notification.setReceiver(receiver);
+        notification.setType(NotificationType.FRIEND_REQUEST);
+        notification.setPayload(null);
+
         notificationRepository.save(notification);
 
         return ResponseEntity.ok().build();

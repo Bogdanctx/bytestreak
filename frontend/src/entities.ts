@@ -53,24 +53,12 @@ export interface ISolution {
     problemId: number;
 }
 
-export interface INotification {
+export type INotification = {
     id: number;
     receiver: IAccount;
+    sender: IAccount;
+    type: 'FRIEND_REQUEST' | undefined;
     isRead: boolean;
     timestamp: string;
+    payload: JSON | null;
 }
-
-export interface IFriendRequest {
-    id: number;
-    sender: IAccount;
-    receiver: IAccount;
-    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
-}
-
-export interface IFriendRequestNotification extends INotification {
-    type: 'FRIEND_REQUEST';
-    sender: IAccount;
-    friendRequest: IFriendRequest;
-}
-
-export type NotificationType = IFriendRequestNotification | undefined;

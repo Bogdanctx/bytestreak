@@ -1,0 +1,22 @@
+.notifications-active-icon {
+	color: var(--text-primary);
+}
+
+.notifications-popover-paper {
+	background-color: var(--bg-1) !important;
+	border-radius: 12px !important;
+	border: 1px solid var(--bg-3) !important;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+	margin-top: 6px !important;
+}
+
+.notifications-empty-state {
+	padding: 24px;
+	text-align: center;
+	color: var(--text-secondary);
+}
+
+.notifications-list {
+	display: flex;
+	flex-direction: column;
+}

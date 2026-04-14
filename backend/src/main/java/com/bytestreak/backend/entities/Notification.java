@@ -3,56 +3,52 @@ package com.bytestreak.backend.entities;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.bytestreak.backend.enums.NotificationType;
 
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Transient;
-
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "notifications")
-public abstract class Notification {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter 
+    @Getter
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    @Getter @Setter 
+    @Getter @Setter
     private Account receiver;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    @Getter @Setter
+    private Account sender;
+
+    @Getter @Setter
+    private NotificationType type;
 
     @Getter @Setter
     private boolean isRead = false;
 
     @CreationTimestamp
-    @Getter 
+    @Getter
     private LocalDateTime timestamp;
 
-    @Transient
-    @JsonProperty("type")
-    public String getType() {
-        DiscriminatorValue discriminatorValue = this.getClass().getAnnotation(DiscriminatorValue.class);
-        if (discriminatorValue == null) {
-            return "UNKNOWN";
-        }
-
-        return discriminatorValue.value();
-    }
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    @Getter @Setter
+    private Map<String, Object> payload;
 }

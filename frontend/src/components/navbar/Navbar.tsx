@@ -1,4 +1,4 @@
-import { Box, Button, Menu, MenuItem } from '@mui/material'
+import { Box, Button, Menu, MenuItem, Popover } from '@mui/material'
 import './Navbar.style.css'
 import ByteStreakLogo from '../../ByteStreak.logo';
 import { useNavigate } from 'react-router-dom';
@@ -8,9 +8,11 @@ import { api } from '../../api';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { type NotificationType } from '../../entities';
+import Notifications from './Notifications';
 
 function Navbar() {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
+    const [notificationsAnchorEl, setNotificationsAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<NotificationType[]>([]);
     const { account } = useAccountContext();
@@ -38,16 +40,11 @@ function Navbar() {
         return () => clearInterval(interval);
     }, []);
 
-    const open = Boolean(anchorEl);
     const currentPath = window.location.pathname;
     const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
 
     if (!account) {
         return;
-    }
-
-    const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
     }
 
     return (
@@ -57,11 +54,8 @@ function Navbar() {
             </Button>
 
             <Box id="navbar-links">
-                <Button className='navbar-link-button' disableRipple>
-                    {notifications.length === 0 && <NotificationsIcon className='navbar-logo-button' />}
-                    {notifications.length > 0 && <NotificationsActiveIcon className='navbar-logo-button' 
-                                        sx = {{ color: 'var(--text-primary)' }} />}
-                </Button>
+                <Notifications />
+                
 
                 <Button 
                     className={`navbar-link-button ${currentPath === "/dashboard" ? "navbar-selected-link" : ""}`}
@@ -78,20 +72,20 @@ function Navbar() {
 
                 <Button
                     className={`navbar-link-button ${isMoreSelected ? "navbar-selected-link" : ""}`}
-                    aria-controls={open ? 'more-menu' : undefined}
+                    aria-controls={Boolean(moreAnchorEl) ? 'more-menu' : undefined}
                     aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
+                    aria-expanded={Boolean(moreAnchorEl) ? 'true' : undefined}
                     disableRipple
-                    onClick={handleMoreClick}
+                    onClick={(event) => setMoreAnchorEl(event.currentTarget)}
                     >
                     More
                 </Button>
 
                 <Menu
                     id="more-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={() => setAnchorEl(null)}
+                    anchorEl={moreAnchorEl}
+                    open={Boolean(moreAnchorEl)}
+                    onClose={() => setMoreAnchorEl(null)}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'center',

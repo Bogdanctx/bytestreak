@@ -24,6 +24,7 @@ import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.enums.ProblemDifficulty;
 
 @RestController
 @RequestMapping("/problems")
@@ -110,7 +111,7 @@ public class ProblemController {
                 newProblemDTO.getTitle(),
                 slug,
                 newProblemDTO.getDescription(),
-                Problem.Difficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()),
+                ProblemDifficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()),
                 newProblemDTO.getCodeTemplates(),
                 testCasesPath,
                 newProblemDTO.getTags(),
@@ -146,7 +147,7 @@ public class ProblemController {
             existingProblem.setTitle(problemDTO.getTitle());
             existingProblem.setSlug(slug);
             existingProblem.setDescription(problemDTO.getDescription());
-            existingProblem.setDifficulty(Problem.Difficulty.valueOf(problemDTO.getDifficulty().toUpperCase()));
+            existingProblem.setProblemDifficulty(ProblemDifficulty.valueOf(problemDTO.getDifficulty().toUpperCase()));
             existingProblem.setCodeTemplates(problemDTO.getCodeTemplates());
             existingProblem.setTestCasesPath(testCasesPath);
             existingProblem.setTags(problemDTO.getTags());
