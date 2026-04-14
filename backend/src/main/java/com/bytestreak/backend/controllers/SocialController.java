@@ -3,7 +3,6 @@ package com.bytestreak.backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
@@ -72,6 +71,7 @@ public class SocialController {
 
         notificationRepository.delete(notification);
         me.getFriends().add(notification.getSender());
+
         accountRepository.save(me);
 
         return ResponseEntity.ok().build();
@@ -95,6 +95,32 @@ public class SocialController {
         }
 
         notificationRepository.delete(notification);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/friends/remove")
+    public ResponseEntity<?> removeFriend(@RequestParam Long friendId, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+        Account friend = accountRepository.findById(friendId).orElse(null);
+
+        if (me == null || friend == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        boolean removedFromMe = me.getFriends().removeIf(account -> account.getId().equals(friendId));
+        boolean removedFromFriend = friend.getFriends().removeIf(account -> account.getId().equals(me.getId()));
+
+        if (!removedFromMe && !removedFromFriend) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        accountRepository.save(me);
+        accountRepository.save(friend);
 
         return ResponseEntity.ok().build();
     }

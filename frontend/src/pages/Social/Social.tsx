@@ -1,7 +1,7 @@
 import {
     Box
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Discover from '../../features/Social/Discover/Discover';
 import Feed from '../../features/Social/Feed/Feed';
 import Master from '../../features/Social/Master/Master';
@@ -19,24 +19,21 @@ function Social() {
         return null;
     }
 
+    useEffect(() => {
+        if (selectedFriend) {
+            // Will be used in the future when we implement the chat functionality
+        }
+    }, [selectedFriend]);
+
     return (
         <Box className='social-container'>
-            <Box 
-                className='social-container-column'
-                sx={{ width: '18%' }}
-            >
-                <Master friendsList={account.friends} selectedFriend={selectedFriend} setSelectedFriend={setSelectedFriend} />
+            <Box className='social-container-column' sx={{ width: '18%' }}>
+                <Master setSelectedFriend={setSelectedFriend} />
             </Box>
-            <Box 
-                className='social-container-column'
-                sx={{ width: '60%' }}
-            >
+            <Box className='social-container-column' sx={{ width: '60%' }}>
                 <Feed />
             </Box>
-            <Box 
-                className='social-container-column' 
-                sx={{ width: '20%', padding: 2 }}
-            >
+            <Box className='social-container-column' sx={{ width: '20%', padding: 2 }}>
                 <Discover myAccount={account} />
             </Box>
         </Box>
