@@ -1,5 +1,6 @@
 package com.bytestreak.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -85,7 +86,8 @@ public class Account {
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-    @Getter @Setter 
+    @JsonIgnoreProperties("friends")
+    @Getter @Setter
     private List<Account> friends = new ArrayList<>();
 
     protected Account() {}

@@ -141,3 +141,8 @@
 	background-color: #1fa3561f;
 	border: 0; 
 }
+
+.discover-pending-connection {
+	color: var(--text-secondary);
+	font-size: 0.75rem;
+}

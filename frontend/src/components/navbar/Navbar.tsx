@@ -1,24 +1,21 @@
-import { Box, Button, Menu, MenuItem, Popover } from '@mui/material'
+import { Box, Button, Menu, MenuItem } from '@mui/material'
 import './Navbar.style.css'
 import ByteStreakLogo from '../../ByteStreak.logo';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAccountContext } from '../../context/AccountContext';
 import { api } from '../../api';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { type NotificationType } from '../../entities';
+import { type INotification } from '../../entities';
 import Notifications from './Notifications';
 
 function Navbar() {
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
-    const [notificationsAnchorEl, setNotificationsAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
-    const [notifications, setNotifications] = useState<NotificationType[]>([]);
+    const [notifications, setNotifications] = useState<INotification[]>([]);
     const { account } = useAccountContext();
 
     const fetchNotifications = async () => {
-        await api.get('/social/notifications')
+        await api.get('/notifications')
                 .then((response) => {
                     if (response.status === 200) {
                         console.log(response);

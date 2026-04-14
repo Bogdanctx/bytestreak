@@ -11,15 +11,30 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IAccount } from '../../../entities';
+import { type IAccount, type INotification } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
 
 function Discover({ myAccount }: { myAccount: IAccount }) {
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(null);
-        const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [pendingConnections, setPendingConnections] = useState<number[]>([]);
+
+    const fetchPendingConnections = async () => {
+        api.get('/friends/pending')
+            .then(response => {
+                if (response.status === 200) {
+                    const pending = response.data.map((notification: INotification) => notification.sender.id === myAccount.id ? notification.receiver.id : notification.sender.id);
+                    console.log('Fetched pending connections:', pending);
+                    setPendingConnections(pending);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching pending connections:', error);
+            });
+    }
 
     useEffect(() => {
         // debounce the seach input by 300ms to avoid filtering on every keystroke
@@ -36,6 +51,10 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
         fetchAccounts(accountsNextCursor, controller.signal);
 
         return () => controller.abort();
+    }, []);
+
+    useEffect(() => {
+        fetchPendingConnections();
     }, []);
 
     const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
@@ -73,7 +92,7 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
     }, [accounts, debouncedSearchQuery]);
 
     const handleAddFriend = async (accountId: number) => {
-        await api.post(`social/friends/add?friendId=${accountId}`)
+        await api.post(`friends/add?friendId=${accountId}`)
             .then(response => {
                 if (response.status === 200) {
                     // if the friend request was successful, remove the account from the list
@@ -146,11 +165,17 @@ function Discover({ myAccount }: { myAccount: IAccount }) {
                             </Box>
                         </Box>
 
-                        <Button variant="outlined" size="small" className="discover-add-button" 
-                                onClick={() => handleAddFriend(account.id)}
-                        >
-                            <PersonAddIcon fontSize="small" />
-                        </Button>
+                        {pendingConnections.includes(account.id) ? (
+                            <Typography variant="caption" className="discover-pending-connection">
+                                Pending Connection
+                            </Typography>
+                        ) : (
+                            <Button variant="outlined" size="small" className="discover-add-button" 
+                                    onClick={() => handleAddFriend(account.id)}
+                            >
+                                <PersonAddIcon fontSize="small" />
+                            </Button>
+                        )}
                     </Box>
                 ))}
 

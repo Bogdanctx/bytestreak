@@ -13,7 +13,7 @@ function Notifications() {
     const [notifications, setNotifications] = useState<INotification[]>([]);
 
     const fetchNotifications = async () => {
-        api.get('/social/notifications')
+        api.get('/notifications')
             .then(response => {
                 if (response.status === 200) {
                     console.log('Fetched notifications:', response.data);
@@ -34,7 +34,7 @@ function Notifications() {
     }, []);
 
     const friendRequestActionHandler = async (accepted: boolean, requestId: number) => {
-        api.post(`/social/friends/${accepted ? 'accept' : 'decline'}?requestId=${requestId}`)
+        api.post(`/friends/${accepted ? 'accept' : 'decline'}?requestId=${requestId}`)
             .then(response => {
                 if (response.status === 200) {
                     console.log(`Friend request ${accepted ? 'accepted' : 'declined'} successfully.`);

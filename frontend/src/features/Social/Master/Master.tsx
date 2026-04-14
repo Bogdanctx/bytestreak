@@ -30,7 +30,7 @@ function Master({ setSelectedFriend }: MasterProps) {
         }
         
         try {
-            const response = await api.post(`/social/friends/remove?friendId=${friendToRemove.id}`);
+            const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
             if (response.status === 200) {
                 setAccount({
                     ...account,
@@ -49,7 +49,7 @@ function Master({ setSelectedFriend }: MasterProps) {
     if (!account) {
         return null;
     }
-
+    
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
 
