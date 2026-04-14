@@ -33,6 +33,19 @@ function Notifications() {
         return () => clearInterval(interval);
     }, []);
 
+    const friendRequestActionHandler = async (accepted: boolean, requestId: number) => {
+        api.post(`/social/friends/${accepted ? 'accept' : 'decline'}?requestId=${requestId}`)
+            .then(response => {
+                if (response.status === 200) {
+                    console.log(`Friend request ${accepted ? 'accepted' : 'declined'} successfully.`);
+                    setNotifications(prev => prev.filter(notification => notification.id !== requestId));
+                }
+            })
+            .catch(error => {
+                console.error(`Error ${accepted ? 'accepting' : 'declining'} friend request:`, error);
+            });
+    };
+
     return (
         <>
             <Button 
@@ -65,7 +78,7 @@ function Notifications() {
                     <Box className='notifications-list'>
                         {notifications.map(notification => {
                             if (notification.type === 'FRIEND_REQUEST') {
-                                return <FriendRequestNotification key={notification.id} notification={notification} />
+                                return <FriendRequestNotification key={notification.id} notification={notification} actionHandler={friendRequestActionHandler} />;
                             }
                             return null;
                         })}
