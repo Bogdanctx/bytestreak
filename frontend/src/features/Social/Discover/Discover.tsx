@@ -20,7 +20,7 @@ function Discover() {
     const { account } = useAccountContext();
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
-    const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(null);
+    const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [pendingConnections, setPendingConnections] = useState<number[]>([]);
@@ -45,16 +45,19 @@ function Discover() {
 
     const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
         try {
-            const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });            
+            const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });     
+            
+            console.log('Fetched accounts:', response.data.accounts);
+
             setAccountsNextCursor(response.data.nextCursor);
 
             // remove me from the list
-            let filteredAccounts = response.data.accounts.filter((account: IAccount) => account.id !== account.id);
+            let filteredAccounts = response.data.accounts.filter((fetchedAccount: IAccount) => fetchedAccount.id !== account.id);
             
             // remove my friends from the list
             if (account.friends.length > 0) {
-                filteredAccounts = filteredAccounts.filter((account: IAccount) => {
-                    return !account.friends.some((friend) => friend.id === account.id);
+                filteredAccounts = filteredAccounts.filter((fetchedAccount: IAccount) => {
+                    return !account.friends.some((friend) => friend.id === fetchedAccount.id);
                 });
             }
 

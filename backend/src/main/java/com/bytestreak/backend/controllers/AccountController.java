@@ -48,21 +48,16 @@ public class AccountController {
     }
     
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) Long cursor) {
         int pageSize = 20;
-        List<Account> accounts;
-    
-        if (cursor == null) {
-            accounts = repository.findByIdGreaterThanOrderByIdAsc(0L, PageRequest.of(0, pageSize));
-        }
-        else {
-            accounts = repository.findByIdGreaterThanOrderByIdAsc(cursor, PageRequest.of(0, pageSize));
-        }
+        
+        Long startId = (cursor == null) ? 0L : cursor;
+
+        List<Account> accounts = repository.findByIdGreaterThanOrderByIdAsc(startId, PageRequest.of(0, pageSize));
 
         Long nextCursor = null;
-
-        if (accounts.size() == pageSize) {
+        if (!accounts.isEmpty() && accounts.size() == pageSize) {
             nextCursor = accounts.get(accounts.size() - 1).getId();
         }
 

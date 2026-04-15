@@ -11,7 +11,7 @@ import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
 
-function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<number | null>> }) {
+function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
     const { account, setAccount } = useAccountContext();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
@@ -70,7 +70,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
                 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
                     {account.friends.map((friend) => (
-                        <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend.id)}>
+                        <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
                             <ListItemButton>
                                 <ListItemAvatar sx={{ minWidth: 50 }}>
                                     <Avatar 

@@ -11,7 +11,7 @@ import { type IAccount } from '../../entities';
 import './Social.style.css';
 
 function Social() {
-    const [selectedFriend, setSelectedFriend] = useState<number | null>(null);
+    const [selectedFriend, setSelectedFriend] = useState<IAccount | null>(null);
 
     return (
         <Box className='social-container'>
@@ -19,7 +19,13 @@ function Social() {
                 <Master setSelectedFriend={setSelectedFriend} />
             </Box>
             <Box className='social-container-column' sx={{ width: '60%' }}>
-                {selectedFriend ? <FriendPanel friendId={selectedFriend} /> : <Feed />}
+                {selectedFriend ? (
+                    <FriendPanel 
+                        friendId={selectedFriend.id}
+                        onBack = {() => setSelectedFriend(null)}/>
+                ) : (
+                    <Feed />
+                )}
             </Box>
             <Box className='social-container-column' sx={{ width: '20%', padding: 2 }}>
                 <Discover />
