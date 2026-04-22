@@ -19,12 +19,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Map;
 
 @Entity
+@Table(name = "Notifications")
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

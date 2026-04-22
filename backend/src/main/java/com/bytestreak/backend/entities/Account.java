@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "Accounts")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

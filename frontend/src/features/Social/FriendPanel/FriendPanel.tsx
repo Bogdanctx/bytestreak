@@ -5,31 +5,23 @@ import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DownloadIcon from '@mui/icons-material/Download';
-import { type IAccount } from '../../../entities';
+import { type IAccount, type IMessage, type IAttachment } from '../../../entities';
 import { api } from '../../../api';
+import { useAccountContext } from '../../../context/AccountContext';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
-
-// Mock interface for messages until you build the backend entity
-interface IMessage {
-    id: number;
-    senderId: number;
-    text: string;
-    attachments?: ISelectedFile[];
-    timestamp: Date;
-}
-
-interface ISelectedFile {
-    name: string;
-    base64: string;
-}
 
 function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => void }) {
     const [friend, setFriend] = useState<IAccount | null>(null);
     const [messageInput, setMessageInput] = useState("");
     const [messages, setMessages] = useState<IMessage[]>([]);
-    const [selectedFiles, setSelectedFiles] = useState<ISelectedFile[]>([]);
+    const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { account } = useAccountContext();
+
+    if (!account) {
+        return null; // or a loading state
+    }
 
     const fetchFriend = async () => {
         try {
@@ -42,34 +34,53 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         }
     };
 
+    const fetchMessages = async () => {
+        try {
+            const response = await api.get(`/social/messages/conversation?otherUserId=${friendId}`);
+            if (response.status === 200) {
+                setMessages(response.data);
+            }
+        } 
+        catch (error) {
+            console.error('Error fetching messages:', error);
+
+        }
+    };
+
     useEffect(() => {
         fetchFriend();
-        // Here you would also fetch the chat history for this friend:
-        // fetchMessages();
+        fetchMessages();
     }, [friendId]);
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (messageInput.trim() === "" && selectedFiles.length === 0) {
             return;
         }
 
-        const newMessage: IMessage = {
-            id: Date.now(),
-            senderId: 0, // 0 implies "me" for this frontend mock
+        const messageDTO = {
             text: messageInput,
-            attachments: selectedFiles,
-            timestamp: new Date()
-        };
+            attachments: selectedFiles.map(file => ({
+                filename: file.filename,
+                filedata: file.filedata
+            }))
+        }
 
-        setMessages((prev) => [...prev, newMessage]);
-        setMessageInput("");
-        setSelectedFiles([]);
+        try {
+            const response = await api.post(`/social/messages/send?receiverId=${friendId}`, messageDTO);
 
-        // TODO: Send to backend
-        // const formData = new FormData();
-        // formData.append("text", messageInput);
-        // if (selectedFile) formData.append("file", selectedFile);
-        // api.post(`/messages/send?receiverId=${friendId}`, formData);
+            if (response.status === 200) {
+                const savedMessage = response.data;
+                setMessages((prev) => [...prev, savedMessage]);
+                setMessageInput("");
+                setSelectedFiles([]);
+            } 
+            else {
+                console.error('Failed to send message:', response.statusText);
+            }
+        } 
+        catch (error) {
+            console.error('Error sending message:', error);
+        }
     };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +94,12 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64String = reader.result as string;
-                setSelectedFiles((prevFiles) => [...prevFiles, { name: file.name, base64: base64String }]);
+                const newFile: IAttachment = {
+                    id: null,
+                    filename: file.name,
+                    filedata: base64String
+                };
+                setSelectedFiles((prevFiles) => [...prevFiles, newFile]);
             };
             reader.readAsDataURL(file);
         });
@@ -159,14 +175,14 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
                     messages.map((message) => (
                         <Box 
                             key={message.id} 
-                            className={`chat-bubble-container ${message.senderId === 0 ? 'chat-mine' : 'chat-theirs'}`}
+                            className={`chat-bubble-container ${message.sender.id === account.id ? 'chat-mine' : 'chat-theirs'}`}
                         >
-                            <Paper className={`chat-bubble ${message.senderId === 0 ? 'bubble-mine' : 'bubble-theirs'}`}>
+                            <Paper className={`chat-bubble ${message.sender.id === account.id ? 'bubble-mine' : 'bubble-theirs'}`}>
                                 {/* render each attachment */}
                                 {message.attachments?.map((file, index) => {
                                     // if it's image then just render it
-                                    if (file.base64.startsWith('data:image')) {
-                                        return <img key={index} src={file.base64} alt={file.name} className="chat-attachment" />
+                                    if (file.filedata.startsWith('data:image')) {
+                                        return <img key={index} src={file.filedata} alt={file.filename} className="chat-attachment" />
                                     }
                                     
                                     // if it's pdf or txt render a download button
@@ -174,13 +190,13 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
                                         <Box key={index} className="chat-file-row">
                                             <AttachFileIcon className="chat-file-icon" />
                                             <Typography variant="caption" className="chat-file-name">
-                                                {file.name}
+                                                {file.filename}
                                             </Typography>
                                             
                                             <IconButton 
                                                 component="a" 
-                                                href={file.base64} 
-                                                download={file.name}
+                                                href={file.filedata} 
+                                                download={file.filename}
                                                 size="small" 
                                                 className="chat-file-download-btn"
                                             >
@@ -207,14 +223,14 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
                 {selectedFiles.length > 0 && (
                     <Box className="friend-panel-file-preview friend-panel-file-preview-wrap">
                         {selectedFiles.map((file, index) => {
-                            if (file.base64.startsWith('data:image')) {
-                                return <img key={index} src={file.base64} alt={file.name} className="friend-panel-preview-image" />
+                            if (file.filedata.startsWith('data:image')) {
+                                return <img key={index} src={file.filedata} alt={file.filename} className="friend-panel-preview-image" />
                             }
                             return (
                                 <Box key={index} className="friend-panel-preview-file-chip">
                                     <AttachFileIcon className="friend-panel-preview-file-icon" />
                                     <Typography variant="caption" className="friend-panel-preview-file-name">
-                                        {file.name}
+                                        {file.filename}
                                     </Typography>
                                 </Box>
                             )

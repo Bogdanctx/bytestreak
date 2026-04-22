@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
-@Table(name = "problems")
+@Table(name = "Problems")
 public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
