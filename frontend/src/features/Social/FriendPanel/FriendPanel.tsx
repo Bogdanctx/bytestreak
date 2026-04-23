@@ -10,6 +10,7 @@ import { api } from '../../../api';
 import { useAccountContext } from '../../../context/AccountContext';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
+import { Client } from '@stomp/stompjs';
 
 function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => void }) {
     const [friend, setFriend] = useState<IAccount | null>(null);
@@ -50,7 +51,34 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
     useEffect(() => {
         fetchFriend();
         fetchMessages();
-    }, [friendId]);
+
+        const client = new Client({
+            brokerURL: 'ws://localhost:8080/ws',
+            debug: (str) => {
+                console.log(str);
+            },
+            onConnect: () => {
+                client.subscribe(`/topic/messages/${account.id}`, (message) => {
+                    const newLiveMessage: IMessage = JSON.parse(message.body);
+
+                    if (newLiveMessage.sender.id === friendId) {
+                        setMessages((prev) => [...prev, newLiveMessage]);
+                    }
+
+                });
+            },
+            onStompError: (error) => {
+                console.error('WebSocket STOMP error:', error);
+            }
+        });
+
+        client.activate();
+
+        return () => {
+            client.deactivate();
+        };
+
+    }, [friendId, account.id]);
 
     const handleSendMessage = async () => {
         if (messageInput.trim() === "" && selectedFiles.length === 0) {
