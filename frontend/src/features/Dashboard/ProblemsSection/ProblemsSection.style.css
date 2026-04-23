@@ -1,6 +1,6 @@
 #problems-section-container {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    background-color: #111111;
+    box-shadow: 0 4px 12px #00000080;
+    background-color: var(--bg-2);
     border-radius: 16px;
 
     height: 100%;
@@ -9,10 +9,6 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-
-    padding-top: 24px;
-    padding-left: 16px;
-    padding-right: 16px;
 }
 
 #problems-section-header {
@@ -20,6 +16,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    background-color: var(--bg-1);
+    padding: 32px;
+
+    border-top-right-radius: 16px;
+    border-top-left-radius: 16px;
 }
 
 #problems-section-list {
@@ -33,23 +35,27 @@
 
 #problems-section-footer {
     padding: 16px;
-    border-top: 1px solid #333333;
+    border-top: 1px solid var(--bg-1);
     justify-content: center;
+    background-color: var(--bg-1);
+
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
 #problems-section-pagination .MuiPaginationItem-root {
     color: white;
-    border-color: #333;
+    border-color: var(--bg-0);
 }
 
 #problems-section-pagination .Mui-selected {
-    background-color: #23CE6B !important;
+    background-color: var(--accent-main) !important;
     color: black;
     font-weight: bold;
 }
 
 .problem-filter-select {
-    background-color: #1a1a1a;
+    background-color: var(--bg-4);
     color: white !important;
     border-radius: 8px;
     height: 40px;
@@ -67,17 +73,17 @@
 }
 
 .problem-filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #23CE6B !important;
+    border-color: var(--accent-main) !important;
     border-width: 1px;
 }
 
 .problem-filter-select .MuiSvgIcon-root {
-    color: gray;
+    color: var(--text-primary) !important;
 }
 
 .filter-menu-paper {
-    background-color: #1a1a1a !important;
-    border: 1px solid #333;
+    background-color: var(--bg-5) !important;
+    border: 1px solid var(--bg-1);
     border-radius: 8px !important;
     margin-top: 8px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
@@ -89,26 +95,22 @@
 }
 
 .filter-menu-item:hover {
-    background-color: #23CE6B !important;
-    color: black !important;
+    background-color: var(--bg-3) !important;
+    color: var(--text-primary) !important;
     font-weight: bold;
 }
 
 .filter-menu-item.Mui-selected {
-    background-color: rgba(35, 206, 107, 0.1) !important;
-    color: #23CE6B !important;
-}
-
-.filter-menu-item.Mui-selected:hover {
-    background-color: rgba(35, 206, 107, 0.3) !important;
+    background-color: rgb(35, 206, 107, 0.3) !important;
+    color: var(--text-primary) !important;
 }
 
 .show-tags-switch .MuiSwitch-track {
-    background-color: gray !important;
+    background-color: var(--bg-9) !important;
 }
 
 .show-tags-switch .MuiSwitch-switchBase.Mui-checked {
-    color: #23CE6B !important;
+    color: var(--accent-main) !important;
 }
 
 .show-tags-switch .MuiSwitch-switchBase.Mui-checked:hover {
@@ -116,6 +118,6 @@
 }
 
 .show-tags-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-    background-color: #23CE6B !important;
+    background-color: var(--bg-4) !important;
     opacity: 1 !important;
 }

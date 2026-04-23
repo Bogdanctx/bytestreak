@@ -7,10 +7,10 @@ export interface IAccount {
     problemsSolved: number;
     quizzesSolved: number;
     streakLength: number;
-    friendsCount: number;
     createdProblems: IProblem[];
     solvedProblems: IProblem[];
     profilePictureUrl: string;
+    friends: IAccount[];
 }
 
 export interface ITestCase {
@@ -51,4 +51,29 @@ export interface ISolution {
     code: string;
     programmingLanguage: string;
     problemId: number;
+}
+
+export type INotification = {
+    id: number;
+    receiver: IAccount;
+    sender: IAccount;
+    type: 'FRIEND_REQUEST' | undefined;
+    isRead: boolean;
+    timestamp: string;
+    payload: JSON | null;
+}
+
+export interface IAttachment {
+    id: number | null;
+    filename: string;
+    filedata: string; // Base64 encoded file data
+}
+
+export interface IMessage {
+    id: number | null;
+    sender: IAccount;
+    receiver: IAccount;
+    text: string;
+    attachments: IAttachment[];
+    timestamp: string | null;
 }

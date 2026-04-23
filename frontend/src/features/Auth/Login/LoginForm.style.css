@@ -1,5 +1,4 @@
 #login-page {
-    background-color: #0C0C0C;
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -8,7 +7,7 @@
 }
 
 #login-container {
-    background-color: #1A1A1A;
+    background-color: var(--bg-1);
     padding: 4vw;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -24,7 +23,7 @@
 
 #login-title {
     font-family: "Momo Trust Display";
-    color: white;
+    color: var(--text-primary);
     font-size: 18px;
     margin-bottom: 2vw;
 }
@@ -34,46 +33,46 @@
 }
 
 .login-textfield .MuiFormLabel-root {
-  color: white;
+  color: var(--text-primary);
 }
 
 .login-textfield .MuiInputLabel-root.Mui-focused {
-  color: white;
+  color: var(--text-primary);
 }
 
 .login-textfield .MuiOutlinedInput-notchedOutline {
-  border-color: #23CE6B;
+  border-color: var(--accent-main);
   border-radius: 0;
   transition: border-radius 0.3s ease, border-color 0.3s ease;
 }
 
 .login-textfield .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #E7BB41;
+  border-color: var(--accent-hover);
   border-radius: 12px;
 }
 
 .login-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #E7BB41;
+  border-color: var(--accent-hover);
   border-radius: 12px;
 }
 
 .login-textfield input {
-  color: white;
+  color: var(--text-primary);
 }
 
 #login-button {
     font-family: "Momo Trust Display";
-    background-color: #23CE6B;
+    background-color: var(--accent-main);
     margin-top: 1vw;
 }
 
 #login-button:hover {
-    background-color: #E7BB41;
+    background-color: var(--accent-hover);
     transition: background-color 0.3s ease;
 }
 
 #login-back-button {
     font-family: "Momo Trust Display";
-    background-color: #555555;
+    background-color: var(--bg-3);
     margin-top: 1vw;
 }

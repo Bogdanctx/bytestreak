@@ -1,0 +1,38 @@
+.friend-request-notification {
+	padding: 16px;
+	border-bottom: 1px solid var(--bg-3);
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	transition: background-color 0.2s ease;
+}
+
+.friend-request-notification:hover {
+	background-color: var(--bg-2);
+}
+
+.friend-request-avatar {
+	width: 32px;
+	height: 32px;
+}
+
+.friend-request-content {
+	flex: 1;
+}
+
+.friend-request-text {
+	color: var(--text-primary);
+}
+
+.friend-request-actions {
+	display: flex;
+	gap: 4px;
+}
+
+.friend-request-accept {
+	color: var(--accent-main) !important;
+}
+
+.friend-request-decline {
+	color: var(--difficulty-hard) !important;
+}

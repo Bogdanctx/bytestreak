@@ -197,7 +197,7 @@ function ProblemBuilder() {
                         <Tabs value={activeTab} 
                             slotProps={{
                                 indicator: {
-                                    style: { backgroundColor: '#23CE6B' }
+                                    style: { backgroundColor: 'var(--accent-main)' }
                                 }
                             }}
                             >
@@ -219,7 +219,7 @@ function ProblemBuilder() {
                                     MenuProps={{
                                         PaperProps: {
                                             sx: {
-                                                backgroundColor: "#1f1f1f",
+                                                backgroundColor: "var(--bg-4)",
                                                 border: "1px solid rgba(255, 255, 255, 0.08)",
                                             }
                                         }
@@ -239,10 +239,10 @@ function ProblemBuilder() {
                             fontSize: '10px',
                             height: '25px',
                             marginRight: '16px',
-                            borderColor: '#23CE6B',
+                            borderColor: 'var(--accent-main)',
                             width: '80px',
                             ':hover': {
-                                borderColor: '#E7BB41'
+                                borderColor: 'var(--accent-hover)'
                             }
                         }}
                             variant='outlined'
@@ -258,10 +258,10 @@ function ProblemBuilder() {
                             fontSize: '10px',
                             height: '25px',
                             marginRight: '16px',
-                            borderColor: '#23CE6B',
+                            borderColor: 'var(--accent-main)',
                             width: '80px',
                             ':hover': {
-                                borderColor: '#E7BB41'
+                                borderColor: 'var(--accent-hover)'
                             }
                         }}
                             variant='outlined'

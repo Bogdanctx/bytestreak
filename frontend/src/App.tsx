@@ -12,39 +12,40 @@ import { AccountProvider } from './context/AccountContext.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import Creator from './pages/Creator/Creator.tsx';
 import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import Social from './pages/Social/Social.tsx';
 
 function App() {
     const location = window.location.pathname;
     
 	return (
-        <Box bgcolor={"#0C0C0C"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
+        <Box bgcolor={"var(--bg-0)"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
             <CssBaseline />
             <ToastContainer />
 
             <BrowserRouter>
+                <AccountProvider>
+                    {location !== "/" && <Navbar />}
 
-                {location !== "/" && <Navbar />}
+                    <Box flex={1} overflow={"hidden"} padding={2}>
+                            <Routes>
+                                {/* public routes */}
+                                <Route path = "/" element = { <LandingPage /> } /> 
 
-                <Box flex={1} overflow={"hidden"} padding={2}>
-                    <AccountProvider>
-                        <Routes>
-                            {/* public routes */}
-                            <Route path = "/" element = { <LandingPage /> } /> 
+                                {/* protected routes */}
+                                <Route element = { <ProtectedRoute /> }>
+                                    <Route path = "/dashboard" element = { <Dashboard /> } />
+                                    <Route path = "/settings" element = { <Settings /> } />
+                                    <Route path = "/problems/:id/description" element = { <Problem /> } />
+                                    <Route path = "/social" element = { <Social /> } />
 
-                            {/* protected routes */}
-                            <Route element = { <ProtectedRoute /> }>
-                                <Route path = "/dashboard" element = { <Dashboard /> } />
-                                <Route path = "/settings" element = { <Settings /> } />
-                                <Route path = "/problems/:id/description" element = { <Problem /> } />
+                                    <Route path = "/creator" element = { <Creator /> } />
+                                    <Route path = "/creator/new" element = { <ProblemBuilder /> } />
+                                    <Route path = "/creator/edit/:id" element = { <ProblemBuilder /> } />
+                                </Route>
 
-                                <Route path = "/creator" element = { <Creator /> } />
-                                <Route path = "/creator/new" element = { <ProblemBuilder /> } />
-                                <Route path = "/creator/edit/:id" element = { <ProblemBuilder /> } />
-                            </Route>
-
-                        </Routes>
-                    </AccountProvider>
-                </Box>
+                            </Routes>
+                    </Box>
+                </AccountProvider>
                 
             </BrowserRouter>
         </Box>

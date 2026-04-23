@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { colors } from "./colors"; 
 
 function ByteStreakLogo(props: {size: number}) {
     return (
@@ -10,8 +9,8 @@ function ByteStreakLogo(props: {size: number}) {
             margin={0}
         >
             
-            <span style={{ color: colors.white }}>Byte</span>
-            <span style={{ color: colors.emerald }}>Streak</span>
+            <span style={{ color: "var(--text-primary)" }}>Byte</span>
+            <span style={{ color: "var(--accent-main)" }}>Streak</span>
         </Box>
     );
 };

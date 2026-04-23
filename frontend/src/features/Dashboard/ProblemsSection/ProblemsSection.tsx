@@ -6,11 +6,14 @@ import {
     Select, 
     MenuItem, 
     ButtonBase, 
-    type SelectChangeEvent, 
     FormControl, 
     FormHelperText, 
     Switch, 
-    FormControlLabel, } from '@mui/material';
+    FormControlLabel,
+
+    type SelectChangeEvent, 
+} from '@mui/material';
+
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import "./ProblemsSection.style.css"
 import { useEffect, useState } from 'react';
@@ -80,7 +83,7 @@ function ProblemsSection() {
         <Box id="problems-section-container">
             <Box id="problems-section-header">
                 <Box>
-                    <Typography variant="h6" sx={{ color: 'white', fontFamily: '"Momo Trust Display", sans-serif' }}>
+                    <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: '"Momo Trust Display", sans-serif' }}>
                         Problem Set
                     </Typography>
                 </Box>
@@ -91,7 +94,7 @@ function ProblemsSection() {
                             control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)}/>}
                             label="Show Tags"
                             sx={{ 
-                                color: 'gray',
+                                color: 'var(--text-primary)',
                                 '& .MuiFormControlLabel-label': {
                                     fontSize: '0.875rem',
                                     fontFamily: '"Momo Trust Display", sans-serif',
@@ -101,7 +104,7 @@ function ProblemsSection() {
                     </FormControl>
 
                     <FormControl>
-                        <FormHelperText sx={{ color: 'gray', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
+                        <FormHelperText sx={{ color: 'var(--text-primary)', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
                             Sort by Acceptance
                         </FormHelperText>
                         <Select
@@ -120,7 +123,7 @@ function ProblemsSection() {
                     </FormControl>
 
                     <FormControl>
-                        <FormHelperText sx={{ color: 'gray', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
+                        <FormHelperText sx={{ color: 'var(--text-primary)', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
                             Filter by Difficulty
                         </FormHelperText>
                         <Select
@@ -132,9 +135,9 @@ function ProblemsSection() {
                             MenuProps={{ PaperProps: { className: 'filter-menu-paper' } }}
                         >
                             <MenuItem className="filter-menu-item" value="All">All</MenuItem>
-                            <MenuItem className="filter-menu-item" value="EASY" sx={{ color: '#00b8a3 !important' }}>Easy</MenuItem>
-                            <MenuItem className="filter-menu-item" value="MEDIUM" sx={{ color: '#ffc01e !important' }}>Medium</MenuItem>
-                            <MenuItem className="filter-menu-item" value="HARD" sx={{ color: '#ff375f !important' }}>Hard</MenuItem>
+                            <MenuItem className="filter-menu-item" value="EASY" sx={{ color: 'var(--difficulty-easy) !important' }}>Easy</MenuItem>
+                            <MenuItem className="filter-menu-item" value="MEDIUM" sx={{ color: 'var(--difficulty-medium) !important' }}>Medium</MenuItem>
+                            <MenuItem className="filter-menu-item" value="HARD" sx={{ color: 'var(--difficulty-hard) !important' }}>Hard</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

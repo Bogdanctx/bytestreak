@@ -12,8 +12,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-
 import java.util.List;
+
+import com.bytestreak.backend.services.JWTAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity

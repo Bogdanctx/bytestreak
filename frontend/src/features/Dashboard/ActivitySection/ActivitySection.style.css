@@ -1,0 +1,119 @@
+
+
+#activity-section-container {
+    background-color: var(--bg-2);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden; 
+}
+
+.activity-section-title {
+    color: var(--text-primary);
+    font-family: "Momo Trust Display", sans-serif !important;
+    margin-bottom: 16px !important;
+    flex-shrink: 0;
+}
+
+.daily-items-container {
+    background-color: transparent;
+    flex-shrink: 0; 
+}
+
+.daily-item {
+    width: 100%;
+    background-color: var(--bg-4) !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.daily-item:hover {
+    background-color: var(--bg-3) !important;
+    border-color: var(--accent-main) !important;
+}
+
+.daily-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.daily-item-label {
+    color: var(--accent-main);
+    font-size: 0.75rem !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.daily-item-title {
+    color: var(--text-primary);
+    font-size: 1rem !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+}
+
+.friends-section {
+    overflow-y: auto;
+}
+
+.friends-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.friends-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.friends-list::-webkit-scrollbar-thumb {
+    background: var(--bg-8);
+    border-radius: 4px;
+}
+
+.friends-list::-webkit-scrollbar-thumb:hover {
+    background: var(--bg-7);
+}
+
+.friend-list-item {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    margin-bottom: 4px !important;
+}
+
+.friend-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+.friend-avatar {
+    background-color: var(--bg-8) !important;
+    color: var(--text-primary) !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1rem !important;
+}
+
+.friend-name {
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+}
+
+@media (max-height: 700px) {
+    #activity-section-container {
+        overflow-y: auto;
+    }
+
+    .friends-section {
+        min-height: 100px;
+    }
+}

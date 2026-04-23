@@ -1,7 +1,3 @@
-#landing-root {
-    background-color: #0C0C0C;
-}
-
 #landing-logo-container {
     width: 50vw;
     justify-content: center;
@@ -33,29 +29,42 @@
 }
 
 #landing-tagline {
-    color: white;
+    color: var(--text-primary);
     font-family: "Momo Trust Display";
     margin-bottom: 0.5vw;
 }
 
+/* Login Button */
 #landing-login-btn {
-    background-color: #23CE6B;
+    background-color: var(--accent-main);
     font-family: "Momo Trust Display";
 }
+#landing-login-btn:hover {
+    background-color: var(--accent-hover);
+}
+/****************************************/
 
+/* Signup Button */
 #landing-signup-btn {
     font-family: "Momo Trust Display";
-    color: white;
-    border-color: #E7BB41;
+    color: var(--text-primary);
+    border-color: var(--accent-main);
 }
+#landing-signup-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-hover);
+}
+/****************************************/
 
+/* Stack Divider */
 #landing-page-stack-divider {
-    background-color: #333333;
+    background-color: var(--bg-8);
     height: 50vh;
     align-self: center;
 }
 
+/* Back Button */
 .landing-back-btn {
     margin-top: 1vw;
-    color: white;
+    color: var(--text-primary);
 }
