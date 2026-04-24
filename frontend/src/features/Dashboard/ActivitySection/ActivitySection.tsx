@@ -10,20 +10,15 @@ import {
     ButtonBase 
 } from "@mui/material";
 import "./ActivitySection.style.css";
-
-// Mock data to visualize the layout
-const mockFriends = [
-    { id: 1, name: "Alice Smith", avatar: "" },
-    { id: 2, name: "Bob Johnson", avatar: "" },
-    { id: 3, name: "Charlie Davis", avatar: "" },
-    { id: 4, name: "Diana Prince", avatar: "" },
-    { id: 5, name: "Ethan Hunt", avatar: "" },
-    { id: 6, name: "Fiona Gallagher", avatar: "" },
-    { id: 7, name: "George Martin", avatar: "" },
-    { id: 8, name: "Hannah Baker", avatar: "" },
-];
+import { useAccountContext } from "../../../context/AccountContext";
 
 function ActivitySection() {
+    const { account } = useAccountContext();
+
+    if (!account) {
+        return null;
+    }
+
     return (
         <Box id="activity-section-container">
             <Box className="daily-items-container">
@@ -58,15 +53,15 @@ function ActivitySection() {
                     Friends
                 </Typography>
                 <List className="friends-list">
-                    {mockFriends.map((friend) => (
+                    {account.friends.map((friend) => (
                         <ListItem key={friend.id} className="friend-list-item">
                             <ListItemAvatar>
-                                <Avatar src={friend.avatar} alt={friend.name} className="friend-avatar">
-                                    {friend.name.charAt(0)}
+                                <Avatar src={friend.profilePictureUrl} alt={friend.username} className="friend-avatar">
+                                    {friend.username.charAt(0)}
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText 
-                                primary={friend.name} 
+                                primary={friend.username} 
                                 classes={{ primary: 'friend-name' }}
                             />
                         </ListItem>
