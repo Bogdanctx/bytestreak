@@ -11,12 +11,40 @@ import {
 } from "@mui/material";
 import "./ActivitySection.style.css";
 import { useAccountContext } from "../../../context/AccountContext";
+import { type IStreak } from "../../../entities";
+import { useEffect, useState } from "react";
+import { api } from "../../../api";
 
 function ActivitySection() {
     const { account } = useAccountContext();
+    const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
+
+    const fetchActiveStreaks = async () => {
+        try {
+            const response = await api.get('/streaks/active');
+
+            if (response.status === 200) {
+                setActiveStreaks(response.data);
+            } 
+            else {
+                console.error('Failed to fetch active streaks:', response.statusText);
+            }
+        }
+        catch (error) {
+            console.error('Error fetching active streaks:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (!account) {
+            return;
+        }
+
+        fetchActiveStreaks();
+    }, [account]);
 
     if (!account) {
-        return null;
+        return;
     }
 
     return (

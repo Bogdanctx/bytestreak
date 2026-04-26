@@ -9,7 +9,6 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Notification;
-import com.bytestreak.backend.enums.NotificationType;
 
 import java.util.Map;
 import java.util.List;
@@ -32,7 +31,7 @@ public class FriendService {
 
         Account receiver = accountRepository.findById(receiverId).orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
-        notificationService.send(sender, receiver, NotificationType.FRIEND_REQUEST, Map.of());
+        notificationService.sendNotification(receiver, "You have a new friend request from " + sender.getUsername());
     }
 
     public void acceptConnectionRequest(Account me, Long notificationId) {
@@ -44,15 +43,7 @@ public class FriendService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        Account sender = notification.getSender();
-
-        notificationRepository.delete(notification);
-
-        me.getFriends().add(sender);
-        sender.getFriends().add(me);
-
-        accountRepository.save(me);
-        accountRepository.save(sender);
+        Account sender = null;
     }
 
     public void declineConnectionRequest(Account me, Long notificationId) {
@@ -80,11 +71,6 @@ public class FriendService {
     }
 
     public List<Notification> getPendingConnections(Account me) {
-        List<Notification> pendingRequests = notificationRepository.findBySenderAndType(me, NotificationType.FRIEND_REQUEST);
-        List<Notification> incomingRequests = notificationRepository.findByReceiverAndType(me, NotificationType.FRIEND_REQUEST);
-
-        pendingRequests.addAll(incomingRequests);
-
-        return pendingRequests;
+        return List.of();
     }
 }

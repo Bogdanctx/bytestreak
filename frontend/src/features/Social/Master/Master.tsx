@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box, Avatar, Typography, List, ListItem, ListItemButton, 
     ListItemAvatar, ListItemText, IconButton,
@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAccountContext } from '../../../context/AccountContext';
-import { type IAccount } from '../../../entities';
+import { type IAccount, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
@@ -14,6 +14,7 @@ import { api } from '../../../api';
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
     const { account, setAccount } = useAccountContext();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
+    const [pendingInvites, setPendingInvites] = useState<number[]>([]);
 
     if (!account) {
         return null;
@@ -43,7 +44,39 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
             setFriendToRemove(null); 
         }
     };
-    
+
+    const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {
+        event.stopPropagation();
+
+        try {
+            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
+            if (response.status === 200) {
+                setPendingInvites(prev => [...prev, response.data.receiver.id]);
+                alert('Invitation sent!');
+            }
+        }
+        catch (error) {
+            console.error('Error inviting friend to streak:', error);
+            alert('Failed to send invitation. Please try again later.');
+        }
+    }
+
+    const fetchPendingStreakInvites = async () => {
+        try {
+            const response = await api.get('/streaks/pending-invites');
+            if (response.status === 200) {
+                setPendingInvites(response.data.map((invite: IStreakInvite) => invite.receiver.id));
+            }
+        }
+        catch (error) {
+            console.error('Error fetching pending invites:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchPendingStreakInvites();
+    }, [account]);
+
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
 
@@ -92,6 +125,30 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
                                         }
                                     }}
                                 />
+
+                                <Button
+                                    size="small"
+                                    onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
+                                    disabled={pendingInvites.includes(friend.id)}
+                                    sx={{
+                                        mr: 1,
+                                        backgroundColor: pendingInvites.includes(friend.id) ? 'var(--bg-4)' : 'var(--accent-main)',
+                                        color: pendingInvites.includes(friend.id) ? 'var(--text-secondary)' : '#000',
+                                        textTransform: 'none',
+                                        fontWeight: '600',
+                                        borderRadius: '6px',
+                                        '&:hover': {
+                                            backgroundColor: pendingInvites.includes(friend.id) ? 'var(--bg-4)' : 'var(--accent-hover)',
+                                        },
+                                        '&.Mui-disabled': {
+                                            backgroundColor: 'var(--bg-4)',
+                                            color: 'var(--text-secondary)'
+                                        }
+                                    }}
+                                >
+                                    {pendingInvites.includes(friend.id) ? 'Pending' : 'Invite'}
+                                </Button>
+
                                 <IconButton
                                     size="small"
                                     className='master-delete-friend-button'

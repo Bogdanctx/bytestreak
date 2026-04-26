@@ -5,10 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Notification;
-import com.bytestreak.backend.enums.NotificationType;
 import com.bytestreak.backend.repositories.NotificationRepository;
 
-import java.util.Map;
 import java.util.List;
 
 @Service
@@ -16,12 +14,10 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    public void send(Account sender, Account receiver, NotificationType type, Map<String, Object> payload) {
+    public void sendNotification(Account receiver, String message) {
         Notification notification = new Notification();
-        notification.setSender(sender);
         notification.setReceiver(receiver);
-        notification.setType(type);
-        notification.setPayload(payload);
+        notification.setMessage(message);
 
         notificationRepository.save(notification);
     }

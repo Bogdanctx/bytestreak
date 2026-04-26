@@ -77,3 +77,21 @@ export interface IMessage {
     attachments: IAttachment[];
     timestamp: string | null;
 }
+
+export interface IStreak {
+    id: number;
+    account1: IAccount;
+    account2: IAccount;
+    length: number;
+    status: 'ACTIVE' | 'BROKEN' | 'PENDING';
+    account1CompletedToday: boolean;
+    account2CompletedToday: boolean;
+}
+
+export interface IStreakInvite {
+    id: number;
+    sender: IAccount;
+    receiver: IAccount;
+    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+    timestamp: string;
+}

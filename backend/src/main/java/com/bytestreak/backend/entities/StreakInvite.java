@@ -1,26 +1,26 @@
 package com.bytestreak.backend.entities;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.bytestreak.backend.enums.InviteStatus;
+
 @Entity
-@Table(name = "Notifications")
 @Getter
 @Setter
-public class Notification {
+public class StreakInvite {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,12 +30,11 @@ public class Notification {
     private Account sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "receiver_id")
     private Account receiver;
 
-    private String message;
-    
+    @Enumerated(EnumType.STRING)
+    private InviteStatus status;
 
     @CreationTimestamp
     private LocalDateTime timestamp;
