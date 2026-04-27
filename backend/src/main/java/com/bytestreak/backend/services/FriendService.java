@@ -51,11 +51,11 @@ public class FriendService {
         return invite;
     }
 
-    public void acceptConnectionRequest(Account me, Long inviteId) {
+    public void acceptConnectionRequest(Account me, Long inviteId, Long notificationId) {
         FriendInvite invite = friendInviteRepository.findById(inviteId).orElse(null);
 
         if (invite == null || invite.getStatus() != InviteStatus.PENDING) {
-            return;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend invite not found");
         }
 
         if (!invite.getReceiver().getId().equals(me.getId())) {
@@ -70,14 +70,18 @@ public class FriendService {
         accountRepository.save(me);
         accountRepository.save(sender);
 
-        invite.setStatus(InviteStatus.ACCEPTED);
-        friendInviteRepository.save(invite);
+        // delete the invite
+        friendInviteRepository.delete(invite);
 
         // delete the notification for the receiver
+        notificationRepository.deleteById(notificationId);
+
+        // delete the notification
+        notificationRepository.deleteById(notificationId);
     }
 
 
-    public void declineConnectionRequest(Account me, Long inviteId) {
+    public void declineConnectionRequest(Account me, Long inviteId, Long notificationId) {
         FriendInvite invite = friendInviteRepository.findById(inviteId).orElse(null);
 
         if (invite == null || invite.getStatus() != InviteStatus.PENDING) {
@@ -88,7 +92,11 @@ public class FriendService {
             throw new RuntimeException("Unauthorized: Not your invite");
         }
 
-        friendInviteRepository.save(invite);
+        // delete the invite
+        friendInviteRepository.delete(invite);
+
+        // delete the notification
+        notificationRepository.deleteById(notificationId);
     }
 
     public void removeFriend(Account me, Long friendId) {

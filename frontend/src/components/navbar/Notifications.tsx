@@ -12,6 +12,14 @@ function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [notifications, setNotifications] = useState<INotification[]>([]);
 
+    useEffect(() => {
+        fetchNotifications();
+
+        const interval = setInterval(fetchNotifications, 60000);
+        
+        return () => clearInterval(interval);
+    }, []);
+
     const fetchNotifications = async () => {
         try {
             const response = await api.get('/notifications/fetch');
@@ -24,14 +32,21 @@ function Notifications() {
             console.error('Error fetching notifications:', error);
         }
     };
+  
+    const handleFriendRequestAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
+        try {
+            const response = await api.post(`/friends/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
 
-    useEffect(() => {
-        fetchNotifications();
+            if (response.status === 200) {
+                console.log('Friend request response sent successfully');
 
-        const interval = setInterval(fetchNotifications, 60000);
-        
-        return () => clearInterval(interval);
-    }, []);
+                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            }
+        }
+        catch (error) {
+            console.error('Error responding to friend request:', error);
+        }
+    };
 
     return (
         <>
@@ -65,7 +80,7 @@ function Notifications() {
                     <Box className='notifications-list'>
                         {notifications.map(notification => {
                             if (notification.type === 'FRIEND_REQUEST') {
-                                return <FriendRequestNotification key={notification.id} notification={notification} />;
+                                return <FriendRequestNotification key={notification.id} notification={notification} handleFriendRequestAction={handleFriendRequestAction} />;
                             }
                             return null;
                         })}

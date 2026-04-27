@@ -8,23 +8,13 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { type INotification } from '../../entities';
 import './FriendRequestNotification.style.css';
-import { api } from '../../api';
 
-function FriendRequestNotification({ notification }: { notification: INotification }) {
-    
-    const handleFriendRequestAction = async (accepted: boolean, inviteId: number) => {
-        try {
-            const response = await api.post(`/friends/respond?requestId=${inviteId}&accepted=${accepted}`);
+type FriendRequestNotificationProps = {
+    notification: INotification;
+    handleFriendRequestAction: (accepted: boolean, inviteId: number, notificationId: number) => void;
+};
 
-            if (response.status === 200) {
-                console.log('Friend request response sent successfully');
-            }
-        }
-        catch (error) {
-            console.error('Error responding to friend request:', error);
-        }
-    };
-
+function FriendRequestNotification({ notification, handleFriendRequestAction }: FriendRequestNotificationProps) {
     return (
         <Box key={notification.id} className='friend-request-notification'>
             <Avatar src={notification.payload.profilePictureUrl} className='friend-request-avatar'>
@@ -36,10 +26,10 @@ function FriendRequestNotification({ notification }: { notification: INotificati
                 </Typography>
             </Box>
             <Box className='friend-request-actions'>
-                <IconButton size="small" className='friend-request-accept' onClick={() => handleFriendRequestAction(true, notification.payload.inviteId)}>
+                <IconButton size="small" className='friend-request-accept' onClick={() => handleFriendRequestAction(true, notification.payload.inviteId, notification.id)}>
                     <CheckIcon fontSize="small" />
                 </IconButton>
-                <IconButton size="small" className='friend-request-decline' onClick={() => handleFriendRequestAction(false, notification.payload.inviteId)}>
+                <IconButton size="small" className='friend-request-decline' onClick={() => handleFriendRequestAction(false, notification.payload.inviteId, notification.id)}>
                     <CloseIcon fontSize="small" />
                 </IconButton>
             </Box>

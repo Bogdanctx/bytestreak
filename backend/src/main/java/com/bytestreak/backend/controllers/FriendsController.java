@@ -51,7 +51,7 @@ public class FriendsController {
     }
 
     @PostMapping("/respond")
-    public ResponseEntity<?> respondToRequest(@RequestParam Long requestId, @RequestParam boolean accepted, Authentication authentication) {
+    public ResponseEntity<?> respondToRequest(@RequestParam Long inviteId, @RequestParam Long notificationId, @RequestParam boolean accepted, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
@@ -59,10 +59,10 @@ public class FriendsController {
         Account me = accountRepository.findByEmail(authentication.getName());
 
         if (accepted) {
-            friendService.acceptConnectionRequest(me, requestId);
+            friendService.acceptConnectionRequest(me, inviteId, notificationId);
         } 
         else {
-            friendService.declineConnectionRequest(me, requestId);
+            friendService.declineConnectionRequest(me, inviteId, notificationId);
         }
 
         return ResponseEntity.ok().build();
