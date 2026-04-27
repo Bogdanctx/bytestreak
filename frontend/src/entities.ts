@@ -53,15 +53,23 @@ export interface ISolution {
     problemId: number;
 }
 
-export type INotification = {
+export interface IFriendRequestNotificationPayload {
+    message: string;
+
+    senderId: number;
+    profilePictureUrl: string;
+    username: string;
+
+    inviteId: number;
+}
+
+export interface INotification {
     id: number;
     receiver: IAccount;
-    sender: IAccount;
-    type: 'FRIEND_REQUEST' | undefined;
-    isRead: boolean;
+    type: 'FRIEND_REQUEST' | 'STREAK_INVITE';
     timestamp: string;
-    payload: JSON | null;
-}
+    payload: IFriendRequestNotificationPayload;
+};
 
 export interface IAttachment {
     id: number | null;
@@ -86,12 +94,4 @@ export interface IStreak {
     status: 'ACTIVE' | 'BROKEN' | 'PENDING';
     account1CompletedToday: boolean;
     account2CompletedToday: boolean;
-}
-
-export interface IStreakInvite {
-    id: number;
-    sender: IAccount;
-    receiver: IAccount;
-    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
-    timestamp: string;
 }

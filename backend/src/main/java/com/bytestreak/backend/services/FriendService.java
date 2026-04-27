@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.NotificationRepository;
+import com.bytestreak.backend.repositories.FriendInviteRepository;
+import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.entities.FriendInvite;
 import com.bytestreak.backend.entities.Notification;
+import com.bytestreak.backend.enums.InviteStatus;
+import com.bytestreak.backend.enums.NotificationTypes;
 
-import java.util.Map;
 import java.util.List;
 
 @Service
@@ -24,38 +28,67 @@ public class FriendService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public void sendConnectionRequest(Account sender, Long receiverId) {
-        if (sender.getId().equals(receiverId)) {
-            throw new IllegalArgumentException("Cannot send friend request to yourself");
-        }
+    @Autowired
+    private FriendInviteRepository friendInviteRepository;
 
-        Account receiver = accountRepository.findById(receiverId).orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+    public FriendInvite sendConnectionRequest(Account sender, Account receiver) {
+        FriendInvite invite = new FriendInvite();
+        invite.setSender(sender);
+        invite.setReceiver(receiver);
+        invite.setStatus(InviteStatus.PENDING);
 
-        notificationService.sendNotification(receiver, "You have a new friend request from " + sender.getUsername());
+        friendInviteRepository.save(invite);
+
+        FriendRequestNotificationPayload payload = new FriendRequestNotificationPayload();
+        payload.setSenderId(sender.getId());
+        payload.setUsername(sender.getUsername());
+        payload.setProfilePictureUrl(sender.getProfilePictureUrl());
+        payload.setMessage("You have a friend request from " + sender.getUsername());
+        payload.setInviteId(invite.getId());
+
+        notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
+
+        return invite;
     }
 
-    public void acceptConnectionRequest(Account me, Long notificationId) {
-        Notification notification = notificationRepository
-                                    .findById(notificationId)
-                                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public void acceptConnectionRequest(Account me, Long inviteId) {
+        FriendInvite invite = friendInviteRepository.findById(inviteId).orElse(null);
 
-        if (!notification.getReceiver().getId().equals(me.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if (invite == null || invite.getStatus() != InviteStatus.PENDING) {
+            return;
         }
 
-        Account sender = null;
-    }
+        if (!invite.getReceiver().getId().equals(me.getId())) {
+            throw new RuntimeException("Unauthorized: Not your invite");
+        }
 
-    public void declineConnectionRequest(Account me, Long notificationId) {
-        Notification notification = notificationRepository
-                                    .findById(notificationId)
-                                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Account sender = invite.getSender();
+
+        me.getFriends().add(sender);
+        sender.getFriends().add(me);
         
-        if (!notification.getReceiver().getId().equals(me.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        accountRepository.save(me);
+        accountRepository.save(sender);
+
+        invite.setStatus(InviteStatus.ACCEPTED);
+        friendInviteRepository.save(invite);
+
+        // delete the notification for the receiver
+    }
+
+
+    public void declineConnectionRequest(Account me, Long inviteId) {
+        FriendInvite invite = friendInviteRepository.findById(inviteId).orElse(null);
+
+        if (invite == null || invite.getStatus() != InviteStatus.PENDING) {
+            return;
         }
 
-        notificationRepository.delete(notification);
+        if (!invite.getReceiver().getId().equals(me.getId())) {
+            throw new RuntimeException("Unauthorized: Not your invite");
+        }
+
+        friendInviteRepository.save(invite);
     }
 
     public void removeFriend(Account me, Long friendId) {
@@ -70,7 +103,11 @@ public class FriendService {
         accountRepository.save(friend);
     }
 
-    public List<Notification> getPendingConnections(Account me) {
-        return List.of();
+    public List<FriendInvite> getPendingConnections(Account me) {
+        return friendInviteRepository.findByReceiverAndStatus(me, InviteStatus.PENDING);
+    }
+
+    public List<FriendInvite> getSentConnections(Account me) {
+        return friendInviteRepository.findBySenderAndStatus(me, InviteStatus.PENDING);
     }
 }

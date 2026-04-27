@@ -11,9 +11,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IAccount, type INotification } from '../../../entities';
+import { type IAccount, type INotification, type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
 import { useAccountContext } from '../../../context/AccountContext';
+import { set } from 'react-hook-form';
 
 
 function Discover() {
@@ -23,24 +24,11 @@ function Discover() {
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    const [pendingConnections, setPendingConnections] = useState<number[]>([]);
+    const [sentConnections, setSentConnections] = useState<IFriendInvite[]>([]);
+    const [pendingConnections, setPendingConnections] = useState<IFriendInvite[]>([]);
 
     if (!account) {
         return null;
-    }
-
-    const fetchPendingConnections = async () => {
-        await api.get('/friends/pending')
-            .then(response => {
-                if (response.status === 200) {
-                    const pending = response.data.map((notification: INotification) => notification.sender.id === account.id ? notification.receiver.id : notification.sender.id);
-                    console.log('Fetched pending connections:', pending);
-                    setPendingConnections(pending);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching pending connections:', error);
-            });
     }
 
     const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
@@ -81,22 +69,47 @@ function Discover() {
     }, [accounts, debouncedSearchQuery]);
 
     const handleAddFriend = async (accountId: number) => {
-        await api.post(`friends/add?friendId=${accountId}`)
-            .then(response => {
-                if (response.status === 200) {
-                    // if the friend request was successful, remove the account from the list
-                    let updatedAccounts = accounts.filter(account => account.id !== accountId);
-                    setAccounts(updatedAccounts);
+        try {
+            const response = await api.post(`/friends/send-request?friendId=${accountId}`);
 
-                    console.log(`Friend request sent to account ID: ${accountId}`);
-                    notify("Friend request sent!", "success");
-                } else {
-                    console.error('Failed to send friend request.');
-                }
-            })
-            .catch(error => {
-                console.error('Error sending friend request:', error);
-            });
+            if (response.status === 200) {
+                notify('Friend invite sent!', 'success');
+                // add the new sent connection to the state to update the UI
+                setSentConnections((prev) => [...prev, response.data]);
+            }
+        }
+        catch (error) {
+            console.error('Error sending friend invite:', error);
+            notify('Failed to send friend invite. Please try again.', 'error');
+        }
+    }
+
+    const fetchSentConnections = async () => {
+        try {
+            const response = await api.get('/friends/sent-connections');
+
+            if (response.status === 200) {
+                setSentConnections(response.data);
+                console.log('Fetched sent connections:', response.data);
+            }
+        } 
+        catch (error) {
+            console.error('Error fetching sent connections:', error);
+        }
+    }
+
+    const fetchPendingConnections = async () => {
+        try {
+            const response = await api.get('/friends/pending-connections');
+
+            if (response.status === 200) {
+                setPendingConnections(response.data);
+                console.log('Fetched pending connections:', response.data);
+            }
+        } 
+        catch (error) {
+            console.error('Error fetching pending connections:', error);
+        }
     }
 
     useEffect(() => {
@@ -112,6 +125,7 @@ function Discover() {
         const controller = new AbortController();
 
         fetchAccounts(accountsNextCursor, controller.signal);
+        fetchSentConnections();
         fetchPendingConnections();
 
         return () => controller.abort();
@@ -172,7 +186,8 @@ function Discover() {
                             </Box>
                         </Box>
 
-                        {pendingConnections.includes(account.id) ? (
+                        {/* `Pending Connection` will appear for both users if they try to add each other */}
+                        {sentConnections.some((connection) => connection.receiver.id === account.id) || pendingConnections.some((connection) => connection.sender.id === account.id) ? (
                             <Typography variant="caption" className="discover-pending-connection">
                                 Pending Connection
                             </Typography>

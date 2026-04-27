@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
+import com.bytestreak.backend.StreakInviteNotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Streak;
 import com.bytestreak.backend.entities.StreakInvite;
@@ -11,6 +12,7 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
 import com.bytestreak.backend.enums.InviteStatus;
+import com.bytestreak.backend.enums.NotificationTypes;
 
 import java.util.List;
 
@@ -39,15 +41,9 @@ public class StreakService {
         return streakInviteRepository.findBySenderAndStatus(account, InviteStatus.PENDING);
     }
 
-    public void inviteToStreak(Long friendId, Authentication authentication) {
+    public void inviteToStreak(Account friendAccount, Authentication authentication) {
         String email = authentication.getName();
         Account sender = accountRepository.findByEmail(email);
-        Account friendAccount = accountRepository.findById(friendId).orElse(null);
-
-        if (friendAccount == null) {
-            // Handle case where friend account does not exist
-            return;
-        }
 
         if (streakInviteRepository.existsBySenderAndReceiverAndStatus(sender, friendAccount, InviteStatus.PENDING)) {
             return;
@@ -59,7 +55,10 @@ public class StreakService {
         invite.setStatus(InviteStatus.PENDING);
         streakInviteRepository.save(invite);
 
-        notificationService.sendNotification(friendAccount, "You have a streak invitation from " + sender.getUsername());
+        StreakInviteNotificationPayload payload = new StreakInviteNotificationPayload();
+        payload.setSender(sender);
+        payload.setMessage("You have a streak invitation from " + sender.getUsername());
 
+        notificationService.sendNotification(friendAccount, NotificationTypes.STREAK_INVITE, payload);
     }
 }

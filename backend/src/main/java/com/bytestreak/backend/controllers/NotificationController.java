@@ -22,13 +22,13 @@ public class NotificationController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/")
+    @GetMapping("/fetch")
     public ResponseEntity<?> getNotifications(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account me = accountRepository.findByEmail(authentication.getName());
-        return ResponseEntity.ok(notificationService.getNotificationsForAccount(me));
+        Account account = accountRepository.findByEmail(authentication.getName());
+        return ResponseEntity.ok(notificationService.getNotificationsForAccount(account));
     }
 }

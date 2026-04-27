@@ -15,16 +15,16 @@ function Navbar() {
     const { account } = useAccountContext();
 
     const fetchNotifications = async () => {
-        await api.get('/notifications')
-                .then((response) => {
-                    if (response.status === 200) {
-                        console.log(response);
-                        setNotifications(response.data);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+        try {
+            const response = await api.get('/notifications/fetch');
+            if (response.status === 200) {
+                console.log('Fetched notifications:', response.data);
+                setNotifications(response.data);
+            }
+        }
+        catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
     }
 
     useEffect(() => {

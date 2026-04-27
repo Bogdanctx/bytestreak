@@ -10,8 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.repositories.FriendInviteRepository;
+import com.bytestreak.backend.repositories.NotificationRepository;
+import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.services.FriendService;
+import com.bytestreak.backend.entities.FriendInvite;
+import com.bytestreak.backend.entities.Notification;
+
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/friends")
@@ -22,38 +30,81 @@ public class FriendsController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addConnection(@RequestParam Long friendId, Authentication authentication) {
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private FriendInviteRepository friendInviteRepository;
+
+    @PostMapping("/send-request")
+    public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
         Account me = accountRepository.findByEmail(authentication.getName());
+        Account friend = accountRepository.findById(friendId).orElseThrow(() -> new IllegalArgumentException("Friend not found"));
         
-        friendService.sendConnectionRequest(me, friendId);
-        return ResponseEntity.ok().build();
+        FriendInvite invite = friendService.sendConnectionRequest(me, friend);
+
+        return ResponseEntity.ok(invite);
     }
 
-    @PostMapping("/accept")
-    public ResponseEntity<?> acceptConnection(@RequestParam Long requestId, Authentication authentication) {
-        Account me = accountRepository.findByEmail(authentication.getName());
-        friendService.acceptConnectionRequest(me, requestId);
-        return ResponseEntity.ok().build();
-    }
+    @PostMapping("/respond")
+    public ResponseEntity<?> respondToRequest(@RequestParam Long requestId, @RequestParam boolean accepted, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
 
-    @PostMapping("/decline")
-    public ResponseEntity<?> declineConnection(@RequestParam Long requestId, Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
-        friendService.declineConnectionRequest(me, requestId);
+
+        if (accepted) {
+            friendService.acceptConnectionRequest(me, requestId);
+        } 
+        else {
+            friendService.declineConnectionRequest(me, requestId);
+        }
+
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/remove")
     public ResponseEntity<?> removeFriend(@RequestParam Long friendId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
         Account me = accountRepository.findByEmail(authentication.getName());
         friendService.removeFriend(me, friendId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/pending")
+    @GetMapping("/pending-connections")
     public ResponseEntity<?> getPendingConnections(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
         Account me = accountRepository.findByEmail(authentication.getName());
-        return ResponseEntity.ok(friendService.getPendingConnections(me));
+
+        System.out.println(me);
+
+        List<FriendInvite> pendingConnections = friendService.getPendingConnections(me);
+        System.out.println(pendingConnections);
+
+        return ResponseEntity.ok(pendingConnections);
+    }
+
+    @GetMapping("/sent-connections")
+    public ResponseEntity<?> getSentConnections(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+
+        List<FriendInvite> sentConnections = friendService.getSentConnections(me);
+
+        return ResponseEntity.ok(sentConnections);
     }
 }
