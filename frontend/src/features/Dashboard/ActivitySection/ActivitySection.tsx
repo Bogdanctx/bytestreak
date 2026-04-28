@@ -21,7 +21,7 @@ function ActivitySection() {
 
     const fetchActiveStreaks = async () => {
         try {
-            const response = await api.get('/streaks/active');
+            const response = await api.get('/streaks/active-streaks');
 
             if (response.status === 200) {
                 setActiveStreaks(response.data);
@@ -51,7 +51,7 @@ function ActivitySection() {
         <Box id="activity-section-container">
             <Box className="daily-items-container">
                 <Typography variant="h6" className="activity-section-title">
-                    Daily Challanges
+                    Daily Challenges
                 </Typography>
                 <Box display={"flex"} flexDirection={"column"} gap={"12px"}>
                     <ButtonBase className="daily-item">
@@ -81,19 +81,29 @@ function ActivitySection() {
                     Friends
                 </Typography>
                 <List className="friends-list">
-                    {account.friends.map((friend) => (
-                        <ListItem key={friend.id} className="friend-list-item">
-                            <ListItemAvatar>
-                                <Avatar src={friend.profilePictureUrl} alt={friend.username} className="friend-avatar">
-                                    {friend.username.charAt(0)}
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText 
-                                primary={friend.username} 
-                                classes={{ primary: 'friend-name' }}
-                            />
-                        </ListItem>
-                    ))}
+                    {activeStreaks.map((streak) => {
+                    const streakFriend = streak.participant1.id === account.id ? streak.participant2 : streak.participant1;
+
+                    return (
+                            <ListItem key={streak.id} className="friend-list-item">
+                                <ListItemAvatar>
+                                    <Avatar src={streakFriend.profilePictureUrl} alt={streakFriend.username} className="friend-avatar">
+                                        {!streakFriend.profilePictureUrl && streakFriend.username.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText 
+                                    primary={streakFriend.username} 
+                                    classes={{ primary: 'friend-name' }}
+                                />
+                            </ListItem>
+                        );
+                    })}
+
+                    {activeStreaks.length === 0 && (
+                        <Typography className='no-streaks-message'>
+                            No active streaks with friends. Start a new streak to see it here!
+                        </Typography>
+                    )}
                 </List>
             </Box>
         </Box>

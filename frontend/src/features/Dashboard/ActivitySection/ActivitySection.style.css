@@ -81,6 +81,15 @@
     background: var(--bg-7);
 }
 
+.no-streaks-message {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 8px 8px 0;
+    text-align: center;
+    opacity: 0.85;
+}
+
 .friend-list-item {
     padding-left: 8px !important;
     padding-right: 8px !important;
