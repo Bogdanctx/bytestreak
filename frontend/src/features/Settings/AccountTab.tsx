@@ -17,11 +17,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { api } from "../../api";
 import notify from "../../components/ui/ToastNotification";
-import { useAccountContext } from "../../context/AccountContext";
+import { useProtectedAccount } from "../../context/AccountContext";
 
 
 function Account() {
-    const { account, setAccount } = useAccountContext();
+    const { account, setAccount } = useProtectedAccount();
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -30,19 +30,14 @@ function Account() {
     });
     
     useEffect(() => {
-        if (account) {
-            setFormData({
-                username: account.username,
-                email: account.email,
-                profilePictureUrl: account.profilePictureUrl || "",
-                password: ""
-            })
-        }
-    }, [account]);
+        setFormData({
+            username: account.username,
+            email: account.email,
+            profilePictureUrl: account.profilePictureUrl || "",
+            password: ""
+        })
+    }, []);
 
-    if (!account) {
-        return null;
-    }
 
     const handleSaveChanges = () => {
         console.log("Form data to be sent:", formData);

@@ -8,7 +8,6 @@ import {
 import { api } from "../api";
 import { type IAccount } from "../entities";
 
-
 interface IAccountContext {
     account: IAccount | null;
     isLoading: boolean;
@@ -22,28 +21,17 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (account == null) {
-            setIsLoading(true);
-
-            api.get("/auth/me")
-                .then((response) => {
-                    if(response.status === 200) {
-                        setAccount(response.data);
-                    }
-                    else {
-                        window.location.href = "/";
-                    }
-                })
-                .catch((error) => {
-                    console.error("Failed to fetch account data:", error);
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
-        }
-        else {
-            setIsLoading(false);
-        }
+        api.get("/auth/me")
+            .then((response) => {
+                setAccount(response.data);
+            })
+            .catch((error) => {
+                console.log("No active session found.");
+                setAccount(null); 
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, []);
 
     return (
@@ -53,12 +41,23 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     );
 }
 
-export function useAccountContext() {
+export const useAccountContext = () => {
     const context = useContext(AccountContext);
-
     if (!context) {
         throw new Error("useAccountContext must be used within an AccountProvider");
     }
-
     return context;
 }
+
+export const useProtectedAccount = () => {
+    const context = useAccountContext();
+
+    if (!context.account) {
+        throw new Error("useProtectedAccount must only be used inside protected routes!");
+    }
+
+    return {
+        account: context.account,
+        setAccount: context.setAccount
+    };
+};

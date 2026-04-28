@@ -1,7 +1,7 @@
 import {
     Box
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Discover from '../../features/Social/Discover/Discover';
 import Feed from '../../features/Social/Feed/Feed';
 import Master from '../../features/Social/Master/Master';

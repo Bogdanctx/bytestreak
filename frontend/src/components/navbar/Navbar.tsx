@@ -12,7 +12,6 @@ function Navbar() {
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<INotification[]>([]);
-    const { account } = useAccountContext();
 
     const fetchNotifications = async () => {
         try {
@@ -39,10 +38,6 @@ function Navbar() {
 
     const currentPath = window.location.pathname;
     const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
-
-    if (!account) {
-        return;
-    }
 
     return (
         <Box id="navbar-container">

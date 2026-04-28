@@ -1,6 +1,7 @@
 package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.StreakInviteNotificationPayload;
@@ -26,13 +27,15 @@ public class StreakService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     
     public StreakInvite inviteFriendToStreak(Account me, Account friend) {
         StreakInvite invite = new StreakInvite();
         invite.setSender(me);
         invite.setReceiver(friend);
         invite.setStatus(InviteStatus.PENDING);
-
         streakInviteRepository.save(invite);
 
         StreakInviteNotificationPayload payload = new StreakInviteNotificationPayload();
@@ -43,6 +46,9 @@ public class StreakService {
         payload.setInviteId(invite.getId());
 
         notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
+        
+        messagingTemplate.convertAndSendToUser(friend.getEmail(),"/queue/streak-invites", payload);
+        
         return invite;
     }
 

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bytestreak.backend.dto.MessageDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.http.HttpStatus;
 
 import com.bytestreak.backend.entities.Account;
@@ -29,9 +28,6 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestParam Long receiverId, @RequestBody MessageDTO payload, Authentication authentication) {
@@ -47,8 +43,6 @@ public class MessageController {
         }
 
         Message sentMessage = messageService.sendMessage(sender, receiver, payload);
-
-        messagingTemplate.convertAndSend("/topic/messages/" + receiver.getId(), sentMessage);
 
         return ResponseEntity.ok(sentMessage);
     }

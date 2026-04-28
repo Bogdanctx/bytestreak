@@ -2,6 +2,7 @@ package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.bytestreak.backend.repositories.MessageRepository;
 import com.bytestreak.backend.dto.MessageDTO;
@@ -17,6 +18,9 @@ import java.util.List;
 public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public Message sendMessage(Account sender, Account receiver, MessageDTO payload) {
         Message message = new Message();
@@ -38,6 +42,8 @@ public class MessageService {
         message.setAttachments(attachments);
 
         messageRepository.save(message);
+
+        messagingTemplate.convertAndSendToUser(receiver.getEmail(),"/user/queue/messages", message);
 
         return message;
     }

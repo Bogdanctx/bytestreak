@@ -13,10 +13,10 @@ import './Discover.style.css';
 import { api } from '../../../api';
 import { type IAccount, type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
-import { useAccountContext } from '../../../context/AccountContext';
+import { useProtectedAccount } from '../../../context/AccountContext';
 
 function Discover() {
-    const { account } = useAccountContext();
+    const { account } = useProtectedAccount();
     // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
@@ -43,10 +43,6 @@ function Discover() {
 
         return () => controller.abort();
     }, []);
-
-    if (!account) {
-        return null;
-    }
 
     const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
         try {

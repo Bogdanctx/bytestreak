@@ -5,14 +5,14 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useAccountContext } from '../../../context/AccountContext';
+import { useProtectedAccount } from '../../../context/AccountContext';
 import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
 
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
-    const { account, setAccount } = useAccountContext();
+    const { account, setAccount } = useProtectedAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
     const [streakInvites, setStreakInvites] = useState<IStreakInvite[]>([]);
     const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
@@ -20,12 +20,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
     useEffect(() => {
         fetchPendingStreakInvites();
         fetchActiveStreaks();
-    }, [account]);
-
-
-    if (!account) {
-        return null;
-    }
+    }, []);
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();

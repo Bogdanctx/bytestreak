@@ -10,13 +10,13 @@ import {
     ButtonBase 
 } from "@mui/material";
 import "./ActivitySection.style.css";
-import { useAccountContext } from "../../../context/AccountContext";
+import { useProtectedAccount } from "../../../context/AccountContext";
 import { type IStreak } from "../../../entities";
 import { useEffect, useState } from "react";
 import { api } from "../../../api";
 
 function ActivitySection() {
-    const { account } = useAccountContext();
+    const { account } = useProtectedAccount();
     const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
 
     const fetchActiveStreaks = async () => {
@@ -36,16 +36,8 @@ function ActivitySection() {
     };
 
     useEffect(() => {
-        if (!account) {
-            return;
-        }
-
         fetchActiveStreaks();
-    }, [account]);
-
-    if (!account) {
-        return;
-    }
+    }, []);
 
     return (
         <Box id="activity-section-container">

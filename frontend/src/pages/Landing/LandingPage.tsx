@@ -2,7 +2,6 @@ import { Box, Button, Typography, Stack, Divider, useMediaQuery, useTheme } from
 import { Slide } from '@mui/material';
 import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
-import { useAccountContext } from '../../context/AccountContext';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
 import './LandingPage.style.css'
@@ -11,12 +10,6 @@ function LandingPage() {
     const [showAuthState, setShowAuthState] = useState<'login' | 'register' | null>(null);
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
-    const { account } = useAccountContext();
-
-    if(account) {
-        window.location.href = "/dashboard";
-        return null;
-    }
 
     return (
         <Box id="landing-root">
