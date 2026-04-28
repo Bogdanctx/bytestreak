@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.NotificationRepository;
+import com.bytestreak.backend.repositories.StreakRepository;
 import com.bytestreak.backend.repositories.FriendInviteRepository;
 import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;
@@ -30,6 +31,9 @@ public class FriendService {
 
     @Autowired
     private FriendInviteRepository friendInviteRepository;
+
+    @Autowired
+    private StreakService streakService;
 
     public FriendInvite sendConnectionRequest(Account sender, Account receiver) {
         FriendInvite invite = new FriendInvite();
@@ -109,6 +113,9 @@ public class FriendService {
 
         accountRepository.save(me);
         accountRepository.save(friend);
+
+        streakService.removeStreakBetweenUsers(me, friend);
+                
     }
 
     public List<FriendInvite> getPendingConnections(Account me) {

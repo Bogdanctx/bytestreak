@@ -63,12 +63,30 @@ export interface IFriendRequestNotificationPayload {
     inviteId: number;
 }
 
+export interface IStreakInviteNotificationPayload {
+    message: string;
+
+    senderId: number;
+    profilePictureUrl: string;
+    username: string;
+
+    inviteId: number;
+}
+
+export interface IFriendInvite {
+    id: number;
+    sender: IAccount;
+    receiver: IAccount;
+    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+    timestamp: string;
+}
+
 export interface INotification {
     id: number;
     receiver: IAccount;
     type: 'FRIEND_REQUEST' | 'STREAK_INVITE';
     timestamp: string;
-    payload: IFriendRequestNotificationPayload;
+    payload: IFriendRequestNotificationPayload | IStreakInviteNotificationPayload;
 };
 
 export interface IAttachment {
@@ -88,10 +106,15 @@ export interface IMessage {
 
 export interface IStreak {
     id: number;
-    account1: IAccount;
-    account2: IAccount;
+    participant1: IAccount;
+    participant2: IAccount;
     length: number;
-    status: 'ACTIVE' | 'BROKEN' | 'PENDING';
-    account1CompletedToday: boolean;
-    account2CompletedToday: boolean;
+}
+
+export interface IStreakInvite {
+    id: number;
+    sender: IAccount;
+    receiver: IAccount;
+    status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+    timestamp: string;
 }

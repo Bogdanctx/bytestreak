@@ -3,6 +3,7 @@ import { Box, Button, Popover } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
+import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
 import { api } from '../../api';
 import { type INotification } from '../../entities';
 import './Navbar.style.css';
@@ -48,6 +49,20 @@ function Notifications() {
         }
     };
 
+    const handleStreakInviteAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
+        try {
+            const response = await api.post(`/streaks/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
+
+            if (response.status === 200) {
+                console.log('Streak invite response sent successfully');
+
+                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            }
+        }        catch (error) {
+            console.error('Error responding to streak invite:', error);
+        }
+    };
+
     return (
         <>
             <Button 
@@ -81,6 +96,9 @@ function Notifications() {
                         {notifications.map(notification => {
                             if (notification.type === 'FRIEND_REQUEST') {
                                 return <FriendRequestNotification key={notification.id} notification={notification} handleFriendRequestAction={handleFriendRequestAction} />;
+                            }
+                            else if (notification.type === 'STREAK_INVITE') {
+                                return <StreakInviteNotification key={notification.id} notification={notification} handleStreakInviteAction={handleStreakInviteAction} />;
                             }
                             return null;
                         })}

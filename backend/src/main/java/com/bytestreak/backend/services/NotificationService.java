@@ -3,7 +3,6 @@ package com.bytestreak.backend.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.NotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Notification;

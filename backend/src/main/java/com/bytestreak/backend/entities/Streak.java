@@ -1,10 +1,10 @@
 package com.bytestreak.backend.entities;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,14 +18,12 @@ public class Streak {
     private Long id;
 
     @ManyToOne
-    private Account account1;
+    @JoinColumn(name = "participant1_id")
+    private Account participant1;
 
     @ManyToOne
-    private Account account2;
+    @JoinColumn(name = "participant2_id")
+    private Account participant2;
 
     private int length;
-    private String status;
-
-    private boolean account1CompletedToday;
-    private boolean account2CompletedToday;
 }

@@ -1,64 +1,100 @@
 package com.bytestreak.backend.services;
 
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.StreakInviteNotificationPayload;
 import com.bytestreak.backend.entities.Account;
-import com.bytestreak.backend.entities.Streak;
 import com.bytestreak.backend.entities.StreakInvite;
-import com.bytestreak.backend.repositories.AccountRepository;
-import com.bytestreak.backend.repositories.StreakInviteRepository;
-import com.bytestreak.backend.repositories.StreakRepository;
+import com.bytestreak.backend.entities.Streak;
 import com.bytestreak.backend.enums.InviteStatus;
 import com.bytestreak.backend.enums.NotificationTypes;
-
-import java.util.List;
+import com.bytestreak.backend.repositories.NotificationRepository;
+import com.bytestreak.backend.repositories.StreakInviteRepository;
+import com.bytestreak.backend.repositories.StreakRepository;
 
 @Service
 public class StreakService {
-    @Autowired 
-    private StreakRepository streakRepository;
-    
-    @Autowired 
-    private AccountRepository accountRepository;
-    
-    @Autowired 
+    @Autowired
     private StreakInviteRepository streakInviteRepository;
-    
-    @Autowired 
+
+    @Autowired
+    private StreakRepository streakRepository;
+
+    @Autowired
     private NotificationService notificationService;
 
-    public List<Streak> getActiveStreaks(Authentication authentication) {
-        String email = authentication.getName();
-        Account account = accountRepository.findByEmail(email);
-
-        return streakRepository.findByAccount1OrAccount2(account, account);
-    }
-
-    public List<StreakInvite> getPendingInvites(Account account) {
-        return streakInviteRepository.findBySenderAndStatus(account, InviteStatus.PENDING);
-    }
-
-    public void inviteToStreak(Account friendAccount, Authentication authentication) {
-        String email = authentication.getName();
-        Account sender = accountRepository.findByEmail(email);
-
-        if (streakInviteRepository.existsBySenderAndReceiverAndStatus(sender, friendAccount, InviteStatus.PENDING)) {
-            return;
-        }
-
+    @Autowired
+    private NotificationRepository notificationRepository;
+    
+    public StreakInvite inviteFriendToStreak(Account me, Account friend) {
         StreakInvite invite = new StreakInvite();
-        invite.setSender(sender);
-        invite.setReceiver(friendAccount);
+        invite.setSender(me);
+        invite.setReceiver(friend);
         invite.setStatus(InviteStatus.PENDING);
+
         streakInviteRepository.save(invite);
 
         StreakInviteNotificationPayload payload = new StreakInviteNotificationPayload();
-        payload.setSender(sender);
-        payload.setMessage("You have a streak invitation from " + sender.getUsername());
+        payload.setMessage(me.getUsername() + " has invited you to a streak!");
+        payload.setSenderId(me.getId());
+        payload.setProfilePictureUrl(me.getProfilePictureUrl());
+        payload.setUsername(me.getUsername());
+        payload.setInviteId(invite.getId());
 
-        notificationService.sendNotification(friendAccount, NotificationTypes.STREAK_INVITE, payload);
+        notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
+        return invite;
+    }
+
+    public void removeStreakBetweenUsers(Account me, Account friend) {
+        StreakInvite invite = streakInviteRepository.findBySenderAndReceiver(me, friend);
+        
+        if (invite == null) {
+            return;
+        }
+
+        streakInviteRepository.delete(invite);
+
+        Streak streak = streakRepository.findStreakBetweenUsers(me, friend);
+        
+        if (streak == null) {
+            return;
+        }
+
+        streakRepository.delete(streak);
+    }
+
+    public void acceptStreakInvite(Account me, Long inviteId, Long notificationId) {
+        StreakInvite invite = streakInviteRepository.findById(inviteId).orElseThrow(() -> new IllegalArgumentException("Invite not found"));
+        
+        if (!invite.getReceiver().getId().equals(me.getId())) {
+            throw new IllegalArgumentException("You are not the receiver of this invite");
+        }
+
+        invite.setStatus(InviteStatus.ACCEPTED);
+        streakInviteRepository.save(invite);
+
+        Streak streak = new Streak();
+        streak.setParticipant1(me);
+        streak.setParticipant2(invite.getSender());
+        streak.setLength(0);
+
+        streakRepository.save(streak);
+
+        notificationRepository.deleteById(notificationId);
+    }
+
+    public void declineStreakInvite(Account me, Long inviteId, Long notificationId) {
+        StreakInvite invite = streakInviteRepository.findById(inviteId).orElseThrow(() -> new IllegalArgumentException("Invite not found"));
+        
+        if (!invite.getReceiver().getId().equals(me.getId())) {
+            throw new IllegalArgumentException("You are not the receiver of this invite");
+        }
+
+        invite.setStatus(InviteStatus.DECLINED);
+        streakInviteRepository.save(invite);
+
+        notificationRepository.deleteById(notificationId);
+        streakInviteRepository.delete(invite);
     }
 }

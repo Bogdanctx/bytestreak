@@ -1,0 +1,38 @@
+.streak-invite-notification {
+	padding: 16px;
+	border-bottom: 1px solid var(--bg-3);
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	transition: background-color 0.2s ease;
+}
+
+.streak-invite-notification:hover {
+	background-color: var(--bg-2);
+}
+
+.streak-invite-avatar {
+	width: 32px;
+	height: 32px;
+}
+
+.streak-invite-content {
+	flex: 1;
+}
+
+.streak-invite-text {
+	color: var(--text-primary);
+}
+
+.streak-invite-actions {
+	display: flex;
+	gap: 4px;
+}
+
+.streak-invite-accept {
+	color: var(--accent-main) !important;
+}
+
+.streak-invite-decline {
+	color: var(--difficulty-hard) !important;
+}

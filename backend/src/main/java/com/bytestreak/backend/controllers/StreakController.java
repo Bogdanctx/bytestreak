@@ -1,5 +1,6 @@
 package com.bytestreak.backend.controllers;
 
+import com.bytestreak.backend.services.StreakService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,16 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.bytestreak.backend.entities.Account;
-import com.bytestreak.backend.entities.Streak;
-import com.bytestreak.backend.entities.StreakInvite;
 import com.bytestreak.backend.repositories.AccountRepository;
-import com.bytestreak.backend.services.StreakService;
+import com.bytestreak.backend.repositories.StreakInviteRepository;
+import com.bytestreak.backend.entities.StreakInvite;
+import com.bytestreak.backend.repositories.StreakRepository;
+import com.bytestreak.backend.entities.Streak;
+
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
@@ -24,48 +27,94 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class StreakController {
     @Autowired
     private StreakService streakService;
-
+    
     @Autowired
     private AccountRepository accountRepository;
-    
-    @GetMapping("/active")
-    public List<Streak> getActiveStreaks(Authentication authentication) {
+
+    @Autowired
+    private StreakInviteRepository streakInviteRepository;
+
+    @Autowired
+    private StreakRepository streakRepository;
+
+    @GetMapping("/active-streaks")
+    public ResponseEntity<?> getActiveStreaks(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return List.of();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to view active streaks.");
         }
 
-        return streakService.getActiveStreaks(authentication);
+        Account me = accountRepository.findByEmail(authentication.getName());
+
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        }
+        
+        List<Streak> streaks = streakRepository.findActiveStreaksForUser(me.getId());
+        return ResponseEntity.ok(streaks);
     }
 
-    @PostMapping("/invite")
-    public ResponseEntity<?> inviteToStreak(@RequestParam Long friendId, Authentication authentication) {
+    @PostMapping("/respond")
+    public ResponseEntity<?> respondToStreakInvite(@RequestParam Long inviteId, @RequestParam Long notificationId, @RequestParam boolean accepted, Authentication authentication) {
+        // Validate authentication
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        
-        Account friendAccount = accountRepository.findById(friendId).orElse(null);
-        
-        if (friendAccount == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Friend account not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to respond to streak invites.");
         }
 
-        streakService.inviteToStreak(friendAccount, authentication);
-        
+        Account me = accountRepository.findByEmail(authentication.getName());
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        }
+
+        StreakInvite invite = streakInviteRepository.findById(inviteId).orElse(null);
+        if (invite == null || !invite.getReceiver().getId().equals(me.getId())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Streak invite not found or user is not the recipient.");
+        }
+
+        if (accepted) {
+            streakService.acceptStreakInvite(me, inviteId, notificationId);
+        } else {
+            streakService.declineStreakInvite(me, inviteId, notificationId);
+        }
+
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/pending-invites")
-    public ResponseEntity<?> getPendingInvites(Authentication authentication) {
+    
+    
+    @PostMapping("/invite")
+    public ResponseEntity<?> inviteFriendToStreak(@RequestParam Long friendId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to invite friends to a streak.");
         }
 
-        Account account = accountRepository.findByEmail(authentication.getName());
+        Account me = accountRepository.findByEmail(authentication.getName());
 
-        List<StreakInvite> pendingInvites = streakService.getPendingInvites(account);
-        
-        return ResponseEntity.ok(pendingInvites);
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        }
+
+        Account friend = accountRepository.findById(friendId).orElse(null);
+
+        if (friend == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friend not found.");
+        }
+
+        StreakInvite invite = streakService.inviteFriendToStreak(me, friend);
+        return ResponseEntity.ok(invite);
     }
-    
-    
+
+    @GetMapping("/active-invites")
+    public ResponseEntity<?> getActiveInvites(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to view sent streak invites.");
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        }
+
+        List<StreakInvite> activeInvites = streakInviteRepository.findBySenderOrReceiver(me, me);
+        return ResponseEntity.ok(activeInvites);
+    }
 }

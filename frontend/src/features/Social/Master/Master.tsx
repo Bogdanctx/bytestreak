@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAccountContext } from '../../../context/AccountContext';
-import { type IAccount, type IStreakInvite } from '../../../entities';
+import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
@@ -14,7 +14,14 @@ import { api } from '../../../api';
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
     const { account, setAccount } = useAccountContext();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
-    const [pendingInvites, setPendingInvites] = useState<number[]>([]);
+    const [streakInvites, setStreakInvites] = useState<IStreakInvite[]>([]);
+    const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
+
+    useEffect(() => {
+        fetchPendingStreakInvites();
+        fetchActiveStreaks();
+    }, [account]);
+
 
     if (!account) {
         return null;
@@ -51,21 +58,19 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         try {
             const response = await api.post(`/streaks/invite?friendId=${friendId}`);
             if (response.status === 200) {
-                setPendingInvites(prev => [...prev, response.data.receiver.id]);
-                alert('Invitation sent!');
+                setStreakInvites(prev => [...prev, response.data]);
             }
         }
         catch (error) {
             console.error('Error inviting friend to streak:', error);
-            alert('Failed to send invitation. Please try again later.');
         }
-    }
+    };
 
     const fetchPendingStreakInvites = async () => {
         try {
-            const response = await api.get('/streaks/pending-invites');
+            const response = await api.get('/streaks/active-invites');
             if (response.status === 200) {
-                setPendingInvites(response.data.map((invite: IStreakInvite) => invite.receiver.id));
+                setStreakInvites(response.data);
             }
         }
         catch (error) {
@@ -73,9 +78,17 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         }
     }
 
-    useEffect(() => {
-        fetchPendingStreakInvites();
-    }, [account]);
+    const fetchActiveStreaks = async () => {
+        try {
+            const response = await api.get('/streaks/active-streaks');
+            if (response.status === 200) {
+                setActiveStreaks(response.data);
+            }
+        }
+        catch (error) {
+            console.error('Error fetching active streaks:', error);
+        }
+    }
 
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
@@ -102,64 +115,80 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
                 </Box>
                 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                    {account.friends.map((friend) => (
-                        <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
-                            <ListItemButton>
-                                <ListItemAvatar sx={{ minWidth: 50 }}>
-                                    <Avatar 
-                                        src={friend.profilePictureUrl}
-                                        sx={{ width: 36, height: 36, bgcolor: "var(--bg-4)" }}
+                    {account.friends.map((friend) => {
+                        const isInvitePending = streakInvites.some(invite => 
+                            (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
+                            && invite.status === 'PENDING'
+                        );
+
+                        const isInActiveStreak = streakInvites.some(invite =>
+                            (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
+                            && invite.status === 'ACCEPTED'
+                        ) || activeStreaks.some(streak => 
+                            (streak.participant1.id === friend.id || streak.participant2.id === friend.id)
+                        );
+
+                        return (
+                            <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
+                                <ListItemButton>
+                                    <ListItemAvatar sx={{ minWidth: 50 }}>
+                                        <Avatar 
+                                            src={friend.profilePictureUrl}
+                                            sx={{ width: 36, height: 36, bgcolor: "var(--bg-4)" }}
+                                        >
+                                            {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText 
+                                        primary={friend.username} 
+                                        secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
+                                        slotProps={{
+                                            primary: {
+                                                fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
+                                            },
+                                            secondary: {
+                                                fontSize: "0.8rem", color: "var(--text-secondary)"
+                                            }
+                                        }}
+                                    />
+
+                                    {!isInActiveStreak && (
+                                        <Button
+                                            size="small"
+                                            onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
+                                            disabled={isInvitePending}
+                                            sx={{
+                                                mr: 1,
+                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-main)',
+                                                color: isInvitePending ? 'var(--text-secondary)' : '#000',
+                                                textTransform: 'none',
+                                                fontWeight: '600',
+                                                borderRadius: '6px',
+                                                '&:hover': {
+                                                    backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-hover)',
+                                                },
+                                                '&.Mui-disabled': {
+                                                    backgroundColor: 'var(--bg-4)',
+                                                    color: 'var(--text-secondary)'
+                                                }
+                                            }}
+                                        >
+                                            {isInvitePending ? 'Pending' : 'Invite'}
+                                        </Button>
+                                    )}
+
+                                    <IconButton
+                                        size="small"
+                                        className='master-delete-friend-button'
+                                        onClick={(e) => confirmDelete(friend, e)}
+                                        sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-hard)' } }}
                                     >
-                                        {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText 
-                                    primary={friend.username} 
-                                    secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
-                                    slotProps={{
-                                        primary: {
-                                            fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
-                                        },
-                                        secondary: {
-                                            fontSize: "0.8rem", color: "var(--text-secondary)"
-                                        }
-                                    }}
-                                />
-
-                                <Button
-                                    size="small"
-                                    onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
-                                    disabled={pendingInvites.includes(friend.id)}
-                                    sx={{
-                                        mr: 1,
-                                        backgroundColor: pendingInvites.includes(friend.id) ? 'var(--bg-4)' : 'var(--accent-main)',
-                                        color: pendingInvites.includes(friend.id) ? 'var(--text-secondary)' : '#000',
-                                        textTransform: 'none',
-                                        fontWeight: '600',
-                                        borderRadius: '6px',
-                                        '&:hover': {
-                                            backgroundColor: pendingInvites.includes(friend.id) ? 'var(--bg-4)' : 'var(--accent-hover)',
-                                        },
-                                        '&.Mui-disabled': {
-                                            backgroundColor: 'var(--bg-4)',
-                                            color: 'var(--text-secondary)'
-                                        }
-                                    }}
-                                >
-                                    {pendingInvites.includes(friend.id) ? 'Pending' : 'Invite'}
-                                </Button>
-
-                                <IconButton
-                                    size="small"
-                                    className='master-delete-friend-button'
-                                    onClick={(e) => confirmDelete(friend, e)}
-                                    sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-hard)' } }}
-                                >
-                                    <DeleteOutlineIcon fontSize="small" />
-                                </IconButton>
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                                        <DeleteOutlineIcon fontSize="small" />
+                                    </IconButton>
+                                </ListItemButton>
+                            </ListItem>
+                        )
+                    })}
 
                     {account.friends.length === 0 && (
                         <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>

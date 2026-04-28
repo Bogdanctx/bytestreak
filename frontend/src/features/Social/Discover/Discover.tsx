@@ -11,11 +11,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IAccount, type INotification, type IFriendInvite } from '../../../entities';
+import { type IAccount, type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
 import { useAccountContext } from '../../../context/AccountContext';
-import { set } from 'react-hook-form';
-
 
 function Discover() {
     const { account } = useAccountContext();
@@ -26,6 +24,25 @@ function Discover() {
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [sentConnections, setSentConnections] = useState<IFriendInvite[]>([]);
     const [pendingConnections, setPendingConnections] = useState<IFriendInvite[]>([]);
+
+    useEffect(() => {
+        // debounce the seach input by 300ms to avoid filtering on every keystroke
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        fetchAccounts(accountsNextCursor, controller.signal);
+        fetchSentConnections();
+        fetchPendingConnections();
+
+        return () => controller.abort();
+    }, []);
 
     if (!account) {
         return null;
@@ -111,25 +128,6 @@ function Discover() {
             console.error('Error fetching pending connections:', error);
         }
     }
-
-    useEffect(() => {
-        // debounce the seach input by 300ms to avoid filtering on every keystroke
-        const handler = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 300);
-
-        return () => clearTimeout(handler);
-    }, [searchQuery]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-
-        fetchAccounts(accountsNextCursor, controller.signal);
-        fetchSentConnections();
-        fetchPendingConnections();
-
-        return () => controller.abort();
-    }, []);
 
     return (
         <Box className="discover-container">

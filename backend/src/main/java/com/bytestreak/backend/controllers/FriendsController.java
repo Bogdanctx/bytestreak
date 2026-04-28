@@ -10,13 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import com.bytestreak.backend.repositories.AccountRepository;
-import com.bytestreak.backend.repositories.FriendInviteRepository;
-import com.bytestreak.backend.repositories.NotificationRepository;
-import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.services.FriendService;
 import com.bytestreak.backend.entities.FriendInvite;
-import com.bytestreak.backend.entities.Notification;
 
 import java.util.List;
 
@@ -29,12 +25,6 @@ public class FriendsController {
 
     @Autowired
     private AccountRepository accountRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private FriendInviteRepository friendInviteRepository;
 
     @PostMapping("/send-request")
     public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
@@ -87,10 +77,7 @@ public class FriendsController {
 
         Account me = accountRepository.findByEmail(authentication.getName());
 
-        System.out.println(me);
-
         List<FriendInvite> pendingConnections = friendService.getPendingConnections(me);
-        System.out.println(pendingConnections);
 
         return ResponseEntity.ok(pendingConnections);
     }
