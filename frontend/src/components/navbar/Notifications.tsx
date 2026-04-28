@@ -8,18 +8,40 @@ import { api } from '../../api';
 import { type INotification } from '../../entities';
 import './Navbar.style.css';
 import './Notifications.style.css';
+import { useWebSocket } from '../../context/WebSocketContext';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [notifications, setNotifications] = useState<INotification[]>([]);
+    const { stompClient, connected } = useWebSocket();
 
     useEffect(() => {
-        fetchNotifications();
+        if (!stompClient || !connected) {
+            return;
+        }
 
-        const interval = setInterval(fetchNotifications, 60000);
+        fetchNotifications();
         
-        return () => clearInterval(interval);
-    }, []);
+        // subscribe to friend request and streak invite topics
+        const friendRequestSubscription = stompClient.subscribe('/user/queue/friend-invites', (message) => {
+            const notification = JSON.parse(message.body);
+            console.log('Received friend request notification:', notification);
+            setNotifications(prev => [notification, ...prev]);
+        });
+
+        const streakInviteSubscription = stompClient.subscribe('/user/queue/streak-invites', (message) => {
+            const notification = JSON.parse(message.body);
+            console.log('Received streak invite notification:', notification);
+            setNotifications(prev => [notification, ...prev]);
+        });
+
+        // cleanup function to unsubscribe on unmount
+        return () => {
+            friendRequestSubscription.unsubscribe();
+            streakInviteSubscription.unsubscribe();
+        };
+        
+    }, [stompClient, connected]);
 
     const fetchNotifications = async () => {
         try {

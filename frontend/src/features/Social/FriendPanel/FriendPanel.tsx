@@ -21,10 +21,6 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
     const { account } = useProtectedAccount();
     const { stompClient } = useWebSocket();
 
-    if (!account) {
-        return null; // or a loading state
-    }
-
     const fetchFriend = async () => {
         try {
             const response = await api.get(`/accounts/get?accountId=${friendId}`);
@@ -54,7 +50,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         fetchMessages();
 
         if (stompClient && stompClient.connected) {
-            const subscription = stompClient.subscribe(`/user/queue/messages/${account.id}`, (message) => {
+            const subscription = stompClient.subscribe(`/user/queue/messages`, (message) => {
                 const newLiveMessage = JSON.parse(message.body);
 
                 if (newLiveMessage.sender.id === friendId) {

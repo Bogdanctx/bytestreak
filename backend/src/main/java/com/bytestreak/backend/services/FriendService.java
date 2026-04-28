@@ -2,6 +2,7 @@ package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,9 @@ public class FriendService {
     @Autowired
     private StreakService streakService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     public FriendInvite sendConnectionRequest(Account sender, Account receiver) {
         FriendInvite invite = new FriendInvite();
         invite.setSender(sender);
@@ -50,7 +54,9 @@ public class FriendService {
         payload.setMessage("You have a friend request from " + sender.getUsername());
         payload.setInviteId(invite.getId());
 
-        notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
+        Notification notification = notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
+
+        messagingTemplate.convertAndSendToUser(receiver.getEmail(), "/queue/friend-invites", notification);
 
         return invite;
     }
@@ -78,9 +84,6 @@ public class FriendService {
         friendInviteRepository.delete(invite);
 
         // delete the notification for the receiver
-        notificationRepository.deleteById(notificationId);
-
-        // delete the notification
         notificationRepository.deleteById(notificationId);
     }
 

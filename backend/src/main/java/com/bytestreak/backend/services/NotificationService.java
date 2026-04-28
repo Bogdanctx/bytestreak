@@ -16,13 +16,14 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    public void sendNotification(Account receiver, NotificationTypes type, NotificationPayload payload) {
+    public Notification sendNotification(Account receiver, NotificationTypes type, NotificationPayload payload) {
         Notification notification = new Notification();
         notification.setReceiver(receiver);
         notification.setType(type);
         notification.setPayload(payload);
 
         notificationRepository.save(notification);
+        return notification;
     }
 
     public List<Notification> getNotificationsForAccount(Account account) {

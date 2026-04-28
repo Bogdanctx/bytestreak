@@ -43,7 +43,7 @@ public class MessageService {
 
         messageRepository.save(message);
 
-        messagingTemplate.convertAndSendToUser(receiver.getEmail(),"/user/queue/messages", message);
+        messagingTemplate.convertAndSendToUser(receiver.getEmail(),"/queue/messages", message);
 
         return message;
     }

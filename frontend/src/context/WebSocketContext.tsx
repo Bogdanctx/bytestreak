@@ -4,15 +4,17 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 interface IWebSocketContext {
     stompClient: Client | null;
+    connected: boolean;
 }
 
-const WebSocketContext = createContext<IWebSocketContext>({ stompClient: null });
+const WebSocketContext = createContext<IWebSocketContext>({ stompClient: null, connected: false });
 
 export const useWebSocket = () => useContext(WebSocketContext);
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     const { account } = useAccountContext();
     const [stompClient, setStompClient] = useState<Client | null>(null);
+    const [connected, setConnected] = useState(false);
 
     useEffect(() => {
         if (!account) {
@@ -25,17 +27,15 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log('WebSocket connected');
-
-                client.subscribe(`/user/queue/messages/${account.id}`, (message) => {
-                    const newLiveMessage = JSON.parse(message.body);
-                });
-
-                client.subscribe(`/user/queue/streak-invites/${account.id}`, (message) => {
-                    const invite = JSON.parse(message.body);
-                });
+                setConnected(true);
+            },
+            onDisconnect: () => {
+                console.log('WebSocket disconnected');
+                setConnected(false);
             },
             onStompError: (error) => {
                 console.error('WebSocket STOMP error:', error);
+                setConnected(false);
             },
         });
 
@@ -50,7 +50,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     }, [account]);
 
     return (
-        <WebSocketContext.Provider value={{ stompClient }}>
+        <WebSocketContext.Provider value={{ stompClient, connected }}>
             {children}
         </WebSocketContext.Provider>
     );

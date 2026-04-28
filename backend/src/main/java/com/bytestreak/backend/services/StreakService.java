@@ -13,6 +13,7 @@ import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
+import com.bytestreak.backend.entities.Notification;
 
 @Service
 public class StreakService {
@@ -45,9 +46,9 @@ public class StreakService {
         payload.setUsername(me.getUsername());
         payload.setInviteId(invite.getId());
 
-        notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
+        Notification notification = notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
         
-        messagingTemplate.convertAndSendToUser(friend.getEmail(),"/queue/streak-invites", payload);
+        messagingTemplate.convertAndSendToUser(friend.getEmail(),"/queue/streak-invites", notification);
         
         return invite;
     }
