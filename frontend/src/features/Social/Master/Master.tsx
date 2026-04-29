@@ -38,7 +38,9 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
             const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
             if (response.status === 200) {
                 setSelectedFriend(null);
+
                 queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
             }
         } catch (error) {
             console.error('Error removing friend:', error);
