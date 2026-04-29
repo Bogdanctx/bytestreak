@@ -81,6 +81,10 @@ function Notifications() {
             
                 queryClient.invalidateQueries({ queryKey: ['account'] });
                 queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+
+                if (accepted) {
+                    queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
+                }
             }
         }        
         catch (error) {

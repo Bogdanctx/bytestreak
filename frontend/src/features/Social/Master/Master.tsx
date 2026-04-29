@@ -30,15 +30,17 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
         queryFn: async () => {
             const response = await api.get('/streaks/active-invites');
             return response.data;
-        }
+        },
+        refetchInterval: 1000 * 10
     });
 
     const { data: activeStreaks = [] } = useQuery<IStreak[]>({
         queryKey: ['activeStreaks'],
         queryFn: async () => {
-            const response = await api.get('/streaks/active-streaks');
+            const response = await api.get('/streaks/fetch-streaks');
             return response.data;
-        }
+        },
+        refetchInterval: 1000 * 10
     });
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {

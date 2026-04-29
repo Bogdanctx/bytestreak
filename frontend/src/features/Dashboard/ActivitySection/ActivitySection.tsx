@@ -26,7 +26,7 @@ function ActivitySection() {
     const { data: account } = useAccount();
     
     const { data: streaksData = [] } = useQuery<IStreak[]>({
-        queryKey: ['streaks'],
+        queryKey: ['activeStreaks'],
         queryFn: async () => {
             const response = await api.get('/streaks/fetch-streaks');
             return response.data;
@@ -38,7 +38,7 @@ function ActivitySection() {
         try {
             const response = await api.post(`/streaks/remove?streakId=${streakId}`);
             if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['streaks'] });
+                queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
                 notify("Streak removed", "success");
             }
         } catch (error) {
