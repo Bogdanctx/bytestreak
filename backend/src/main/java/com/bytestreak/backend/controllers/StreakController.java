@@ -37,7 +37,7 @@ public class StreakController {
     @Autowired
     private StreakRepository streakRepository;
 
-    @GetMapping("/active-streaks")
+    @GetMapping("/fetch-streaks")
     public ResponseEntity<?> getActiveStreaks(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to view active streaks.");

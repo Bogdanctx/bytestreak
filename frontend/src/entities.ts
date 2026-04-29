@@ -110,6 +110,9 @@ export interface IStreak {
     participant1: IAccount;
     participant2: IAccount;
     length: number;
+
+    participant1SolvedToday: boolean;
+    participant2SolvedToday: boolean;
 }
 
 export interface IStreakInvite {
