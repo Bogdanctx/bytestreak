@@ -9,11 +9,13 @@ import { type INotification } from '../../entities';
 import './Navbar.style.css';
 import './Notifications.style.css';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useProtectedAccount } from '../../context/AccountContext';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [notifications, setNotifications] = useState<INotification[]>([]);
     const { stompClient, connected } = useWebSocket();
+    const { setAccount } = useProtectedAccount();
 
     useEffect(() => {
         if (!stompClient || !connected) {
@@ -64,6 +66,11 @@ function Notifications() {
                 console.log('Friend request response sent successfully');
 
                 setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            
+                const meResponse = await api.get('/auth/me');
+                if (meResponse.status === 200) {
+                    setAccount(meResponse.data);
+                }
             }
         }
         catch (error) {
@@ -79,6 +86,11 @@ function Notifications() {
                 console.log('Streak invite response sent successfully');
 
                 setNotifications(prev => prev.filter(n => n.id !== notificationId));
+            
+                const meResponse = await api.get('/auth/me');
+                if (meResponse.status === 200) {
+                    setAccount(meResponse.data);
+                }
             }
         }        catch (error) {
             console.error('Error responding to streak invite:', error);

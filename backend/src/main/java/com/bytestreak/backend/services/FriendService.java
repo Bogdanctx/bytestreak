@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.NotificationRepository;
-import com.bytestreak.backend.repositories.StreakRepository;
 import com.bytestreak.backend.repositories.FriendInviteRepository;
 import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;

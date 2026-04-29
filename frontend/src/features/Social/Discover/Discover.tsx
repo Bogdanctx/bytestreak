@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { 
     Box, 
     Typography, 
@@ -17,69 +17,51 @@ import { useProtectedAccount } from '../../../context/AccountContext';
 
 function Discover() {
     const { account } = useProtectedAccount();
-    // state to hold all accounts fetched from the backend (excluding me and my friends)
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
+    
     const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
+    
     const [sentConnections, setSentConnections] = useState<IFriendInvite[]>([]);
     const [pendingConnections, setPendingConnections] = useState<IFriendInvite[]>([]);
+    
+    useEffect(() => {
+        fetchSentConnections();
+        fetchPendingConnections();
+    }, [account]);
+
 
     useEffect(() => {
-        // debounce the seach input by 300ms to avoid filtering on every keystroke
         const handler = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 300);
+            setDebounceSearchQuery(searchQuery);
+        }, 200);
 
-        return () => clearTimeout(handler);
+        return () => {
+            clearTimeout(handler);
+        };
     }, [searchQuery]);
 
     useEffect(() => {
-        const controller = new AbortController();
+        fetchAccounts(0, debounceSearchQuery, false);
+    }, [debounceSearchQuery]);
 
-        fetchAccounts(accountsNextCursor, controller.signal);
-        fetchSentConnections();
-        fetchPendingConnections();
-
-        return () => controller.abort();
-    }, []);
-
-    const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
+    const fetchAccounts = async (nextCursor: number | null, query: string, isAppend: boolean) => {
         try {
-            const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });     
-            
-            console.log('Fetched accounts:', response.data.accounts);
-
+            const response = await api.get(`/accounts/fetch-accounts?cursor=${nextCursor || ""}&query=${query}`);
             setAccountsNextCursor(response.data.nextCursor);
 
-            // remove me from the list
-            let filteredAccounts = response.data.accounts.filter((fetchedAccount: IAccount) => fetchedAccount.id !== account.id);
-            
-            // remove my friends from the list
-            if (account.friends.length > 0) {
-                filteredAccounts = filteredAccounts.filter((fetchedAccount: IAccount) => {
-                    return !account.friends.some((friend) => friend.id === fetchedAccount.id);
-                });
+            if (isAppend) {
+                setAccounts((prevAccounts) => [...prevAccounts, ...response.data.accounts]);
+            } 
+            else {
+                setAccounts(response.data.accounts);
             }
-
-            // set all the accounts
-            setAccounts((prevAccounts) => [...prevAccounts, ...filteredAccounts]);
         } 
         catch (error) {
             console.error('Error fetching accounts:', error);
         }
     };
-
-    const displayedAccounts = useMemo(() => {
-        if (debouncedSearchQuery.trim() === "") {
-            return accounts;
-        } 
-        else {
-            return accounts.filter(account => 
-                account.username.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-            );
-        }
-    }, [accounts, debouncedSearchQuery]);
 
     const handleAddFriend = async (accountId: number) => {
         try {
@@ -157,59 +139,65 @@ function Discover() {
             </Typography>
 
             <Box className="discover-users-list">
-                {displayedAccounts.map((account) => (
-                    <Box 
-                        key={account.id} 
-                        className="discover-user-card"
-                    >
-                        <Box className="discover-user-info">
-                            <Avatar src={account.profilePictureUrl} className="discover-user-avatar">
-                                {!account.profilePictureUrl && account.username.charAt(0)}
-                            </Avatar>
-                            
-                            <Box className="discover-user-meta">
-                                <Typography variant="body2" className="discover-user-name" noWrap>
-                                    {account.username}
-                                </Typography>
-                                <Typography variant="caption" className="discover-user-role" noWrap>
-                                    Mock role
-                                </Typography>
-                                <Typography variant="caption" className="discover-user-location" noWrap>
-                                    Mock location
-                                </Typography>
+                {accounts.map((mappedAccount) => {
+                    if (mappedAccount.id === account.id) {
+                        return null;
+                    }
+
+                    return (
+                        <Box 
+                            key={mappedAccount.id} 
+                            className="discover-user-card"
+                        >
+                            <Box className="discover-user-info">
+                                <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
+                                    {!mappedAccount.profilePictureUrl && mappedAccount.username.charAt(0)}
+                                </Avatar>
+                                
+                                <Box className="discover-user-meta">
+                                    <Typography variant="body2" className="discover-user-name" noWrap>
+                                        {mappedAccount.username}
+                                    </Typography>
+                                    <Typography variant="caption" className="discover-user-role" noWrap>
+                                        Mock role
+                                    </Typography>
+                                    <Typography variant="caption" className="discover-user-location" noWrap>
+                                        Mock location
+                                    </Typography>
+                                </Box>
                             </Box>
+
+                            {/* `Pending Connection` will appear for both users if they try to add each other */}
+                            {sentConnections.some((connection) => connection.receiver.id === mappedAccount.id) || pendingConnections.some((connection) => connection.sender.id === mappedAccount.id) ? (
+                                <Typography variant="caption" className="discover-pending-connection">
+                                    Pending Connection
+                                </Typography>
+                            ) : (
+                                <Button variant="outlined" size="small" className="discover-add-button" 
+                                        onClick={() => handleAddFriend(mappedAccount.id)}
+                                >
+                                    <PersonAddIcon fontSize="small" />
+                                </Button>
+                            )}
                         </Box>
+                    );
+                })}
 
-                        {/* `Pending Connection` will appear for both users if they try to add each other */}
-                        {sentConnections.some((connection) => connection.receiver.id === account.id) || pendingConnections.some((connection) => connection.sender.id === account.id) ? (
-                            <Typography variant="caption" className="discover-pending-connection">
-                                Pending Connection
-                            </Typography>
-                        ) : (
-                            <Button variant="outlined" size="small" className="discover-add-button" 
-                                    onClick={() => handleAddFriend(account.id)}
-                            >
-                                <PersonAddIcon fontSize="small" />
-                            </Button>
-                        )}
-                    </Box>
-                ))}
-
-                {displayedAccounts.length === 0 && searchQuery.trim() === "" && (
+                {accounts.length === 0 && searchQuery.trim() === "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         <br /> No connections available. <br /> <br /> Invite your friends to join ByteStreak and connect with them here!
                     </Typography>
                 )}
 
-                {displayedAccounts.length === 0 && searchQuery.trim() !== "" && (
+                {accounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
                     </Typography>
                 )}
 
-                {displayedAccounts.length !== 0 && accountsNextCursor !== null && (
+                {accounts.length !== 0 && accountsNextCursor !== null && (
                     <Button variant="text" size="small" className="discover-load-more-button"
-                            onClick={() => fetchAccounts(accountsNextCursor)}
+                            onClick={() => fetchAccounts(accountsNextCursor, searchQuery, true)}
                     >
                         Load More
                     </Button>
