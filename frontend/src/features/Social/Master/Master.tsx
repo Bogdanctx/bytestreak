@@ -8,12 +8,19 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAccount } from '../../../hooks/useAccount';
 import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
-import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
+import { 
+    getRankByLevel, 
+    getRankColor 
+} from '../../../utils/rankUtils';
 import { api } from '../../../api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
+import { 
+    type Dispatch,
+    type SetStateAction
+} from 'react';
 
-function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
+function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAction<IAccount | null>> }) {
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
@@ -52,6 +59,8 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
 
                 queryClient.invalidateQueries({ queryKey: ['account'] });
                 queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+
+                notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
             }
         } 
         catch (error) {

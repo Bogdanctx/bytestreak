@@ -66,6 +66,7 @@ function Discover() {
 
             if (response.status === 200) {
                 queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+                notify('Friend invite sent successfully!', 'success');
             }
         }
         catch (error) {

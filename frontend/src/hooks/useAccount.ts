@@ -10,7 +10,6 @@ export const useAccount = () => {
             return response.data;
         },
         retry: false,
-        staleTime: 1000 * 10, // 10 seconds
         refetchInterval: 1000 * 10
     });
 };
