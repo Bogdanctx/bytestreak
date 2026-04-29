@@ -18,22 +18,20 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
     const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
-    const { data: streakInvites } = useQuery<IStreakInvite[]>({
+    const { data: streakInvites = [] } = useQuery<IStreakInvite[]>({
         queryKey: ['streakInvites'],
         queryFn: async () => {
             const response = await api.get('/streaks/active-invites');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
-    const { data: activeStreaks } = useQuery<IStreak[]>({
+    const { data: activeStreaks = [] } = useQuery<IStreak[]>({
         queryKey: ['activeStreaks'],
         queryFn: async () => {
             const response = await api.get('/streaks/active-streaks');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
@@ -48,7 +46,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         
         try {
             const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
-            
+
             if (response.status === 200) {
                 setSelectedFriend(null);
 

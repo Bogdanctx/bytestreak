@@ -80,6 +80,7 @@ function Notifications() {
                 );
             
                 queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
             }
         }        
         catch (error) {
