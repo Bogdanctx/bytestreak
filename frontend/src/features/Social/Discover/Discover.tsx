@@ -11,26 +11,44 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IAccount, type IFriendInvite } from '../../../entities';
+import { type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
 import { useAccount } from '../../../hooks/useAccount';
+import { useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 function Discover() {
     const { data: account } = useAccount();
-    const [accounts, setAccounts] = useState<IAccount[]>([]);
-    const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
-    
+    const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
     
-    const [sentConnections, setSentConnections] = useState<IFriendInvite[]>([]);
-    const [pendingConnections, setPendingConnections] = useState<IFriendInvite[]>([]);
-    
-    useEffect(() => {
-        fetchSentConnections();
-        fetchPendingConnections();
-    }, [account]);
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+                                                                        queryKey: ['discoverAccounts', debounceSearchQuery],
+                                                                        queryFn: async ({ pageParam = "" }) => {
+                                                                            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+                                                                            return response.data;
+                                                                        },
+                                                                        getNextPageParam: (lastPage) => lastPage.nextCursor || null,
+                                                                        initialPageParam: ""
+                                                                    });
 
+    const { data: sentConnections = [] } = useQuery<IFriendInvite[]>({
+                                                queryKey: ['sentConnections'],
+                                                queryFn: async () => {
+                                                    const response = await api.get('/friends/sent-connections');
+                                                    return response.data;
+                                                },
+                                                enabled: !!account
+                                            });
+
+    const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
+                                                queryKey: ['pendingConnections'],
+                                                queryFn: async () => {
+                                                    const response = await api.get('/friends/pending-connections');
+                                                    return response.data;
+                                                },
+                                                enabled: !!account
+                                            });
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -42,35 +60,12 @@ function Discover() {
         };
     }, [searchQuery]);
 
-    useEffect(() => {
-        fetchAccounts(0, debounceSearchQuery, false);
-    }, [debounceSearchQuery]);
-
-    const fetchAccounts = async (nextCursor: number | null, query: string, isAppend: boolean) => {
-        try {
-            const response = await api.get(`/accounts/fetch-accounts?cursor=${nextCursor || ""}&query=${query}`);
-            setAccountsNextCursor(response.data.nextCursor);
-
-            if (isAppend) {
-                setAccounts((prevAccounts) => [...prevAccounts, ...response.data.accounts]);
-            } 
-            else {
-                setAccounts(response.data.accounts);
-            }
-        } 
-        catch (error) {
-            console.error('Error fetching accounts:', error);
-        }
-    };
-
     const handleAddFriend = async (accountId: number) => {
         try {
             const response = await api.post(`/friends/send-request?friendId=${accountId}`);
 
             if (response.status === 200) {
-                notify('Friend invite sent!', 'success');
-                // add the new sent connection to the state to update the UI
-                setSentConnections((prev) => [...prev, response.data]);
+                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
             }
         }
         catch (error) {
@@ -79,33 +74,7 @@ function Discover() {
         }
     }
 
-    const fetchSentConnections = async () => {
-        try {
-            const response = await api.get('/friends/sent-connections');
-
-            if (response.status === 200) {
-                setSentConnections(response.data);
-                console.log('Fetched sent connections:', response.data);
-            }
-        } 
-        catch (error) {
-            console.error('Error fetching sent connections:', error);
-        }
-    }
-
-    const fetchPendingConnections = async () => {
-        try {
-            const response = await api.get('/friends/pending-connections');
-
-            if (response.status === 200) {
-                setPendingConnections(response.data);
-                console.log('Fetched pending connections:', response.data);
-            }
-        } 
-        catch (error) {
-            console.error('Error fetching pending connections:', error);
-        }
-    }
+    const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box className="discover-container">
@@ -139,10 +108,17 @@ function Discover() {
             </Typography>
 
             <Box className="discover-users-list">
-                {accounts.map((mappedAccount) => {
-                    if (mappedAccount.id === account?.id) {
+                {discoverAccounts.map((mappedAccount) => {
+                    // exclude the current user's account from the list
+                    if (mappedAccount.id === account.id) {
                         return null;
                     }
+
+                    // exclude accounts that are already friends
+                    if (account.friends.some(friend => friend.id === mappedAccount.id)) {
+                        return null;
+                    }
+
 
                     return (
                         <Box 
@@ -183,23 +159,27 @@ function Discover() {
                     );
                 })}
 
-                {accounts.length === 0 && searchQuery.trim() === "" && (
+                {discoverAccounts.length === 0 && searchQuery.trim() === "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         <br /> No connections available. <br /> <br /> Invite your friends to join ByteStreak and connect with them here!
                     </Typography>
                 )}
 
-                {accounts.length === 0 && searchQuery.trim() !== "" && (
+                {discoverAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
                     </Typography>
                 )}
 
-                {accounts.length !== 0 && accountsNextCursor !== null && (
-                    <Button variant="text" size="small" className="discover-load-more-button"
-                            onClick={() => fetchAccounts(accountsNextCursor, searchQuery, true)}
+                {hasNextPage && (
+                    <Button 
+                        variant="text" 
+                        size="small" 
+                        className="discover-load-more-button"
+                        onClick={() => fetchNextPage()}
+                        disabled={isFetchingNextPage}
                     >
-                        Load More
+                        {isFetchingNextPage ? 'Loading...' : 'Load More'}
                     </Button>
                 )}
             </Box>

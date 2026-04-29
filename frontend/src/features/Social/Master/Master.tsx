@@ -10,8 +10,10 @@ import { type IAccount, type IStreak, type IStreakInvite } from '../../../entiti
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
+import { useQueryClient } from '@tanstack/react-query';
 
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
+    const queryClient = useQueryClient();
     const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
     const [streakInvites, setStreakInvites] = useState<IStreakInvite[]>([]);
@@ -35,10 +37,8 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         try {
             const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
             if (response.status === 200) {
-                setAccount({
-                    ...account,
-                    friends: account.friends.filter(f => f.id !== friendToRemove.id)
-                });
+                setSelectedFriend(null);
+                queryClient.invalidateQueries({ queryKey: ['account'] });
             }
         } catch (error) {
             console.error('Error removing friend:', error);

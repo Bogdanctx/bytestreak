@@ -5,29 +5,25 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
 import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
 import { api } from '../../api';
-import { type INotification } from '../../entities';
+import { type IFriendInvite, type INotification } from '../../entities';
 import './Navbar.style.css';
 import './Notifications.style.css';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [notifications, setNotifications] = useState<INotification[]>([]);
     const queryClient = useQueryClient();
-
-    useEffect(() => {
-        const intervalFetchNotifications = setInterval(() => {
-            fetchNotifications();
-        }, 10000); // Fetch every 10 seconds
-
-        fetchNotifications(); // Initial fetch on component mount
-
-        return () => clearInterval(intervalFetchNotifications);
-    }, []);
+    const { data: notifications = [] } = useQuery<INotification[]>({
+        queryKey: ['notifications'],
+        queryFn: async () => {
+            const response = await api.get('/notifications/fetch');
+            return response.data;
+        },
+        refetchInterval: 1000 * 10,
+    });
 
     useEffect(() => {
         if (anchorEl) {
-            fetchNotifications();
             markNotificationsAsRead();
         }
     }, [anchorEl]);
@@ -37,40 +33,36 @@ function Notifications() {
             const response = await api.post('/notifications/mark-as-read');
             if (response.status === 200) {
                 console.log('Notifications marked as read');
-                setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.map(notifications => ({ ...notifications, read: true }))
+                );
             }
         }
         catch (error) {
             console.error('Error marking notifications as read:', error);
         }
     }
-
-    const fetchNotifications = async () => {
-        try {
-            const response = await api.get('/notifications/fetch');
-            if (response.status === 200) {
-                console.log('Fetched notifications:', response.data);
-                setNotifications(response.data);
-            }
-        }
-        catch (error) {
-            console.error('Error fetching notifications:', error);
-        }
-    };
   
     const handleFriendRequestAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
         try {
             const response = await api.post(`/friends/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
 
             if (response.status === 200) {
-                console.log('Friend request response sent successfully');
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.filter(notification => notification.id !== notificationId)
+                );
 
-                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+                queryClient.setQueryData(['pendingConnections'], (old: IFriendInvite[] = []) => 
+                    old.filter(invite => invite.id !== inviteId)
+                );
+                
+                queryClient.setQueryData(['sentConnections'], (old: IFriendInvite[] = []) => 
+                    old.filter(invite => invite.id !== inviteId)
+                );
             
-                const meResponse = await api.get('/auth/me');
-                if (meResponse.status === 200) {
-                    queryClient.invalidateQueries({ queryKey: ['account'] });
-                }
+
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['discoverAccounts'] });
             }
         }
         catch (error) {
@@ -83,16 +75,14 @@ function Notifications() {
             const response = await api.post(`/streaks/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
 
             if (response.status === 200) {
-                console.log('Streak invite response sent successfully');
-
-                setNotifications(prev => prev.filter(n => n.id !== notificationId));
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.filter(notification => notification.id !== notificationId)
+                );
             
-                const meResponse = await api.get('/auth/me');
-                if (meResponse.status === 200) {
-                    queryClient.invalidateQueries({ queryKey: ['account'] });
-                }
+                queryClient.invalidateQueries({ queryKey: ['account'] });
             }
-        }        catch (error) {
+        }        
+        catch (error) {
             console.error('Error responding to streak invite:', error);
         }
     };
