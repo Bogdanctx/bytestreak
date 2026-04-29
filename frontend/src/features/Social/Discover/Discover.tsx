@@ -13,10 +13,10 @@ import './Discover.style.css';
 import { api } from '../../../api';
 import { type IAccount, type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
-import { useProtectedAccount } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 
 function Discover() {
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
     const [accounts, setAccounts] = useState<IAccount[]>([]);
     const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
     
@@ -140,7 +140,7 @@ function Discover() {
 
             <Box className="discover-users-list">
                 {accounts.map((mappedAccount) => {
-                    if (mappedAccount.id === account.id) {
+                    if (mappedAccount.id === account?.id) {
                         return null;
                     }
 

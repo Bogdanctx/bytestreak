@@ -8,42 +8,42 @@ import { api } from '../../api';
 import { type INotification } from '../../entities';
 import './Navbar.style.css';
 import './Notifications.style.css';
-import { useWebSocket } from '../../context/WebSocketContext';
-import { useProtectedAccount } from '../../context/AccountContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [notifications, setNotifications] = useState<INotification[]>([]);
-    const { stompClient, connected } = useWebSocket();
-    const { setAccount } = useProtectedAccount();
+    const queryClient = useQueryClient();
 
     useEffect(() => {
-        if (!stompClient || !connected) {
-            return;
+        const intervalFetchNotifications = setInterval(() => {
+            fetchNotifications();
+        }, 10000); // Fetch every 10 seconds
+
+        fetchNotifications(); // Initial fetch on component mount
+
+        return () => clearInterval(intervalFetchNotifications);
+    }, []);
+
+    useEffect(() => {
+        if (anchorEl) {
+            fetchNotifications();
+            markNotificationsAsRead();
         }
+    }, [anchorEl]);
 
-        fetchNotifications();
-        
-        // subscribe to friend request and streak invite topics
-        const friendRequestSubscription = stompClient.subscribe('/user/queue/friend-invites', (message) => {
-            const notification = JSON.parse(message.body);
-            console.log('Received friend request notification:', notification);
-            setNotifications(prev => [notification, ...prev]);
-        });
-
-        const streakInviteSubscription = stompClient.subscribe('/user/queue/streak-invites', (message) => {
-            const notification = JSON.parse(message.body);
-            console.log('Received streak invite notification:', notification);
-            setNotifications(prev => [notification, ...prev]);
-        });
-
-        // cleanup function to unsubscribe on unmount
-        return () => {
-            friendRequestSubscription.unsubscribe();
-            streakInviteSubscription.unsubscribe();
-        };
-        
-    }, [stompClient, connected]);
+    const markNotificationsAsRead = async () => {
+        try {
+            const response = await api.post('/notifications/mark-as-read');
+            if (response.status === 200) {
+                console.log('Notifications marked as read');
+                setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            }
+        }
+        catch (error) {
+            console.error('Error marking notifications as read:', error);
+        }
+    }
 
     const fetchNotifications = async () => {
         try {
@@ -69,7 +69,7 @@ function Notifications() {
             
                 const meResponse = await api.get('/auth/me');
                 if (meResponse.status === 200) {
-                    setAccount(meResponse.data);
+                    queryClient.invalidateQueries({ queryKey: ['account'] });
                 }
             }
         }
@@ -89,13 +89,15 @@ function Notifications() {
             
                 const meResponse = await api.get('/auth/me');
                 if (meResponse.status === 200) {
-                    setAccount(meResponse.data);
+                    queryClient.invalidateQueries({ queryKey: ['account'] });
                 }
             }
         }        catch (error) {
             console.error('Error responding to streak invite:', error);
         }
     };
+
+    const hasUnreadNotifications = notifications.some(notification => !notification.read);
 
     return (
         <>
@@ -104,10 +106,10 @@ function Notifications() {
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 disableRipple
             >
-                {notifications.length === 0 ? (
-                    <NotificationsIcon className='navbar-logo-button' />
-                ) : (
+                {hasUnreadNotifications ? (
                     <NotificationsActiveIcon className='navbar-logo-button notifications-active-icon' />
+                ) : (
+                    <NotificationsIcon className='navbar-logo-button' />
                 )}
             </Button>
             

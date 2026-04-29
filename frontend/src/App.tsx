@@ -6,12 +6,14 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CssBaseline, Box } from '@mui/material'
 import { ToastContainer } from 'react-toastify';
-import { AccountProvider } from './context/AccountContext.tsx';
 import { WebSocketProvider } from './context/WebSocketContext.tsx';
-import ProtectedLayout from './components/ProtectedLayout.tsx'; // IMPORT THE NEW LAYOUT
+import ProtectedLayout from './components/ProtectedLayout.tsx';
 import Creator from './pages/Creator/Creator.tsx';
 import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
 import Social from './pages/Social/Social.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 function App() {
 	return (
@@ -19,8 +21,8 @@ function App() {
             <CssBaseline />
             <ToastContainer />
 
-            <BrowserRouter>
-                <AccountProvider>
+            <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
                     <WebSocketProvider>
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
@@ -37,8 +39,8 @@ function App() {
                             </Route>
                         </Routes>
                     </WebSocketProvider>
-                </AccountProvider>
-            </BrowserRouter>
+                </BrowserRouter>
+            </QueryClientProvider>
         </Box>
     )
 }

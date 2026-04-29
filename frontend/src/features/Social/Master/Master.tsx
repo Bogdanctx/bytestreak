@@ -5,14 +5,14 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useProtectedAccount } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
 
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
-    const { account, setAccount } = useProtectedAccount();
+    const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
     const [streakInvites, setStreakInvites] = useState<IStreakInvite[]>([]);
     const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);

@@ -10,13 +10,13 @@ import {
     ButtonBase 
 } from "@mui/material";
 import "./ActivitySection.style.css";
-import { useProtectedAccount } from "../../../context/AccountContext";
+import { useAccount } from '../../../hooks/useAccount';
 import { type IStreak } from "../../../entities";
 import { useEffect, useState } from "react";
 import { api } from "../../../api";
 
 function ActivitySection() {
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
     const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
 
     const fetchActiveStreaks = async () => {

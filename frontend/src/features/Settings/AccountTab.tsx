@@ -17,11 +17,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { api } from "../../api";
 import notify from "../../components/ui/ToastNotification";
-import { useProtectedAccount } from "../../context/AccountContext";
+import { useAccount } from '../../hooks/useAccount';
 
 
 function Account() {
-    const { account, setAccount } = useProtectedAccount();
+    const { data: account } = useAccount();
     const [formData, setFormData] = useState({
         username: "",
         email: "",

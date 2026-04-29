@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.entities.Account;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/notifications")
@@ -31,4 +34,16 @@ public class NotificationController {
         Account account = accountRepository.findByEmail(authentication.getName());
         return ResponseEntity.ok(notificationService.getNotificationsForAccount(account));
     }
+
+    @PostMapping("/mark-as-read")
+    public ResponseEntity<?> markNotificationsAsRead(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Account account = accountRepository.findByEmail(authentication.getName());
+        notificationService.markNotificationsAsRead(account);
+        return ResponseEntity.ok().build();
+    }
+    
 }

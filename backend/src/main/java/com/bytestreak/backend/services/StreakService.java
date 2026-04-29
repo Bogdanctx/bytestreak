@@ -29,9 +29,6 @@ public class StreakService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    
     public StreakInvite inviteFriendToStreak(Account me, Account friend) {
         StreakInvite invite = new StreakInvite();
         invite.setSender(me);
@@ -46,10 +43,8 @@ public class StreakService {
         payload.setUsername(me.getUsername());
         payload.setInviteId(invite.getId());
 
-        Notification notification = notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
-        
-        messagingTemplate.convertAndSendToUser(friend.getEmail(),"/queue/streak-invites", notification);
-        
+        notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
+                
         return invite;
     }
 

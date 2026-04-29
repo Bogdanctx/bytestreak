@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAccountContext } from "../context/AccountContext";
+import { useAccount } from "../hooks/useAccount";
 import Navbar from "./navbar/Navbar";
 import { Box, CircularProgress } from '@mui/material';
 
 function ProtectedLayout() {
-    const { account, isLoading } = useAccountContext();
+    const { data: account, isLoading } = useAccount();
 
     if (isLoading) {
         return (

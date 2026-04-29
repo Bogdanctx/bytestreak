@@ -16,7 +16,7 @@ import "./Creator.style.css";
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProtectedAccount } from "../../context/AccountContext";
+import { useAccount } from '../../hooks/useAccount';
 import { type IProblem } from "../../entities";
 import { api } from "../../api";
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,7 +26,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function Creator() {
     const navigate = useNavigate();
     const [problems, setProblems] = useState<IProblem[]>([]);
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
 
     const fetchCreatedProblems = async () => {
         console.log("Fetching problems for creator with ID:", account.id);

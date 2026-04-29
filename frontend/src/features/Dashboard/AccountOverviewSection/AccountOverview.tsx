@@ -9,14 +9,14 @@ import {
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useProtectedAccount } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
 import { getLevelMaxXP, getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 
 function AccountOverview() {
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
     const navigate = useNavigate();
 
     const handleLogout = () => {

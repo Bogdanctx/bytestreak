@@ -26,6 +26,16 @@ public class NotificationService {
         return notification;
     }
 
+    public void markNotificationsAsRead(Account account) {
+        List<Notification> notifications = notificationRepository.findByReceiverOrderByTimestampDesc(account);
+        for (Notification notification : notifications) {
+            if (!notification.isRead()) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
+        }
+    }
+
     public List<Notification> getNotificationsForAccount(Account account) {
         return notificationRepository.findByReceiverOrderByTimestampDesc(account);
     }

@@ -7,7 +7,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DownloadIcon from '@mui/icons-material/Download';
 import { type IAccount, type IMessage, type IAttachment } from '../../../entities';
 import { api } from '../../../api';
-import { useProtectedAccount } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
 import { useWebSocket } from '../../../context/WebSocketContext';
@@ -18,7 +18,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
     const { stompClient } = useWebSocket();
 
     const fetchFriend = async () => {

@@ -41,6 +41,8 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationTypes type;
 
+    private boolean read = false;
+
     @CreationTimestamp
     private LocalDateTime timestamp;
 

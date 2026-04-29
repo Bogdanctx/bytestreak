@@ -8,7 +8,7 @@ import {
     MenuItem
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useProtectedAccount } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import './ProblemBuilder.style.css';
 import Editor from '@monaco-editor/react';
 import PublishIcon from '@mui/icons-material/Publish';
@@ -39,7 +39,7 @@ function ProblemBuilder() {
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
 
-    const { account } = useProtectedAccount();
+    const { data: account } = useAccount();
 
     useEffect(() => {
         if(isEditMode) {

@@ -35,9 +35,6 @@ public class FriendService {
     @Autowired
     private StreakService streakService;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
     public FriendInvite sendConnectionRequest(Account sender, Account receiver) {
         FriendInvite invite = new FriendInvite();
         invite.setSender(sender);
@@ -53,9 +50,7 @@ public class FriendService {
         payload.setMessage("You have a friend request from " + sender.getUsername());
         payload.setInviteId(invite.getId());
 
-        Notification notification = notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
-
-        messagingTemplate.convertAndSendToUser(receiver.getEmail(), "/queue/friend-invites", notification);
+        notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
 
         return invite;
     }

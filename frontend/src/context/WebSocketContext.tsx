@@ -1,6 +1,7 @@
 import { Client } from '@stomp/stompjs';
-import { useAccountContext } from "./AccountContext";
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useAccount } from '../hooks/useAccount';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface IWebSocketContext {
     stompClient: Client | null;
@@ -12,7 +13,9 @@ const WebSocketContext = createContext<IWebSocketContext>({ stompClient: null, c
 export const useWebSocket = () => useContext(WebSocketContext);
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
-    const { account } = useAccountContext();
+    const { data: account } = useAccount();
+    const queryClient = useQueryClient();
+
     const [stompClient, setStompClient] = useState<Client | null>(null);
     const [connected, setConnected] = useState(false);
 
@@ -47,7 +50,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                 client.deactivate();
             }
         };
-    }, [account]);
+    }, [account?.id, queryClient]);
 
     return (
         <WebSocketContext.Provider value={{ stompClient, connected }}>
