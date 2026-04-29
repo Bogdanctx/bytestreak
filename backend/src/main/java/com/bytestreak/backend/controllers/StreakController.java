@@ -117,4 +117,26 @@ public class StreakController {
         List<StreakInvite> activeInvites = streakInviteRepository.findBySenderOrReceiver(me, me);
         return ResponseEntity.ok(activeInvites);
     }
+
+    @PostMapping("/remove-streak")
+    public ResponseEntity<?> removeStreak(@RequestParam Long friendId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to remove a streak.");
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+
+        if (me == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        }
+
+        Account friend = accountRepository.findById(friendId).orElse(null);
+
+        if (friend == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friend not found.");
+        }
+
+        streakService.removeStreakBetweenUsers(me, friend);
+        return ResponseEntity.ok().build();
+    }
 }
