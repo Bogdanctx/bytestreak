@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bytestreak.backend.dto.MessageDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.http.HttpStatus;
 
 import com.bytestreak.backend.entities.Account;
@@ -30,9 +29,6 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestParam Long receiverId, @RequestBody MessageDTO payload, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -46,9 +42,11 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Message sentMessage = messageService.sendMessage(sender, receiver, payload);
+        if (!sender.getFriends().contains(receiver)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only message your friends");
+        }
 
-        messagingTemplate.convertAndSend("/topic/messages/" + receiver.getId(), sentMessage);
+        Message sentMessage = messageService.sendMessage(sender, receiver, payload);
 
         return ResponseEntity.ok(sentMessage);
     }

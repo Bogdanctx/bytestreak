@@ -9,19 +9,15 @@ import {
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useAccountContext } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
 import { getLevelMaxXP, getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 
 function AccountOverview() {
-    const { account } = useAccountContext();
+    const { data: account } = useAccount();
     const navigate = useNavigate();
-
-    if(!account) {
-        return null;
-    }
 
     const handleLogout = () => {
         api.post("/auth/logout")

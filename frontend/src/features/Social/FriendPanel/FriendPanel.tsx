@@ -7,10 +7,10 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DownloadIcon from '@mui/icons-material/Download';
 import { type IAccount, type IMessage, type IAttachment } from '../../../entities';
 import { api } from '../../../api';
-import { useAccountContext } from '../../../context/AccountContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
-import { Client } from '@stomp/stompjs';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => void }) {
     const [friend, setFriend] = useState<IAccount | null>(null);
@@ -18,11 +18,8 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { account } = useAccountContext();
-
-    if (!account) {
-        return null; // or a loading state
-    }
+    const { data: account } = useAccount();
+    const { stompClient } = useWebSocket();
 
     const fetchFriend = async () => {
         try {
@@ -52,33 +49,21 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         fetchFriend();
         fetchMessages();
 
-        const client = new Client({
-            brokerURL: 'ws://localhost:8080/ws',
-            debug: (str) => {
-                console.log(str);
-            },
-            onConnect: () => {
-                client.subscribe(`/topic/messages/${account.id}`, (message) => {
-                    const newLiveMessage: IMessage = JSON.parse(message.body);
+        if (stompClient && stompClient.connected) {
+            const subscription = stompClient.subscribe(`/user/queue/messages`, (message) => {
+                const newLiveMessage = JSON.parse(message.body);
 
-                    if (newLiveMessage.sender.id === friendId) {
-                        setMessages((prev) => [...prev, newLiveMessage]);
-                    }
+                if (newLiveMessage.sender.id === friendId) {
+                    setMessages((prev) => [...prev, newLiveMessage]);
+                }
+            });
 
-                });
-            },
-            onStompError: (error) => {
-                console.error('WebSocket STOMP error:', error);
-            }
-        });
+            return () => {
+                subscription.unsubscribe();
+            };
+        }
 
-        client.activate();
-
-        return () => {
-            client.deactivate();
-        };
-
-    }, [friendId, account.id]);
+    }, [stompClient, friendId, account.id]);
 
     const handleSendMessage = async () => {
         if (messageInput.trim() === "" && selectedFiles.length === 0) {

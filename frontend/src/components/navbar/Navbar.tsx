@@ -2,47 +2,15 @@ import { Box, Button, Menu, MenuItem } from '@mui/material'
 import './Navbar.style.css'
 import ByteStreakLogo from '../../ByteStreak.logo';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useAccountContext } from '../../context/AccountContext';
-import { api } from '../../api';
-import { type INotification } from '../../entities';
+import { useState } from 'react';
 import Notifications from './Notifications';
 
 function Navbar() {
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
-    const [notifications, setNotifications] = useState<INotification[]>([]);
-    const { account } = useAccountContext();
-
-    const fetchNotifications = async () => {
-        await api.get('/notifications')
-                .then((response) => {
-                    if (response.status === 200) {
-                        console.log(response);
-                        setNotifications(response.data);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-    }
-
-    useEffect(() => {
-        fetchNotifications();
-        
-        const interval = setInterval(() => {
-            fetchNotifications();
-        }, 60000);
-    
-        return () => clearInterval(interval);
-    }, []);
 
     const currentPath = window.location.pathname;
     const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
-
-    if (!account) {
-        return;
-    }
 
     return (
         <Box id="navbar-container">

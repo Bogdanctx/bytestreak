@@ -2,49 +2,97 @@ import { useState, useEffect } from 'react';
 import { Box, Button, Popover } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
+import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
 import { api } from '../../api';
-import { type INotification } from '../../entities';
+import { type IFriendInvite, type INotification } from '../../entities';
 import './Navbar.style.css';
 import './Notifications.style.css';
-import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [notifications, setNotifications] = useState<INotification[]>([]);
-
-    const fetchNotifications = async () => {
-        api.get('/notifications')
-            .then(response => {
-                if (response.status === 200) {
-                    console.log('Fetched notifications:', response.data);
-                    setNotifications(response.data);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching notifications:', error);
-            });
-    };
+    const queryClient = useQueryClient();
+    const { data: notifications = [] } = useQuery<INotification[]>({
+        queryKey: ['notifications'],
+        queryFn: async () => {
+            const response = await api.get('/notifications/fetch');
+            return response.data;
+        },
+        refetchInterval: 1000 * 10,
+    });
 
     useEffect(() => {
-        fetchNotifications();
+        if (anchorEl) {
+            markNotificationsAsRead();
+        }
+    }, [anchorEl]);
 
-        const interval = setInterval(fetchNotifications, 60000);
-        
-        return () => clearInterval(interval);
-    }, []);
+    const markNotificationsAsRead = async () => {
+        try {
+            const response = await api.post('/notifications/mark-as-read');
+            if (response.status === 200) {
+                console.log('Notifications marked as read');
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.map(notifications => ({ ...notifications, read: true }))
+                );
+            }
+        }
+        catch (error) {
+            console.error('Error marking notifications as read:', error);
+        }
+    }
+  
+    const handleFriendRequestAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
+        try {
+            const response = await api.post(`/friends/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
 
-    const friendRequestActionHandler = async (accepted: boolean, requestId: number) => {
-        api.post(`/friends/${accepted ? 'accept' : 'decline'}?requestId=${requestId}`)
-            .then(response => {
-                if (response.status === 200) {
-                    console.log(`Friend request ${accepted ? 'accepted' : 'declined'} successfully.`);
-                    setNotifications(prev => prev.filter(notification => notification.id !== requestId));
-                }
-            })
-            .catch(error => {
-                console.error(`Error ${accepted ? 'accepting' : 'declining'} friend request:`, error);
-            });
+            if (response.status === 200) {
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.filter(notification => notification.id !== notificationId)
+                );
+
+                queryClient.setQueryData(['pendingConnections'], (old: IFriendInvite[] = []) => 
+                    old.filter(invite => invite.id !== inviteId)
+                );
+                
+                queryClient.setQueryData(['sentConnections'], (old: IFriendInvite[] = []) => 
+                    old.filter(invite => invite.id !== inviteId)
+                );
+            
+
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['discoverAccounts'] });
+            }
+        }
+        catch (error) {
+            console.error('Error responding to friend request:', error);
+        }
     };
+
+    const handleStreakInviteAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
+        try {
+            const response = await api.post(`/streaks/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
+
+            if (response.status === 200) {
+                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
+                    old.filter(notification => notification.id !== notificationId)
+                );
+            
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+
+                if (accepted) {
+                    queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
+                }
+            }
+        }        
+        catch (error) {
+            console.error('Error responding to streak invite:', error);
+        }
+    };
+
+    const hasUnreadNotifications = notifications.some(notification => !notification.read);
 
     return (
         <>
@@ -53,10 +101,10 @@ function Notifications() {
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 disableRipple
             >
-                {notifications.length === 0 ? (
-                    <NotificationsIcon className='navbar-logo-button' />
-                ) : (
+                {hasUnreadNotifications ? (
                     <NotificationsActiveIcon className='navbar-logo-button notifications-active-icon' />
+                ) : (
+                    <NotificationsIcon className='navbar-logo-button' />
                 )}
             </Button>
             
@@ -78,7 +126,10 @@ function Notifications() {
                     <Box className='notifications-list'>
                         {notifications.map(notification => {
                             if (notification.type === 'FRIEND_REQUEST') {
-                                return <FriendRequestNotification key={notification.id} notification={notification} actionHandler={friendRequestActionHandler} />;
+                                return <FriendRequestNotification key={notification.id} notification={notification} handleFriendRequestAction={handleFriendRequestAction} />;
+                            }
+                            else if (notification.type === 'STREAK_INVITE') {
+                                return <StreakInviteNotification key={notification.id} notification={notification} handleStreakInviteAction={handleStreakInviteAction} />;
                             }
                             return null;
                         })}

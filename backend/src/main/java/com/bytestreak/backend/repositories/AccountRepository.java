@@ -10,4 +10,5 @@ import com.bytestreak.backend.entities.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByEmail(String email);
     List<Account> findByIdGreaterThanOrderByIdAsc(Long id, Pageable pageable);
+    List<Account> findByUsernameStartingWithIgnoreCase(String username, Pageable pageable);
 }

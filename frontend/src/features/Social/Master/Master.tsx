@@ -1,23 +1,47 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box, Avatar, Typography, List, ListItem, ListItemButton, 
     ListItemAvatar, ListItemText, IconButton,
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useAccountContext } from '../../../context/AccountContext';
-import { type IAccount } from '../../../entities';
+import { useAccount } from '../../../hooks/useAccount';
+import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
 import './Master.style.css';
-import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
+import { 
+    getRankByLevel, 
+    getRankColor 
+} from '../../../utils/rankUtils';
 import { api } from '../../../api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import notify from '../../../components/ui/ToastNotification';
+import { 
+    type Dispatch,
+    type SetStateAction
+} from 'react';
 
-function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
-    const { account, setAccount } = useAccountContext();
+function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAction<IAccount | null>> }) {
+    const queryClient = useQueryClient();
+    const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
-    if (!account) {
-        return null;
-    }
+    const { data: streakInvites = [] } = useQuery<IStreakInvite[]>({
+        queryKey: ['streakInvites'],
+        queryFn: async () => {
+            const response = await api.get('/streaks/active-invites');
+            return response.data;
+        },
+        refetchInterval: 1000 * 10
+    });
+
+    const { data: activeStreaks = [] } = useQuery<IStreak[]>({
+        queryKey: ['activeStreaks'],
+        queryFn: async () => {
+            const response = await api.get('/streaks/fetch-streaks');
+            return response.data;
+        },
+        refetchInterval: 1000 * 10
+    });
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
@@ -31,19 +55,40 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         
         try {
             const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
+
             if (response.status === 200) {
-                setAccount({
-                    ...account,
-                    friends: account.friends.filter(f => f.id !== friendToRemove.id)
-                });
+                setSelectedFriend(null);
+
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+
+                notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error removing friend:', error);
-        } finally {
+        } 
+        finally {
             setFriendToRemove(null); 
         }
     };
-    
+
+    const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {
+        event.stopPropagation();
+
+        try {
+            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
+            
+            if (response.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+                notify("Streak invite sent!", "success");
+            }
+        }
+        catch (error) {
+            console.error('Error inviting friend to streak:', error);
+        }
+    };
+
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
 
@@ -69,40 +114,80 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
                 </Box>
                 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                    {account.friends.map((friend) => (
-                        <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
-                            <ListItemButton>
-                                <ListItemAvatar sx={{ minWidth: 50 }}>
-                                    <Avatar 
-                                        src={friend.profilePictureUrl}
-                                        sx={{ width: 36, height: 36, bgcolor: "var(--bg-4)" }}
+                    {account.friends.map((friend) => {
+                        const isInvitePending = streakInvites.some(invite => 
+                            (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
+                            && invite.status === 'PENDING'
+                        );
+
+                        const isInActiveStreak = streakInvites.some(invite =>
+                            (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
+                            && invite.status === 'ACCEPTED'
+                        ) || activeStreaks.some(streak => 
+                            (streak.participant1.id === friend.id || streak.participant2.id === friend.id)
+                        );
+
+                        return (
+                            <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
+                                <ListItemButton>
+                                    <ListItemAvatar sx={{ minWidth: 50 }}>
+                                        <Avatar 
+                                            src={friend.profilePictureUrl}
+                                            sx={{ width: 36, height: 36, bgcolor: "var(--bg-4)" }}
+                                        >
+                                            {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText 
+                                        primary={friend.username} 
+                                        secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
+                                        slotProps={{
+                                            primary: {
+                                                fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
+                                            },
+                                            secondary: {
+                                                fontSize: "0.8rem", color: "var(--text-secondary)"
+                                            }
+                                        }}
+                                    />
+
+                                    {!isInActiveStreak && (
+                                        <Button
+                                            size="small"
+                                            onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
+                                            disabled={isInvitePending}
+                                            sx={{
+                                                mr: 1,
+                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-main)',
+                                                color: isInvitePending ? 'var(--text-secondary)' : '#000',
+                                                textTransform: 'none',
+                                                fontWeight: '600',
+                                                borderRadius: '6px',
+                                                '&:hover': {
+                                                    backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-hover)',
+                                                },
+                                                '&.Mui-disabled': {
+                                                    backgroundColor: 'var(--bg-4)',
+                                                    color: 'var(--text-secondary)'
+                                                }
+                                            }}
+                                        >
+                                            {isInvitePending ? 'Pending' : 'Invite'}
+                                        </Button>
+                                    )}
+
+                                    <IconButton
+                                        size="small"
+                                        className='master-delete-friend-button'
+                                        onClick={(e) => confirmDelete(friend, e)}
+                                        sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-hard)' } }}
                                     >
-                                        {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText 
-                                    primary={friend.username} 
-                                    secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
-                                    slotProps={{
-                                        primary: {
-                                            fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
-                                        },
-                                        secondary: {
-                                            fontSize: "0.8rem", color: "var(--text-secondary)"
-                                        }
-                                    }}
-                                />
-                                <IconButton
-                                    size="small"
-                                    className='master-delete-friend-button'
-                                    onClick={(e) => confirmDelete(friend, e)}
-                                    sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-hard)' } }}
-                                >
-                                    <DeleteOutlineIcon fontSize="small" />
-                                </IconButton>
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                                        <DeleteOutlineIcon fontSize="small" />
+                                    </IconButton>
+                                </ListItemButton>
+                            </ListItem>
+                        )
+                    })}
 
                     {account.friends.length === 0 && (
                         <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>

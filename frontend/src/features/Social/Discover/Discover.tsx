@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { 
     Box, 
     Typography, 
@@ -11,111 +11,71 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IAccount, type INotification } from '../../../entities';
+import { type IFriendInvite } from '../../../entities';
 import notify from '../../../components/ui/ToastNotification';
-import { useAccountContext } from '../../../context/AccountContext';
-
+import { useAccount } from '../../../hooks/useAccount';
+import { useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 function Discover() {
-    const { account } = useAccountContext();
-    // state to hold all accounts fetched from the backend (excluding me and my friends)
-    const [accounts, setAccounts] = useState<IAccount[]>([]);
-    const [accountsNextCursor, setAccountsNextCursor] = useState<number | null>(0);
+    const { data: account } = useAccount();
+    const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    const [pendingConnections, setPendingConnections] = useState<number[]>([]);
+    const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
+    
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+        queryKey: ['discoverAccounts', debounceSearchQuery],
+        queryFn: async ({ pageParam = "" }) => {
+            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => lastPage.nextCursor || null,
+        initialPageParam: ""
+    });
 
-    if (!account) {
-        return null;
-    }
+    const { data: sentConnections = [] } = useQuery<IFriendInvite[]>({
+        queryKey: ['sentConnections'],
+        queryFn: async () => {
+            const response = await api.get('/friends/sent-connections');
+            return response.data;
+        },
+        enabled: !!account
+    });
 
-    const fetchPendingConnections = async () => {
-        await api.get('/friends/pending')
-            .then(response => {
-                if (response.status === 200) {
-                    const pending = response.data.map((notification: INotification) => notification.sender.id === account.id ? notification.receiver.id : notification.sender.id);
-                    console.log('Fetched pending connections:', pending);
-                    setPendingConnections(pending);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching pending connections:', error);
-            });
-    }
-
-    const fetchAccounts = async (nextCursor: number | null, signal?: AbortSignal) => {
-        try {
-            const response = await api.get(`/accounts/all?cursor=${nextCursor || ""}`, { signal });     
-            
-            console.log('Fetched accounts:', response.data.accounts);
-
-            setAccountsNextCursor(response.data.nextCursor);
-
-            // remove me from the list
-            let filteredAccounts = response.data.accounts.filter((fetchedAccount: IAccount) => fetchedAccount.id !== account.id);
-            
-            // remove my friends from the list
-            if (account.friends.length > 0) {
-                filteredAccounts = filteredAccounts.filter((fetchedAccount: IAccount) => {
-                    return !account.friends.some((friend) => friend.id === fetchedAccount.id);
-                });
-            }
-
-            // set all the accounts
-            setAccounts((prevAccounts) => [...prevAccounts, ...filteredAccounts]);
-        } 
-        catch (error) {
-            console.error('Error fetching accounts:', error);
-        }
-    };
-
-    const displayedAccounts = useMemo(() => {
-        if (debouncedSearchQuery.trim() === "") {
-            return accounts;
-        } 
-        else {
-            return accounts.filter(account => 
-                account.username.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-            );
-        }
-    }, [accounts, debouncedSearchQuery]);
-
-    const handleAddFriend = async (accountId: number) => {
-        await api.post(`friends/add?friendId=${accountId}`)
-            .then(response => {
-                if (response.status === 200) {
-                    // if the friend request was successful, remove the account from the list
-                    let updatedAccounts = accounts.filter(account => account.id !== accountId);
-                    setAccounts(updatedAccounts);
-
-                    console.log(`Friend request sent to account ID: ${accountId}`);
-                    notify("Friend request sent!", "success");
-                } else {
-                    console.error('Failed to send friend request.');
-                }
-            })
-            .catch(error => {
-                console.error('Error sending friend request:', error);
-            });
-    }
+    const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
+        queryKey: ['pendingConnections'],
+        queryFn: async () => {
+            const response = await api.get('/friends/pending-connections');
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     useEffect(() => {
-        // debounce the seach input by 300ms to avoid filtering on every keystroke
         const handler = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 300);
+            setDebounceSearchQuery(searchQuery);
+        }, 200);
 
-        return () => clearTimeout(handler);
+        return () => {
+            clearTimeout(handler);
+        };
     }, [searchQuery]);
 
-    useEffect(() => {
-        const controller = new AbortController();
+    const handleAddFriend = async (accountId: number) => {
+        try {
+            const response = await api.post(`/friends/send-request?friendId=${accountId}`);
 
-        fetchAccounts(accountsNextCursor, controller.signal);
-        fetchPendingConnections();
+            if (response.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+                notify('Friend invite sent successfully!', 'success');
+            }
+        }
+        catch (error) {
+            console.error('Error sending friend invite:', error);
+            notify('Failed to send friend invite. Please try again.', 'error');
+        }
+    }
 
-        return () => controller.abort();
-    }, []);
+    const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box className="discover-container">
@@ -149,60 +109,78 @@ function Discover() {
             </Typography>
 
             <Box className="discover-users-list">
-                {displayedAccounts.map((account) => (
-                    <Box 
-                        key={account.id} 
-                        className="discover-user-card"
-                    >
-                        <Box className="discover-user-info">
-                            <Avatar src={account.profilePictureUrl} className="discover-user-avatar">
-                                {!account.profilePictureUrl && account.username.charAt(0)}
-                            </Avatar>
-                            
-                            <Box className="discover-user-meta">
-                                <Typography variant="body2" className="discover-user-name" noWrap>
-                                    {account.username}
-                                </Typography>
-                                <Typography variant="caption" className="discover-user-role" noWrap>
-                                    Mock role
-                                </Typography>
-                                <Typography variant="caption" className="discover-user-location" noWrap>
-                                    Mock location
-                                </Typography>
+                {discoverAccounts.map((mappedAccount) => {
+                    // exclude the current user's account from the list
+                    if (mappedAccount.id === account.id) {
+                        return null;
+                    }
+
+                    // exclude accounts that are already friends
+                    if (account.friends.some(friend => friend.id === mappedAccount.id)) {
+                        return null;
+                    }
+
+
+                    return (
+                        <Box 
+                            key={mappedAccount.id} 
+                            className="discover-user-card"
+                        >
+                            <Box className="discover-user-info">
+                                <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
+                                    {!mappedAccount.profilePictureUrl && mappedAccount.username.charAt(0)}
+                                </Avatar>
+                                
+                                <Box className="discover-user-meta">
+                                    <Typography variant="body2" className="discover-user-name" noWrap>
+                                        {mappedAccount.username}
+                                    </Typography>
+                                    <Typography variant="caption" className="discover-user-role" noWrap>
+                                        Mock role
+                                    </Typography>
+                                    <Typography variant="caption" className="discover-user-location" noWrap>
+                                        Mock location
+                                    </Typography>
+                                </Box>
                             </Box>
+
+                            {/* `Pending Connection` will appear for both users if they try to add each other */}
+                            {sentConnections.some((connection) => connection.receiver.id === mappedAccount.id) || pendingConnections.some((connection) => connection.sender.id === mappedAccount.id) ? (
+                                <Typography variant="caption" className="discover-pending-connection">
+                                    Pending Connection
+                                </Typography>
+                            ) : (
+                                <Button variant="outlined" size="small" className="discover-add-button" 
+                                        onClick={() => handleAddFriend(mappedAccount.id)}
+                                >
+                                    <PersonAddIcon fontSize="small" />
+                                </Button>
+                            )}
                         </Box>
+                    );
+                })}
 
-                        {pendingConnections.includes(account.id) ? (
-                            <Typography variant="caption" className="discover-pending-connection">
-                                Pending Connection
-                            </Typography>
-                        ) : (
-                            <Button variant="outlined" size="small" className="discover-add-button" 
-                                    onClick={() => handleAddFriend(account.id)}
-                            >
-                                <PersonAddIcon fontSize="small" />
-                            </Button>
-                        )}
-                    </Box>
-                ))}
-
-                {displayedAccounts.length === 0 && searchQuery.trim() === "" && (
+                {discoverAccounts.length === 0 && searchQuery.trim() === "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         <br /> No connections available. <br /> <br /> Invite your friends to join ByteStreak and connect with them here!
                     </Typography>
                 )}
 
-                {displayedAccounts.length === 0 && searchQuery.trim() !== "" && (
+                {discoverAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
                         No members found matching "{searchQuery}"
                     </Typography>
                 )}
 
-                {displayedAccounts.length !== 0 && accountsNextCursor !== null && (
-                    <Button variant="text" size="small" className="discover-load-more-button"
-                            onClick={() => fetchAccounts(accountsNextCursor)}
+                {hasNextPage && (
+                    <Button 
+                        variant="text" 
+                        size="small" 
+                        className="discover-load-more-button"
+                        onClick={() => fetchNextPage()}
+                        disabled={isFetchingNextPage}
                     >
-                        Load More
+                        {isFetchingNextPage ? 'Loading...' : 'Load More'}
                     </Button>
                 )}
             </Box>
