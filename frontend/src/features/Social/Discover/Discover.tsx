@@ -23,32 +23,32 @@ function Discover() {
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
     
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-                                                                        queryKey: ['discoverAccounts', debounceSearchQuery],
-                                                                        queryFn: async ({ pageParam = "" }) => {
-                                                                            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
-                                                                            return response.data;
-                                                                        },
-                                                                        getNextPageParam: (lastPage) => lastPage.nextCursor || null,
-                                                                        initialPageParam: ""
-                                                                    });
+        queryKey: ['discoverAccounts', debounceSearchQuery],
+        queryFn: async ({ pageParam = "" }) => {
+            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => lastPage.nextCursor || null,
+        initialPageParam: ""
+    });
 
     const { data: sentConnections = [] } = useQuery<IFriendInvite[]>({
-                                                queryKey: ['sentConnections'],
-                                                queryFn: async () => {
-                                                    const response = await api.get('/friends/sent-connections');
-                                                    return response.data;
-                                                },
-                                                enabled: !!account
-                                            });
+        queryKey: ['sentConnections'],
+        queryFn: async () => {
+            const response = await api.get('/friends/sent-connections');
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
-                                                queryKey: ['pendingConnections'],
-                                                queryFn: async () => {
-                                                    const response = await api.get('/friends/pending-connections');
-                                                    return response.data;
-                                                },
-                                                enabled: !!account
-                                            });
+        queryKey: ['pendingConnections'],
+        queryFn: async () => {
+            const response = await api.get('/friends/pending-connections');
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     useEffect(() => {
         const handler = setTimeout(() => {

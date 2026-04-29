@@ -118,25 +118,27 @@ public class StreakController {
         return ResponseEntity.ok(activeInvites);
     }
 
-    @PostMapping("/remove-streak")
-    public ResponseEntity<?> removeStreak(@RequestParam Long friendId, Authentication authentication) {
+    @PostMapping("/remove")
+    public ResponseEntity<?> removeStreak(@RequestParam Long streakId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to remove a streak.");
         }
 
         Account me = accountRepository.findByEmail(authentication.getName());
+        Streak streak = streakRepository.findById(streakId).orElse(null);
 
-        if (me == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
+        if (streak == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Streak not found.");
         }
 
-        Account friend = accountRepository.findById(friendId).orElse(null);
+        Account participant1 = streak.getParticipant1();
+        Account participant2 = streak.getParticipant2();
 
-        if (friend == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friend not found.");
+        if (!participant1.getId().equals(me.getId()) && !participant2.getId().equals(me.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only remove streaks you are a participant of.");
         }
 
-        streakService.removeStreakBetweenUsers(me, friend);
+        streakService.removeStreakBetweenUsers(participant1, participant2);
         return ResponseEntity.ok().build();
     }
 }

@@ -48,22 +48,23 @@ public class StreakService {
         return invite;
     }
 
-    public void removeStreakBetweenUsers(Account me, Account friend) {
-        StreakInvite invite = streakInviteRepository.findBySenderAndReceiver(me, friend);
+    public Streak removeStreakBetweenUsers(Account me, Account friend) {
+        StreakInvite invite = streakInviteRepository.findByAccount1AndAccount2(me, friend);
         
         if (invite == null) {
-            return;
+            throw new IllegalArgumentException("No active streak invite found between these users");
+        }
+
+        Streak streak = streakRepository.findStreakBetweenUsers(me, friend);
+
+        if (streak == null) {
+            throw new IllegalArgumentException("No active streak found between these users");
         }
 
         streakInviteRepository.delete(invite);
-
-        Streak streak = streakRepository.findStreakBetweenUsers(me, friend);
-        
-        if (streak == null) {
-            return;
-        }
-
         streakRepository.delete(streak);
+
+        return streak;
     }
 
     public void acceptStreakInvite(Account me, Long inviteId, Long notificationId) {

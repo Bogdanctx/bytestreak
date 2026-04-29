@@ -25,7 +25,7 @@ function ActivitySection() {
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
     
-    const { data: streaksData = [] } = useQuery({
+    const { data: streaksData = [] } = useQuery<IStreak[]>({
         queryKey: ['streaks'],
         queryFn: async () => {
             const response = await api.get('/streaks/fetch-streaks');
@@ -38,10 +38,7 @@ function ActivitySection() {
         try {
             const response = await api.post(`/streaks/remove?streakId=${streakId}`);
             if (response.status === 200) {
-                // Optimistic UI update: Instantly remove the streak from the list
-                queryClient.setQueryData(['streaks'], (old: IStreak[] = []) => 
-                    old.filter(streak => streak.id !== streakId)
-                );
+                queryClient.invalidateQueries({ queryKey: ['streaks'] });
                 notify("Streak removed", "success");
             }
         } catch (error) {
@@ -49,9 +46,6 @@ function ActivitySection() {
             notify("Failed to remove streak", "error");
         }
     };
-
-    // Type guard for account
-    if (!account) return null;
 
     return (
         <Box id="activity-section-container">
@@ -87,7 +81,7 @@ function ActivitySection() {
                     In a streak with
                 </Typography>
                 <List className="friends-list">
-                    {streaksData.map((streak: IStreak) => {
+                    {streaksData.map(streak => {
                         const streakFriend = streak.participant1.id === account.id ? streak.participant2 : streak.participant1;
                         const isCompleted = streak.participant1SolvedToday && streak.participant2SolvedToday;
 

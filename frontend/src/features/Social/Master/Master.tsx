@@ -10,19 +10,31 @@ import { type IAccount, type IStreak, type IStreakInvite } from '../../../entiti
 import './Master.style.css';
 import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import notify from '../../../components/ui/ToastNotification';
 
 function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React.SetStateAction<IAccount | null>> }) {
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
-    const [streakInvites, setStreakInvites] = useState<IStreakInvite[]>([]);
-    const [activeStreaks, setActiveStreaks] = useState<IStreak[]>([]);
 
-    useEffect(() => {
-        fetchPendingStreakInvites();
-        fetchActiveStreaks();
-    }, []);
+    const { data: streakInvites } = useQuery<IStreakInvite[]>({
+        queryKey: ['streakInvites'],
+        queryFn: async () => {
+            const response = await api.get('/streaks/active-invites');
+            return response.data;
+        },
+        enabled: !!account
+    });
+
+    const { data: activeStreaks } = useQuery<IStreak[]>({
+        queryKey: ['activeStreaks'],
+        queryFn: async () => {
+            const response = await api.get('/streaks/active-streaks');
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
@@ -36,15 +48,18 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
         
         try {
             const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
+            
             if (response.status === 200) {
                 setSelectedFriend(null);
 
                 queryClient.invalidateQueries({ queryKey: ['account'] });
                 queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error removing friend:', error);
-        } finally {
+        } 
+        finally {
             setFriendToRemove(null); 
         }
     };
@@ -54,38 +69,16 @@ function Master({ setSelectedFriend }: { setSelectedFriend: React.Dispatch<React
 
         try {
             const response = await api.post(`/streaks/invite?friendId=${friendId}`);
+            
             if (response.status === 200) {
-                setStreakInvites(prev => [...prev, response.data]);
+                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+                notify("Streak invite sent!", "success");
             }
         }
         catch (error) {
             console.error('Error inviting friend to streak:', error);
         }
     };
-
-    const fetchPendingStreakInvites = async () => {
-        try {
-            const response = await api.get('/streaks/active-invites');
-            if (response.status === 200) {
-                setStreakInvites(response.data);
-            }
-        }
-        catch (error) {
-            console.error('Error fetching pending invites:', error);
-        }
-    }
-
-    const fetchActiveStreaks = async () => {
-        try {
-            const response = await api.get('/streaks/active-streaks');
-            if (response.status === 200) {
-                setActiveStreaks(response.data);
-            }
-        }
-        catch (error) {
-            console.error('Error fetching active streaks:', error);
-        }
-    }
 
     const rankName = getRankByLevel(account.level);
     const rankColor = getRankColor(rankName);
