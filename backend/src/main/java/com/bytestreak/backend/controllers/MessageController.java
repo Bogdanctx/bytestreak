@@ -42,6 +42,10 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+        if (!sender.getFriends().contains(receiver)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only message your friends");
+        }
+
         Message sentMessage = messageService.sendMessage(sender, receiver, payload);
 
         return ResponseEntity.ok(sentMessage);
