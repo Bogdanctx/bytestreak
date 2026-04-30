@@ -1,5 +1,5 @@
 import { Box, Typography, Divider } from "@mui/material";
-import ByteStreakLogo from "../../ByteStreak.logo"; // Adjust path as needed
+import ByteStreakLogo from "../../ByteStreak.logo";
 import { toast } from 'react-toastify';
 import { Slide } from 'react-toastify';
 

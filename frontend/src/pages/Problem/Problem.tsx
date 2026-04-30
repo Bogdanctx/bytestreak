@@ -1,16 +1,12 @@
-import {
-    Box
-} from '@mui/material';
-import './Problem.style.css';
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
+
 import { api } from '../../api';
-import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
 import CodeEditorWindow from '../../features/Problem/components/CodeEditorWindow';
-import { 
-    type IProblem, 
-    type ISubmissionResult 
-} from '../../entities';
+import ProblemDataPanel from '../../features/Problem/components/ProblemDataPanel';
+import { type IProblem, type ISubmissionResult } from '../../types/problem.types';
+import './Problem.style.css';
 
 function Problem() {
     const { id } = useParams<{ id: string }>();

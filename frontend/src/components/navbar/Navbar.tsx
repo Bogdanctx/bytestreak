@@ -1,9 +1,10 @@
-import { Box, Button, Menu, MenuItem } from '@mui/material'
-import './Navbar.style.css'
-import ByteStreakLogo from '../../ByteStreak.logo';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Menu, MenuItem } from '@mui/material';
+
+import ByteStreakLogo from '../../ByteStreak.logo';
 import Notifications from './Notifications';
+import './Navbar.style.css';
 
 function Navbar() {
     const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);

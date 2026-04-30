@@ -1,25 +1,17 @@
-import {
-    Box,
-    Button,
-    Tabs,
-    Tab,
-    FormControl,
-    Select,
-    MenuItem
-} from '@mui/material';
-import { useState, useEffect } from 'react';
-import './ProblemBuilder.style.css';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
-import TestCasesTab from './TestCasesTab';
-import MetadataTab from './MetadataTab';
-import { type ITestCase } from '../../../entities';
+import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
+
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
-import { type IProblemCreateDTO } from '../../../types/problem.types';
-import { useNavigate, useParams } from 'react-router-dom';
-import ConstructionIcon from '@mui/icons-material/Construction';
+import { type IProblemCreateDTO, type ITestCase } from '../../../types/problem.types';
+import MetadataTab from './MetadataTab';
+import TestCasesTab from './TestCasesTab';
+import './ProblemBuilder.style.css';
 
 const DEFAULT_STARTER_CODE = {
     cpp: `// ======= IMPORTANT =======\n// Starter Code template...\n\nint solve(vector<int>& nums) {\n    return 0;\n}`,
@@ -162,14 +154,8 @@ function ProblemBuilder() {
             <Box className="problem-builder-main">
                 {/* Header */}
                 <Box className="problem-builder-header">
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <Tabs value={activeTab} 
-                            slotProps={{
-                                indicator: {
-                                    style: { backgroundColor: 'var(--accent-main)' }
-                                }
-                            }}
-                            >
+                    <Box className="problem-builder-header-left">
+                        <Tabs value={activeTab} className="problem-builder-tabs">
                             <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={() => setActiveTab("markdown")} />
                             <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
                             <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
@@ -185,14 +171,7 @@ function ProblemBuilder() {
                                     onChange={(event) => { setProgrammingLanguage(event.target.value); console.log(`Selected: ${event.target.value}`) }}
                                     value={programmingLanguage}
                                     label="C++"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: "var(--bg-4)",
-                                                border: "1px solid rgba(255, 255, 255, 0.08)",
-                                            }
-                                        }
-                                    }}
+                                    MenuProps={{ PaperProps: { className: 'language-select-menu-paper' } }}
                                 >
                                     <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
                                     <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
@@ -202,41 +181,19 @@ function ProblemBuilder() {
                     </Box>
 
                     {isEditMode ? (
-                        <Button sx={{
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            fontSize: '10px',
-                            height: '25px',
-                            marginRight: '16px',
-                            borderColor: 'var(--accent-main)',
-                            width: '80px',
-                            ':hover': {
-                                borderColor: 'var(--accent-hover)'
-                            }
-                        }}
+                        <Button className="problem-builder-submit-button"
                             variant='outlined'
                             onClick={() => handleSubmitProblem()}
                         >
-                            <ConstructionIcon sx={{ fontSize: '16px' }} />
+                            <ConstructionIcon className="problem-builder-submit-icon" />
                             Update
                         </Button>
                     ) : (
-                        <Button sx={{
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            fontSize: '10px',
-                            height: '25px',
-                            marginRight: '16px',
-                            borderColor: 'var(--accent-main)',
-                            width: '80px',
-                            ':hover': {
-                                borderColor: 'var(--accent-hover)'
-                            }
-                        }}
+                        <Button className="problem-builder-submit-button"
                             variant='outlined'
                             onClick={() => handleSubmitProblem()}
                         >
-                            <PublishIcon sx={{ fontSize: '16px' }} />
+                            <PublishIcon className="problem-builder-submit-icon" />
                             Submit
                         </Button>
                     )}

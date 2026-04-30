@@ -4,7 +4,7 @@ import "./ProblemCard.style.css"
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
-type ProblemCardProps = {
+interface ProblemCardProps {
     title: string;
     difficulty: Difficulty;
     acceptanceRate: number;

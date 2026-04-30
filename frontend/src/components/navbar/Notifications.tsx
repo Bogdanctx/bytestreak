@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Box, Button, Popover } from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Box, Button, Popover } from '@mui/material';
+
+import { api } from '../../api';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
 import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
-import { api } from '../../api';
-import { type IFriendInvite, type INotification } from '../../entities';
+import { type IFriendInvite } from '../../types/invite.types';
+import { type INotification } from '../../types/notification.types';
 import './Navbar.style.css';
 import './Notifications.style.css';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

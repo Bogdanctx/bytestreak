@@ -1,11 +1,8 @@
-import { 
-    Box,
-    Typography,
-    Button
-} from "@mui/material";
-import './Settings.style.css'
-import { useState } from "react";
-import Account from "../../features/Settings/AccountTab";
+import { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+
+import Account from '../../features/Settings/AccountTab';
+import './Settings.style.css';
 
 function Settings() {
     const [selectedTab, setSelectedTab] = useState("account");

@@ -1,15 +1,11 @@
-import {
-    Box,
-    Typography,
-    Avatar,
-    IconButton
-} from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { type INotification } from '../../entities';
+import { Avatar, Box, IconButton, Typography } from '@mui/material';
+
+import { type INotification } from '../../types/notification.types';
 import './FriendRequestNotification.style.css';
 
-type FriendRequestNotificationProps = {
+interface FriendRequestNotificationProps {
     notification: INotification;
     handleFriendRequestAction: (accepted: boolean, inviteId: number, notificationId: number) => void;
 };

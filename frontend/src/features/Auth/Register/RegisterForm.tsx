@@ -1,11 +1,14 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import './RegisterForm.style.css';
-import { api } from "../../../api";
-import type { AccountCredentials } from "../auth.types";
-import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
-import notify from "../../../components/ui/ToastNotification";
+import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { type AccountCredentials, type RegisterFormInputs } from '../../../types/auth.types';
+import './RegisterForm.style.css';
+
+interface RegisterFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+};
 
 function RegisterForm(props: RegisterFormProps) {
     const {

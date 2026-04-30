@@ -1,13 +1,11 @@
-import {
-    Box
-} from '@mui/material';
 import { useState } from 'react';
+import { Box } from '@mui/material';
+
 import Discover from '../../features/Social/Discover/Discover';
 import Feed from '../../features/Social/Feed/Feed';
-import Master from '../../features/Social/Master/Master';
 import FriendPanel from '../../features/Social/FriendPanel/FriendPanel';
-import { type IAccount } from '../../entities';
-
+import Master from '../../features/Social/Master/Master';
+import { type IAccount } from '../../types/account.types';
 import './Social.style.css';
 
 function Social() {

@@ -1,16 +1,11 @@
-import {
-    Box,
-    Typography,
-    Divider,
-    Button,
-    TextField
-} from "@mui/material"
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from "react";
-import './TestCasesTab.style.css'
-import { type ITestCase } from "../../../entities.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import { Box, Button, Divider, TextField, Typography } from '@mui/material';
+
+import { type ITestCase } from '../../../types/problem.types';
+import './TestCasesTab.style.css';
 
 interface TestCaseProps {
     testCases: ITestCase[];

@@ -1,8 +1,9 @@
-import { Box } from "@mui/material"
-import "./Dashboard.style.css" 
-import ProblemsSection from "../../features/Dashboard/ProblemsSection/ProblemsSection";
-import AccountOverview from "../../features/Dashboard/AccountOverviewSection/AccountOverview";
-import ActivitySection from "../../features/Dashboard/ActivitySection/ActivitySection";
+import { Box } from '@mui/material';
+
+import AccountOverview from '../../features/Dashboard/AccountOverviewSection/AccountOverview';
+import ActivitySection from '../../features/Dashboard/ActivitySection/ActivitySection';
+import ProblemsSection from '../../features/Dashboard/ProblemsSection/ProblemsSection';
+import './Dashboard.style.css';
 
 function Dashboard() {
     return (

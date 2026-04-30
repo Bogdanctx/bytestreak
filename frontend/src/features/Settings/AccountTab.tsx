@@ -1,23 +1,16 @@
-import { 
-    Box, 
-    Typography,
-    Divider,
-    TextField,
-    InputAdornment,
-    Button,
-    Avatar
-} from "@mui/material";
-import './AccountTab.style.css'
-import { useEffect, useState } from "react";
-import PersonIcon from '@mui/icons-material/Person';
+import { useEffect, useState } from 'react';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import LockIcon from '@mui/icons-material/Lock';
 import EditIcon from '@mui/icons-material/Edit';
+import LockIcon from '@mui/icons-material/Lock';
+import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { api } from "../../api";
-import notify from "../../components/ui/ToastNotification";
+import { Avatar, Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
+
+import { api } from '../../api';
+import notify from '../../components/ui/ToastNotification';
 import { useAccount } from '../../hooks/useAccount';
+import './AccountTab.style.css';
 
 
 function Account() {

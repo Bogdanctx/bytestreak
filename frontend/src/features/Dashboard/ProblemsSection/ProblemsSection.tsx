@@ -1,24 +1,13 @@
-import { 
-    Box, 
-    Pagination, 
-    Stack, 
-    Typography, 
-    Select, 
-    MenuItem, 
-    ButtonBase, 
-    Switch, 
-    FormControlLabel,
-    type SelectChangeEvent, 
-} from '@mui/material';
-
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import "./ProblemsSection.style.css"
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProblemCard from './ProblemCard/ProblemCard';
-import { api } from '../../../api';
-import { type IProblem } from '../../../entities';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Box, ButtonBase, FormControlLabel, MenuItem, Select, Switch, Typography, type SelectChangeEvent } from '@mui/material';
+
+import { api } from '../../../api';
+import { type IProblem } from '../../../types/problem.types';
+import ProblemCard from './ProblemCard/ProblemCard';
+import './ProblemsSection.style.css';
 
 function ProblemsSection() {
     const navigate = useNavigate();

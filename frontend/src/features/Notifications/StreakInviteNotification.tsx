@@ -1,18 +1,14 @@
-import {
-    Box,
-    Typography,
-    Avatar,
-    IconButton
-} from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { type INotification } from '../../entities';
+import { Avatar, Box, IconButton, Typography } from '@mui/material';
+
+import { type INotification } from '../../types/notification.types';
 import './StreakInviteNotification.style.css';
 
-type StreakInviteNotificationProps = {
+interface StreakInviteNotificationProps {
     notification: INotification;
     handleStreakInviteAction: (accepted: boolean, inviteId: number, notificationId: number) => void;
-};
+}
 
 function StreakInviteNotification({ notification, handleStreakInviteAction }: StreakInviteNotificationProps) {
     return (

@@ -1,9 +1,15 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, TextField, Typography } from '@mui/material';
+
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { type LoginFormInputs } from '../../../types/auth.types';
 import './LoginForm.style.css';
-import type { LoginFormInputs, LoginFormProps } from "./Login.types";
-import notify from "../../../components/ui/ToastNotification";
-import { api } from "../../../api";
+
+
+interface LoginFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+};
 
 function LoginForm(props: LoginFormProps) {
     const {

@@ -1,13 +1,5 @@
-import {
-    Box,
-    FormControl,
-    MenuItem,
-    Autocomplete,
-    Chip,
-    Select,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Autocomplete, Box, Chip, FormControl, MenuItem, Select, TextField, Typography } from '@mui/material';
+
 import './MetadataTab.style.css';
 
 interface MetadataTabProps {

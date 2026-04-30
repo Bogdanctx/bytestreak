@@ -1,26 +1,14 @@
-import {
-    Box,
-    Typography,
-    Button,
-    Divider,
-    TableContainer,
-    Paper,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Avatar
-} from "@mui/material";
-import "./Creator.style.css";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from "react-router-dom";
-import { useAccount } from '../../hooks/useAccount';
-import { type IProblem } from "../../entities";
-import { api } from "../../api";
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Box, Button, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+
+import { api } from '../../api';
+import { useAccount } from '../../hooks/useAccount';
+import { type IProblem } from '../../types/problem.types';
+import './Creator.style.css';
 
 function Creator() {
     const navigate = useNavigate();
