@@ -15,9 +15,7 @@
 .problem-card:hover {
     background-color: #222222;
     border-color: #555555;
-    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
 }
 
 .problem-card:hover .action-icon {
