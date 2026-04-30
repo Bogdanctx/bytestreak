@@ -1,71 +1,125 @@
 #problems-section-container {
-    box-shadow: 0 4px 12px #00000080;
     background-color: var(--bg-2);
     border-radius: 16px;
-
-    height: 100%;
+    box-shadow: 0 4px 12px #00000080;
     box-sizing: border-box;
-
     display: flex;
-    flex-direction: column;
     flex: 1;
+    flex-direction: column;
+    height: 100%;
 }
 
 #problems-section-header {
-    margin-bottom: 24px;
+    align-items: center;
+    background-color: var(--bg-1);
+    border-bottom: 1px solid var(--bg-3);
+    border-top-left-radius: 16px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    margin-bottom: 24px;
+    padding: 12px 32px;
+}
 
-    background-color: var(--bg-1);
-    padding: 32px;
+.problems-section-header-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
-    border-top-right-radius: 16px;
-    border-top-left-radius: 16px;
+.problems-section-title {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+}
+
+.problems-section-subtitle {
+    color: var(--text-secondary) !important;
+}
+
+.problems-section-controls {
+    align-items: flex-end;
+    display: flex;
+    gap: 24px;
+}
+
+.problems-section-switch {
+    color: var(--text-secondary);
+    margin-bottom: 4px !important;
+}
+
+.problems-section-switch .MuiFormControlLabel-label {
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.problems-section-filter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.problems-section-filter-label {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    margin-left: 8px !important;
+    text-transform: uppercase;
 }
 
 #problems-section-list {
-    overflow-y: auto;
-    flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 #problems-section-footer {
-    padding: 16px;
-    border-top: 1px solid var(--bg-1);
-    justify-content: center;
     background-color: var(--bg-1);
-
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+    border-top: 1px solid var(--bg-1);
+    justify-content: center;
+    padding: 16px;
 }
 
-#problems-section-pagination .MuiPaginationItem-root {
-    color: white;
+.problems-section-status {
+    color: var(--text-secondary) !important;
+    text-align: center;
+}
+
+.problems-section-pagination .MuiPaginationItem-root {
     border-color: var(--bg-0);
+    color: var(--text-secondary);
 }
 
-#problems-section-pagination .Mui-selected {
-    background-color: var(--accent-main) !important;
-    color: black;
-    font-weight: bold;
+.problems-section-pagination .Mui-selected {
+    background-color: var(--bg-4) !important;
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
 .problem-filter-select {
-    background-color: var(--bg-4);
-    color: white !important;
-    border-radius: 8px;
+    background-color: var(--bg-2);
+    color: var(--text-primary) !important;
+    border-radius: 12px;
     height: 40px;
-    min-width: 160px;
     font-family: "Momo Trust Display", sans-serif !important;
     font-size: 0.875rem !important;
+    min-width: 160px;
+    transition: background-color 0.2s ease;
+}
+
+.problem-filter-select:hover {
+    background-color: var(--bg-3);
 }
 
 .problem-filter-select .MuiOutlinedInput-notchedOutline {
-    border: none !important;
+    border: 1px solid var(--bg-3) !important;
 }
 
 .problem-filter-select:hover .MuiOutlinedInput-notchedOutline {
@@ -74,7 +128,7 @@
 
 .problem-filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: var(--accent-main) !important;
-    border-width: 1px;
+    border-width: 1px !important;
 }
 
 .problem-filter-select .MuiSvgIcon-root {
@@ -83,25 +137,25 @@
 
 .filter-menu-paper {
     background-color: var(--bg-5) !important;
-    border: 1px solid var(--bg-1);
     border-radius: 8px !important;
+    border: 1px solid var(--bg-1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
     margin-top: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
 }
 
 .filter-menu-item {
-    color: white !important;
+    color: var(--text-primary) !important;
     font-size: 0.875rem !important;
 }
 
 .filter-menu-item:hover {
     background-color: var(--bg-3) !important;
-    color: var(--text-primary) !important;
     font-weight: bold;
+    color: var(--text-primary) !important;
 }
 
 .filter-menu-item.Mui-selected {
-    background-color: rgb(35, 206, 107, 0.3) !important;
+    background-color: rgba(35, 206, 107, 0.3) !important;
     color: var(--text-primary) !important;
 }
 
@@ -120,4 +174,78 @@
 .show-tags-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
     background-color: var(--bg-4) !important;
     opacity: 1 !important;
+}
+
+.difficulty-filter-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-2);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--bg-3);
+}
+
+.difficulty-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.difficulty-btn:hover {
+    background-color: var(--bg-3);
+    color: var(--text-primary);
+}
+
+.difficulty-btn.active-ALL {
+    color: var(--text-primary);
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: 12px;
+    display: flex;
+    padding: 4px;
+}
+
+.difficulty-btn {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    transition: all 0.2s ease;
+}
+
+.difficulty-btn:hover {
+    background-color: var(--bg-3);
+    color: var(--text-primary);
+}
+
+.difficulty-btn.active-ALL {
+    background-color: var(--bg-4);
+    color: var(--text-primary);
+}
+
+.difficulty-btn.active-EASY {
+    background-color: rgba(0, 184, 163, 0.15);
+    color: var(--difficulty-easy);
+}
+
+.difficulty-btn.active-MEDIUM {
+    background-color: rgba(255, 192, 30, 0.15);
+    color: var(--difficulty-medium);
+}
+
+.difficulty-btn.active-HARD {
+    background-color: rgba(255, 55, 95, 0.15);
+    color: var(--difficulty-hard);
 }

@@ -40,57 +40,68 @@ function ProblemBuilder() {
 
     useEffect(() => {
         setStarterCode({
-            cpp: `class Solution {
-        public:
-            int solve(vector<int>& nums) {
-                // Write your logic here
-                return 0;
-            }
-        };`,
-            python: `class Solution:
-            def solve(self, nums):
-                # Write your logic here
-                return 0`
+            cpp: `// ======= IMPORTANT =======
+// Starter Code is the code that will be visible to the user when they start solving the problem.
+
+// The code below is just a template. You can change the function signature and the logic as per your problem requirements.
+// ===========================
+
+int solve(vector<int>& nums) {
+    // Write your logic here
+    return 0;
+}`,
+            python: `# ======= IMPORTANT =======
+# Starter Code is the code that will be visible to the user when they start solving the problem.
+
+# The code below is just a template. You can change the function signature and the logic as per your problem requirements.
+# ===========================
+
+def solve(nums):
+    # Write your logic here
+    return 0`
         });
 
         setDriverCode({
-            cpp: `#include <bits/stdc++.h>
-        using namespace std;
+            cpp: `// ======= IMPORTANT =======
+// Driver Code is the code that will be used to run the test cases. It should call the function that the user is supposed to implement in Starter Code.
+// !!!! Make sure to add the marker {{CODE}} in the appropriate place in the driver code. This is where the user's code will be injected. !!!!
 
-        class Solution {
-        public:
-            int solve(vector<int>& nums);
-        };
+// The code below is just a template. You can change the function signature and the logic as per your problem requirements.
+// ===========================
 
-        int main() {
-            ios::sync_with_stdio(false);
-            cin.tie(nullptr);
+#include <iostream>
+#include <vector>
 
-            int n;
-            cin >> n;
+using namespace std;
 
-            vector<int> nums(n);
-            for (int i = 0; i < n; i++) cin >> nums[i];
+{{CODE}}
 
-            Solution sol;
-            cout << sol.solve(nums) << endl;
-        }`,
-            python: `import sys
+int main() {
+    int n;
+    cin >> n;
+    vector<int> nums(n);
+    for(int i = 0; i < n; i++) {
+        cin >> nums[i];
+    }
 
-        class Solution:
-            def solve(self, nums):
-                pass
+    cout << solve(nums) << endl;
 
-        def main():
-            data = sys.stdin.read().strip().split()
-            n = int(data[0])
-            nums = list(map(int, data[1:n+1]))
+    return 0;
+}`,
+            python: `# ======= IMPORTANT =======
+# Driver Code is the code that will be used to run the test cases. It should call the function that the user is supposed to implement in Starter Code.
+# !!!! Make sure to add the marker {{CODE}} in the appropriate place in the driver code. This is where the user's code will be injected. !!!!
 
-            sol = Solution()
-            print(sol.solve(nums))
+# The code below is just a template. You can change the function signature and the logic as per your problem requirements.
+# ===========================
 
-        if __name__ == "__main__":
-            main()`
+{{CODE}}
+
+if __name__ == "__main__":
+    n = int(input())
+    nums = list(map(int, input().split()))
+    print(solve(nums))
+`
         });
         }, []);
 

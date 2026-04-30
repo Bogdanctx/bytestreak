@@ -6,11 +6,8 @@ import {
     Select, 
     MenuItem, 
     ButtonBase, 
-    FormControl, 
-    FormHelperText, 
     Switch, 
     FormControlLabel,
-
     type SelectChangeEvent, 
 } from '@mui/material';
 
@@ -21,135 +18,99 @@ import { useNavigate } from 'react-router-dom';
 import ProblemCard from './ProblemCard/ProblemCard';
 import { api } from '../../../api';
 import { type IProblem } from '../../../entities';
+import { useQuery } from '@tanstack/react-query';
 
 function ProblemsSection() {
-    const [problems, setProblems] = useState<IProblem[]>([]);
     const navigate = useNavigate();
+    
     const [showTags, setShowTags] = useState(false);
-    const [page, setPage] = useState(1);
-    const [difficultyFilter, setDifficultyFilter] = useState('All');
-    const [sortOrder, setSortOrder] = useState('none');
     
+    const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     
-    useEffect(() => {
-        api.get('/problems/all')
-            .then(response => {
-                setProblems(response.data);
-            })
-            .catch(error => {
-                console.error("Error fetching problems:", error);
-            });
-    }, []);
+    const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
+        queryKey: ['codingProblems', sortOrder, selectedDifficulty],
+        queryFn: async () => {
+            let url = `/problems/fetch-all?sortBy=acceptanceRate&sortOrder=${sortOrder}`;
+            
+            if (selectedDifficulty !== "ALL") {
+                url += `&difficulty=${selectedDifficulty}`;
+            }
 
-    
-    const itemsPerPage = 12;
-
-    const filteredProblems = problems.filter(problem => {
-        if (difficultyFilter === 'All') return true;
-        return problem.difficulty === difficultyFilter;
-    });
-
-    const sortedProblems = [...filteredProblems].sort((a, b) => {
-        if (sortOrder === 'increasing') {
-            return 0;
-            //return a.acceptanceRate - b.acceptanceRate;
-        } 
-        else if (sortOrder === 'decreasing') {
-            return 0;
-            //return b.acceptanceRate - a.acceptanceRate;
+            const response = await api.get(url);
+            return response.data;        
         }
-        return 0;
     });
-
-    const count = Math.ceil(sortedProblems.length / itemsPerPage);
-    const startIndex = (page - 1) * itemsPerPage;
-    const currentProblems = sortedProblems.slice(startIndex, startIndex + itemsPerPage);
-
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-    };
-
-    const handleSortChange = (event: SelectChangeEvent) => {
-        setSortOrder(event.target.value);
-        setPage(1);
-    };
-
-    const handleDifficultyChange = (event: SelectChangeEvent) => {
-        setDifficultyFilter(event.target.value);
-        setPage(1);
-    };
 
     return (
         <Box id="problems-section-container">
             <Box id="problems-section-header">
-                <Box>
-                    <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: '"Momo Trust Display", sans-serif' }}>
+                <Box className="problems-section-header-copy">
+                    <Typography variant="h5" className="problems-section-title">
                         Problem Set
+                    </Typography>
+                    <Typography variant="body2" className="problems-section-subtitle">
+                        Practice and improve your coding skills
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <FormControl component="fieldset" variant="standard">
-                        <FormControlLabel
-                            control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)}/>}
-                            label="Show Tags"
-                            sx={{ 
-                                color: 'var(--text-primary)',
-                                '& .MuiFormControlLabel-label': {
-                                    fontSize: '0.875rem',
-                                    fontFamily: '"Momo Trust Display", sans-serif',
-                                }
-                            }}
-                        />
-                    </FormControl>
+                <Box className="problems-section-controls">
+                    <FormControlLabel
+                        className="problems-section-switch"
+                        control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)} />}
+                        label="Show Tags"
+                    />
 
-                    <FormControl>
-                        <FormHelperText sx={{ color: 'var(--text-primary)', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
-                            Sort by Acceptance
-                        </FormHelperText>
+                    {/* Sort Select */}
+                    <Box className="problems-section-filter-block">
+                        <Typography variant="caption" className="problems-section-filter-label">
+                            Acceptance
+                        </Typography>
                         <Select
                             value={sortOrder}
-                            onChange={handleSortChange}
-                            className="problem-filter-select"
-
-                            IconComponent={KeyboardArrowDownIcon}
-                            displayEmpty
-                            MenuProps={{ PaperProps: { className: 'filter-menu-paper' } }}
-                        >
-                            <MenuItem className="filter-menu-item" value="none">None</MenuItem>
-                            <MenuItem className="filter-menu-item" value="increasing">Increasing</MenuItem>
-                            <MenuItem className="filter-menu-item" value="decreasing">Decreasing</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    <FormControl>
-                        <FormHelperText sx={{ color: 'var(--text-primary)', marginLeft: '0px', marginTop: '-20px', position: 'absolute' }}>
-                            Filter by Difficulty
-                        </FormHelperText>
-                        <Select
-                            value={difficultyFilter}
-                            onChange={handleDifficultyChange}
+                            onChange={(e: SelectChangeEvent) => setSortOrder(e.target.value as "asc" | "desc")}
                             className="problem-filter-select"
                             IconComponent={KeyboardArrowDownIcon}
                             displayEmpty
                             MenuProps={{ PaperProps: { className: 'filter-menu-paper' } }}
                         >
-                            <MenuItem className="filter-menu-item" value="All">All</MenuItem>
-                            <MenuItem className="filter-menu-item" value="EASY" sx={{ color: 'var(--difficulty-easy) !important' }}>Easy</MenuItem>
-                            <MenuItem className="filter-menu-item" value="MEDIUM" sx={{ color: 'var(--difficulty-medium) !important' }}>Medium</MenuItem>
-                            <MenuItem className="filter-menu-item" value="HARD" sx={{ color: 'var(--difficulty-hard) !important' }}>Hard</MenuItem>
+                            <MenuItem className="filter-menu-item" value="asc">Lowest to Highest</MenuItem>
+                            <MenuItem className="filter-menu-item" value="desc">Highest to Lowest</MenuItem>
                         </Select>
-                    </FormControl>
+                    </Box>
+
+                    <Box className="problems-section-filter-block">
+                        <Typography variant="caption" className="problems-section-filter-label">
+                            Filter
+                        </Typography>
+                        <Box className="difficulty-filter-group">
+                            {['ALL', 'EASY', 'MEDIUM', 'HARD'].map((diff) => (
+                                <button
+                                    key={diff}
+                                    className={`difficulty-btn ${selectedDifficulty === diff ? `active-${diff}` : ''}`}
+                                    onClick={() => setSelectedDifficulty(diff)}
+                                >
+                                    {diff}
+                                </button>
+                            ))}
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
 
             <Box id="problems-section-list">
-                {currentProblems.map((problem) => (
+                {isLoading && <Typography className="problems-section-status">Loading problems...</Typography>}
+                
+                {!isLoading && codingProblems.length === 0 && (
+                    <Typography className="problems-section-status">No coding problems available.</Typography>
+                )}
+
+                {codingProblems.map((problem) => (
                     <ButtonBase key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)}>
                         <ProblemCard
                             title={problem.title}
-                            difficulty={problem.difficulty as 'EASY' | 'MEDIUM' | 'HARD'}
-                            acceptanceRate={0}
+                            difficulty={(problem as any).problemDifficulty || problem.difficulty}
+                            acceptanceRate={(problem as any).acceptanceRate || 0} 
                             showTags={showTags}
                             tags={problem.tags}
                             pid={problem.id}
@@ -158,17 +119,19 @@ function ProblemsSection() {
                 ))}
             </Box>
 
-            <Box id="problems-section-footer">
-                <Stack spacing={2} alignItems="center">
-                    <Pagination 
-                        id="problems-section-pagination"
-                        count={count} 
-                        page={page} 
-                        onChange={handlePageChange} 
-                        shape="rounded"
-                    />
-                </Stack>
-            </Box>
+            {/* {count > 1 && (
+                <Box id="problems-section-footer">
+                    <Stack spacing={2} alignItems="center">
+                        <Pagination 
+                            className="problems-section-pagination"
+                            count={count} 
+                            page={page} 
+                            onChange={handlePageChange} 
+                            shape="rounded"
+                        />
+                    </Stack>
+                </Box>
+            )} */}
         </Box>
     )
 }

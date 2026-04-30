@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
@@ -22,6 +23,7 @@ import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
@@ -33,12 +35,18 @@ import com.bytestreak.backend.entities.Account;
 public class ProblemController {
     @Autowired
     private ProblemRepository repository;
+
     @Autowired
     private CodeExecution executionService;
+
     @Autowired
     private FileStorageService fileStorageService;
+
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ProblemService problemService;
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id) {
@@ -117,16 +125,15 @@ public class ProblemController {
             
             String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
 
-            Problem problem = new Problem(
-                newProblemDTO.getTitle(),
-                slug,
-                newProblemDTO.getDescription(),
-                ProblemDifficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()),
-                newProblemDTO.getCodeTemplates(),
-                testCasesPath,
-                newProblemDTO.getTags(),
-                creator
-            );
+            Problem problem = new Problem();
+            problem.setTitle(newProblemDTO.getTitle());
+            problem.setSlug(slug);
+            problem.setDescription(newProblemDTO.getDescription());
+            problem.setProblemDifficulty(ProblemDifficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()));
+            problem.setCodeTemplates(newProblemDTO.getCodeTemplates());
+            problem.setTestCasesPath(testCasesPath);
+            problem.setTags(newProblemDTO.getTags());
+            problem.setCreator(creator);
 
             repository.save(problem);
 
@@ -175,9 +182,17 @@ public class ProblemController {
         }
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Problem>> getAllProblems() {
-        List<Problem> problems = repository.findAll();
+    @GetMapping("/fetch-all")
+    public ResponseEntity<?> getAllProblems(
+        @RequestParam(required = false) String difficulty,
+        Authentication authentication
+    ) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        List<Problem> problems = problemService.getAllProblems(difficulty);
+
         return ResponseEntity.ok(problems);
     }
 }

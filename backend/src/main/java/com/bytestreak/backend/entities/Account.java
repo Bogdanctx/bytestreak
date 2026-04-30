@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
@@ -61,19 +60,6 @@ public class Account {
 
     @Getter @Setter 
     private int streakLength = 0;
-
-    @OneToMany(mappedBy = "creator")
-    @Getter @Setter 
-    private List<Problem> createdProblems = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-        name = "account_solved_problems",
-        joinColumns = @JoinColumn(name = "account_id"),
-        inverseJoinColumns = @JoinColumn(name = "problem_id")
-    )
-    @Getter @Setter 
-    private List<Problem> solvedProblems = new ArrayList<>();
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

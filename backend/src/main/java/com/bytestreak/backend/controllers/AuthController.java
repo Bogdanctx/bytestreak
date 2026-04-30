@@ -28,7 +28,7 @@ import com.bytestreak.backend.services.JWTService;
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
-    private AccountRepository repository;
+    private AccountRepository accountRepository;
     @Autowired
     private JWTService jwtService;
 
@@ -41,7 +41,7 @@ public class AuthController {
         }
 
         String email = authentication.getName();
-        Account account = repository.findByEmail(email);
+        Account account = accountRepository.findByEmail(email);
 
         if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -70,7 +70,7 @@ public class AuthController {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
 
-        Account account = repository.findByEmail(email);
+        Account account = accountRepository.findByEmail(email);
 
         if (account == null) {
             return ResponseEntity
@@ -102,7 +102,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Account account) {
-        Account existingAccount = repository.findByEmail(account.getEmail());
+        Account existingAccount = accountRepository.findByEmail(account.getEmail());
 
         if (existingAccount != null) {
             return ResponseEntity
@@ -115,7 +115,7 @@ public class AuthController {
             String encodedPassword = passwordEncoder.encode(rawPassword);
             account.setPassword(encodedPassword);
 
-            repository.save(account);
+            accountRepository.save(account);
         } 
         catch (Exception e) {
             return ResponseEntity

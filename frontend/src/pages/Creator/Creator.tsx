@@ -14,56 +14,47 @@ import {
 } from "@mui/material";
 import "./Creator.style.css";
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccount } from '../../hooks/useAccount';
 import { type IProblem } from "../../entities";
 import { api } from "../../api";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Creator() {
     const navigate = useNavigate();
-    const [problems, setProblems] = useState<IProblem[]>([]);
     const { data: account } = useAccount();
+    const queryClient = useQueryClient();
+    const { data: createdProblems = [] } = useQuery<IProblem[]>({
+        queryKey: ['createdProblems'],
+        queryFn: async () => {
+            const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
+            return response.data;
+        },
+        enabled: !!account
+    });
 
-    const fetchCreatedProblems = async () => {
-        console.log("Fetching problems for creator with ID:", account.id);
-
-        api.get(`/creator/problems?creatorId=${account.id}`)
-            .then((response) => {
-                if (response.status === 200) {
-                    console.log("Problems fetched successfully:", response.data);
-                    setProblems(response.data);
-                } 
-            })
-            .catch((error) => {
-                console.error("Error fetching problems:", error);
-            });
-    }
-
-    const handleDeleteProblem = (problemId: number) => {
+    const handleDeleteProblem = async (problemId: number) => {
         if (window.confirm("Are you sure you want to delete this problem? This action cannot be undone.")) {
-            api.delete(`/creator/problems/${problemId}`)
-                .then((response) => {
-                    if (response.status === 200) {
-                        alert("Problem deleted successfully.");
-                        fetchCreatedProblems(); // Refresh the list after deletion
-                    } else {
-                        alert("Failed to delete problem. Please try again.");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error deleting problem:", error);
-                    alert("An error occurred while deleting the problem. Please try again.");
-                });
-        }
-    } 
+            
+            try {
+                const response = await api.delete(`/creator/delete-problem?problemId=${problemId}`);
 
-    useEffect(() => {
-        fetchCreatedProblems();
-    }, []);
+                if (response.status === 200) {
+                    alert("Problem deleted successfully.");
+                    queryClient.invalidateQueries({ queryKey: ['createdProblems'] });                    
+                } 
+                else {
+                    alert("Failed to delete problem. Please try again.");
+                }
+            }
+            catch (error) {
+                console.error("Error deleting problem:", error);
+                alert("An error occurred while deleting the problem. Please try again.");
+            }
+        }
+    }
 
     const getDifficultyColor = (difficulty: string) => {
         switch (difficulty) {
@@ -96,7 +87,7 @@ function Creator() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {problems.map((problem) => (
+                            {createdProblems.map((problem) => (
                                 <TableRow key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)} className="creator-table-row">
                                     <TableCell className="creator-table-cell">
                                         <Typography variant="body1">
@@ -150,7 +141,7 @@ function Creator() {
                             {account.username}
                         </Typography>
                         <Typography variant="caption" color="#888">
-                            {problems.length} {problems.length === 1 ? 'problem' : 'problems'} created
+                            {createdProblems.length} {createdProblems.length === 1 ? 'problem' : 'problems'} created
                         </Typography>
                     </Box>
                 </Box>
