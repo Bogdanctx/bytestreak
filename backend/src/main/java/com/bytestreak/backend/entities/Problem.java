@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.bytestreak.backend.TagStringListConverter;
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class Problem {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private ProblemDifficulty problemDifficulty;
+    private Difficulty difficulty;
 
     @Column(columnDefinition = "TEXT")
     private String codeTemplates;

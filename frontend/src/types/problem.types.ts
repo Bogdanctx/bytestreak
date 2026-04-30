@@ -5,7 +5,7 @@ export interface IProblem {
     title: string;
     slug: string;
     description: string;
-    problemDifficulty: "EASY" | "MEDIUM" | "HARD";
+    difficulty: "EASY" | "MEDIUM" | "HARD";
     codeTemplates: {
         cpp: {
             starterCode: string;
@@ -24,7 +24,7 @@ export interface IProblem {
 export interface IProblemCreateDTO {
     title: string;
     description: string;
-    problemDifficulty: "EASY" | "MEDIUM" | "HARD";
+    difficulty: "EASY" | "MEDIUM" | "HARD";
     codeTemplates: string;
     testCases: string;
     tags: string[];

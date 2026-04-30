@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ public class ProblemService {
         }
 
         try {
-            ProblemDifficulty difficultyEnum = ProblemDifficulty.valueOf(difficulty.toUpperCase());
+            Difficulty difficultyEnum = Difficulty.valueOf(difficulty.toUpperCase());
             
-            return problemRepository.findByProblemDifficulty(difficultyEnum);     
+            return problemRepository.findByDifficulty(difficultyEnum);     
         } 
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);

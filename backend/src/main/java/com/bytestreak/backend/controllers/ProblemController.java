@@ -27,7 +27,7 @@ import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.entities.Account;
 
 @RestController
@@ -42,8 +42,6 @@ public class ProblemController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     private ProblemService problemService;

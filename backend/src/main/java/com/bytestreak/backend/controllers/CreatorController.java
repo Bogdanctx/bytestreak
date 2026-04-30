@@ -14,7 +14,7 @@ import java.util.List;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/creator")
 public class CreatorController {
     @Autowired
-    private ProblemRepository repository;
+    private ProblemRepository problemRepository;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -47,10 +47,10 @@ public class CreatorController {
         if (creatorId == null) {
             Account me = accountRepository.findByEmail(authentication.getName());
 
-            return repository.findByCreatorId(me.getId());
+            return problemRepository.findByCreatorId(me.getId());
         }
 
-        return repository.findByCreatorId(creatorId);
+        return problemRepository.findByCreatorId(creatorId);
     }
 
     @DeleteMapping("/delete-problem")
@@ -59,7 +59,7 @@ public class CreatorController {
             throw new RuntimeException("Unauthorized");
         }
 
-        repository.deleteById(problemId);
+        problemRepository.deleteById(problemId);
         return ResponseEntity.ok("Problem deleted successfully");
     }
 
@@ -86,12 +86,17 @@ public class CreatorController {
         problem.setTitle(newCodingProblemDTO.getTitle());
         problem.setSlug(slug);
         problem.setDescription(newCodingProblemDTO.getDescription());
-        problem.setProblemDifficulty(ProblemDifficulty.valueOf(newCodingProblemDTO.getDifficulty().toUpperCase()));
+
+        Difficulty difficultyEnum = Difficulty.valueOf(newCodingProblemDTO.getDifficulty().toString().toUpperCase());
+        problem.setDifficulty(difficultyEnum);
+        
         problem.setCodeTemplates(newCodingProblemDTO.getCodeTemplates());
         problem.setTestCasesPath(testCasesPath);
         problem.setTags(newCodingProblemDTO.getTags());
         problem.setCreator(creator);
         
+        problemRepository.save(problem);
+
         return ResponseEntity.ok("Problem created successfully");
     }
     
@@ -106,7 +111,7 @@ public class CreatorController {
             throw new RuntimeException("Unauthorized");
         }
 
-        Problem existingProblem = repository.findById(id).orElse(null);
+        Problem existingProblem = problemRepository.findById(id).orElse(null);
         if (existingProblem == null) {
             return ResponseEntity.notFound().build();
         }
@@ -128,15 +133,17 @@ public class CreatorController {
         }
 
 
+        Difficulty difficultyEnum = Difficulty.valueOf(updatedProblem.getDifficulty().toString().toUpperCase());
+
         existingProblem.setTitle(updatedProblem.getTitle());
         existingProblem.setSlug(slug);
         existingProblem.setDescription(updatedProblem.getDescription());
-        existingProblem.setProblemDifficulty(updatedProblem.getDifficulty());
+        existingProblem.setDifficulty(difficultyEnum);
         existingProblem.setCodeTemplates(updatedProblem.getCodeTemplates());
         existingProblem.setTestCasesPath(testCasesPath);
         existingProblem.setTags(updatedProblem.getTags());
 
-        repository.save(existingProblem);
+        problemRepository.save(existingProblem);
         return ResponseEntity.ok("Problem updated successfully");
     }
 }

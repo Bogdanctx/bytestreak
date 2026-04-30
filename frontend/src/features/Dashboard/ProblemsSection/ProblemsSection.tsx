@@ -97,30 +97,15 @@ function ProblemsSection() {
                 {codingProblems.map((problem) => (
                     <ButtonBase key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)}>
                         <ProblemCard
+                            key={problem.id}
                             title={problem.title}
-                            difficulty={(problem as any).problemDifficulty || problem.difficulty}
-                            acceptanceRate={(problem as any).acceptanceRate || 0} 
+                            difficulty={problem.difficulty}
                             showTags={showTags}
                             tags={problem.tags}
-                            pid={problem.id}
                         />
                     </ButtonBase>
                 ))}
             </Box>
-
-            {/* {count > 1 && (
-                <Box id="problems-section-footer">
-                    <Stack spacing={2} alignItems="center">
-                        <Pagination 
-                            className="problems-section-pagination"
-                            count={count} 
-                            page={page} 
-                            onChange={handlePageChange} 
-                            shape="rounded"
-                        />
-                    </Stack>
-                </Box>
-            )} */}
         </Box>
     )
 }

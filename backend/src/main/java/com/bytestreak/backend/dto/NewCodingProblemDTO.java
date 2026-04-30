@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,7 +16,7 @@ public class NewCodingProblemDTO {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private ProblemDifficulty problemDifficulty;
+    private Difficulty difficulty;
     
     private String codeTemplates;
     private String testCases;

@@ -61,7 +61,7 @@ function ProblemBuilder() {
             const data = codingProblemDescriptionResponse.data;
             setTitle(data.title);
             setDescription(data.description);
-            setDifficulty(data.problemDifficulty);
+            setDifficulty(data.difficulty);
             setTags(data.tags);
 
             const parsedTemplates = JSON.parse(data.codeTemplates);
@@ -104,7 +104,7 @@ function ProblemBuilder() {
         const problemData: IProblemCreateDTO = {
             title,
             description,
-            problemDifficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
+            difficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
             codeTemplates: JSON.stringify(codeTemplates),
             testCases: JSON.stringify(testCases),
             tags: tags,
