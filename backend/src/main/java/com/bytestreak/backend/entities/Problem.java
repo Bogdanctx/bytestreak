@@ -17,7 +17,6 @@ import lombok.Setter;
 
 import com.bytestreak.backend.TagStringListConverter;
 import com.bytestreak.backend.enums.ProblemDifficulty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 import java.util.ArrayList;

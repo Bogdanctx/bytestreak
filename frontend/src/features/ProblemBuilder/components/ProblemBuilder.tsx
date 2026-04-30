@@ -17,9 +17,22 @@ import { type ITestCase } from '../../../entities';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
-import { type ProblemBuilderDTO } from './interfaces';
+import { type IProblemCreateDTO } from '../../../types/problem.types';
 import { useNavigate, useParams } from 'react-router-dom';
 import ConstructionIcon from '@mui/icons-material/Construction';
+
+const DEFAULT_STARTER_CODE = {
+    cpp: `// ======= IMPORTANT =======\n// Starter Code template...\n\nint solve(vector<int>& nums) {\n    return 0;\n}`,
+    python: `# ======= IMPORTANT =======\n# Starter Code template...\n\ndef solve(nums):\n    return 0`
+};
+
+const DEFAULT_DRIVER_CODE = {
+    cpp: `// ======= IMPORTANT =======\n// Driver Code template...\n\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n{{CODE}}\n\nint main() {\n    return 0;\n}`,
+    python: `# ======= IMPORTANT =======\n# Driver Code template...\n\n{{CODE}}\n\nif __name__ == "__main__":\n    pass`
+};
+
+type ProgrammingLanguage = "cpp" | "python";
+type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
@@ -28,221 +41,118 @@ function ProblemBuilder() {
 
     const [activeTab, setActiveTab] = useState("markdown");
 
-    // Problem data states
+    const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguage>("cpp");
+    const [starterCode, setStarterCode] = useState<CodeTemplateMap>(DEFAULT_STARTER_CODE);
+    const [driverCode, setDriverCode] = useState<CodeTemplateMap>(DEFAULT_DRIVER_CODE);
+    
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
-    const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({ "cpp": "", "python": "" });
-    const [driverCode, setDriverCode] = useState({ "cpp": "", "python": "" });
     const [testCases, setTestCases] = useState<ITestCase[]>([]);
     const [title, setTitle] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
 
     useEffect(() => {
-        setStarterCode({
-            cpp: `// ======= IMPORTANT =======
-// Starter Code is the code that will be visible to the user when they start solving the problem.
-
-// The code below is just a template. You can change the function signature and the logic as per your problem requirements.
-// ===========================
-
-int solve(vector<int>& nums) {
-    // Write your logic here
-    return 0;
-}`,
-            python: `# ======= IMPORTANT =======
-# Starter Code is the code that will be visible to the user when they start solving the problem.
-
-# The code below is just a template. You can change the function signature and the logic as per your problem requirements.
-# ===========================
-
-def solve(nums):
-    # Write your logic here
-    return 0`
-        });
-
-        setDriverCode({
-            cpp: `// ======= IMPORTANT =======
-// Driver Code is the code that will be used to run the test cases. It should call the function that the user is supposed to implement in Starter Code.
-// !!!! Make sure to add the marker {{CODE}} in the appropriate place in the driver code. This is where the user's code will be injected. !!!!
-
-// The code below is just a template. You can change the function signature and the logic as per your problem requirements.
-// ===========================
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-{{CODE}}
-
-int main() {
-    int n;
-    cin >> n;
-    vector<int> nums(n);
-    for(int i = 0; i < n; i++) {
-        cin >> nums[i];
-    }
-
-    cout << solve(nums) << endl;
-
-    return 0;
-}`,
-            python: `# ======= IMPORTANT =======
-# Driver Code is the code that will be used to run the test cases. It should call the function that the user is supposed to implement in Starter Code.
-# !!!! Make sure to add the marker {{CODE}} in the appropriate place in the driver code. This is where the user's code will be injected. !!!!
-
-# The code below is just a template. You can change the function signature and the logic as per your problem requirements.
-# ===========================
-
-{{CODE}}
-
-if __name__ == "__main__":
-    n = int(input())
-    nums = list(map(int, input().split()))
-    print(solve(nums))
-`
-        });
-        }, []);
-
-    useEffect(() => {
-        if(isEditMode) {
-
-            api.get(`/problems/${id}/description`)
-                .then(response => {
-                    const data = response.data;
-
-                    setTitle(data.title);
-                    setDescription(data.description);
-                    setDifficulty(data.difficulty);
-                    setTags(data.tags);
-
-                    const codeTemplates = JSON.parse(data.codeTemplates);
-                    setStarterCode({
-                        cpp: codeTemplates.cpp.starterCode,
-                        python: codeTemplates.python.starterCode
-                    });
-                    setDriverCode({
-                        cpp: codeTemplates.cpp.driverCode,
-                        python: codeTemplates.python.driverCode
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching problem description:', error);
-                });
-
-            api.get(`/problems/testcases?problemId=${id}`)
-                .then(response => {
-                    const data = response.data;
-                    for(let testCase of data) {
-                        testCase.input = testCase.input.replace(/\\n/g, '\n');
-                        testCase.output = testCase.output.replace(/\\n/g, '\n');
-                    }
-                    console.log("Fetched test cases:", data);
-                    setTestCases(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching problem test cases:', error);
-                });
+        if (!isEditMode) {
+            return;
         }
+
+        fetchProblemData();
     }, [id, isEditMode]);
 
-    const handleSubmitProblem = () => {
-        if(!title) {
-            notify("Please provide a title for the problem.", "error");
-            return;
+    const fetchProblemData = async () => {
+        try {
+            const [codingProblemDescriptionResponse, testCasesResponse] = await Promise.all([
+                api.get(`/problems/${id}/description`),
+                api.get(`/problems/testcases?problemId=${id}`)
+            ]);
+
+            const data = codingProblemDescriptionResponse.data;
+            setTitle(data.title);
+            setDescription(data.description);
+            setDifficulty(data.problemDifficulty);
+            setTags(data.tags);
+
+            const parsedTemplates = JSON.parse(data.codeTemplates);
+
+            setStarterCode({
+                cpp: parsedTemplates.cpp.starterCode,
+                python: parsedTemplates.python.starterCode
+            });
+
+            setDriverCode({
+                cpp: parsedTemplates.cpp.driverCode,
+                python: parsedTemplates.python.driverCode
+            });
+
+            const formattedTestCases = testCasesResponse.data.map((testCase: any) => ({
+                ...testCase,
+                input: testCase.input.replace(/\\n/g, '\n'),
+                output: testCase.output.replace(/\\n/g, '\n')
+            }));
+            setTestCases(formattedTestCases);
+
+        } 
+        catch (error) {
+            console.error('Error fetching problem data:', error);
+            notify("Failed to load problem data.", "error");
         }
-        if(!difficulty) {
-            notify("Please select a difficulty level for the problem.", "error");
-            return;
-        }
-        if(tags.length === 0) {
-            notify("Please add at least one tag to the problem.", "error");
-            return;
-        }
-        if (!description) {
-            notify("Problem description cannot be empty.", "error");
-            return;
-        }
-        if(!starterCode.cpp || !starterCode.python) {
-            notify("Please provide a starting code in Starter Code tab.", "error");
-            return;
-        }
-        if(!driverCode.cpp || !driverCode.python) {
-            notify("Please provide a driver code in Driver Code tab.", "error");
-            return;
-        }
-        if(testCases.length === 0) {
-            notify("Please add at least one test case in Test Cases tab.", "error");
+    };
+
+    const handleSubmitProblem = async () => {
+        if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
+            notify("Please fill out all required fields (Title, Difficulty, Tags, Test Cases).", "error");
             return;
         }
 
         const codeTemplates = {
-            cpp: {
-                starterCode: starterCode.cpp,
-                driverCode: driverCode.cpp
-            },
-            python: {
-                starterCode: starterCode.python,
-                driverCode: driverCode.python
-            }
+            cpp: { starterCode: starterCode.cpp, driverCode: driverCode.cpp },
+            python: { starterCode: starterCode.python, driverCode: driverCode.python }
         };
 
-        const problemData: ProblemBuilderDTO = {
+        const problemData: IProblemCreateDTO = {
             title,
             description,
-            difficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
-            codeTemplates: JSON.stringify(codeTemplates), 
+            problemDifficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
+            codeTemplates: JSON.stringify(codeTemplates),
             testCases: JSON.stringify(testCases),
             tags: tags,
         };
         
-        if(isEditMode) {
-            api.put(`/problems/edit/${id}`, problemData)
-                .then(response => {
-                    if(response.status === 200) {
-                        notify("Problem updated successfully!", "success");
-                        navigate("/dashboard");
-                    }
-                    else {
-                        notify("Failed to update problem. Please try again.", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error updating problem:', error);
-                });
-        }
-        else {
-            api.post('/problems/new', problemData)
-                .then(response => {
-                    if(response.status === 200) {
-                        notify("Problem created successfully!", "success");
-                    }
-                    else {
-                        notify("Failed to create problem. Please try again.", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error creating problem:', error);
-                });
+        try {
+            if (isEditMode) {
+                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
+
+                if (response.status === 200) {
+                    notify("Problem updated successfully!", "success");
+                    navigate("/dashboard");
+                }
+            } 
+            else {
+                const response = await api.post('/creator/new-problem', problemData);
+
+                if (response.status === 200) {
+                    notify("Problem created successfully!", "success");
+                    navigate("/dashboard");
+                }
+            }
+        } 
+        catch (error) {
+            console.error('Error saving problem:', error);
+            notify("Failed to save problem. Please try again.", "error");
         }
     }
 
     const handleEditorChange = (value: string | undefined) => {
-        if(activeTab === "markdown") {
-            setDescription(value || "");
-        }
-        else if(activeTab === "starter-code") {
-            setStarterCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
-        }
-        else if(activeTab === "driver-code") {
-            setDriverCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
+        if (!value) return;
+
+        if (activeTab === "markdown") {
+            setDescription(value);
+        } 
+        else if (activeTab === "starter-code") {
+            setStarterCode((prev) => ({ ...prev, [programmingLanguage]: value }));
+        } 
+        else if (activeTab === "driver-code") {
+            setDriverCode((prev) => ({ ...prev, [programmingLanguage]: value }));
         }
     }
 

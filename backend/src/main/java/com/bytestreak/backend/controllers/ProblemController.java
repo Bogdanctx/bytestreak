@@ -18,7 +18,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
-import com.bytestreak.backend.dto.NewProblemDTO;
+import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
@@ -111,82 +111,8 @@ public class ProblemController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
-        Account creator = accountRepository.findByEmail(authentication.getName());
-
-        try {
-            String slug = newProblemDTO.getTitle().toLowerCase().replace(" ", "-");
-            String testsJSON = newProblemDTO.getTestCases();
-            
-            String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
-
-            Problem problem = new Problem();
-            problem.setTitle(newProblemDTO.getTitle());
-            problem.setSlug(slug);
-            problem.setDescription(newProblemDTO.getDescription());
-            problem.setProblemDifficulty(ProblemDifficulty.valueOf(newProblemDTO.getDifficulty().toUpperCase()));
-            problem.setCodeTemplates(newProblemDTO.getCodeTemplates());
-            problem.setTestCasesPath(testCasesPath);
-            problem.setTags(newProblemDTO.getTags());
-            problem.setCreator(creator);
-
-            repository.save(problem);
-
-            return ResponseEntity.ok("Problem created successfully");   
-        } 
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid Difficulty level");
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Error creating problem");
-        }
-    }
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
-        try {
-            Problem existingProblem = repository.findById(id).orElse(null);
-            
-            if (existingProblem == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            String slug = problemDTO.getTitle().toLowerCase().replace(" ", "-");
-            String testsJSON = problemDTO.getTestCases();
-            String testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
-
-            existingProblem.setTitle(problemDTO.getTitle());
-            existingProblem.setSlug(slug);
-            existingProblem.setDescription(problemDTO.getDescription());
-            existingProblem.setProblemDifficulty(ProblemDifficulty.valueOf(problemDTO.getDifficulty().toUpperCase()));
-            existingProblem.setCodeTemplates(problemDTO.getCodeTemplates());
-            existingProblem.setTestCasesPath(testCasesPath);
-            existingProblem.setTags(problemDTO.getTags());
-            
-            repository.save(existingProblem);
-            
-            return ResponseEntity.ok("Problem updated successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Error updating problem");
-        }
-    }
-
     @GetMapping("/fetch-all")
-    public ResponseEntity<?> getAllProblems(
-        @RequestParam(required = false) String difficulty,
-        Authentication authentication
-    ) {
+    public ResponseEntity<?> getAllProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
