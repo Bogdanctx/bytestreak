@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,12 +20,13 @@ import com.bytestreak.backend.dto.ExecutionResultDTO;
 import com.bytestreak.backend.dto.NewProblemDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
-
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.entities.Account;
 
 @RestController
 @RequestMapping("/problems")
@@ -35,6 +37,8 @@ public class ProblemController {
     private CodeExecution executionService;
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id) {
@@ -100,7 +104,13 @@ public class ProblemController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO) {
+    public ResponseEntity<String> createProblem(@RequestBody NewProblemDTO newProblemDTO, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        Account creator = accountRepository.findByEmail(authentication.getName());
+
         try {
             String slug = newProblemDTO.getTitle().toLowerCase().replace(" ", "-");
             String testsJSON = newProblemDTO.getTestCases();
@@ -115,7 +125,7 @@ public class ProblemController {
                 newProblemDTO.getCodeTemplates(),
                 testCasesPath,
                 newProblemDTO.getTags(),
-                newProblemDTO.getCreator()
+                creator
             );
 
             repository.save(problem);
@@ -132,7 +142,11 @@ public class ProblemController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO) {
+    public ResponseEntity<String> updateProblem(@PathVariable Long id, @RequestBody NewProblemDTO problemDTO, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
         try {
             Problem existingProblem = repository.findById(id).orElse(null);
             

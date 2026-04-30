@@ -6,8 +6,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-import com.bytestreak.backend.entities.Account;
-
 @AllArgsConstructor
 @Getter
 @Setter
@@ -18,5 +16,4 @@ public class NewProblemDTO {
     private String codeTemplates;
     private String testCases;
     private List<String> tags;
-    private Account creator;
 }

@@ -1,5 +1,3 @@
-import { type IAccount } from "../../../entities";
-
 export interface ProblemBuilderDTO {
     title: string;
     description: string;
@@ -7,5 +5,4 @@ export interface ProblemBuilderDTO {
     codeTemplates: string;
     testCases: string;
     tags: string[];
-    creator: IAccount;
 }

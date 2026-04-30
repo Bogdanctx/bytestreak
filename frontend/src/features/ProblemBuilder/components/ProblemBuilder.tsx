@@ -8,7 +8,6 @@ import {
     MenuItem
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useAccount } from '../../../hooks/useAccount';
 import './ProblemBuilder.style.css';
 import Editor from '@monaco-editor/react';
 import PublishIcon from '@mui/icons-material/Publish';
@@ -39,7 +38,61 @@ function ProblemBuilder() {
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
 
-    const { data: account } = useAccount();
+    useEffect(() => {
+        setStarterCode({
+            cpp: `class Solution {
+        public:
+            int solve(vector<int>& nums) {
+                // Write your logic here
+                return 0;
+            }
+        };`,
+            python: `class Solution:
+            def solve(self, nums):
+                # Write your logic here
+                return 0`
+        });
+
+        setDriverCode({
+            cpp: `#include <bits/stdc++.h>
+        using namespace std;
+
+        class Solution {
+        public:
+            int solve(vector<int>& nums);
+        };
+
+        int main() {
+            ios::sync_with_stdio(false);
+            cin.tie(nullptr);
+
+            int n;
+            cin >> n;
+
+            vector<int> nums(n);
+            for (int i = 0; i < n; i++) cin >> nums[i];
+
+            Solution sol;
+            cout << sol.solve(nums) << endl;
+        }`,
+            python: `import sys
+
+        class Solution:
+            def solve(self, nums):
+                pass
+
+        def main():
+            data = sys.stdin.read().strip().split()
+            n = int(data[0])
+            nums = list(map(int, data[1:n+1]))
+
+            sol = Solution()
+            print(sol.solve(nums))
+
+        if __name__ == "__main__":
+            main()`
+        });
+        }, []);
 
     useEffect(() => {
         if(isEditMode) {
@@ -131,7 +184,6 @@ function ProblemBuilder() {
             codeTemplates: JSON.stringify(codeTemplates), 
             testCases: JSON.stringify(testCases),
             tags: tags,
-            creator: account
         };
         
         if(isEditMode) {
