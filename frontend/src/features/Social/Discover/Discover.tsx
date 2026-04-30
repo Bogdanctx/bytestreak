@@ -77,6 +77,8 @@ function Discover() {
 
     const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
 
+    console.log('Discover Accounts:', discoverAccounts);
+
     return (
         <Box className="discover-container">
             <Box className="discover-header">

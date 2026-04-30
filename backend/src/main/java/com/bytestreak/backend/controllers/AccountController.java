@@ -12,31 +12,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 
+import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
-
+import com.bytestreak.backend.services.AccountService;
 
 import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
     @Autowired
-    private AccountRepository repository;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private AccountRepository accountRepository;
     
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/get")
     public Account getAccount(@RequestParam Long accountId, Authentication authentication) {
@@ -44,69 +39,44 @@ public class AccountController {
             return null;
         }
 
-        return repository.findById(accountId).orElse(null);
+        return accountRepository.findById(accountId).orElse(null);
     }
 
     @GetMapping("/fetch-accounts")
-    public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) String query, @RequestParam(required = false) Long cursor) {
-        int pageSize = 20;
-        
-        Long startId = (cursor == null) ? 0L : cursor;
-        Long nextCursor = null;
-        List<Account> accounts;
-
-        if (query == null) {
-            accounts = repository.findByIdGreaterThanOrderByIdAsc(startId, PageRequest.of(0, pageSize));
-        }
-        else {
-            accounts = repository.findByUsernameStartingWithIgnoreCase(query, PageRequest.of(0, pageSize));
+    public ResponseEntity<?> getAllAccounts(
+        @RequestParam(required = false) String query, 
+        @RequestParam(required = false) Long cursor,
+        Authentication authentication
+    ) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (!accounts.isEmpty() && accounts.size() == pageSize) {
-            nextCursor = accounts.get(accounts.size() - 1).getId();
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("accounts", accounts);
-        response.put("nextCursor", nextCursor);
+        Map<String, Object> response = accountService.fetchAccountsWithCursor(query, cursor, authentication.getName());
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updateAccount(@RequestBody Map<String, Object> updates, Authentication authentication) {
-        if (authentication == null) {
+    public ResponseEntity<?> updateAccount(@RequestBody AccountUpdateDTO updates, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account account = repository.findByEmail(authentication.getName());
-
+        Account account = accountRepository.findByEmail(authentication.getName());
         if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        List<String> allowedFields = List.of("username", "email", "password", "profilePictureUrl");
-        updates.keySet().retainAll(allowedFields);
+        accountService.updateAccount(
+            account, 
+            updates.getUsername(), 
+            updates.getEmail(), 
+            updates.getPassword(), 
+            updates.getProfilePictureUrl()
+        );
 
-        if(updates.containsKey("password")) {
-            String rawPassword = (String) updates.get("password");
-            if(rawPassword != null && !rawPassword.isEmpty()) {
-                account.setPassword(passwordEncoder.encode(rawPassword));
-            }
-            updates.remove("password");
-        }
-
-        try {
-            objectMapper.updateValue(account, updates);
-            repository.save(account);
-
-            account.setPassword(null);
-
-            return ResponseEntity.ok(account);
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update data: " + e.getMessage());
-        }
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete")
@@ -115,13 +85,13 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account account = repository.findByEmail(authentication.getName());
+        Account account = accountRepository.findByEmail(authentication.getName());
 
         if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        repository.delete(account);
+        accountRepository.delete(account);
         return ResponseEntity.ok().build();
     
     }
