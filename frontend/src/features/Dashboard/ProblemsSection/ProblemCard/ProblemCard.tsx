@@ -28,10 +28,7 @@ function ProblemCard(props: ProblemCardProps) {
     const difficultyColor = getDifficultyColor(props.difficulty);
 
     return (
-        <Box
-            className="problem-card"
-            style={{ '--card-color': `${difficultyColor}22` } as React.CSSProperties}
-        >
+        <Box className="problem-card">
             <Box className="problem-card-content-left">
                 <Box
                     className="difficulty-indicator"
