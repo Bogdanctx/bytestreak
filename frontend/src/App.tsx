@@ -12,6 +12,7 @@ import Settings from './pages/Settings/Settings.tsx';
 import LandingPage from './pages/Landing/LandingPage.tsx';
 import Social from './pages/Social/Social.tsx';
 import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ function App() {
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
+                                <Route path="/admin" element={<Administration />} />
 
                                 <Route path="/creator" element={<Creator />} />
                                 <Route path="/creator/new" element={<ProblemBuilder />} />

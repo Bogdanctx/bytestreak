@@ -13,11 +13,18 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
+
+import org.json.JSONObject;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
 
@@ -63,7 +70,7 @@ public class CodeExecution {
         return results;
     }
 
-    public ExecutionResultDTO judge0Execute(int languageId, String sourceCode, String input, String expectedOutput, int testCaseId) {
+    private ExecutionResultDTO judge0Execute(int languageId, String sourceCode, String input, String expectedOutput, int testCaseId) {
         RestTemplate restTemplate = new RestTemplate();
         
         // encode data to base64
@@ -111,6 +118,52 @@ public class CodeExecution {
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());
             return new ExecutionResultDTO(0, "System Error", testCaseId, 0);
+        }
+    }
+
+    public String executeSnippetForStdout(int languageId, String sourceCode) {
+        System.out.println("Executing code snippet with Judge0 API. Language ID: " + languageId + ", Source Code: \n" + sourceCode);
+        String encodedSource = Base64.getEncoder().encodeToString(sourceCode.getBytes());
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("source_code", encodedSource);
+        requestBody.put("language_id", languageId);
+        requestBody.put("cpu_time_limit", 2.0);
+
+        HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(judge0ApiUrl))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+                .build();
+
+        try {
+            String response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            JSONObject jsonResponse = new JSONObject(response);
+            JSONObject status = jsonResponse.getJSONObject("status");
+
+            if (status.getInt("id") != 3) { // 3 = Accepted
+                System.out.println("Code snippet execution failed. Status: " + status.getString("description"));
+                return "";
+            }
+
+            System.out.println("Received response from Judge0 API for snippet execution: " + jsonResponse);
+
+            String stdout = jsonResponse.optString("stdout", ""); // base64 encoded
+            
+
+            // decode stdout from base64
+            if (!stdout.isEmpty()) {
+                byte[] decodedBytes = Base64.getMimeDecoder().decode(stdout);
+                stdout = new String(decodedBytes);
+            }
+
+            System.out.println("Decoded stdout: " + stdout);
+
+            return stdout;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error executing code snippet: " + e.getMessage());
         }
     }
 }
