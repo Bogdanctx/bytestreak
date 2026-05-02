@@ -63,20 +63,13 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account account = accountRepository.findByEmail(authentication.getName());
-        if (account == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            Account updatedAccount = accountService.updateAccount(updates, authentication);
+            return ResponseEntity.ok(updatedAccount);
         }
-
-        accountService.updateAccount(
-            account, 
-            updates.getUsername(), 
-            updates.getEmail(), 
-            updates.getPassword(), 
-            updates.getProfilePictureUrl()
-        );
-
-        return ResponseEntity.ok().build();
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping("/delete")
