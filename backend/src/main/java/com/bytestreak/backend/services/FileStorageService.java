@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
@@ -25,22 +24,41 @@ public class FileStorageService {
         }
     }
 
-    public String saveTestCases(String slug, String jsonContent) throws IOException {
-        Path problemDirectory = root.resolve(slug);
-        Files.createDirectories(problemDirectory);
+    public Path renameTestCasesDirectory(String oldSlug, String newSlug) {
+        Path oldPath = root.resolve(oldSlug);
+        Path newPath = root.resolve(newSlug);
 
+        try {
+            Files.move(oldPath, newPath);
+            return newPath;
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to rename test cases directory: " + e.getMessage());
+        }
+    }
+
+    public String saveTestCases(String slug, String jsonContent) {
+        Path problemDirectory = root.resolve(slug);
+
+        try {
+            Files.createDirectories(problemDirectory);    
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to create problem directory: " + e.getMessage());
+        }
+        
         JSONParser parser = new JSONParser(jsonContent);
             
         try {
-            ArrayList<?> jsonObject = (ArrayList<?>) parser.parse();
-            Object[] tests = jsonObject.toArray();
+            ArrayList<TestCaseDTO> jsonObject = (ArrayList<TestCaseDTO>) parser.parse();
+            TestCaseDTO[] tests = jsonObject.toArray(new TestCaseDTO[0]);
 
             for(int i = 0; i < tests.length; i++) {
-                LinkedHashMap<String, Object> test = ((LinkedHashMap<String, Object>) tests[i]);
+                TestCaseDTO test = tests[i];
 
-                String fileName = (String) test.get("fileName");
-                String input = (String) test.get("input");
-                String output = (String) test.get("output");
+                String fileName = test.getFileName();
+                String input = test.getInput();
+                String output = test.getOutput();
 
                 Path inputPath = problemDirectory.resolve(fileName + ".in");
                 Path outputPath = problemDirectory.resolve(fileName + ".out");
@@ -69,7 +87,13 @@ public class FileStorageService {
                     try {
                         String input = Files.readString(inputPath);
                         String output = Files.readString(outputPath);
-                        testCases.add(new TestCaseDTO(fileName, input, output));
+
+                        TestCaseDTO testCase = new TestCaseDTO();
+                        testCase.setFileName(fileName);
+                        testCase.setInput(input);
+                        testCase.setOutput(output);
+
+                        testCases.add(testCase);
                     }
                     catch (IOException e) {
                         System.out.println("Error reading test case files: " + e.getMessage());

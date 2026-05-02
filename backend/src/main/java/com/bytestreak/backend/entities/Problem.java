@@ -25,6 +25,19 @@ import java.util.ArrayList;
 @Table(name = "Problems")
 @Getter @Setter
 public class Problem {
+    protected Problem() {}
+
+    public Problem(String title, String description, Difficulty difficulty, String codeTemplates, String testCasesPath, List<String> tags, Account creator) {
+        this.title = title;
+        this.slug = title.toLowerCase().replace(" ", "-");
+        this.description = description;
+        this.difficulty = difficulty;
+        this.codeTemplates = codeTemplates;
+        this.testCasesPath = testCasesPath;
+        this.tags = tags;
+        this.creator = creator;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

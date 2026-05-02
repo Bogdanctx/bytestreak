@@ -11,14 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import com.bytestreak.backend.repositories.ProblemRepository;
-import com.bytestreak.backend.services.FileStorageService;
+import com.bytestreak.backend.services.CreatorService;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.enums.Difficulty;
-import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
-import com.bytestreak.backend.entities.Account;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,27 +26,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/creator")
 public class CreatorController {
     @Autowired
-    private ProblemRepository problemRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private FileStorageService fileStorageService;
+    private CreatorService creatorService;
 
     @GetMapping("/fetch-by-creator")
-    public List<Problem> getProblemsByCreatorId(@RequestParam(required = false) Long creatorId, Authentication authentication) {
+    public List<Problem> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Unauthorized");
         }
 
-        if (creatorId == null) {
-            Account me = accountRepository.findByEmail(authentication.getName());
-
-            return problemRepository.findByCreatorId(me.getId());
+        try {
+            List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
+            return problems;
         }
-
-        return problemRepository.findByCreatorId(creatorId);
+        catch (Exception e) {
+            throw new RuntimeException("Error fetching problems for creator with ID: " + creatorId, e);
+        }
     }
 
     @DeleteMapping("/delete-problem")
@@ -59,45 +49,28 @@ public class CreatorController {
             throw new RuntimeException("Unauthorized");
         }
 
-        problemRepository.deleteById(problemId);
-        return ResponseEntity.ok("Problem deleted successfully");
+        try {
+            Problem problem = creatorService.deleteProblem(problemId);
+            return ResponseEntity.ok(problem);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
     }
 
     @PostMapping("/new-problem")
     public ResponseEntity<?> createNewCodingProblem(@RequestBody NewCodingProblemDTO newCodingProblemDTO, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
+            return ResponseEntity.status(401).body("Unauthorized");
         }
-
-        Account creator = accountRepository.findByEmail(authentication.getName());
-
-        String slug = newCodingProblemDTO.getTitle().toLowerCase().replace(" ", "-");
-        String testsJSON = newCodingProblemDTO.getTestCases();
-        String testCasesPath = null;
 
         try {
-            testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
+            Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, authentication);
+            return ResponseEntity.ok(newCodingProblem);
         }
         catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error saving test cases");
+            return ResponseEntity.internalServerError().body("Error creating problem");
         }
-
-        Problem problem = new Problem();
-        problem.setTitle(newCodingProblemDTO.getTitle());
-        problem.setSlug(slug);
-        problem.setDescription(newCodingProblemDTO.getDescription());
-
-        Difficulty difficultyEnum = Difficulty.valueOf(newCodingProblemDTO.getDifficulty().toString().toUpperCase());
-        problem.setDifficulty(difficultyEnum);
-        
-        problem.setCodeTemplates(newCodingProblemDTO.getCodeTemplates());
-        problem.setTestCasesPath(testCasesPath);
-        problem.setTags(newCodingProblemDTO.getTags());
-        problem.setCreator(creator);
-        
-        problemRepository.save(problem);
-
-        return ResponseEntity.ok("Problem created successfully");
     }
     
 
@@ -111,39 +84,12 @@ public class CreatorController {
             throw new RuntimeException("Unauthorized");
         }
 
-        Problem existingProblem = problemRepository.findById(id).orElse(null);
-        if (existingProblem == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Account me = accountRepository.findByEmail(authentication.getName());
-        if (!existingProblem.getCreator().getId().equals(me.getId())) {
-            return ResponseEntity.status(403).body("You are not the creator of this problem");
-        }
-
-        String slug = updatedProblem.getTitle().toLowerCase().replace(" ", "-");
-        String testsJSON = updatedProblem.getTestCases();
-        String testCasesPath = null;
-
         try {
-            testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
+            Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, authentication);
+            return ResponseEntity.ok(editedProblem);
         }
-        catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error saving test cases");
+        catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-
-
-        Difficulty difficultyEnum = Difficulty.valueOf(updatedProblem.getDifficulty().toString().toUpperCase());
-
-        existingProblem.setTitle(updatedProblem.getTitle());
-        existingProblem.setSlug(slug);
-        existingProblem.setDescription(updatedProblem.getDescription());
-        existingProblem.setDifficulty(difficultyEnum);
-        existingProblem.setCodeTemplates(updatedProblem.getCodeTemplates());
-        existingProblem.setTestCasesPath(testCasesPath);
-        existingProblem.setTags(updatedProblem.getTags());
-
-        problemRepository.save(existingProblem);
-        return ResponseEntity.ok("Problem updated successfully");
     }
 }
