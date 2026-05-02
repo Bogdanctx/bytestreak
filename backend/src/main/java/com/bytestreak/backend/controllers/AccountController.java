@@ -1,7 +1,5 @@
 package com.bytestreak.backend.controllers;
 
-import tools.jackson.databind.ObjectMapper;
-
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;

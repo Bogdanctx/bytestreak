@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
 import LockIcon from '@mui/icons-material/Lock';
@@ -14,25 +15,16 @@ import './AccountTab.style.css';
 
 
 function Account() {
+    const queryClient = useQueryClient();
     const { data: account } = useAccount();
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        profilePictureUrl: "",
+        username: account?.username || "",
+        email: account?.email || "",
+        profilePictureUrl: account?.profilePictureUrl || "",
         password: ""
     });
-    
-    useEffect(() => {
-        setFormData({
-            username: account.username,
-            email: account.email,
-            profilePictureUrl: account.profilePictureUrl || "",
-            password: ""
-        })
-    }, []);
 
-
-    const handleSaveChanges = () => {
+    const handleSaveChanges = async () => {
         console.log("Form data to be sent:", formData);
 
         const profilePictureLength = formData.profilePictureUrl.length;
@@ -42,17 +34,22 @@ function Account() {
             return;
         }
 
-        api.patch('/accounts/update', formData)
-            .then(response => {
-                if (response.status === 200) {
-                    setAccount(response.data);
-                    notify("Your account has been updated successfully.", "success");
-                }
-            })
-            .catch(error => {
+        try {
+            const response = await api.patch('/accounts/update', formData);
+
+            if (response.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+                notify("Your account has been updated successfully.", "success");
+            } 
+            else {
                 notify("Failed to update your account.", "error");
-                console.error("Update account error:", error);
-            });
+                console.error("Unexpected response status:", response.status);
+            }
+        }
+        catch (error) {
+            notify("An error occurred while updating your account.", "error");
+            console.error("Update account error:", error);
+        }
     }
 
     const handleDeleteAccount = () => {
