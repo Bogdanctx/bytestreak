@@ -25,19 +25,6 @@ public class FileStorageService {
         }
     }
 
-    public Path renameTestCasesDirectory(String oldSlug, String newSlug) throws RuntimeException {
-        Path oldPath = root.resolve(oldSlug);
-        Path newPath = root.resolve(newSlug);
-
-        try {
-            Files.move(oldPath, newPath);
-            return newPath;
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Failed to rename test cases directory: " + e.getMessage());
-        }
-    }
-
     public String saveTestCases(String slug, String jsonContent) throws RuntimeException {
         Path problemDirectory = root.resolve(slug);
 
