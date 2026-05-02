@@ -16,7 +16,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import "./ActivitySection.style.css";
 import { useAccount } from '../../../hooks/useAccount';
-import { type IStreak } from "../../../entities";
+import { type IStreak } from '../../../types/streak.types';
 import { api } from "../../../api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import notify from "../../../components/ui/ToastNotification";

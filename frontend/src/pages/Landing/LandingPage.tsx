@@ -1,10 +1,10 @@
-import { Box, Button, Typography, Stack, Divider, useMediaQuery, useTheme } from '@mui/material';
-import { Slide } from '@mui/material';
-import ByteStreakLogo from "../../ByteStreak.logo"
 import { useState } from 'react';
+import { Box, Button, Divider, Slide, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+
+import ByteStreakLogo from '../../ByteStreak.logo';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
-import './LandingPage.style.css'
+import './LandingPage.style.css';
 
 function LandingPage() {
     const [showAuthState, setShowAuthState] = useState<'login' | 'register' | null>(null);

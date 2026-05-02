@@ -1,15 +1,9 @@
-import {
-    Box,
-    Button,
-    Popover,
-    Typography
-} from '@mui/material';
 import { useState } from 'react';
+import { Box, Button, Popover, Typography } from '@mui/material';
+
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
+import { type IProblem } from '../../../types/problem.types';
 import './ProblemDescription.style.css';
-import {
-    type IProblem
-} from "../../../entities"
 
 function getDifficultyColorClass(diff: string) {
     switch(diff) {

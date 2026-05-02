@@ -30,6 +30,16 @@
     overflow-x: auto;
 }
 
+.problem-builder-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.problem-builder-tabs .MuiTabs-indicator {
+    background-color: var(--accent-main);
+}
+
 .problem-builder-header > * {
     flex-shrink: 0;
 }
@@ -38,6 +48,29 @@
     color: white !important;
     font-family: "Momo Trust Display", sans-serif !important;
     font-size: 12px !important;
+}
+
+.language-select-menu-paper {
+    background-color: var(--bg-4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.problem-builder-submit-button {
+    background-color: transparent !important;
+    border-color: var(--accent-main) !important;
+    color: white !important;
+    font-size: 10px !important;
+    height: 25px !important;
+    margin-right: 16px !important;
+    width: 80px;
+}
+
+.problem-builder-submit-button:hover {
+    border-color: var(--accent-hover) !important;
+}
+
+.problem-builder-submit-icon {
+    font-size: 16px !important;
 }
 
 .problem-builder-content {

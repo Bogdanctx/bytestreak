@@ -1,16 +1,11 @@
-import { 
-    Box, 
-    Typography,
-    Tooltip,
-    Zoom,
-    LinearProgress
-} from "@mui/material";
-import './SubmissionResults.style.css';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { type ISubmissionResult } from "../../../entities";
+import { Box, LinearProgress, Tooltip, Typography, Zoom } from '@mui/material';
 
-function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
+import { type ISubmissionResult } from '../../../types/problem.types';
+import './SubmissionResults.style.css';
+
+function SubmissionResults(results: ISubmissionResult[]) {
     if (results.length === 0) {
         return (
             <Box className="submission-result-container">

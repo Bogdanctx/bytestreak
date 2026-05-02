@@ -1,22 +1,12 @@
-import { 
-    Box, 
-    Button, 
-    FormControl, 
-    MenuItem, 
-    Select, 
-    Switch, 
-    Typography 
-} from '@mui/material';
+import { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SunnyIcon from '@mui/icons-material/Sunny';
-import { useState, useEffect } from 'react';
+import { Box, Button, FormControl, MenuItem, Select, Switch, Typography } from '@mui/material';
+
 import { api } from '../../../api';
+import { type ISolution, type ISubmissionResult } from '../../../types/problem.types';
 import './CodeEditor.style.css';
-import { 
-    type ISolution,
-    type ISubmissionResult
-} from '../../../entities';
 
 interface CodeEditorWindowProps {
     problemId: number;

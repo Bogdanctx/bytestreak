@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api';
-import { type IAccount } from '../entities';
+import { type IAccount } from '../types/account.types';
 
 export const useAccount = () => {
     return useQuery<IAccount>({

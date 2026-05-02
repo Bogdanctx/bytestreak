@@ -1,42 +1,55 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, TextField, Typography } from '@mui/material';
+
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { type LoginFormInputs } from '../../../types/auth.types';
 import './LoginForm.style.css';
-import type { LoginFormInputs, LoginFormProps } from "./Login.types";
-import notify from "../../../components/ui/ToastNotification";
-import { api } from "../../../api";
+
+
+interface LoginFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+};
+
+const LOGIN_FORM_VALIDATION_RULES = {
+    email: {
+        required: "Email is required",
+        pattern: {
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Invalid email address"
+        }
+    },
+    password: {
+        required: "Password is required"
+    }
+};
 
 function LoginForm(props: LoginFormProps) {
-    const {
-        control,
-        handleSubmit,
-        formState: { errors }
-    } = useForm<LoginFormInputs>({
+    const { control, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
         defaultValues: {
             email: "",
             password: ""
         }
     });
 
-    const onSubmit = (data: LoginFormInputs) => {
-        api
-            .post("auth/login", data)
-            .then((response) => {
-                if(response.status === 200) {
-                    notify("Login successful!", "success");
-                    setTimeout(() => {
-                        window.location.href = "/dashboard";
-                    }, 1500);
-                }
-                else {
-                    notify(`${response.data.message}`, "error");
-                }
-            })
-            .catch((error) => {
-                const errorMessage = error.response?.data?.message || "An error occurred during login.";
-                
-                console.error("Login error:", error);
-                notify(errorMessage, "error");
-            });
+    const onSubmit = async (data: LoginFormInputs) => {
+        try {
+            const response = await api.post("auth/login", data);
+
+            if(response.status === 200) {
+                notify("Login successful!", "success");
+                setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 1500);
+            }
+            else {
+                notify(`${response.data.message}`, "error");
+            }
+        }
+        catch (error) {
+            notify("An error occurred during login.", "error");
+            console.error("Login error:", error);
+        }
     }
 
     return (
@@ -52,13 +65,7 @@ function LoginForm(props: LoginFormProps) {
                     <Controller
                         control = { control }
                         name = "email"
-                        rules = {{
-                            required: "Email is required",
-                            pattern: {
-                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                message: "Invalid email address"
-                            }
-                        }}
+                        rules = { LOGIN_FORM_VALIDATION_RULES.email }
                         render={({ field }) => (
                             <TextField 
                                 {...field} 
@@ -80,9 +87,7 @@ function LoginForm(props: LoginFormProps) {
                     <Controller
                         control = { control }
                         name = "password"
-                        rules = {{
-                            required: "Password is required"
-                        }}
+                        rules = { LOGIN_FORM_VALIDATION_RULES.password }
                         render={({ field }) => (
                             <TextField 
                                 {...field}

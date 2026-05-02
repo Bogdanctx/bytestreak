@@ -1,19 +1,54 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import './RegisterForm.style.css';
-import { api } from "../../../api";
-import type { AccountCredentials } from "../auth.types";
-import type { RegisterFormInputs, RegisterFormProps } from "./Register.types";
-import notify from "../../../components/ui/ToastNotification";
+import { Controller, useForm } from 'react-hook-form';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { type AccountCredentials, type RegisterFormInputs } from '../../../types/auth.types';
+import './RegisterForm.style.css';
+
+interface RegisterFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+};
+
+const REGISTER_VALIDATION_RULES = {
+    username: {
+        required: "Username is required",
+        maxLength: {
+            value: 20,
+            message: "Username cannot exceed 20 characters"
+        },
+        minLength: {
+            value: 5,
+            message: "Username must be at least 5 characters"
+        }
+    },
+    email: {
+        required: "Email is required",
+        pattern: {
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Invalid email address"
+        }
+    },
+    password: {
+        required: "Password is required",
+        minLength: {
+            value: 6,
+            message: "Password must be at least 6 characters"
+        },
+        maxLength: {
+            value: 100,
+            message: "Password cannot exceed 100 characters"
+        }
+    },
+    confirmPassword: {
+        required: "Please confirm your password",
+        validate: (value: string, formValues: RegisterFormInputs) => 
+            value === formValues.password || "Passwords do not match"
+    }
+};
 
 function RegisterForm(props: RegisterFormProps) {
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-        getValues
-    } = useForm<RegisterFormInputs>({
+    const { control, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
         defaultValues: {
             username: "",
             email: "",
@@ -22,9 +57,7 @@ function RegisterForm(props: RegisterFormProps) {
         }
     });
 
-    const onSubmit = (data: RegisterFormInputs) => {
-        console.log("Register form data:", data);
-
+    const onSubmit = async (data: RegisterFormInputs) => {
         var account: AccountCredentials = {
             username: data.username,
             email: data.email,
@@ -33,20 +66,21 @@ function RegisterForm(props: RegisterFormProps) {
 
         notify("Processing your registration...", "info");
 
-        api.post('auth/register', account)
-            .then(response => {
-                if(response.status === 200) {
-                    notify("Your account has been registered. Please log in.", "success");
-                    props.setShowAuthState("login");
-                }
-                else {
-                    notify("Registration failed. Please try again.", "error");
-                }
-            })
-            .catch(error => {
+        try {
+            const response = await api.post('auth/register', account);
+
+            if (response.status === 200) {
+                notify("Your account has been registered. Please log in.", "success");
+                props.setShowAuthState("login");
+            }
+            else {
                 notify("Registration failed. Please try again.", "error");
-                console.error("Registration error:", error);
-            });
+            }
+        }
+        catch (error) {
+            notify("Registration failed. Please try again.", "error");
+            console.error("Registration error:", error);
+        }
     }
 
     return (
@@ -62,17 +96,7 @@ function RegisterForm(props: RegisterFormProps) {
                     <Controller
                         control = { control }
                         name = "username"
-                        rules = {{
-                            required: "Username is required",
-                            maxLength: {
-                                value: 20,
-                                message: "Username cannot exceed 20 characters"
-                            },
-                            minLength: {
-                                value: 6,
-                                message: "Username must be at least 6 characters"
-                            }
-                        }}
+                        rules = { REGISTER_VALIDATION_RULES.username }
                         render={({ field }) => (
                             <TextField 
                                 {...field}
@@ -94,13 +118,7 @@ function RegisterForm(props: RegisterFormProps) {
                     <Controller
                         control = { control }
                         name = "email"
-                        rules = {{
-                            required: "Email is required",
-                            pattern: {
-                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                message: "Invalid email address"
-                            }
-                        }}
+                        rules = { REGISTER_VALIDATION_RULES.email }
                         render={({ field }) => (
                             <TextField 
                                 {...field} 
@@ -122,9 +140,7 @@ function RegisterForm(props: RegisterFormProps) {
                     <Controller
                         control = { control }
                         name = "password"
-                        rules = {{
-                            required: "Password is required"
-                        }}
+                        rules = { REGISTER_VALIDATION_RULES.password }
                         render={({ field }) => (
                             <TextField 
                                 {...field}
@@ -145,11 +161,7 @@ function RegisterForm(props: RegisterFormProps) {
                     <Controller
                         control = { control }
                         name = "confirmPassword"
-                        rules = {{
-                            required: "Please confirm your password",
-                            validate: (value: string) => 
-                                value === getValues("password") || "Passwords do not match"
-                        }}
+                        rules = { REGISTER_VALIDATION_RULES.confirmPassword }
                         render={({ field }) => (
                             <TextField 
                                 {...field}

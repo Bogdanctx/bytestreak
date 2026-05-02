@@ -1,6 +1,7 @@
-import './MarkdownRenderer.style.css';
-import ReactMarkdown from 'react-markdown';
 import { Box } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+
+import './MarkdownRenderer.style.css';
 
 function MarkdownRenderer({ content }: { content: string }) {
     return (

@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.entities.Account;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController

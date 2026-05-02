@@ -1,18 +1,23 @@
 package com.bytestreak.backend.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
-@Setter
-public class NewProblemDTO {
+import com.bytestreak.backend.enums.Difficulty;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+@Getter @Setter
+public class NewCodingProblemDTO {
     private String title;
     private String description;
-    private String difficulty;
+
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+    
     private String codeTemplates;
     private String testCases;
     private List<String> tags;

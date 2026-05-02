@@ -1,6 +1,6 @@
 package com.bytestreak.backend.enums;
 
-public enum ProblemDifficulty {
+public enum Difficulty {
     EASY,
     MEDIUM,
     HARD

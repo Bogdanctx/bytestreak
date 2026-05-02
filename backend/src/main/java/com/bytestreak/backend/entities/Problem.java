@@ -7,8 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
@@ -17,78 +15,51 @@ import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.bytestreak.backend.TagStringListConverter;
-import com.bytestreak.backend.enums.ProblemDifficulty;
+import com.bytestreak.backend.enums.Difficulty;
 
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
 @Table(name = "Problems")
+@Getter @Setter
 public class Problem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
-    @Getter 
-    private Long id;
-
-    @NotBlank(message = "Title is required")
-    @Getter @Setter 
-    private String title;
-
-    @NotBlank(message = "Slug is required")
-    @Getter @Setter 
-    private String slug;
-
-    @NotBlank(message = "Description is required")
-    @Column(columnDefinition = "TEXT")
-    @Getter @Setter 
-    private String description;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Getter @Setter 
-    private ProblemDifficulty problemDifficulty;
-
-
-    @Column(columnDefinition = "TEXT")
-    @Getter @Setter 
-    private String codeTemplates;
-
-    @Getter @Setter 
-    private String testCasesPath;
-
-    @Convert(converter = TagStringListConverter.class)
-    @Getter @Setter 
-    private List<String> tags = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    @JsonIgnore
-    @Getter @Setter 
-    private Account creator;
-
     protected Problem() {}
 
-    public Problem(String title,
-                    String slug,
-                    String description, 
-                    ProblemDifficulty problemDifficulty, 
-                    String codeTemplates, 
-                    String testCasesPath, 
-                    List<String> tags, 
-                    Account creator) 
-    {
+    public Problem(String title, String description, Difficulty difficulty, String codeTemplates, String testCasesPath, List<String> tags, Account creator) {
         this.title = title;
-        this.slug = slug;
+        this.slug = title.toLowerCase().replace(" ", "-");
         this.description = description;
-        this.problemDifficulty = problemDifficulty;
+        this.difficulty = difficulty;
         this.codeTemplates = codeTemplates;
         this.testCasesPath = testCasesPath;
         this.tags = tags;
         this.creator = creator;
     }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String slug;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+
+    @Column(columnDefinition = "TEXT")
+    private String codeTemplates;
+
+    private String testCasesPath;
+
+    @Convert(converter = TagStringListConverter.class)
+    private List<String> tags = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private Account creator;
 }

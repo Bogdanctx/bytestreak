@@ -1,25 +1,30 @@
-import {
-    Box,
-    Button,
-    Tabs,
-    Tab,
-    FormControl,
-    Select,
-    MenuItem
-} from '@mui/material';
-import { useState, useEffect } from 'react';
-import './ProblemBuilder.style.css';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
-import TestCasesTab from './TestCasesTab';
-import MetadataTab from './MetadataTab';
-import { type ITestCase } from '../../../entities';
+import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
+
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
-import { type ProblemBuilderDTO } from './interfaces';
-import { useNavigate, useParams } from 'react-router-dom';
-import ConstructionIcon from '@mui/icons-material/Construction';
+import { type IProblemCreateDTO, type ITestCase } from '../../../types/problem.types';
+import MetadataTab from './MetadataTab';
+import TestCasesTab from './TestCasesTab';
+import './ProblemBuilder.style.css';
+
+const DEFAULT_STARTER_CODE = {
+    cpp: `// ======= IMPORTANT =======\n// Starter Code template...\n\nint solve(vector<int>& nums) {\n    return 0;\n}`,
+    python: `# ======= IMPORTANT =======\n# Starter Code template...\n\ndef solve(nums):\n    return 0`
+};
+
+const DEFAULT_DRIVER_CODE = {
+    cpp: `// ======= IMPORTANT =======\n// Driver Code template...\n\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n{{CODE}}\n\nint main() {\n    return 0;\n}`,
+    python: `# ======= IMPORTANT =======\n# Driver Code template...\n\n{{CODE}}\n\nif __name__ == "__main__":\n    pass`
+};
+
+type ProgrammingLanguage = "cpp" | "python";
+type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
@@ -28,210 +33,118 @@ function ProblemBuilder() {
 
     const [activeTab, setActiveTab] = useState("markdown");
 
-    // Problem data states
+    const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguage>("cpp");
+    const [starterCode, setStarterCode] = useState<CodeTemplateMap>(DEFAULT_STARTER_CODE);
+    const [driverCode, setDriverCode] = useState<CodeTemplateMap>(DEFAULT_DRIVER_CODE);
+    
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
-    const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
-    const [starterCode, setStarterCode] = useState({ "cpp": "", "python": "" });
-    const [driverCode, setDriverCode] = useState({ "cpp": "", "python": "" });
     const [testCases, setTestCases] = useState<ITestCase[]>([]);
     const [title, setTitle] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
 
     useEffect(() => {
-        setStarterCode({
-            cpp: `class Solution {
-        public:
-            int solve(vector<int>& nums) {
-                // Write your logic here
-                return 0;
-            }
-        };`,
-            python: `class Solution:
-            def solve(self, nums):
-                # Write your logic here
-                return 0`
-        });
-
-        setDriverCode({
-            cpp: `#include <bits/stdc++.h>
-        using namespace std;
-
-        class Solution {
-        public:
-            int solve(vector<int>& nums);
-        };
-
-        int main() {
-            ios::sync_with_stdio(false);
-            cin.tie(nullptr);
-
-            int n;
-            cin >> n;
-
-            vector<int> nums(n);
-            for (int i = 0; i < n; i++) cin >> nums[i];
-
-            Solution sol;
-            cout << sol.solve(nums) << endl;
-        }`,
-            python: `import sys
-
-        class Solution:
-            def solve(self, nums):
-                pass
-
-        def main():
-            data = sys.stdin.read().strip().split()
-            n = int(data[0])
-            nums = list(map(int, data[1:n+1]))
-
-            sol = Solution()
-            print(sol.solve(nums))
-
-        if __name__ == "__main__":
-            main()`
-        });
-        }, []);
-
-    useEffect(() => {
-        if(isEditMode) {
-
-            api.get(`/problems/${id}/description`)
-                .then(response => {
-                    const data = response.data;
-
-                    setTitle(data.title);
-                    setDescription(data.description);
-                    setDifficulty(data.difficulty);
-                    setTags(data.tags);
-
-                    const codeTemplates = JSON.parse(data.codeTemplates);
-                    setStarterCode({
-                        cpp: codeTemplates.cpp.starterCode,
-                        python: codeTemplates.python.starterCode
-                    });
-                    setDriverCode({
-                        cpp: codeTemplates.cpp.driverCode,
-                        python: codeTemplates.python.driverCode
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching problem description:', error);
-                });
-
-            api.get(`/problems/testcases?problemId=${id}`)
-                .then(response => {
-                    const data = response.data;
-                    for(let testCase of data) {
-                        testCase.input = testCase.input.replace(/\\n/g, '\n');
-                        testCase.output = testCase.output.replace(/\\n/g, '\n');
-                    }
-                    console.log("Fetched test cases:", data);
-                    setTestCases(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching problem test cases:', error);
-                });
+        if (!isEditMode) {
+            return;
         }
+
+        fetchProblemData();
     }, [id, isEditMode]);
 
-    const handleSubmitProblem = () => {
-        if(!title) {
-            notify("Please provide a title for the problem.", "error");
-            return;
+    const fetchProblemData = async () => {
+        try {
+            const [codingProblemDescriptionResponse, testCasesResponse] = await Promise.all([
+                api.get(`/problems/${id}/description`),
+                api.get(`/problems/testcases?problemId=${id}`)
+            ]);
+
+            const data = codingProblemDescriptionResponse.data;
+            setTitle(data.title);
+            setDescription(data.description);
+            setDifficulty(data.difficulty);
+            setTags(data.tags);
+
+            const parsedTemplates = JSON.parse(data.codeTemplates);
+
+            setStarterCode({
+                cpp: parsedTemplates.cpp.starterCode,
+                python: parsedTemplates.python.starterCode
+            });
+
+            setDriverCode({
+                cpp: parsedTemplates.cpp.driverCode,
+                python: parsedTemplates.python.driverCode
+            });
+
+            const formattedTestCases = testCasesResponse.data.map((testCase: any) => ({
+                ...testCase,
+                input: testCase.input.replace(/\\n/g, '\n'),
+                output: testCase.output.replace(/\\n/g, '\n')
+            }));
+            setTestCases(formattedTestCases);
+
+        } 
+        catch (error) {
+            console.error('Error fetching problem data:', error);
+            notify("Failed to load problem data.", "error");
         }
-        if(!difficulty) {
-            notify("Please select a difficulty level for the problem.", "error");
-            return;
-        }
-        if(tags.length === 0) {
-            notify("Please add at least one tag to the problem.", "error");
-            return;
-        }
-        if (!description) {
-            notify("Problem description cannot be empty.", "error");
-            return;
-        }
-        if(!starterCode.cpp || !starterCode.python) {
-            notify("Please provide a starting code in Starter Code tab.", "error");
-            return;
-        }
-        if(!driverCode.cpp || !driverCode.python) {
-            notify("Please provide a driver code in Driver Code tab.", "error");
-            return;
-        }
-        if(testCases.length === 0) {
-            notify("Please add at least one test case in Test Cases tab.", "error");
+    };
+
+    const handleSubmitProblem = async () => {
+        if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
+            notify("Please fill out all required fields (Title, Difficulty, Tags, Test Cases).", "error");
             return;
         }
 
         const codeTemplates = {
-            cpp: {
-                starterCode: starterCode.cpp,
-                driverCode: driverCode.cpp
-            },
-            python: {
-                starterCode: starterCode.python,
-                driverCode: driverCode.python
-            }
+            cpp: { starterCode: starterCode.cpp, driverCode: driverCode.cpp },
+            python: { starterCode: starterCode.python, driverCode: driverCode.python }
         };
 
-        const problemData: ProblemBuilderDTO = {
+        const problemData: IProblemCreateDTO = {
             title,
             description,
             difficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
-            codeTemplates: JSON.stringify(codeTemplates), 
+            codeTemplates: JSON.stringify(codeTemplates),
             testCases: JSON.stringify(testCases),
             tags: tags,
         };
         
-        if(isEditMode) {
-            api.put(`/problems/edit/${id}`, problemData)
-                .then(response => {
-                    if(response.status === 200) {
-                        notify("Problem updated successfully!", "success");
-                        navigate("/dashboard");
-                    }
-                    else {
-                        notify("Failed to update problem. Please try again.", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error updating problem:', error);
-                });
-        }
-        else {
-            api.post('/problems/new', problemData)
-                .then(response => {
-                    if(response.status === 200) {
-                        notify("Problem created successfully!", "success");
-                    }
-                    else {
-                        notify("Failed to create problem. Please try again.", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error creating problem:', error);
-                });
+        try {
+            if (isEditMode) {
+                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
+
+                if (response.status === 200) {
+                    notify("Problem updated successfully!", "success");
+                    navigate("/dashboard");
+                }
+            } 
+            else {
+                const response = await api.post('/creator/new-problem', problemData);
+
+                if (response.status === 200) {
+                    notify("Problem created successfully!", "success");
+                    navigate("/dashboard");
+                }
+            }
+        } 
+        catch (error) {
+            console.error('Error saving problem:', error);
+            notify("Failed to save problem. Please try again.", "error");
         }
     }
 
     const handleEditorChange = (value: string | undefined) => {
-        if(activeTab === "markdown") {
-            setDescription(value || "");
-        }
-        else if(activeTab === "starter-code") {
-            setStarterCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
-        }
-        else if(activeTab === "driver-code") {
-            setDriverCode((prev: any) => ({
-                ...prev,
-                [programmingLanguage]: value || ""
-            }));
+        if (!value) return;
+
+        if (activeTab === "markdown") {
+            setDescription(value);
+        } 
+        else if (activeTab === "starter-code") {
+            setStarterCode((prev) => ({ ...prev, [programmingLanguage]: value }));
+        } 
+        else if (activeTab === "driver-code") {
+            setDriverCode((prev) => ({ ...prev, [programmingLanguage]: value }));
         }
     }
 
@@ -241,14 +154,8 @@ function ProblemBuilder() {
             <Box className="problem-builder-main">
                 {/* Header */}
                 <Box className="problem-builder-header">
-                    <Box display="flex" alignItems="center" gap={2}>
-                        <Tabs value={activeTab} 
-                            slotProps={{
-                                indicator: {
-                                    style: { backgroundColor: 'var(--accent-main)' }
-                                }
-                            }}
-                            >
+                    <Box className="problem-builder-header-left">
+                        <Tabs value={activeTab} className="problem-builder-tabs">
                             <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={() => setActiveTab("markdown")} />
                             <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
                             <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
@@ -264,14 +171,7 @@ function ProblemBuilder() {
                                     onChange={(event) => { setProgrammingLanguage(event.target.value); console.log(`Selected: ${event.target.value}`) }}
                                     value={programmingLanguage}
                                     label="C++"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: "var(--bg-4)",
-                                                border: "1px solid rgba(255, 255, 255, 0.08)",
-                                            }
-                                        }
-                                    }}
+                                    MenuProps={{ PaperProps: { className: 'language-select-menu-paper' } }}
                                 >
                                     <MenuItem className='language-select-item' value={"cpp"}>C++</MenuItem>
                                     <MenuItem className='language-select-item' value={"python"}>Python</MenuItem>
@@ -281,41 +181,19 @@ function ProblemBuilder() {
                     </Box>
 
                     {isEditMode ? (
-                        <Button sx={{
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            fontSize: '10px',
-                            height: '25px',
-                            marginRight: '16px',
-                            borderColor: 'var(--accent-main)',
-                            width: '80px',
-                            ':hover': {
-                                borderColor: 'var(--accent-hover)'
-                            }
-                        }}
+                        <Button className="problem-builder-submit-button"
                             variant='outlined'
                             onClick={() => handleSubmitProblem()}
                         >
-                            <ConstructionIcon sx={{ fontSize: '16px' }} />
+                            <ConstructionIcon className="problem-builder-submit-icon" />
                             Update
                         </Button>
                     ) : (
-                        <Button sx={{
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            fontSize: '10px',
-                            height: '25px',
-                            marginRight: '16px',
-                            borderColor: 'var(--accent-main)',
-                            width: '80px',
-                            ':hover': {
-                                borderColor: 'var(--accent-hover)'
-                            }
-                        }}
+                        <Button className="problem-builder-submit-button"
                             variant='outlined'
                             onClick={() => handleSubmitProblem()}
                         >
-                            <PublishIcon sx={{ fontSize: '16px' }} />
+                            <PublishIcon className="problem-builder-submit-icon" />
                             Submit
                         </Button>
                     )}

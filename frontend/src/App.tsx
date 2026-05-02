@@ -1,17 +1,18 @@
-import LandingPage from './pages/Landing/LandingPage.tsx';
-import Dashboard from './pages/Dashboard/Dashboard.tsx';
-import Settings from './pages/Settings/Settings.tsx';
-import Problem from './pages/Problem/Problem.tsx';
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { CssBaseline, Box } from '@mui/material'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { WebSocketProvider } from './context/WebSocketContext.tsx';
+import { Box, CssBaseline } from '@mui/material';
+
 import ProtectedLayout from './components/ProtectedLayout.tsx';
+import { WebSocketProvider } from './context/WebSocketContext.tsx';
 import Creator from './pages/Creator/Creator.tsx';
-import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import Dashboard from './pages/Dashboard/Dashboard.tsx';
+import Problem from './pages/Problem/Problem.tsx';
+import Settings from './pages/Settings/Settings.tsx';
+import LandingPage from './pages/Landing/LandingPage.tsx';
 import Social from './pages/Social/Social.tsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import './App.css';
 
 const queryClient = new QueryClient();
 

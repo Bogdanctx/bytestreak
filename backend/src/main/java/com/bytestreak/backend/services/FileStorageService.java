@@ -25,10 +25,16 @@ public class FileStorageService {
         }
     }
 
-    public String saveTestCases(String slug, String jsonContent) throws IOException {
+    public String saveTestCases(String slug, String jsonContent) throws RuntimeException {
         Path problemDirectory = root.resolve(slug);
-        Files.createDirectories(problemDirectory);
 
+        try {
+            Files.createDirectories(problemDirectory);    
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to create problem directory: " + e.getMessage());
+        }
+        
         JSONParser parser = new JSONParser(jsonContent);
             
         try {
@@ -50,7 +56,7 @@ public class FileStorageService {
             }
         }
         catch (Exception e) {
-            System.out.println("Error parsing JSON: " + e.getMessage());
+            throw new RuntimeException("Error parsing JSON: " + e.getMessage());
         }
 
         return problemDirectory.toString();
@@ -69,17 +75,49 @@ public class FileStorageService {
                     try {
                         String input = Files.readString(inputPath);
                         String output = Files.readString(outputPath);
-                        testCases.add(new TestCaseDTO(fileName, input, output));
+
+                        TestCaseDTO testCase = new TestCaseDTO();
+                        testCase.setFileName(fileName);
+                        testCase.setInput(input);
+                        testCase.setOutput(output);
+
+                        testCases.add(testCase);
                     }
                     catch (IOException e) {
-                        System.out.println("Error reading test case files: " + e.getMessage());
+                        throw new RuntimeException("Error reading test case files: " + e.getMessage());
                     }
                 });
         }
         catch (IOException e) {
-            System.out.println("Error listing test case directory: " + e.getMessage());
+            throw new RuntimeException("Error listing test case directory: " + e.getMessage());
         }
 
         return testCases;
+    }
+
+    public void deleteTestCasesDirectory(String slug) throws RuntimeException {
+        Path problemDirectory = root.resolve(slug);
+
+        if (Files.exists(problemDirectory)) {
+            try {
+                Files.walk(problemDirectory)
+                    .sorted((a, b) -> b.compareTo(a))
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        }
+                        catch (IOException e) {
+                            throw new RuntimeException("Failed to delete file: " + path.toString() + " - " + e.getMessage());
+                        }
+                    });
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
+            }
+        }
+        else {
+            throw new RuntimeException("Test cases directory not found for slug: " + slug);
+        }
+
     }
 }

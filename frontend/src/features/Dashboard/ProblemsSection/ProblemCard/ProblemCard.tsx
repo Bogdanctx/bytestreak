@@ -4,21 +4,23 @@ import "./ProblemCard.style.css"
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
-type ProblemCardProps = {
+interface ProblemCardProps {
     title: string;
     difficulty: Difficulty;
-    acceptanceRate: number;
     tags: string[];
     showTags: boolean;
-    pid: number;
 }
 
-const getDifficultyColor = (difficulty: Difficulty) => {
+const getDifficultyColor = (difficulty: Difficulty): string => {
     switch (difficulty) {
-        case 'EASY': return '#00b8a3';
-        case 'MEDIUM': return '#ffc01e';
-        case 'HARD': return '#ff375f';
-        default: return 'GRAY';
+        case 'EASY':
+            return '#00b8a3';
+        case 'MEDIUM': 
+            return '#ffc01e';
+        case 'HARD':   
+            return '#ff375f';
+        default:       
+            return '#888888';
     }
 }
 
@@ -28,61 +30,53 @@ function ProblemCard(props: ProblemCardProps) {
     return (
         <Box className="problem-card">
             <Box className="problem-card-content-left">
-                <Box className="difficulty-indicator" sx={{ backgroundColor: difficultyColor }} />
-                
-                <Stack spacing={0.5}>
-                    <Typography className="problem-card-title" variant="h6">
-                        {props.pid}. {props.title}
+                <Box
+                    className="difficulty-indicator"
+                    sx={{ backgroundColor: difficultyColor }}
+                />
+
+                <Box className="problem-card-info">
+                    <Typography className="problem-card-title" component="span">
+                        {props.title}
                     </Typography>
-                    
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                        <Typography variant="caption" sx={{ color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            Acceptance: 
-                            <span style={{ color: '#ccc', fontWeight: 'bold' }}>
-                                {props.acceptanceRate}%
-                            </span>
-                        </Typography>
-                        
-                        {/* Optional: Add a dot separator if you add tags later */}
-                        {props.showTags && <>
-                            <Typography variant="caption" sx={{ color: '#444' }}>•</Typography>
-                            {/* <Typography variant="caption" sx={{ color: '#888' }}>Arrays</Typography> */}
-                            <Stack direction="row" spacing={0.5} >
-                                {props.tags.map((tag, index) => (
-                                    <Chip 
-                                        key={`${tag}-${index}`} 
-                                        label={tag}
-                                        size="small"
-                                        className="tag-chip"
-                                        sx={{
-                                            borderColor: '#555',
-                                            color: '#ccc',
-                                            backgroundColor: '#55555520',
-                                        }}
-                                    />
-                                ))}
-                            </Stack>
-                        </>}
-                    </Stack>
-                </Stack>
+
+                    {props.showTags && props.tags.length > 0 && (
+                        <Stack direction="row" spacing={0.5} alignItems="center">
+                            {props.tags.map((tag, index) => (
+                                <Chip
+                                    key={`${tag}-${index}`}
+                                    label={tag}
+                                    size="small"
+                                    variant="outlined"
+                                    className="tag-chip"
+                                    sx={{
+                                        borderColor: '#333',
+                                        color: '#666',
+                                        backgroundColor: 'transparent',
+                                    }}
+                                />
+                            ))}
+                        </Stack>
+                    )}
+                </Box>
             </Box>
 
             <Box className="problem-card-content-right">
-                <Chip 
-                    label={props.difficulty} 
-                    size="small" 
+                <Chip
+                    label={props.difficulty}
+                    size="small"
+                    variant="outlined"
                     className="difficulty-chip"
-                    sx={{ 
-                        color: difficultyColor, 
-                        borderColor: difficultyColor,
-                        backgroundColor: `${difficultyColor}15`
-                    }} 
+                    sx={{
+                        color: difficultyColor,
+                        borderColor: `${difficultyColor}55`,
+                        backgroundColor: `${difficultyColor}10`,
+                    }}
                 />
                 <ArrowForwardIosIcon className="action-icon" fontSize="small" />
             </Box>
-
         </Box>
-    )
+    );
 }
 
 export default ProblemCard;

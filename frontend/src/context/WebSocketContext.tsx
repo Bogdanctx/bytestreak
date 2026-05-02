@@ -1,7 +1,8 @@
-import { Client } from '@stomp/stompjs';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useAccount } from '../hooks/useAccount';
 import { useQueryClient } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+
+import { useAccount } from '../hooks/useAccount';
 
 interface IWebSocketContext {
     stompClient: Client | null;

@@ -10,29 +10,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import com.bytestreak.backend.dto.RegisterAccountDTO;
 
 import java.util.Collections;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 
+import com.bytestreak.backend.dto.LoginFormDTO;
 import com.bytestreak.backend.entities.Account;
-import com.bytestreak.backend.repositories.AccountRepository;
-import com.bytestreak.backend.services.JWTService;
+import com.bytestreak.backend.services.AuthService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
-    private AccountRepository repository;
-    @Autowired
-    private JWTService jwtService;
-
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private AuthService authService;
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
@@ -40,12 +35,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String email = authentication.getName();
-        Account account = repository.findByEmail(email);
-
-        if (account == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Account account = authService.getCurrentUser(authentication);
 
         return ResponseEntity.ok(account);
     }
@@ -66,63 +56,35 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
-        String email = loginRequest.get("email");
-        String password = loginRequest.get("password");
+    public ResponseEntity<?> login(@RequestBody LoginFormDTO loginRequest, HttpServletResponse response) {
+        Map<String, Object> responseBody;
 
-        Account account = repository.findByEmail(email);
-
-        if (account == null) {
-            return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(Collections.singletonMap("message", "An account with the provided email does not exist."));
+        try {
+            responseBody = authService.loginUser(loginRequest, response);
         }
-
-        if (!passwordEncoder.matches(password, account.getPassword())) {
-            return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(Collections.singletonMap("message", "Invalid email or password."));
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-        String token = jwtService.generateToken(account.getEmail());
-
-        ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .sameSite("Lax")
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        
+        
+        response = (HttpServletResponse) responseBody.get("response");
+        Account account = (Account) responseBody.get("account");
 
         return ResponseEntity.ok(account);
     }
     
     
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Account account) {
-        Account existingAccount = repository.findByEmail(account.getEmail());
-
-        if (existingAccount != null) {
-            return ResponseEntity
-                        .status(HttpStatus.CONFLICT)
-                        .body(Collections.singletonMap("message", "Email already in use"));
-        }
+    public ResponseEntity<?> register(@RequestBody RegisterAccountDTO registerRequest) {
+        Account newAccount;
 
         try {
-            String rawPassword = account.getPassword();
-            String encodedPassword = passwordEncoder.encode(rawPassword);
-            account.setPassword(encodedPassword);
-
-            repository.save(account);
+            newAccount = authService.registerUser(registerRequest);
         } 
-        catch (Exception e) {
-            return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Collections.singletonMap("message", "An error occurred during registration"));
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        return ResponseEntity.ok(Collections.singletonMap("message", "Account registered successfully"));
+        return ResponseEntity.ok(newAccount);
     }
 }

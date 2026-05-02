@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Box, Avatar, Typography, List, ListItem, ListItemButton, 
     ListItemAvatar, ListItemText, IconButton,
@@ -6,7 +6,8 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useAccount } from '../../../hooks/useAccount';
-import { type IAccount, type IStreak, type IStreakInvite } from '../../../entities';
+import { type IAccount } from '../../../types/account.types';
+import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
 import { 
     getRankByLevel, 
@@ -15,10 +16,7 @@ import {
 import { api } from '../../../api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
-import { 
-    type Dispatch,
-    type SetStateAction
-} from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 
 function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAction<IAccount | null>> }) {
     const queryClient = useQueryClient();

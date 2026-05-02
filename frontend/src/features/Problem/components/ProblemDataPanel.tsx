@@ -1,15 +1,11 @@
-import { 
-    Box
-} from "@mui/material";
-import DescriptionIcon from '@mui/icons-material/Description';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ProblemDescription from "./ProblemDescription";
-import SubmissionResults from "./SubmissionResults";
+import DescriptionIcon from '@mui/icons-material/Description';
+import { Box } from '@mui/material';
+
+import ProblemDescription from './ProblemDescription';
+import SubmissionResults from './SubmissionResults';
+import { type IProblem, type ISubmissionResult } from '../../../types/problem.types';
 import './ProblemDataPanel.style.css';
-import { 
-    type IProblem,
-    type ISubmissionResult 
-} from "../../../entities";
 
 interface ProblemDataPanelProps {
     problem: IProblem;

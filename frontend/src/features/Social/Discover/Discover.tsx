@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
-import { type IFriendInvite } from '../../../entities';
+import { type IFriendInvite } from '../../../types/invite.types';
 import notify from '../../../components/ui/ToastNotification';
 import { useAccount } from '../../../hooks/useAccount';
 import { useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -76,6 +76,8 @@ function Discover() {
     }
 
     const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
+
+    console.log('Discover Accounts:', discoverAccounts);
 
     return (
         <Box className="discover-container">
