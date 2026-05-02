@@ -14,11 +14,10 @@
     background-color: var(--bg-1);
     border-bottom: 1px solid var(--bg-3);
     border-top-left-radius: 16px;
-    border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 4px;
     padding: 12px 32px;
 }
 
@@ -72,7 +71,7 @@
 #problems-section-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -183,33 +182,6 @@
     padding: 4px;
     border-radius: 12px;
     border: 1px solid var(--bg-3);
-}
-
-.difficulty-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-family: "Momo Trust Display", sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    padding: 6px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.difficulty-btn:hover {
-    background-color: var(--bg-3);
-    color: var(--text-primary);
-}
-
-.difficulty-btn.active-ALL {
-    color: var(--text-primary);
-    background-color: var(--bg-2);
-    border: 1px solid var(--bg-3);
-    border-radius: 12px;
-    display: flex;
-    padding: 4px;
 }
 
 .difficulty-btn {
