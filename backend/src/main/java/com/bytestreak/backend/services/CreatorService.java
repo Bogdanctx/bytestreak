@@ -42,8 +42,14 @@ public class CreatorService {
             throw new RuntimeException("Problem not found");
         }
 
-        problemRepository.delete(problem);
+        try {
+            fileStorageService.deleteTestCasesDirectory(problem.getSlug());
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
+        }
 
+        problemRepository.delete(problem);
         return problem;
     }
 
@@ -63,6 +69,10 @@ public class CreatorService {
         } 
         catch (Exception e) {
             throw new RuntimeException("Failed to store test cases: " + e.getMessage());
+        }
+
+        if (problemRepository.findBySlug(slug) != null) {
+            throw new RuntimeException("A problem with the same title already exists");
         }
 
         Problem problem = new Problem(
@@ -92,23 +102,40 @@ public class CreatorService {
             throw new RuntimeException("You are not the creator of this problem");
         }
 
-        Problem updated = new Problem(
-            updatedProblem.getTitle(),
-            updatedProblem.getDescription(),
-            Difficulty.valueOf(updatedProblem.getDifficulty().toString().toUpperCase()),
-            updatedProblem.getCodeTemplates(),
-            existingProblem.getTestCasesPath(),
-            updatedProblem.getTags(),
-            existingProblem.getCreator()
-        );
+        String oldSlug = existingProblem.getSlug();
+        String newSlug = updatedProblem.getTitle().toLowerCase().replace(" ", "-");
 
+        if (problemRepository.findBySlug(newSlug) != null) {
+            throw new RuntimeException("A problem with the same title already exists");
+        }
+
+        // delete old test cases directory and create a new one later (easier than trying to rename it and handle potential errors)
         try {
-            fileStorageService.renameTestCasesDirectory(existingProblem.getSlug(), updated.getSlug());
+            fileStorageService.deleteTestCasesDirectory(oldSlug);
         }
         catch (Exception e) {
-            throw new RuntimeException("Failed to rename test cases directory: " + e.getMessage());
+            throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
         }
 
-        return problemRepository.save(updated);
+        existingProblem.setTitle(updatedProblem.getTitle());
+        existingProblem.setSlug(newSlug);
+        existingProblem.setDescription(updatedProblem.getDescription());
+        existingProblem.setDifficulty(Difficulty.valueOf(updatedProblem.getDifficulty().toString().toUpperCase()));
+        existingProblem.setCodeTemplates(updatedProblem.getCodeTemplates());
+        existingProblem.setTags(updatedProblem.getTags());
+
+        String testsJSON = updatedProblem.getTestCases();
+        String testCasesPath = null;
+
+        try {
+            testCasesPath = fileStorageService.saveTestCases(newSlug, testsJSON);
+        } 
+        catch (Exception e) {
+            throw new RuntimeException("Failed to store test cases: " + e.getMessage());
+        }
+
+        existingProblem.setTestCasesPath(testCasesPath);
+
+        return problemRepository.save(existingProblem);
     }
 }

@@ -10,4 +10,5 @@ import com.bytestreak.backend.enums.Difficulty;
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
     List<Problem> findByCreatorId(Long creatorId);
     List<Problem> findByDifficulty(Difficulty difficulty);
+    Problem findBySlug(String slug);
 }

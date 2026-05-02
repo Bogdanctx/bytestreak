@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class FileStorageService {
         }
     }
 
-    public Path renameTestCasesDirectory(String oldSlug, String newSlug) {
+    public Path renameTestCasesDirectory(String oldSlug, String newSlug) throws RuntimeException {
         Path oldPath = root.resolve(oldSlug);
         Path newPath = root.resolve(newSlug);
 
@@ -37,7 +38,7 @@ public class FileStorageService {
         }
     }
 
-    public String saveTestCases(String slug, String jsonContent) {
+    public String saveTestCases(String slug, String jsonContent) throws RuntimeException {
         Path problemDirectory = root.resolve(slug);
 
         try {
@@ -50,15 +51,15 @@ public class FileStorageService {
         JSONParser parser = new JSONParser(jsonContent);
             
         try {
-            ArrayList<TestCaseDTO> jsonObject = (ArrayList<TestCaseDTO>) parser.parse();
-            TestCaseDTO[] tests = jsonObject.toArray(new TestCaseDTO[0]);
+            ArrayList<?> jsonObject = (ArrayList<?>) parser.parse();
+            Object[] tests = jsonObject.toArray();
 
             for(int i = 0; i < tests.length; i++) {
-                TestCaseDTO test = tests[i];
+                LinkedHashMap<String, Object> test = ((LinkedHashMap<String, Object>) tests[i]);
 
-                String fileName = test.getFileName();
-                String input = test.getInput();
-                String output = test.getOutput();
+                String fileName = (String) test.get("fileName");
+                String input = (String) test.get("input");
+                String output = (String) test.get("output");
 
                 Path inputPath = problemDirectory.resolve(fileName + ".in");
                 Path outputPath = problemDirectory.resolve(fileName + ".out");
@@ -68,7 +69,7 @@ public class FileStorageService {
             }
         }
         catch (Exception e) {
-            System.out.println("Error parsing JSON: " + e.getMessage());
+            throw new RuntimeException("Error parsing JSON: " + e.getMessage());
         }
 
         return problemDirectory.toString();
@@ -96,14 +97,40 @@ public class FileStorageService {
                         testCases.add(testCase);
                     }
                     catch (IOException e) {
-                        System.out.println("Error reading test case files: " + e.getMessage());
+                        throw new RuntimeException("Error reading test case files: " + e.getMessage());
                     }
                 });
         }
         catch (IOException e) {
-            System.out.println("Error listing test case directory: " + e.getMessage());
+            throw new RuntimeException("Error listing test case directory: " + e.getMessage());
         }
 
         return testCases;
+    }
+
+    public void deleteTestCasesDirectory(String slug) throws RuntimeException {
+        Path problemDirectory = root.resolve(slug);
+
+        if (Files.exists(problemDirectory)) {
+            try {
+                Files.walk(problemDirectory)
+                    .sorted((a, b) -> b.compareTo(a))
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        }
+                        catch (IOException e) {
+                            throw new RuntimeException("Failed to delete file: " + path.toString() + " - " + e.getMessage());
+                        }
+                    });
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
+            }
+        }
+        else {
+            throw new RuntimeException("Test cases directory not found for slug: " + slug);
+        }
+
     }
 }

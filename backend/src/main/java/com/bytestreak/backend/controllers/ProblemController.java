@@ -9,26 +9,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
-import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
-import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.enums.Difficulty;
-import com.bytestreak.backend.entities.Account;
 
 @RestController
 @RequestMapping("/problems")
@@ -58,7 +52,7 @@ public class ProblemController {
     }
 
     @GetMapping("/testcases")
-    public ResponseEntity<List<TestCaseDTO>> getProblemTestCases(@RequestParam Long problemId) {
+    public ResponseEntity<?> getProblemTestCases(@RequestParam Long problemId) {
         Problem problem = repository.findById(problemId).orElse(null);
 
         if (problem == null) {
