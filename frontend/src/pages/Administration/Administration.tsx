@@ -1,29 +1,40 @@
 import { useState } from 'react';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
-import ManageQuizzes from '../../features/Administration/ManageQuizzes/ManageQuizzes';
+import { Box, Typography, List, ListItemButton, ListItemText, Divider } from '@mui/material';
+import QuizManagement from '../../features/Administration/QuizManagement/QuizManagement';
 import './Administration.style.css';
 
-function Administration() {
-    const [currentTab, setCurrentTab] = useState(0);
+export default function Administration() {
+    const [activeTab, setActiveTab] = useState('quizzes');
 
     return (
         <Box id="admin-container">
-            <Typography variant="h4" className="admin-title">Administration</Typography>
-            
-            <Tabs 
-                value={currentTab} 
-                onChange={(_, newValue) => setCurrentTab(newValue)}
-                className="admin-tabs"
-            >
-                <Tab label="Manage Quizzes" />
-                {/* Add future tabs here */}
-            </Tabs>
+            <Box id="admin-sidebar">
+                <Typography variant="h6" sx={{ color: 'var(--text-primary)', mb: 2, ml: 2, fontFamily: '"Momo Trust Display", sans-serif' }}>
+                    Admin Panel
+                </Typography>
+                <Divider sx={{ backgroundColor: 'var(--bg-3)', mb: 2 }} />
+                <List>
+                    <ListItemButton 
+                        className="admin-menu-item"
+                        selected={activeTab === 'quizzes'} 
+                        onClick={() => setActiveTab('quizzes')}
+                    >
+                        <ListItemText primary="Quiz Management" />
+                    </ListItemButton>
+                    <ListItemButton 
+                        className="admin-menu-item"
+                        selected={activeTab === 'users'} 
+                        onClick={() => setActiveTab('users')}
+                    >
+                        <ListItemText primary="Ban Users" />
+                    </ListItemButton>
+                </List>
+            </Box>
 
-            <Box className="admin-tab-panel">
-                {currentTab === 0 && <ManageQuizzes />}
+            <Box id="admin-content-area">
+                {activeTab === 'quizzes' && <QuizManagement />}
+                {activeTab === 'users' && <Typography color="white">User management coming soon...</Typography>}
             </Box>
         </Box>
     );
 }
-
-export default Administration;

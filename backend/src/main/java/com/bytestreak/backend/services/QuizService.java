@@ -13,82 +13,160 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 @Service
 public class QuizService {
     @Autowired
     private CodeExecution codeExecution;
 
-    @Autowired
-    private QuizRepository quizRepository;
-
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
-    public Quiz generateQuiz() {
-        String randomProgrammingLanguage = Math.random() > 0.5 ? "Python" : "C++";
-        int judge0LangId = randomProgrammingLanguage.equals("Python") ? 71 : 54;
-
-        List<String> pythonTopics = List.of("list comprehensions", "decorators", "generators", "context managers", "metaclasses");
-        List<String> cppTopics = List.of("inheritance", "polymorphism", "templates", "smart pointers", "lambda functions");
-
-        String randomTopic = null;
-        if (randomProgrammingLanguage.equals("Python")) {
-            randomTopic = pythonTopics.get((int)(Math.random() * pythonTopics.size()));
-        } else {
-            randomTopic = cppTopics.get((int)(Math.random() * cppTopics.size()));
+    public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
+        if (programmingLanguage == null || programmingLanguage.isEmpty()) {
+            programmingLanguage = "Any";
         }
-        
-        try {
+
+        if (programmingLanguage.equalsIgnoreCase("any")) {
+            programmingLanguage = Math.random() > 0.5 ? "Python" : "C++";
+        }
+
+        int judge0LangId = programmingLanguage.equals("Python") ? 71 : 54;
+
+        List<String> pythonTopics = List.of(
+            "list comprehensions",
+            "generators",
+            "decorators",
+            "regular expressions",
+            "recursion",
+            "binary search",
+            "dynamic programming",
+            "exceptions handling",
+            "classes and objects",
+            "inheritance",
+            "polymorphism",
+            "abstract base classes",
+            "loops and conditionals",
+            "global vs local variables",
+            "graph algorithms",
+            "string manipulation",
+            "stack",
+            "queue",
+            "sort algorithms",
+            "greedy algorithms",
+            "bit manipulation"
+        );
+        List<String> cppTopics = List.of(
+            "pointers and references",
+            "recursion",
+            "binary search",
+            "dynamic programming",
+            "exceptions handling",
+            "classes and objects",
+            "inheritance",
+            "polymorphism",
+            "abstract classes and interfaces",
+            "loops and conditionals",
+            "graph algorithms",
+            "string manipulation",
+            "stack",
+            "queue",
+            "sort algorithms",
+            "greedy algorithms",
+            "bit manipulation",
+            "memory management"
+        );
+
+        // quiz generation pipeline with retries
+        for(int i = 0; i < 3; i++) {
+            String randomTopic = null;
+            if (programmingLanguage.equals("Python")) {
+                randomTopic = pythonTopics.get((int)(Math.random() * pythonTopics.size()));
+            } 
+            else {
+                randomTopic = cppTopics.get((int)(Math.random() * cppTopics.size()));
+            }
+
+            if (customTopic != null && !customTopic.isEmpty()) {
+                randomTopic = customTopic;
+            }
+
             // prompt generation for code snippet
-            String snippetPrompt = "You are an expert " + randomProgrammingLanguage + " Developer." +
-                                    "Create a complete, runnable " + randomProgrammingLanguage + " program demonstrating: " + randomTopic + "." +
-                                    "\n\n" +
-                                    "Rules:" +
-                                    "\n1. The code must be conceptually tricky but perfectly valid." +
-                                    "\n2. Define all imports, classes, and variables used. No undeclared entities." +
-                                    "\n3. It must execute cleanly and print exactly one line of text to standard output." +
-                                    "\n4. Do not include any comments." +
-                                    "\n5. If the language is C++ include a main entry point. If it is Python, write the top-level executable code." +
-                                    "\n\n" +
-                                    "Output STRICTLY as a JSON object. Do not include markdown backticks or explanations:" +
-                                    "\n{" +
-                                    "\n  \"codeSnippet\": \"complete code here\"" +
-                                    "\n}" +
-                                    "\n";
+            String snippetPrompt = "You are an expert " + programmingLanguage + " developer.\n" +
+                            "Create a complete, runnable " + programmingLanguage + " program demonstrating: " + randomTopic + ".\n\n" +
 
-            // call Ollama API to get the code snippet
-            String snippetAnswer = callOllama(snippetPrompt);
-            JSONObject snippetJson = new JSONObject(snippetAnswer);
+                            "Requirements:\n" +
+                            "1. The code may include a non-obvious but correct behavior related to the topic.\n" +
+                            "2. Keep the program concise (max 40-50 lines).\n" +
+                            "3. Define all imports, classes, and variables. No undeclared entities.\n" +
+                            "4. It must execute cleanly and print exactly one line of output.\n" +
+                            "5. Do not include comments.\n" +
+                            "6. If C++, include main(). If Python, include executable top-level code.\n\n" +
+
+                            "Output format:\n" +
+                            "Return ONLY valid JSON with this structure:\n" +
+                            "{\"codeSnippet\": \"...\"}\n" +
+                            "The code must be properly escaped for JSON.\n\n" +
+
+                            "Before answering, internally verify correctness (syntax, runtime, and output).";
+
             
-            String snippet = snippetJson.getString("codeSnippet");
-            
-            // execute the code snippet to get the correct answer
-            String correctAnswer = codeExecution.executeSnippetForStdout(judge0LangId, snippet);
+            try {
+                // call Ollama API to get the code snippet
+                String snippetAnswer = callOllama(snippetPrompt);
+                JSONObject snippetJson = new JSONObject(snippetAnswer);
+                
+                String snippet = snippetJson.getString("codeSnippet");
 
-            // prompt generation for distractors
-            String distractorsPrompt = "Here is a " + randomProgrammingLanguage + " code:\n" + snippet + "\n\nThe correct output is: " + correctAnswer + 
-                                       "\nGenerate 3 plausible but incorrect outputs. Output STRICTLY as JSON object: {\"distractors\": [\"d1\", \"d2\", \"d3\"]}";
-            
-            // call Ollama API to get distractors
-            String distractorsAnswer = callOllama(distractorsPrompt);
-            JSONObject distractorsJson = new JSONObject(distractorsAnswer);
-            System.out.println("Distractors response from Ollama API: " + distractorsJson);
+                // execute the code snippet to get the correct answer
+                String correctAnswer = codeExecution.executeSnippetForStdout(judge0LangId, snippet);
 
-            List<String> distractors = Arrays.asList(
-                distractorsJson.getJSONArray("distractors").getString(0),
-                distractorsJson.getJSONArray("distractors").getString(1),
-                distractorsJson.getJSONArray("distractors").getString(2)
-            );
+                if (correctAnswer.isEmpty()) {
+                    System.out.println("Execution of the generated code snippet did not produce any output. Regenerating...");
+                    continue; // regenerate if no output
+                }
 
-            // create and save the quiz
-            Quiz quiz = new Quiz(snippet, randomProgrammingLanguage, distractors, correctAnswer);
-            return quizRepository.save(quiz);
-        } 
-        catch (Exception e) {
-            throw new RuntimeException("Pipeline failed: " + e.getMessage());
+                // prompt generation for distractors
+                String distractorsPrompt = "Here is a " + programmingLanguage + " code:\n" + snippet + "\n\nThe correct output is: " + correctAnswer + 
+                                        "\nGenerate 3 plausible but incorrect outputs. Output STRICTLY as JSON with distractors as STRING: {\"distractors\": [\"distractor1\", \"distractor2\", \"distractor3\"]}";
+                
+                // call Ollama API to get distractors
+                String distractorsAnswer = callOllama(distractorsPrompt);
+                JSONObject distractorsJson = new JSONObject(distractorsAnswer);
+
+                System.out.println("Distractors response from Ollama API: " + distractorsJson);
+
+                List<String> distractors = Arrays.asList(
+                    distractorsJson.getJSONArray("distractors").getString(0),
+                    distractorsJson.getJSONArray("distractors").getString(1),
+                    distractorsJson.getJSONArray("distractors").getString(2)
+                );
+
+                // create the quiz
+                Quiz quiz = new Quiz(snippet, programmingLanguage, distractors, correctAnswer);
+                return quiz;
+            } catch (Exception e) {
+                throw new RuntimeException("Pipeline failed: " + e.getMessage());
+            }
         }
+        throw new RuntimeException("Failed to generate a valid quiz after multiple attempts.");
+    }
+
+    public List<Quiz> generateBulkQuizzes(int count) {
+        List<Quiz> quizzes = new ArrayList<>();
+        
+        for(int i = 0; i < count; i++) {
+            try {
+                Quiz quiz = generateQuiz(null, null);
+                quizzes.add(quiz);
+            } catch (Exception e) {
+                System.out.println("Error generating quiz " + (i+1) + ": " + e.getMessage());
+                return quizzes; // return the quizzes generated so far
+            }
+        }
+
+        return quizzes;
     }
 
     // Returns the content of the "response" field from the Ollama API response

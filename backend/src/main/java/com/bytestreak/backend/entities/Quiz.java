@@ -29,4 +29,5 @@ public class Quiz {
     private String programmingLanguage;
     private List<String> distractors;
     private String correctAnswer;
+    private int queueIndex;
 }
