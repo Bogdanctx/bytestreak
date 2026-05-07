@@ -50,19 +50,14 @@ public class StreakService {
 
     public Streak removeStreakBetweenUsers(Account me, Account friend) {
         StreakInvite invite = streakInviteRepository.findByAccount1AndAccount2(me, friend);
-        
-        if (invite == null) {
-            throw new IllegalArgumentException("No active streak invite found between these users");
+        if (invite != null) {
+            streakInviteRepository.delete(invite);
         }
 
         Streak streak = streakRepository.findStreakBetweenUsers(me, friend);
-
-        if (streak == null) {
-            throw new IllegalArgumentException("No active streak found between these users");
+        if (streak != null) {
+            streakRepository.delete(streak);
         }
-
-        streakInviteRepository.delete(invite);
-        streakRepository.delete(streak);
 
         return streak;
     }

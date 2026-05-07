@@ -8,7 +8,8 @@ import {
     Divider, 
     ButtonBase,
     IconButton,
-    Tooltip
+    Tooltip,
+    CircularProgress
 } from "@mui/material";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -19,7 +20,7 @@ import "./ActivitySection.style.css";
 import { useAccount } from '../../../hooks/useAccount';
 import { type IStreak } from '../../../types/streak.types';
 import { api } from "../../../api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import notify from "../../../components/ui/ToastNotification";
 import { useState } from "react";
 import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
@@ -37,19 +38,19 @@ function ActivitySection() {
         enabled: !!account
     });
 
-    const handleRemoveStreak = async (streakId: number) => {
-        try {
-            const response = await api.post(`/streaks/remove?streakId=${streakId}`);
-            if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
-                notify("Streak removed", "success");
-            }
-        } 
-        catch (error) {
+    const removeStreakMutation = useMutation({
+        mutationFn: (streakId: number) => {
+            return api.delete(`/streaks/delete-streak?streakId=${streakId}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
+            notify("Streak has been removed", "success");
+        },
+        onError: (error) => {
             console.error('Error removing streak:', error);
             notify("Failed to remove streak", "error");
         }
-    };
+    })
 
     return (
         <Box id="activity-section-container">
@@ -67,11 +68,7 @@ function ActivitySection() {
 
                     <ButtonBase 
                         className="daily-item" 
-                        onClick={() => {
-                            if (account.solvedDailyQuizToday === false) {
-                                setIsQuizModalOpen(true);
-                            }
-                        }}
+                        onClick={() => setIsQuizModalOpen(true) }
                         disabled={account.solvedDailyQuizToday}
                         sx={{ display: 'flex', justifyContent: 'space-between' }}
                     >
@@ -139,9 +136,14 @@ function ActivitySection() {
                                         <IconButton 
                                             size="small" 
                                             className="streak-delete-btn"
-                                            onClick={() => handleRemoveStreak(streak.id)}
+                                            onClick={() => removeStreakMutation.mutate(streak.id)}
+                                            disabled={removeStreakMutation.isPending}
                                         >
-                                            <DeleteOutlineIcon fontSize="small" />
+                                            {removeStreakMutation.isPending ? (
+                                                <CircularProgress size={16} /> 
+                                            ) : (
+                                                <DeleteOutlineIcon fontSize="small" />
+                                            )}
                                         </IconButton>
                                     </Tooltip>
                                 </Box>

@@ -17,6 +17,7 @@ import com.bytestreak.backend.entities.StreakInvite;
 import com.bytestreak.backend.repositories.StreakRepository;
 import com.bytestreak.backend.entities.Streak;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
@@ -118,7 +119,7 @@ public class StreakController {
         return ResponseEntity.ok(activeInvites);
     }
 
-    @PostMapping("/remove")
+    @DeleteMapping("/delete-streak")
     public ResponseEntity<?> removeStreak(@RequestParam Long streakId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to remove a streak.");
@@ -128,7 +129,7 @@ public class StreakController {
         Streak streak = streakRepository.findById(streakId).orElse(null);
 
         if (streak == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Streak not found.");
+            return ResponseEntity.ok().build(); // if the streak doesn't exist, we can consider it removed for idempotency
         }
 
         Account participant1 = streak.getParticipant1();
