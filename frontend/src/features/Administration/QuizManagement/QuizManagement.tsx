@@ -1,112 +1,147 @@
 import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Box, Typography, Button, CircularProgress, TextField, MenuItem, Select, IconButton } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { api } from '../../../api';
-import notify from '../../../components/ui/ToastNotification';
 import { type IQuiz } from '../../../types/quiz.types';
 import QuizManagementCard from './QuizManagementCard/QuizManagementCard';
 
 import './QuizManagement.style.css';
-
-// Extindem interfața local pentru a include un ID unic pentru drag-and-drop
-interface IQuizClient extends IQuiz {
-    clientId: string;
-}
+import notify from '../../../components/ui/ToastNotification';
+import { set } from 'react-hook-form';
 
 export default function QuizManagement() {
-    const [quizQueue, setQuizQueue] = useState<IQuizClient[]>([]);
     const [bulkCount, setBulkCount] = useState<number>(5);
     const [customTopic, setCustomTopic] = useState<string>('');
-    const [programmingLanguage, setProgrammingLanguage] = useState<string>('Any');
-    
+    const [programmingLanguage, setProgrammingLanguage] = useState<string>('Any');    
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-    const generateMutation = useMutation({
+    const [quizzesListModified, setQuizzesListModified] = useState<boolean>(false);
+    const queryClient = useQueryClient();
+    const { data: quizQueue = [] } = useQuery<IQuiz[]>({
+        queryKey: ['quizQueue'],
+        queryFn: async () => {
+            const response = await api.get('/quizzes/queue');
+            return response.data;
+        }
+    });
+    
+    const generateQuizMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post(`/quizzes/generate-quiz?programmingLanguage=${programmingLanguage}&customTopic=${customTopic || ''}`);
-            return res.data;
+            const response = await api.post('/quizzes/generate-quiz', { programmingLanguage, customTopic });
+            return response.data as IQuiz;
         },
         onSuccess: (newQuiz) => {
-            const quizWithId = { ...newQuiz, clientId: crypto.randomUUID() };
-            setQuizQueue(prev => {
-                const updated = [...prev, quizWithId];
-                if (selectedIndex === null) setSelectedIndex(updated.length - 1);
-                return updated;
+            newQuiz.queuePriority = quizQueue.length + 1;
+            
+            queryClient.setQueryData(['quizQueue'], (oldQueue: IQuiz[] = []) => {
+                const newQueue = [...oldQueue, newQuiz];
+                return newQueue;
             });
-            notify("Quiz generated successfully", "success");
-        },
-        onError: (err: any) => notify(`Failed to generate: ${err.message}`, "error")
+            setSelectedIndex(quizQueue.length); // select the newly added quiz in the queue for preview after generation
+            setQuizzesListModified(true);
+            notify('Quiz generated successfully!', 'success');
+        }
     });
 
     const generateBulkMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post(`/quizzes/generate-bulk?count=${bulkCount}`);
-            return res.data; 
+            const response = await api.post(`/quizzes/generate-bulk?count=${bulkCount}`);
+            return response.data as IQuiz[];
         },
-        onSuccess: (newQuizzes: IQuiz[]) => {
-            const quizzesWithIds = newQuizzes.map(q => ({ ...q, clientId: crypto.randomUUID() }));
-            setQuizQueue(prev => {
-                const isFirstBatch = prev.length === 0;
-                const updated = [...prev, ...quizzesWithIds];
-                if (isFirstBatch) setSelectedIndex(0);
-                return updated;
+        onSuccess: (newQuizzes) => {
+            newQuizzes.forEach((quiz, index) => {
+                quiz.queuePriority = quizQueue.length + index + 1;
             });
-            notify(`${newQuizzes.length} quizzes generated`, "success");
-        },
-        onError: (err: any) => notify(`Failed to generate bulk: ${err.message}`, "error")
+
+            queryClient.setQueryData(['quizQueue'], (oldQueue: IQuiz[] = []) => {
+                const newQueue = [...oldQueue, ...newQuizzes];
+                return newQueue;
+            });
+            setSelectedIndex(quizQueue.length + newQuizzes.length - 1);
+            setQuizzesListModified(true);
+            notify(`${newQuizzes.length} quizzes generated successfully!`, 'success');
+        }
     });
 
-    const saveMutation = useMutation({
-        mutationFn: async (quizzes: IQuizClient[]) => {
-            const payload = quizzes.map((q, index) => ({ ...q, queueIndex: index }));
-            await api.put('/quizzes/update-order', payload);
+    const saveQuizzesMutation = useMutation({
+        mutationFn: async (quizzes: IQuiz[]) => {
+            const response = await api.put('/quizzes/save', quizzes);
+            return response.data;
         },
         onSuccess: () => {
-            notify("Quizzes saved successfully", "success");
-            setQuizQueue([]);
-            setSelectedIndex(null);
-        },
-        onError: () => notify("Failed to save quizzes", "error")
+            notify('Quizzes saved successfully!', 'success');
+            setQuizzesListModified(false);
+        }
     });
 
-    const handleDragEnd = (result: DropResult) => {
-        if (!result.destination) return;
-        
-        const items = Array.from(quizQueue);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        
-        setQuizQueue(items);
-        
-        // Menține selecția vizuală pe același quiz după reordonare
-        if (selectedIndex === result.source.index) {
-            setSelectedIndex(result.destination.index);
-        } else if (selectedIndex !== null) {
-            if (result.source.index < selectedIndex && result.destination.index >= selectedIndex) {
-                setSelectedIndex(selectedIndex - 1);
-            } else if (result.source.index > selectedIndex && result.destination.index <= selectedIndex) {
-                setSelectedIndex(selectedIndex + 1);
-            }
+    const removeQuizMutation = useMutation({
+        mutationFn: async (index: number) => {
+            const response = await api.delete(`/quizzes/delete?id=${quizQueue[index].id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Quiz removed successfully!', 'success');
         }
-    };
+    });
+
 
     const removeQuizFromQueue = (e: React.MouseEvent, indexToRemove: number) => {
-        e.stopPropagation(); // Previne selectarea elementului la ștergere
-        setQuizQueue(prev => prev.filter((_, index) => index !== indexToRemove));
-        
+        e.stopPropagation();
+        const quizToRemove = quizQueue[indexToRemove];
+
+        if (quizToRemove.id) {
+            removeQuizMutation.mutate(indexToRemove);
+        }
+
+        queryClient.setQueryData(['quizQueue'], (oldQueue: IQuiz[] = []) => {
+            const newQueue = [...oldQueue];
+            newQueue.splice(indexToRemove, 1);
+            return newQueue;
+        });
+
         if (selectedIndex === indexToRemove) {
             setSelectedIndex(null);
-        } else if (selectedIndex !== null && selectedIndex > indexToRemove) {
+        } 
+        else if (selectedIndex !== null && selectedIndex > indexToRemove) {
             setSelectedIndex(selectedIndex - 1);
         }
     };
 
+    const handleDragEnd = (result: DropResult) => {
+        if (!result.destination) {
+            return;
+        }
+        
+        const items = Array.from(quizQueue);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+
+        const updatedQueue = items.map((quiz, index) => ({
+            ...quiz,
+            queuePriority: index + 1
+        }));
+
+        queryClient.setQueryData(['quizQueue'], updatedQueue);
+        setQuizzesListModified(true);
+        
+        if (selectedIndex === result.source.index) {
+            setSelectedIndex(result.destination.index);
+        } 
+        else if (selectedIndex !== null) {
+            if (result.source.index < selectedIndex && result.destination.index >= selectedIndex) {
+                setSelectedIndex(selectedIndex - 1);
+            } 
+            else if (result.source.index > selectedIndex && result.destination.index <= selectedIndex) {
+                setSelectedIndex(selectedIndex + 1);
+            }
+        }
+    };
+ 
+
     return (
         <Box id="quiz-management-container">
-            {/* Toolbar (Rămâne neschimbat) */}
             <Box id="quiz-management-toolbar">
                 <Box className="quiz-toolbar-left" gap={2}>
                     <Select size="small" value={programmingLanguage} onChange={(e) => setProgrammingLanguage(e.target.value)} sx={{ bgcolor: 'var(--bg-0)', color: 'var(--text-primary)', minWidth: 120 }}>
@@ -115,8 +150,8 @@ export default function QuizManagement() {
                         <MenuItem value="C++">C++</MenuItem>
                     </Select>
                     <TextField size="small" placeholder="Custom Topic (Optional)" value={customTopic} onChange={(e) => setCustomTopic(e.target.value)} sx={{ input: { color: 'var(--text-primary)' }, bgcolor: 'var(--bg-0)', width: 200 }} />
-                    <Button className="quiz-btn-generate" onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
-                        {generateMutation.isPending ? <CircularProgress size={20} /> : "Generate 1 Quiz"}
+                    <Button className="quiz-btn-generate" onClick={() => generateQuizMutation.mutate()} disabled={generateQuizMutation.isPending}>
+                        {generateQuizMutation.isPending ? <CircularProgress size={20} /> : "Generate 1 Quiz"}
                     </Button>
                 </Box>
                 <Box className="quiz-toolbar-left" gap={2}>
@@ -124,16 +159,19 @@ export default function QuizManagement() {
                     <Button className="quiz-btn-create" onClick={() => generateBulkMutation.mutate()} disabled={generateBulkMutation.isPending}>
                         {generateBulkMutation.isPending ? <CircularProgress size={20} /> : "Generate Bulk"}
                     </Button>
-                    <Button variant="contained" color="success" disabled={quizQueue.length === 0 || saveMutation.isPending} onClick={() => saveMutation.mutate(quizQueue)} sx={{ fontWeight: 'bold' }}>
-                        {saveMutation.isPending ? <CircularProgress size={20} /> : "Save quizzes"}
+                    <Button variant="contained" 
+                            color="success" 
+                            className="quiz-modal-btn-save"
+                            disabled={quizQueue.length === 0 || saveQuizzesMutation.isPending || !quizzesListModified} 
+                            onClick={() => saveQuizzesMutation.mutate(quizQueue)}
+                        >
+                        {saveQuizzesMutation.isPending ? <CircularProgress size={20} /> : "Save quizzes"}
                     </Button>
                 </Box>
             </Box>
 
-            {/* Split Layout Container */}
             <Box display="flex" flex={1} gap={3} overflow="hidden">
                 
-                {/* Partea stângă: Queue List */}
                 <Box display="flex" flexDirection="column" width="350px" bgcolor="var(--bg-1)" borderRadius="12px" border="1px solid var(--bg-3)" overflow="hidden">
                     <Box p={2} bgcolor="var(--bg-2)" borderBottom="1px solid var(--bg-3)">
                         <Typography variant="h6" color="var(--text-primary)" fontFamily='"Momo Trust Display", sans-serif'>
@@ -150,7 +188,11 @@ export default function QuizManagement() {
                                             <Typography className="quiz-empty-state">No quizzes generated yet.</Typography>
                                         ) : (
                                             quizQueue.map((quiz, index) => (
-                                                <Draggable key={quiz.clientId} draggableId={quiz.clientId} index={index}>
+                                                <Draggable 
+                                                        key={quiz.id ? quiz.id.toString() : `unsaved-${index}`} 
+                                                        draggableId={quiz.id ? quiz.id.toString() : `unsaved-${index}`} 
+                                                        index={index}
+                                                    >
                                                     {(provided) => (
                                                         <Box
                                                             ref={provided.innerRef}
@@ -193,7 +235,6 @@ export default function QuizManagement() {
                     </Box>
                 </Box>
 
-                {/* Partea dreaptă: Detail View */}
                 <Box flex={1} overflow="hidden">
                     {selectedIndex !== null && quizQueue[selectedIndex] ? (
                         <QuizManagementCard quiz={quizQueue[selectedIndex]} />

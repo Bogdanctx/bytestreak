@@ -1,12 +1,15 @@
 import { Box, Typography } from '@mui/material';
 import { type IQuiz } from '../../../../types/quiz.types';
+import './QuizManagementCard.style.css';
 
 interface QuizManagementCardProps {
     quiz: IQuiz;
 }
 
 export default function QuizManagementCard({ quiz }: QuizManagementCardProps) {
-    if (!quiz) return null;
+    if (!quiz) {
+        return null;
+    }
 
     return (
         <Box 

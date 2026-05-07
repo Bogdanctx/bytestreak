@@ -21,6 +21,9 @@ public class QuizService {
     @Autowired
     private CodeExecution codeExecution;
 
+    @Autowired
+    private QuizRepository quizRepository;
+
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
     public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
@@ -143,8 +146,9 @@ public class QuizService {
                     distractorsJson.getJSONArray("distractors").getString(2)
                 );
 
+
                 // create the quiz
-                Quiz quiz = new Quiz(snippet, programmingLanguage, distractors, correctAnswer);
+                Quiz quiz = new Quiz(snippet, programmingLanguage, distractors, correctAnswer, 0);
                 return quiz;
             } catch (Exception e) {
                 throw new RuntimeException("Pipeline failed: " + e.getMessage());

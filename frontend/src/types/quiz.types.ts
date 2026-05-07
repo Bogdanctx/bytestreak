@@ -4,5 +4,5 @@ export interface IQuiz {
     programmingLanguage: string;
     distractors: string[];
     correctAnswer: string;
-    queueIndex: number;
+    queuePriority: number;
 }
