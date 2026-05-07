@@ -19,6 +19,6 @@ public class NewCodingProblemDTO {
     private Difficulty difficulty;
     
     private String codeTemplates;
-    private String testCases;
+    private List<TestCaseDTO> testCases;
     private List<String> tags;
 }

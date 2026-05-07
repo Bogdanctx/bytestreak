@@ -4,13 +4,15 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SunnyIcon from '@mui/icons-material/Sunny';
 import { Box, Button, FormControl, MenuItem, Select, Switch, Typography } from '@mui/material';
 
-import { api } from '../../../api';
-import { type ISolution, type ISubmissionResult } from '../../../types/problem.types';
+import { api } from '../../api';
+import { type ISolution, type ISubmissionResult } from '../../types/problem.types';
 import './CodeEditor.style.css';
+import { useMutation } from '@tanstack/react-query';
+import notify from '../../components/ui/ToastNotification';
 
 interface CodeEditorWindowProps {
     problemId: number;
-    codeTemplates: { [key: string]: { starterCode: string } };
+    codeTemplates: { [key: string]: { starter_code: string } };
     setActiveTab: (tab: string) => void;
     setResults: (results: ISubmissionResult[]) => void;
 }
@@ -19,15 +21,29 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
+    
+    const submitSolutionMutation = useMutation({
+        mutationFn: async (submissionData: ISolution) => {
+            return api.post(`/problems/submit`, submissionData);
+        },
+        onSuccess: (response) => {
+            setResults(response.data);
+            notify("Submission successful!", "success");
+        },
+        onError: (error) => {
+            console.log(error);
+            notify("Submission failed. Please try again.", "error");
+        }
+    });
 
     useEffect(() => {
-        setCode(codeTemplates[programmingLanguage].starterCode);
-    }, [programmingLanguage, codeTemplates]);
+        setCode(codeTemplates[programmingLanguage].starter_code);
+    }, [programmingLanguage]);
 
     const handleProgrammingLanguageChange = (event: any) => {
         const selectedLanguage = event.target.value;
         setProgrammingLanguage(selectedLanguage);
-        setCode(codeTemplates[selectedLanguage].starterCode);
+        setCode(codeTemplates[selectedLanguage].starter_code);
     };
 
     const handleSubmitSolution = () => {
@@ -40,18 +56,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }
         setResults([]);
         setActiveTab("results");
 
-        api.post(`/problems/submit`, submissionData)
-            .then(response => {
-                if(response.status === 200) {
-                    setResults(response.data);
-                } 
-                else {
-                    console.error("Submission failed with status:", response.status);
-                }
-            })
-            .catch(error => {
-                console.error("Submission failed:", error);
-            });
+        submitSolutionMutation.mutate(submissionData);
     }
 
     return (
@@ -87,7 +92,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }
                     </Select>
                 </FormControl>
 
-                <Button className='reset-button' variant="outlined" onClick={() => setCode(codeTemplates[programmingLanguage].starterCode)}>
+                <Button className='reset-button' variant="outlined" onClick={() => setCode(codeTemplates[programmingLanguage].starter_code)}>
                     Reset
                 </Button>
             </Box>

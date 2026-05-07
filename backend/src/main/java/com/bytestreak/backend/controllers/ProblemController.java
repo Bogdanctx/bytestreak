@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
@@ -23,6 +21,8 @@ import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+
+import org.json.JSONObject;
 
 @RestController
 @RequestMapping("/problems")
@@ -81,17 +81,12 @@ public class ProblemController {
         String programmingLanguage = solutionDTO.getProgrammingLanguage();
 
         String codeTemplates = problem.getCodeTemplates();
-        JSONParser parser = new JSONParser(codeTemplates);
+        JSONObject codeTemplatesJson = new JSONObject(codeTemplates);
         
         try {
-            Object parsedTemplates = parser.parse();
-            LinkedHashMap<String, Object> templatesMap = (LinkedHashMap<String, Object>) parsedTemplates;
-            LinkedHashMap<String, String> templateForLanguage = (LinkedHashMap<String, String>) templatesMap.get(programmingLanguage);
-            
-            String driverCodeRaw = templateForLanguage.get("driverCode");
-            String driverCode = driverCodeRaw.replace("\\n", "\n");
+            String driverCode = codeTemplatesJson.getJSONObject(programmingLanguage).getString("driver_code");
             String sourceCode = driverCode.replace("{{CODE}}", solutionCode);
-            
+
             List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, sourceCode, slug, problem.getTestCasesPath());
             
             return ResponseEntity.ok(results);

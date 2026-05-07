@@ -106,7 +106,7 @@ public class CodeExecution {
             int statusId = (int) status.get("id");
             String executionStatus = (String) status.get("description");
 
-            float executionTime = Float.parseFloat(responseBody.get("time").toString());
+            float executionTime = 0;
 
             return new ExecutionResultDTO(
                 statusId,

@@ -10,7 +10,6 @@ import QuizManagementCard from './QuizManagementCard/QuizManagementCard';
 
 import './QuizManagement.style.css';
 import notify from '../../../components/ui/ToastNotification';
-import { set } from 'react-hook-form';
 
 export default function QuizManagement() {
     const [bulkCount, setBulkCount] = useState<number>(5);

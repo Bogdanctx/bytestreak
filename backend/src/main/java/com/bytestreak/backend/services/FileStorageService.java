@@ -5,12 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 
+import org.json.JSONObject;
+
 import com.bytestreak.backend.dto.TestCaseDTO;
+import java.util.List;
 
 @Service
 public class FileStorageService {
@@ -25,7 +26,7 @@ public class FileStorageService {
         }
     }
 
-    public String saveTestCases(String slug, String jsonContent) throws RuntimeException {
+    public String saveTestCases(String slug, List<TestCaseDTO> testCases) throws RuntimeException {
         Path problemDirectory = root.resolve(slug);
 
         try {
@@ -35,18 +36,16 @@ public class FileStorageService {
             throw new RuntimeException("Failed to create problem directory: " + e.getMessage());
         }
         
-        JSONParser parser = new JSONParser(jsonContent);
+        JSONObject testcasesJson = new JSONObject();
+        testcasesJson.put("testCases", testCases);
             
         try {
-            ArrayList<?> jsonObject = (ArrayList<?>) parser.parse();
-            Object[] tests = jsonObject.toArray();
+            for(int i = 0; i < testCases.size(); i++) {
+                TestCaseDTO test = testCases.get(i);
 
-            for(int i = 0; i < tests.length; i++) {
-                LinkedHashMap<String, Object> test = ((LinkedHashMap<String, Object>) tests[i]);
-
-                String fileName = (String) test.get("fileName");
-                String input = (String) test.get("input");
-                String output = (String) test.get("output");
+                String fileName = test.getFileName();
+                String input = test.getInput();
+                String output = test.getOutput();
 
                 Path inputPath = problemDirectory.resolve(fileName + ".in");
                 Path outputPath = problemDirectory.resolve(fileName + ".out");

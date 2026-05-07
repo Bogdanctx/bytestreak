@@ -8,6 +8,7 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
+import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.enums.Difficulty;
@@ -61,7 +62,7 @@ public class CreatorService {
         }
 
         String slug = newCodingProblemDTO.getTitle().toLowerCase().replace(" ", "-");
-        String testsJSON = newCodingProblemDTO.getTestCases();
+        List<TestCaseDTO> testsJSON = newCodingProblemDTO.getTestCases();
         String testCasesPath = null;
 
         try {
@@ -124,11 +125,11 @@ public class CreatorService {
         existingProblem.setCodeTemplates(updatedProblem.getCodeTemplates());
         existingProblem.setTags(updatedProblem.getTags());
 
-        String testsJSON = updatedProblem.getTestCases();
+        List<TestCaseDTO> tests = updatedProblem.getTestCases();
         String testCasesPath = null;
 
         try {
-            testCasesPath = fileStorageService.saveTestCases(newSlug, testsJSON);
+            testCasesPath = fileStorageService.saveTestCases(newSlug, tests);
         } 
         catch (Exception e) {
             throw new RuntimeException("Failed to store test cases: " + e.getMessage());
