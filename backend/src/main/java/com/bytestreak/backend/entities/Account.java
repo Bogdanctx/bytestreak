@@ -51,8 +51,6 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private int level = 0;
-
     private int currentXP = 0;
 
     private int problemsSolved = 0;
@@ -60,6 +58,9 @@ public class Account {
     private int quizzesSolved = 0;
 
     private int streakLength = 0;
+
+    private int coins = 0;
+    private boolean solvedDailyQuizToday = false;
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

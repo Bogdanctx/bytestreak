@@ -14,17 +14,20 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import ClearIcon from '@mui/icons-material/Clear';
 import "./ActivitySection.style.css";
 import { useAccount } from '../../../hooks/useAccount';
 import { type IStreak } from '../../../types/streak.types';
 import { api } from "../../../api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import notify from "../../../components/ui/ToastNotification";
+import { useState } from "react";
+import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
 
 function ActivitySection() {
     const queryClient = useQueryClient();
-    const { data: account } = useAccount();
-    
+    const { data: account, refetch: refetchAccount } = useAccount();
+    const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
     const { data: streaksData = [] } = useQuery<IStreak[]>({
         queryKey: ['activeStreaks'],
         queryFn: async () => {
@@ -41,7 +44,8 @@ function ActivitySection() {
                 queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
                 notify("Streak removed", "success");
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error removing streak:', error);
             notify("Failed to remove streak", "error");
         }
@@ -61,10 +65,24 @@ function ActivitySection() {
                         </Box>
                     </ButtonBase>
 
-                    <ButtonBase className="daily-item">
+                    <ButtonBase 
+                        className="daily-item" 
+                        onClick={() => {
+                            if (account.solvedDailyQuizToday === false) {
+                                setIsQuizModalOpen(true);
+                            }
+                        }}
+                        disabled={account.solvedDailyQuizToday}
+                        sx={{ display: 'flex', justifyContent: 'space-between' }}
+                    >
                         <Box className="daily-item-content">
                             <Typography className="daily-item-title" color="#E7BB41">Quiz of the Day</Typography>
                         </Box>
+                        {account.solvedDailyQuizToday ? (
+                            <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
+                        ) : (
+                            <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />
+                        )}
                     </ButtonBase>
                 </Box>
             </Box>
@@ -138,6 +156,21 @@ function ActivitySection() {
                     )}
                 </List>
             </Box>
+
+            
+            {/* show quiz modal if the user pressed the quiz button */}
+            {isQuizModalOpen && (
+                <QuizOfTheDay 
+                    open={isQuizModalOpen} 
+                    onClose={() => setIsQuizModalOpen(false)} 
+                    account={account}
+                    streaks={streaksData}
+                    onComplete={() => {
+                        refetchAccount();
+                        queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
+                    }}
+                />
+            )}
         </Box>
     );
 }

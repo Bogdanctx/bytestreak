@@ -1,0 +1,179 @@
+.qotd-modal-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.qotd-modal-content {
+    background-color: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: 16px;
+    padding: 32px;
+    width: 600px;
+    max-width: 90vw;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+    outline: none;
+}
+
+.qotd-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.qotd-title {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+    text-align: center;
+    margin-bottom: 24px !important;
+}
+
+.qotd-subtitle {
+    color: var(--text-secondary) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600 !important;
+    display: block;
+    margin-bottom: 12px !important;
+}
+
+.qotd-code-block {
+    background-color: var(--bg-0);
+    border: 1px solid var(--bg-4);
+    border-radius: 8px;
+    padding: 16px;
+    color: var(--text-primary);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    margin-bottom: 24px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.qotd-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.qotd-option-btn {
+    background-color: var(--bg-2) !important;
+    border: 1px solid var(--bg-4) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    padding: 16px !important;
+    transition: all 0.2s ease !important;
+    justify-content: center !important;
+}
+
+.qotd-option-btn:hover {
+    background-color: var(--bg-3) !important;
+    border-color: var(--bg-6) !important;
+}
+
+.qotd-option-btn.correct {
+    background-color: rgba(35, 206, 107, 0.15) !important;
+    border-color: var(--accent-main) !important;
+    color: var(--accent-main) !important;
+}
+
+.qotd-option-btn.wrong {
+    background-color: rgba(255, 55, 95, 0.15) !important;
+    border-color: var(--difficulty-hard) !important;
+    color: var(--difficulty-hard) !important;
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Success Screen */
+.qotd-success-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.qotd-success-icon {
+    font-size: 80px !important;
+    color: var(--accent-main);
+    margin-bottom: 16px;
+}
+
+.qotd-coins-reward {
+    background-color: rgba(255, 192, 30, 0.1);
+    border: 1px solid rgba(255, 192, 30, 0.3);
+    padding: 12px 32px;
+    border-radius: 30px;
+    margin-bottom: 32px;
+    animation: coinPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes coinPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.qotd-coins-text {
+    color: var(--difficulty-medium) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+}
+
+.qotd-streaks-list {
+    width: 100%;
+    background-color: var(--bg-2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.qotd-streak-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid var(--bg-4);
+}
+
+.qotd-streak-item:last-child {
+    border-bottom: none;
+}
+
+.qotd-streak-increase-anim {
+    display: flex;
+    align-items: center;
+    animation: slideInRight 0.8s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    0% { transform: translateX(20px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+.qotd-close-btn {
+    background-color: var(--accent-main) !important;
+    color: #000 !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+    padding: 10px 40px !important;
+    border-radius: 8px !important;
+    text-transform: uppercase !important;
+}
+
+.qotd-close-btn:hover {
+    background-color: var(--accent-hover) !important;
+}

@@ -44,3 +44,7 @@ export function getRankByLevel(level: number) {
 export function getLevelMaxXP(level: number) {
     return 100 + (level * 20);
 }
+
+export function getLevelByXP(xp: number) {
+    return "Terabyte"; // Placeholder, implement logic based on XP thresholds for each level
+}

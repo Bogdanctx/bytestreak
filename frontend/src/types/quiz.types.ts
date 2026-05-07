@@ -6,3 +6,9 @@ export interface IQuiz {
     correctAnswer: string;
     queuePriority: number;
 }
+
+export interface IDailyQuizForm {
+    id: number;
+    codeSnippet: string;
+    answerOptions: string[];
+}

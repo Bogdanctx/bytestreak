@@ -4,7 +4,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bytestreak.backend.entities.Quiz;
+import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.CodeExecution;
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
 
 import java.net.URI;
@@ -24,7 +26,23 @@ public class QuizService {
     @Autowired
     private QuizRepository quizRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private StreakService streakService;
+
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
+
+    public Quiz getDailyQuiz() {
+        // return the quiz with the smallest priority
+        List<Quiz> quizzes = quizRepository.findAll();
+        if (quizzes.isEmpty()) {
+            return null;
+        }
+        quizzes.sort((q1, q2) -> Integer.compare(q1.getQueuePriority(), q2.getQueuePriority()));
+        return quizzes.get(0);
+    }
 
     public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
         if (programmingLanguage == null || programmingLanguage.isEmpty()) {
@@ -190,5 +208,24 @@ public class QuizService {
         String response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         JSONObject jsonResponse = new JSONObject(response);
         return jsonResponse.getString("response");
+    }
+
+    public boolean solveDailyQuiz(Long quizId, String submittedAnswer, String accountEmail) {
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        boolean isCorrect = quiz.getCorrectAnswer().trim().equals(submittedAnswer.trim());
+        Account solver = accountRepository.findByEmail(accountEmail);
+
+        if (isCorrect) {
+            solver.setCurrentXP(solver.getCurrentXP() + 10);
+            solver.setQuizzesSolved(solver.getQuizzesSolved() + 1);
+            solver.setCoins(solver.getCoins() + 5);
+            solver.setSolvedDailyQuizToday(true);
+            
+            accountRepository.save(solver);
+        }
+
+        streakService.handleSolvedDailyQuiz(solver, isCorrect);
+
+        return isCorrect;
     }
 }

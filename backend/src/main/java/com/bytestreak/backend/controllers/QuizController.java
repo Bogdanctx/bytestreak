@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.bytestreak.backend.dto.GenerateQuizRequest;
+import com.bytestreak.backend.dto.DailyQuizResponseDTO;
+import com.bytestreak.backend.dto.QuizSubmissionRequestDTO;
 import com.bytestreak.backend.entities.Quiz;
+import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
 import com.bytestreak.backend.services.QuizService;
 import java.util.List;
@@ -27,6 +31,9 @@ public class QuizController {
 
     @Autowired
     private QuizRepository quizRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
     
     @PostMapping("/generate-quiz")
     public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request, Authentication authentication) {
@@ -105,4 +112,46 @@ public class QuizController {
             return ResponseEntity.status(500).body("Error deleting quiz: " + e.getMessage());
         }
     }
+
+    @GetMapping("/daily")
+    public ResponseEntity<?> getDailyQuiz(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+    
+        try {
+            Quiz dailyQuiz = quizService.getDailyQuiz();
+
+            DailyQuizResponseDTO response = new DailyQuizResponseDTO();
+            response.id = dailyQuiz.getId();
+            response.codeSnippet = dailyQuiz.getCodeSnippet();
+            
+            response.answerOptions = dailyQuiz.getDistractors();
+            response.answerOptions.add(dailyQuiz.getCorrectAnswer());
+
+            // Shuffle the answer options
+            java.util.Collections.shuffle(response.answerOptions);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching daily quiz: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/daily/submit-answer")
+    public ResponseEntity<?> submitDailyQuizAnswer(@RequestBody QuizSubmissionRequestDTO request, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+    
+        try {
+            boolean isCorrect = quizService.solveDailyQuiz(request.getQuizId(), request.getSelectedAnswer(), authentication.getName());
+
+            return ResponseEntity.ok(isCorrect);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error submitting answer: " + e.getMessage());
+        }
+    }
+    
+    
 }

@@ -25,5 +25,8 @@ public class Streak {
     @JoinColumn(name = "participant2_id")
     private Account participant2;
 
-    private int length;
+    private boolean participant1SolvedToday = false;
+    private boolean participant2SolvedToday = false;
+
+    private int length = 0;
 }

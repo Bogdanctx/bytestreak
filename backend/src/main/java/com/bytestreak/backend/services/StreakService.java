@@ -1,7 +1,6 @@
 package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.StreakInviteNotificationPayload;
@@ -13,7 +12,8 @@ import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
-import com.bytestreak.backend.entities.Notification;
+
+import java.util.List;
 
 @Service
 public class StreakService {
@@ -100,4 +100,33 @@ public class StreakService {
         notificationRepository.deleteById(notificationId);
         streakInviteRepository.delete(invite);
     }
+
+    public void handleSolvedDailyQuiz(Account solver, boolean isCorrect) {
+        List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
+    
+        for (Streak streak: activeStreaks) {
+            boolean isParticipant1 = streak.getParticipant1().getId().equals(solver.getId());
+        
+            if (isParticipant1) {
+                streak.setParticipant1SolvedToday(true);
+            }
+            else {
+                streak.setParticipant2SolvedToday(true);
+            }
+
+            if (isCorrect) {
+                // Only increase the streak length if both participants have solved their daily quiz today
+                if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
+                    streak.setLength(streak.getLength() + 1);
+                }
+            }
+            else {
+                // Reset the streak length if either participant got their daily quiz wrong
+                streak.setLength(0);
+            }
+        }
+
+        streakRepository.saveAll(activeStreaks);
+    }
+
 }
