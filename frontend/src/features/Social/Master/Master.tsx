@@ -11,7 +11,7 @@ import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
 import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 
@@ -38,6 +38,24 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
         refetchInterval: 1000 * 10
     });
 
+    const deleteFriendMutation = useMutation({
+        mutationFn: async (friendId: number) => {
+            const response = await api.post(`/friends/remove?friendId=${friendId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            setSelectedFriend(null);
+            setFriendToRemove(null);
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
+        },
+        onError: (error) => {
+            console.error('Error removing friend:', error);
+            notify("Failed to remove friend. Please try again.", "error");
+        }
+    });
+
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
         setFriendToRemove(friend);
@@ -48,24 +66,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
             return;
         }
         
-        try {
-            const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
-
-            if (response.status === 200) {
-                setSelectedFriend(null);
-
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
-
-                notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
-            }
-        } 
-        catch (error) {
-            console.error('Error removing friend:', error);
-        } 
-        finally {
-            setFriendToRemove(null); 
-        }
+        deleteFriendMutation.mutate(friendToRemove.id);
     };
 
     const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {

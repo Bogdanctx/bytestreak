@@ -12,50 +12,57 @@ import { useAccount } from '../../../hooks/useAccount';
 import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
 import { useWebSocket } from '../../../context/WebSocketContext';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => void }) {
-    const [friend, setFriend] = useState<IAccount | null>(null);
+    const queryClient = useQueryClient();
     const [messageInput, setMessageInput] = useState("");
-    const [messages, setMessages] = useState<IMessage[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: account } = useAccount();
+    const { data: account, isLoading: isAccountLoading } = useAccount();
     const { stompClient } = useWebSocket();
-
-    const fetchFriend = async () => {
-        try {
+    const { data: friend, isLoading: isFriendLoading } = useQuery<IAccount>({
+        queryKey: ['friend', friendId],
+        queryFn: async () => {
             const response = await api.get(`/accounts/get?accountId=${friendId}`);
-            if (response.status === 200) {
-                setFriend(response.data);
-            }
-        } catch (error) {
-            console.error('Error fetching friend details:', error);
+            return response.data;
         }
-    };
-
-    const fetchMessages = async () => {
-        try {
+    });
+    const { data: messagesData = [] } = useQuery<IMessage[]>({
+        queryKey: ['messages', friendId],
+        queryFn: async () => {
             const response = await api.get(`/social/messages/conversation?otherUserId=${friendId}`);
-            if (response.status === 200) {
-                setMessages(response.data);
-            }
-        } 
-        catch (error) {
-            console.error('Error fetching messages:', error);
-
+            return response.data;
         }
-    };
+    });
+    const sendMessageMutation = useMutation({
+        mutationFn: async (messageDTO: { text: string; attachments: IAttachment[] }) => {
+            const response = await api.post(`/social/messages/send?receiverId=${friendId}`, messageDTO);
+            return response.data;
+        },
+        onSuccess: (savedMessage) => {
+            queryClient.setQueryData(['messages', friendId], (oldData: IMessage[] | undefined) => {
+                const previousMessages = oldData ?? [];
+                return [...previousMessages, savedMessage];
+            });
+            setMessageInput("");
+            setSelectedFiles([]);
+        },
+        onError: (error) => {
+            console.error('Error sending message:', error);
+        }
+    });
 
     useEffect(() => {
-        fetchFriend();
-        fetchMessages();
-
         if (stompClient && stompClient.connected) {
             const subscription = stompClient.subscribe(`/user/queue/messages`, (message) => {
                 const newLiveMessage = JSON.parse(message.body);
 
                 if (newLiveMessage.sender.id === friendId) {
-                    setMessages((prev) => [...prev, newLiveMessage]);
+                    queryClient.setQueryData(['messages', friendId], (oldData: IMessage[] | undefined) => {
+                        const previousMessages = oldData ?? [];
+                        return [...previousMessages, newLiveMessage];
+                    });
                 }
             });
 
@@ -64,7 +71,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
             };
         }
 
-    }, [stompClient, friendId, account.id]);
+    }, [stompClient, friendId, queryClient]);
 
     const handleSendMessage = async () => {
         if (messageInput.trim() === "" && selectedFiles.length === 0) {
@@ -79,22 +86,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
             }))
         }
 
-        try {
-            const response = await api.post(`/social/messages/send?receiverId=${friendId}`, messageDTO);
-
-            if (response.status === 200) {
-                const savedMessage = response.data;
-                setMessages((prev) => [...prev, savedMessage]);
-                setMessageInput("");
-                setSelectedFiles([]);
-            } 
-            else {
-                console.error('Failed to send message:', response.statusText);
-            }
-        } 
-        catch (error) {
-            console.error('Error sending message:', error);
-        }
+        sendMessageMutation.mutate(messageDTO);
     };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +129,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         });
     };
 
-    if (!friend) {
+    if (!friend || !account || isAccountLoading || isFriendLoading) {
         return (
             <Box className="friend-panel-loading">
                 <CircularProgress className="friend-panel-progress" />
@@ -182,12 +174,12 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
             </Box>
 
             <Box className="friend-panel-chat">
-                {messages.length === 0 ? (
+                {messagesData.length === 0 ? (
                     <Typography className="friend-panel-empty-chat">
                         Say hi to {friend.username}!
                     </Typography>
                 ) : (
-                    messages.map((message) => (
+                    messagesData.map((message) => (
                         <Box 
                             key={message.id} 
                             className={`chat-bubble-container ${message.sender.id === account.id ? 'chat-mine' : 'chat-theirs'}`}
