@@ -39,7 +39,7 @@ function ActivitySection() {
     });
 
     const removeStreakMutation = useMutation({
-        mutationFn: (streakId: number) => {
+        mutationFn: async (streakId: number) => {
             return api.delete(`/streaks/delete-streak?streakId=${streakId}`);
         },
         onSuccess: () => {

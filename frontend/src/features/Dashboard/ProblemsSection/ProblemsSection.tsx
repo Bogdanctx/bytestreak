@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, ButtonBase, FormControlLabel, MenuItem, Select, Switch, Typography, type SelectChangeEvent } from '@mui/material';
-
+import { Box, ButtonBase, FormControlLabel, Switch, Typography } from '@mui/material';
 import { api } from '../../../api';
 import { type IProblem } from '../../../types/problem.types';
 import ProblemCard from './ProblemCard/ProblemCard';
@@ -11,19 +9,15 @@ import './ProblemsSection.style.css';
 
 function ProblemsSection() {
     const navigate = useNavigate();
-    
-    const [showTags, setShowTags] = useState(false);
-    
+    const [showTags, setShowTags] = useState(false);    
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-    
     const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
-        queryKey: ['codingProblems', sortOrder, selectedDifficulty],
+        queryKey: ['codingProblems', selectedDifficulty],
         queryFn: async () => {
-            let url = `/problems/fetch-all?sortBy=acceptanceRate&sortOrder=${sortOrder}`;
+            let url = `/problems/fetch-all`;
             
             if (selectedDifficulty !== "ALL") {
-                url += `&difficulty=${selectedDifficulty}`;
+                url += `?difficulty=${selectedDifficulty}`;
             }
 
             const response = await api.get(url);

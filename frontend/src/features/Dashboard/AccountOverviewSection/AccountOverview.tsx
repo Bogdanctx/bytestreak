@@ -25,7 +25,7 @@ function AccountOverview() {
     const color = getRankColor(rank);
 
     const logoutMutation = useMutation({
-        mutationFn: () => {
+        mutationFn: async () => {
             return api.post("/auth/logout");
         },
         onSuccess: () => {
