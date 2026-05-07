@@ -106,7 +106,7 @@ public class CreatorService {
         String oldSlug = existingProblem.getSlug();
         String newSlug = updatedProblem.getTitle().toLowerCase().replace(" ", "-");
 
-        if (problemRepository.findBySlug(newSlug) != null) {
+        if (!oldSlug.equals(newSlug) && problemRepository.findBySlug(newSlug) != null) {
             throw new RuntimeException("A problem with the same title already exists");
         }
 

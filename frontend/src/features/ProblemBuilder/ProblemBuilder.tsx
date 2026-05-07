@@ -172,7 +172,6 @@ function ProblemBuilder() {
         },
         onSuccess: () => {
             notify(isEditMode ? "Problem updated successfully!" : "Problem created successfully!", "success");
-            navigate("/dashboard");
         },
         onError: (error) => {
             console.error('Error saving problem:', error);
