@@ -9,10 +9,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { type IAccount } from '../../../types/account.types';
 import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
-import { 
-    getRankByLevel, 
-    getRankColor 
-} from '../../../utils/rankUtils';
+import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
@@ -87,8 +84,9 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
         }
     };
 
-    const rankName = getRankByLevel(account.level);
-    const rankColor = getRankColor(rankName);
+    const level = getLevel(account.currentXP);
+    const rank = getRank(level);
+    const rankColor = getRankColor(rank);
 
     return (
         <Box className='master-container'>
@@ -100,7 +98,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
                     {account.username}
                 </Typography>
                 <Typography variant="body2" color={rankColor} mt={0.5}>
-                    Level {account.level} • {rankName}
+                    Level {level} • {rank}
                 </Typography>
             </Box>
 
@@ -138,7 +136,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
                                     </ListItemAvatar>
                                     <ListItemText 
                                         primary={friend.username} 
-                                        secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
+                                        secondary={`Level ${level} • ${rank}`}
                                         slotProps={{
                                             primary: {
                                                 fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"

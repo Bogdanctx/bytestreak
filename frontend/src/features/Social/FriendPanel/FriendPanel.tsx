@@ -9,7 +9,7 @@ import { type IAccount } from '../../../types/account.types';
 import { type IMessage, type IAttachment } from '../../../types/message.types';
 import { api } from '../../../api';
 import { useAccount } from '../../../hooks/useAccount';
-import { getRankByLevel, getRankColor } from '../../../utils/rankUtils';
+import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
 import { useWebSocket } from '../../../context/WebSocketContext';
 
@@ -145,8 +145,9 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         );
     }
 
-    const rankName = getRankByLevel(friend.level);
-    const rankColor = getRankColor(rankName);
+    const level = getLevel(friend.currentXP);
+    const rank = getRank(level);
+    const rankColor = getRankColor(rank);
 
     return (
         <Box className="friend-panel-container">
@@ -168,7 +169,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
                         {friend.username}
                     </Typography>
                     <Typography variant="caption" className={`friend-panel-rank`} style={{ color: rankColor }}>
-                        Level {friend.level} • {rankName}
+                        Level {level} • {rank}
                     </Typography>
                 </Box>
 

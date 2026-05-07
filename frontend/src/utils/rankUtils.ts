@@ -1,50 +1,37 @@
-export const rankLevels: { [key: string]: number } = {
-    "Bit": 0,
-    "Byte": 4,
-    "Kilobyte": 8,
-    "Megabyte": 16,
-    "Gigabyte": 24,
-    "Terabyte": 36
+export function getLevel(xp: number) {
+    return Math.floor(Math.sqrt(xp / 100));
+}
+
+export function getRank(level: number) {
+    if (level >= 36) return "Terabyte";
+    if (level >= 24) return "Gigabyte";
+    if (level >= 16) return "Megabyte";
+    if (level >= 8)  return "Kilobyte";
+    if (level >= 4)  return "Byte";
+    return "Bit";
 };
 
 export function getRankColor(rank: string) {
-    switch(rank) {
-        case "Bit":
-            return "#4A4A4A";
-        case "Byte":
-            return "#23CE6B";
-        case "Kilobyte":
-            return "#00F0FF";
-        case "Megabyte":
-            return "#7B61FF";
-        case "Gigabyte":
-            return "#FF8C00"; 
-        case "Terabyte":
-            return "#FF2E63";    
-        default:
-            return "#FFFFFF";
-    }
+    if (rank === "Bit") return "#4A4A4A";
+    if (rank === "Byte") return "#23CE6B";
+    if (rank === "Kilobyte") return "#00F0FF";
+    if (rank === "Megabyte") return "#7B61FF";
+    if (rank === "Gigabyte") return "#FF8C00"; 
+    if (rank === "Terabyte") return "#FF2E63";
+    return "#FFFFFF";
 };
 
-export function getRankByLevel(level: number) {
-    if(level >= rankLevels["Terabyte"]) 
-        return "Terabyte";
-    if(level >= rankLevels["Gigabyte"]) 
-        return "Gigabyte";
-    if(level >= rankLevels["Megabyte"]) 
-        return "Megabyte";
-    if(level >= rankLevels["Kilobyte"]) 
-        return "Kilobyte";
-    if(level >= rankLevels["Byte"]) 
-        return "Byte";
-
-    return "Bit";
-}
-
-export function getLevelMaxXP(level: number) {
-    return 100 + (level * 20);
-}
-
-export function getLevelByXP(xp: number) {
-    return "Terabyte"; // Placeholder, implement logic based on XP thresholds for each level
-}
+export function getXPProgress(xp: number) {
+    const level = getLevel(xp);
+    const currentLevelMinXP = 100 * Math.pow(level, 2);
+    const nextLevelMinXP = 100 * Math.pow(level + 1, 2);
+    
+    const progressInLevel = xp - currentLevelMinXP;
+    const totalLevelXP = nextLevelMinXP - currentLevelMinXP;
+    
+    return {
+        percentage: (progressInLevel / totalLevelXP) * 100,
+        currentLevelXP: progressInLevel,
+        neededXP: totalLevelXP
+    };
+};

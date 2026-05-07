@@ -13,35 +13,32 @@ import { useAccount } from '../../../hooks/useAccount';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
-import { getLevelMaxXP, getRankByLevel, getRankColor } from '../../../utils/rankUtils';
+import { getLevel, getRank, getXPProgress, getRankColor } from '../../../utils/rankUtils';
+import { useMutation } from '@tanstack/react-query';
 
 function AccountOverview() {
     const { data: account } = useAccount();
     const navigate = useNavigate();
+    const level = getLevel(account.currentXP);
+    const rank = getRank(level);
+    const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
+    const color = getRankColor(rank);
 
-    const handleLogout = () => {
-        api.post("/auth/logout")
-            .then((response) => {
-                if(response.status === 200) {
-                    notify("Logging out...", "success");
-                    setTimeout(() => {
-                        window.location.href = "/";
-                    }, 2000);
-                }
-                else {
-                    notify("Logout failed. Please try again.", "error");
-                }
-            })
-            .catch((error) => {
-                notify("Logout failed. Please try again.", "error");
-                console.error("Logout error:", error);
-            });
-    }
-
-    const maxXP = getLevelMaxXP(account.level);
-    const accountRank = getRankByLevel(account.level);
-    const color = getRankColor(accountRank);
-    const progress = (account.currentXP / maxXP) * 100;
+    const logoutMutation = useMutation({
+        mutationFn: () => {
+            return api.post("/auth/logout");
+        },
+        onSuccess: () => {
+            notify("Logging out...", "success");
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 2000);
+        },
+        onError: (error) => {
+            notify("Logout failed. Please try again.", "error");
+            console.error("Logout error:", error);
+        }
+    })
 
     return (
         <Box id="account-overview-container">
@@ -58,7 +55,7 @@ function AccountOverview() {
                                 <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
                             </Button>
 
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={handleLogout}>
+                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => logoutMutation.mutate()}>
                                 <LogoutIcon fontSize="small" sx={{ color: `${color}` }} />
                             </Button>
                         </Box>
@@ -66,14 +63,14 @@ function AccountOverview() {
 
                     <Box className="account-overview-rank-label-container">
                         <Typography variant="caption" className="account-overview-rank-text" sx={{ color: `${color}`}}>
-                            {accountRank}
+                            {rank}
                         </Typography>
                         <Typography variant="caption" className="account-overview-level-text">
-                            Lvl {account.level} • {account.currentXP}/{maxXP} XP
+                            Lvl {level} • {currentLevelXP}/{neededXP} XP
                         </Typography>
                     </Box>
 
-                    <LinearProgress variant="determinate" value={progress} 
+                    <LinearProgress variant="determinate" value={percentage} 
                                     className="account-overview-xp-progress-bar" 
                                     sx={{ '& .MuiLinearProgress-bar': { backgroundColor: `${color}` } }} />
                 </Box>
