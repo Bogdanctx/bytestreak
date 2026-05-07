@@ -5,13 +5,14 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
 
-import { api } from '../../../api';
-import notify from '../../../components/ui/ToastNotification';
-import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
-import { type IProblemCreateDTO, type ITestCase } from '../../../types/problem.types';
-import MetadataTab from './MetadataTab';
-import TestCasesTab from './TestCasesTab';
+import { api } from '../../api';
+import notify from '../../components/ui/ToastNotification';
+import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
+import { type IProblemCreateDTO, type ITestCase } from '../../types/problem.types';
+import MetadataTab from './MetadataTab/MetadataTab';
+import TestCasesTab from './TestCasesTab/TestCasesTab';
 import './ProblemBuilder.style.css';
+import { useMutation } from '@tanstack/react-query';
 
 const DEFAULT_STARTER_CODE = {
     cpp: `// ======= IMPORTANT =======\n// Starter Code template...\n\nint solve(vector<int>& nums) {\n    return 0;\n}`,
@@ -90,6 +91,27 @@ function ProblemBuilder() {
         }
     };
 
+    const submitCodingProblemMutation = useMutation({
+        mutationFn: async (problemData: IProblemCreateDTO) => {
+            if (isEditMode) {
+                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
+                return response.data;
+            } 
+            else {
+                const response = await api.post('/creator/new-problem', problemData);
+                return response.data;
+            }
+        },
+        onSuccess: () => {
+            notify(isEditMode ? "Problem updated successfully!" : "Problem created successfully!", "success");
+            navigate("/dashboard");
+        },
+        onError: (error) => {
+            console.error('Error saving problem:', error);
+            notify("Failed to save problem. Please try again.", "error");
+        }
+    })
+
     const handleSubmitProblem = async () => {
         if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
             notify("Please fill out all required fields (Title, Difficulty, Tags, Test Cases).", "error");
@@ -110,28 +132,7 @@ function ProblemBuilder() {
             tags: tags,
         };
         
-        try {
-            if (isEditMode) {
-                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
-
-                if (response.status === 200) {
-                    notify("Problem updated successfully!", "success");
-                    navigate("/dashboard");
-                }
-            } 
-            else {
-                const response = await api.post('/creator/new-problem', problemData);
-
-                if (response.status === 200) {
-                    notify("Problem created successfully!", "success");
-                    navigate("/dashboard");
-                }
-            }
-        } 
-        catch (error) {
-            console.error('Error saving problem:', error);
-            notify("Failed to save problem. Please try again.", "error");
-        }
+        submitCodingProblemMutation.mutate(problemData);
     }
 
     const handleEditorChange = (value: string | undefined) => {

@@ -11,7 +11,7 @@ import Problem from './pages/Problem/Problem.tsx';
 import Settings from './pages/Settings/Settings.tsx';
 import LandingPage from './pages/Landing/LandingPage.tsx';
 import Social from './pages/Social/Social.tsx';
-import ProblemBuilder from './features/ProblemBuilder/components/ProblemBuilder.tsx';
+import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
 
