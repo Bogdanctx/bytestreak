@@ -50,24 +50,6 @@ function ProblemsSection() {
                         label="Show Tags"
                     />
 
-                    {/* Sort Select */}
-                    <Box className="problems-section-filter-block">
-                        <Typography variant="caption" className="problems-section-filter-label">
-                            Acceptance
-                        </Typography>
-                        <Select
-                            value={sortOrder}
-                            onChange={(e: SelectChangeEvent) => setSortOrder(e.target.value as "asc" | "desc")}
-                            className="problem-filter-select"
-                            IconComponent={KeyboardArrowDownIcon}
-                            displayEmpty
-                            MenuProps={{ PaperProps: { className: 'filter-menu-paper' } }}
-                        >
-                            <MenuItem className="filter-menu-item" value="asc">Lowest to Highest</MenuItem>
-                            <MenuItem className="filter-menu-item" value="desc">Highest to Lowest</MenuItem>
-                        </Select>
-                    </Box>
-
                     <Box className="problems-section-filter-block">
                         <Typography variant="caption" className="problems-section-filter-label">
                             Filter
