@@ -56,8 +56,6 @@ public class Account {
 
     private int problemsSolved = 0;
 
-    private int quizzesSolved = 0;
-
     private int streakLength = 0;
 
     private int coins = 0;

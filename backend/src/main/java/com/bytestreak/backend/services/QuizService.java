@@ -181,7 +181,6 @@ public class QuizService {
         return quizzes;
     }
 
-    // Returns the content of the "response" field from the Ollama API response
     private String callOllama(String prompt) throws Exception {
         JSONObject payload = new JSONObject();
         payload.put("model", "qwen2.5-coder:7b");
@@ -197,6 +196,8 @@ public class QuizService {
 
         String response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         JSONObject jsonResponse = new JSONObject(response);
+        
+        // return the "response" field which should contain the generated content
         return jsonResponse.getString("response");
     }
 
@@ -213,7 +214,6 @@ public class QuizService {
 
         if (isCorrect) {
             solver.setCurrentXP(solver.getCurrentXP() + 10);
-            solver.setQuizzesSolved(solver.getQuizzesSolved() + 1);
             solver.setCoins(solver.getCoins() + 5);
         }
 

@@ -4,7 +4,7 @@ import {
     Avatar, 
     LinearProgress, 
     Divider, 
-    Button
+    IconButton
 } from '@mui/material';
 import "./AccountOverview.style.css";
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -19,6 +19,7 @@ import { useMutation } from '@tanstack/react-query';
 function AccountOverview() {
     const { data: account } = useAccount();
     const navigate = useNavigate();
+
     const level = getLevel(account.currentXP);
     const rank = getRank(level);
     const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
@@ -38,31 +39,46 @@ function AccountOverview() {
             notify("Logout failed. Please try again.", "error");
             console.error("Logout error:", error);
         }
-    })
+    });
 
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
-                <Avatar src={account.profilePictureUrl} alt={account.username} className="account-overview-avatar" sx={{ border: `2px solid ${color}` }}  />
+                <Box className="account-overview-avatar-ring" sx={{ border: `2px solid ${color}` }}>
+                    <Avatar 
+                        src={account.profilePictureUrl} 
+                        alt={account.username} 
+                        className="account-overview-avatar" 
+                    />
+                </Box>
 
                 <Box className="account-overview-info-column">
-                    <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+                    <Box className="account-overview-top-row">
                         <Typography variant="h5" className="account-overview-username">
                             {account.username}
                         </Typography>
-                        <Box display={"flex"} alignItems={"center"} gap={1}>
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => navigate("/settings")}>
-                                <SettingsIcon fontSize="small" sx={{ color: `${color}` }} />
-                            </Button>
+                        
+                        <Box className="account-overview-actions">
+                            {/* Secțiunea nouă pentru afișarea monedelor */}
+                            <Box className="account-overview-coin-pill">
+                                <span className="stat-emoji">🪙</span>
+                                <Typography className="account-overview-coin-value">
+                                    {account.coins}
+                                </Typography>
+                            </Box>
 
-                            <Button sx={{ padding: 0, minWidth: 'auto' }} onClick={() => logoutMutation.mutate()}>
-                                <LogoutIcon fontSize="small" sx={{ color: `${color}` }} />
-                            </Button>
+                            <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <SettingsIcon fontSize="small" />
+                            </IconButton>
+
+                            <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <LogoutIcon fontSize="small" />
+                            </IconButton>
                         </Box>
                     </Box>
 
                     <Box className="account-overview-rank-label-container">
-                        <Typography variant="caption" className="account-overview-rank-text" sx={{ color: `${color}`}}>
+                        <Typography variant="caption" className="account-overview-rank-text" sx={{ color: color }}>
                             {rank}
                         </Typography>
                         <Typography variant="caption" className="account-overview-level-text">
@@ -70,9 +86,12 @@ function AccountOverview() {
                         </Typography>
                     </Box>
 
-                    <LinearProgress variant="determinate" value={percentage} 
-                                    className="account-overview-xp-progress-bar" 
-                                    sx={{ '& .MuiLinearProgress-bar': { backgroundColor: `${color}` } }} />
+                    <LinearProgress 
+                        variant="determinate" 
+                        value={percentage} 
+                        className="account-overview-xp-progress-bar" 
+                        sx={{ '& .MuiLinearProgress-bar': { backgroundColor: color, boxShadow: `0 0 10px ${color}` } }} 
+                    />
                 </Box>
             </Box>
 
@@ -80,23 +99,17 @@ function AccountOverview() {
 
             <Box id="account-overview-stats-container">
                 
-                <Box className="account-overview-stat-item">
-                    {account.streakLength > 0 ? (
-                        <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
-                            {account.streakLength}
-                            <span style={{ fontSize: '1rem' }}>🔥</span>
-                        </Typography>
-                    ) : (
-                        <Typography variant="h4" className="account-overview-stat-value">
-                            {account.streakLength}
-                        </Typography>
-                    )}
-                    <Typography variant="caption" className="account-overview-stat-label">
+                <Box className="account-overview-stat-card">
+                    <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
+                        {account.streakLength}
+                        {account.streakLength > 0 && <span className="stat-emoji">🔥</span>}
+                    </Typography>
+                    <Typography variant="caption" className="account-overview-stat-label" style = {{ textAlign: "center" }}>
                         Day Streak
                     </Typography>
                 </Box>
 
-                <Box className="account-overview-stat-item">
+                <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
                         {account.problemsSolved}
                     </Typography>
@@ -105,16 +118,7 @@ function AccountOverview() {
                     </Typography>
                 </Box>
 
-                <Box className="account-overview-stat-item">
-                    <Typography variant="h4" className="account-overview-stat-value">
-                        {account.quizzesSolved}
-                    </Typography>
-                    <Typography variant="caption" className="account-overview-stat-label">
-                        Quizzes
-                    </Typography>
-                </Box>
-
-                <Box className="account-overview-stat-item">
+                <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
                         {account.friends.length}
                     </Typography>

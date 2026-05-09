@@ -4,7 +4,6 @@ export interface IAccount {
     email: string;
     currentXP: number;
     problemsSolved: number;
-    quizzesSolved: number;
     streakLength: number;
     coins: number;
     lastDailyQuizDate: string;
