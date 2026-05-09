@@ -24,6 +24,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import notify from "../../../components/ui/ToastNotification";
 import { useState } from "react";
 import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
+import Loading from "../../../components/ui/Loading";
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
@@ -52,6 +53,11 @@ function ActivitySection() {
             notify("Failed to remove streak", "error");
         }
     });
+
+    if (!account) {
+        return <Loading />;
+    }
+
     const isQuizDoneToday = account.lastDailyQuizDate === todayUTCString;
     const isCodingProblemDoneToday = false;
 

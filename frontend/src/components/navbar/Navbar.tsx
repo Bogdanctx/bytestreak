@@ -20,9 +20,6 @@ function Navbar() {
             </Button>
 
             <Box id="navbar-links">
-                <Notifications />
-                
-
                 <Button 
                     className={`navbar-link-button ${currentPath === "/dashboard" ? "navbar-selected-link" : ""}`}
                     onClick={() => navigate("/dashboard")}
@@ -64,6 +61,8 @@ function Navbar() {
                     disableRipple>
                     Settings
                 </Button>
+
+                <Notifications />
 
                 {/* <Button
                     className={`navbar-link-button ${isMoreSelected ? "navbar-selected-link" : ""}`}

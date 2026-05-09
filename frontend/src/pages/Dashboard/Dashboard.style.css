@@ -1,7 +1,12 @@
 #dashboard-container {
-    height: 100%;
-    width: 100%;
     display: flex;
-    gap: 16px;
-    overflow-x: auto;
+    flex: 1;
+    gap: 24px;
+}
+
+@media screen and (max-width: 1000px) {
+    #dashboard-container {
+        flex-direction: column;
+        overflow-y: scroll;
+    }
 }

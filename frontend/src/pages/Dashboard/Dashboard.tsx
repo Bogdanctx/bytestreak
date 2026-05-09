@@ -8,8 +8,10 @@ import './Dashboard.style.css';
 function Dashboard() {
     return (
         <Box id="dashboard-container">
-            <ProblemsSection />
-            <Box display={"flex"} flexDirection={"column"} gap={"16px"} flex={1} maxWidth={"25%"}>
+            <Box width={"auto"} flex={1}>
+                <ProblemsSection />
+            </Box>
+            <Box display={"flex"} flexDirection={"column"} gap={"16px"}>
                 <AccountOverview />
                 <ActivitySection />
             </Box>

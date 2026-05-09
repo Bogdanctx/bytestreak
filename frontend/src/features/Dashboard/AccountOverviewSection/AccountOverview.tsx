@@ -15,15 +15,11 @@ import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
 import { getLevel, getRank, getXPProgress, getRankColor } from '../../../utils/rankUtils';
 import { useMutation } from '@tanstack/react-query';
+import Loading from '../../../components/ui/Loading';
 
 function AccountOverview() {
     const { data: account } = useAccount();
     const navigate = useNavigate();
-
-    const level = getLevel(account.currentXP);
-    const rank = getRank(level);
-    const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
-    const color = getRankColor(rank);
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
@@ -41,6 +37,15 @@ function AccountOverview() {
         }
     });
 
+    if (!account) {
+        return <Loading />;
+    }
+
+    const level = getLevel(account.currentXP);
+    const rank = getRank(level);
+    const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
+    const color = getRankColor(rank);
+
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
@@ -54,26 +59,28 @@ function AccountOverview() {
 
                 <Box className="account-overview-info-column">
                     <Box className="account-overview-top-row">
-                        <Typography variant="h5" className="account-overview-username">
-                            {account.username}
-                        </Typography>
-                        
-                        <Box className="account-overview-actions">
-                            {/* Secțiunea nouă pentru afișarea monedelor */}
+                        <Box>
+                            <Typography variant="h5" className="account-overview-username">
+                                {account.username}
+                            </Typography>
                             <Box className="account-overview-coin-pill">
                                 <span className="stat-emoji">🪙</span>
                                 <Typography className="account-overview-coin-value">
                                     {account.coins}
                                 </Typography>
                             </Box>
+                        </Box>
+                        
+                        <Box>
+                            <Box className="account-overview-actions">
+                                <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                    <SettingsIcon fontSize="small" />
+                                </IconButton>
 
-                            <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
-                                <SettingsIcon fontSize="small" />
-                            </IconButton>
-
-                            <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
-                                <LogoutIcon fontSize="small" />
-                            </IconButton>
+                                <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                    <LogoutIcon fontSize="small" />
+                                </IconButton>
+                            </Box>
                         </Box>
                     </Box>
 

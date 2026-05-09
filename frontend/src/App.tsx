@@ -1,9 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Box, CssBaseline } from '@mui/material';
 
-import ProtectedLayout from './components/ProtectedLayout.tsx';
 import { WebSocketProvider } from './context/WebSocketContext.tsx';
 import Creator from './pages/Creator/Creator.tsx';
 import Dashboard from './pages/Dashboard/Dashboard.tsx';
@@ -14,22 +13,24 @@ import Social from './pages/Social/Social.tsx';
 import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
+import Navbar from './components/navbar/Navbar.tsx';
 
 const queryClient = new QueryClient();
 
 function App() {
 	return (
-        <Box bgcolor={"var(--bg-0)"} width={"100vw"} height={"100vh"} display={"flex"} flexDirection={"column"}>
+        <Box id="app-container">
             <CssBaseline />
-            <ToastContainer />
 
             <QueryClientProvider client={queryClient}>
                 <BrowserRouter>
                     <WebSocketProvider>
+                        <ToastContainer />
+
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
 
-                            <Route element={<ProtectedLayout />}>
+                            <Route element={<><Navbar /><Outlet /></>}>
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
@@ -41,6 +42,7 @@ function App() {
                                 <Route path="/creator/edit/:id" element={<ProblemBuilder />} />
                             </Route>
                         </Routes>
+                        
                     </WebSocketProvider>
                 </BrowserRouter>
             </QueryClientProvider>
