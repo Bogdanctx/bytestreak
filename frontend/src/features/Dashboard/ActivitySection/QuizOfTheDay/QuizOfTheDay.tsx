@@ -139,8 +139,6 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                 const friend = isMeP1 ? streak.participant2 : streak.participant1;
                                 const friendSolved = isMeP1 ? streak.participant2SolvedToday : streak.participant1SolvedToday;
                                 
-                                const streakIncreases = friendSolved;
-
                                 return (
                                     <Box key={streak.id} className="qotd-streak-item">
                                         <Box display="flex" alignItems="center" gap={1.5}>
@@ -148,7 +146,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                             <Typography color="var(--text-primary)">{friend.username}</Typography>
                                         </Box>
                                         
-                                        {streakIncreases ? (
+                                        {friendSolved ? (
                                             <Box className="qotd-streak-increase-anim">
                                                 <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
                                                     {streak.length}

@@ -14,6 +14,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -33,16 +35,6 @@ public class QuizService {
     private StreakService streakService;
 
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
-
-    public Quiz getDailyQuiz() {
-        // return the quiz with the smallest priority
-        List<Quiz> quizzes = quizRepository.findAll();
-        if (quizzes.isEmpty()) {
-            return null;
-        }
-        quizzes.sort((q1, q2) -> Integer.compare(q1.getQueuePriority(), q2.getQueuePriority()));
-        return quizzes.get(0);
-    }
 
     public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
         if (programmingLanguage == null || programmingLanguage.isEmpty()) {
@@ -118,7 +110,7 @@ public class QuizService {
                             "Create a complete, runnable " + programmingLanguage + " program demonstrating: " + randomTopic + ".\n\n" +
 
                             "Requirements:\n" +
-                            "1. The code may include a non-obvious but correct behavior related to the topic.\n" +
+                            "1. The code may be deterministic and include a correct behavior related to the topic.\n" +
                             "2. Keep the program concise (max 40-50 lines).\n" +
                             "3. Define all imports, classes, and variables. No undeclared entities.\n" +
                             "4. It must execute cleanly and print exactly one line of output.\n" +
@@ -128,9 +120,7 @@ public class QuizService {
                             "Output format:\n" +
                             "Return ONLY valid JSON with this structure:\n" +
                             "{\"codeSnippet\": \"...\"}\n" +
-                            "The code must be properly escaped for JSON.\n\n" +
-
-                            "Before answering, internally verify correctness (syntax, runtime, and output).";
+                            "The code must be properly escaped for JSON.\n\n";
 
             
             try {
@@ -215,12 +205,17 @@ public class QuizService {
         boolean isCorrect = quiz.getCorrectAnswer().trim().equals(submittedAnswer.trim());
         Account solver = accountRepository.findByEmail(accountEmail);
 
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+
+        if (today.equals(solver.getLastDailyQuizDate())) {
+            throw new RuntimeException("Daily quiz already solved today");
+        }
+
         if (isCorrect) {
             solver.setCurrentXP(solver.getCurrentXP() + 10);
             solver.setQuizzesSolved(solver.getQuizzesSolved() + 1);
             solver.setCoins(solver.getCoins() + 5);
-            solver.setSolvedDailyQuizToday(true);
-            
+            solver.setLastDailyQuizDate(today);
             accountRepository.save(solver);
         }
 

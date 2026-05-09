@@ -25,6 +25,8 @@ import notify from "../../../components/ui/ToastNotification";
 import { useState } from "react";
 import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
 
+const todayUTCString = new Date().toISOString().split('T')[0];
+
 function ActivitySection() {
     const queryClient = useQueryClient();
     const { data: account, refetch: refetchAccount } = useAccount();
@@ -37,7 +39,6 @@ function ActivitySection() {
         },
         enabled: !!account
     });
-
     const removeStreakMutation = useMutation({
         mutationFn: async (streakId: number) => {
             return api.delete(`/streaks/delete-streak?streakId=${streakId}`);
@@ -50,7 +51,8 @@ function ActivitySection() {
             console.error('Error removing streak:', error);
             notify("Failed to remove streak", "error");
         }
-    })
+    });
+    const isQuizDoneToday = account.lastDailyQuizDate === todayUTCString;
 
     return (
         <Box id="activity-section-container">
@@ -69,13 +71,13 @@ function ActivitySection() {
                     <ButtonBase 
                         className="daily-item" 
                         onClick={() => setIsQuizModalOpen(true) }
-                        disabled={account.solvedDailyQuizToday}
+                        disabled={isQuizDoneToday}
                         sx={{ display: 'flex', justifyContent: 'space-between' }}
                     >
                         <Box className="daily-item-content">
                             <Typography className="daily-item-title" color="#E7BB41">Quiz of the Day</Typography>
                         </Box>
-                        {account.solvedDailyQuizToday ? (
+                        {isQuizDoneToday ? (
                             <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
                         ) : (
                             <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />

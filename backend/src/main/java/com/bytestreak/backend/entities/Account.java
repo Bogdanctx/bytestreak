@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class Account {
     private int streakLength = 0;
 
     private int coins = 0;
-    private boolean solvedDailyQuizToday = false;
+    private LocalDate lastDailyQuizDate;
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

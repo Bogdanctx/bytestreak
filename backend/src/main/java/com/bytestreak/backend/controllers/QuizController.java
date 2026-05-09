@@ -15,9 +15,9 @@ import com.bytestreak.backend.dto.GenerateQuizRequest;
 import com.bytestreak.backend.dto.DailyQuizResponseDTO;
 import com.bytestreak.backend.dto.QuizSubmissionRequestDTO;
 import com.bytestreak.backend.entities.Quiz;
-import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
+import com.bytestreak.backend.services.DailyChallangesService;
 import com.bytestreak.backend.services.QuizService;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +33,8 @@ public class QuizController {
     private QuizRepository quizRepository;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private DailyChallangesService dailyChallangesService;
+
     
     @PostMapping("/generate-quiz")
     public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request, Authentication authentication) {
@@ -120,7 +121,7 @@ public class QuizController {
         }
     
         try {
-            Quiz dailyQuiz = quizService.getDailyQuiz();
+            Quiz dailyQuiz = quizRepository.findTopByOrderByQueuePriority();
 
             DailyQuizResponseDTO response = new DailyQuizResponseDTO();
             response.id = dailyQuiz.getId();

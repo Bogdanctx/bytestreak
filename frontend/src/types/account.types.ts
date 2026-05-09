@@ -7,7 +7,7 @@ export interface IAccount {
     quizzesSolved: number;
     streakLength: number;
     coins: number;
-    solvedDailyQuizToday: boolean;
+    lastDailyQuizDate: string;
     profilePictureUrl: string;
     friends: IAccount[];
 }
