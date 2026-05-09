@@ -15,12 +15,12 @@ import com.bytestreak.backend.dto.GenerateQuizRequest;
 import com.bytestreak.backend.dto.DailyQuizResponseDTO;
 import com.bytestreak.backend.dto.QuizSubmissionRequestDTO;
 import com.bytestreak.backend.entities.Quiz;
-import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
-import com.bytestreak.backend.services.DailyChallangesService;
 import com.bytestreak.backend.services.QuizService;
 import java.util.List;
+import java.util.Collections;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -31,9 +31,6 @@ public class QuizController {
 
     @Autowired
     private QuizRepository quizRepository;
-
-    @Autowired
-    private DailyChallangesService dailyChallangesService;
 
     
     @PostMapping("/generate-quiz")
@@ -131,7 +128,7 @@ public class QuizController {
             response.answerOptions.add(dailyQuiz.getCorrectAnswer());
 
             // Shuffle the answer options
-            java.util.Collections.shuffle(response.answerOptions);
+            Collections.shuffle(response.answerOptions);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
