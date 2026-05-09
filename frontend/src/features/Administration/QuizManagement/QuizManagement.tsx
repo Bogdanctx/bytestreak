@@ -9,6 +9,8 @@ import { type IQuiz } from '../../../types/quiz.types';
 
 import './QuizManagement.style.css';
 import notify from '../../../components/ui/ToastNotification';
+import QuizManagementCard from './QuizManagementCard/QuizManagementCard';
+import QuizQueueCard from './QuizQueueCard/QuizQueueCard';
 
 export default function QuizManagement() {
     const [bulkCount, setBulkCount] = useState<number>(5);
@@ -175,7 +177,7 @@ export default function QuizManagement() {
             </Box>
 
             <Box id="quiz-management-content">
-                
+
                 <Box id="quiz-queue-wrapper">
                     <Typography id="quiz-list-title" variant="h6">
                         Queue ({quizQueue.length})
@@ -193,37 +195,17 @@ export default function QuizManagement() {
                                                     draggableId={quiz.id ? quiz.id.toString() : `unsaved-${index}`} 
                                                     index={index}
                                                 >
-                                                {(provided) => (
-                                                    <Box
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        className="quiz-card"
-                                                        mb={1.5}
-                                                        onClick={() => setSelectedIndex(index)}
-                                                        sx={{ 
-                                                            cursor: 'pointer',
-                                                            borderColor: selectedIndex === index ? 'var(--accent-main)' : 'var(--bg-3)',
-                                                            boxShadow: selectedIndex === index ? '0 0 0 1px var(--accent-main)' : 'none'
-                                                        }}
-                                                    >
-                                                        <Box className="quiz-card-header" sx={{ p: 1.5 }}>
-                                                            <Box className="quiz-card-header-left">
-                                                                <Box {...provided.dragHandleProps} display="flex" alignItems="center" onClick={(e) => e.stopPropagation()}>
-                                                                    <DragIndicatorIcon sx={{ color: 'var(--text-secondary)', cursor: 'grab', mr: 0.5 }} />
-                                                                </Box>
-                                                                <Typography className="quiz-card-index">#{index + 1}</Typography>
-                                                                <Typography className="quiz-card-preview" sx={{ maxWidth: '120px' }}>
-                                                                    {quiz.programmingLanguage}
-                                                                </Typography>
-                                                            </Box>
-                                                            <Box className="quiz-card-header-right">
-                                                                <IconButton size="small" onClick={(e) => removeQuizFromQueue(e, index)}>
-                                                                    <DeleteIcon sx={{ color: 'var(--difficulty-hard)' }} />
-                                                                </IconButton>
-                                                            </Box>
-                                                        </Box>
-                                                    </Box>
-                                                )}
+                                                {(provided) => 
+                                                    <QuizQueueCard 
+                                                        key={quiz.id ? quiz.id.toString() : `unsaved-${index}`} 
+                                                        quiz={quiz} 
+                                                        quizIndex={index} 
+                                                        provided={provided} 
+                                                        isSelected={selectedIndex === index} 
+                                                        setSelectedQuiz={setSelectedIndex}
+                                                        onRemove={removeQuizFromQueue}
+                                                    />
+                                                }
                                             </Draggable>
                                         ))
                                     )}
@@ -235,7 +217,11 @@ export default function QuizManagement() {
                 </Box>
 
                 <Box id="quiz-preview-container">
-                    a
+                    {selectedIndex !== null && quizQueue[selectedIndex] ? (
+                        <QuizManagementCard quiz={quizQueue[selectedIndex]} />
+                    ) : (
+                        <Typography className="quiz-empty-state">Select a quiz from the queue to preview details.</Typography>
+                    )}
                 </Box>
 
             </Box>

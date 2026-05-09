@@ -11,36 +11,46 @@ export default function QuizManagementCard({ quiz }: QuizManagementCardProps) {
         return null;
     }
 
+    const badgeClass = quiz.programmingLanguage === 'Python' ? 'pending' : 'approved';
+
     return (
-        <Box className="quiz-card preview-mode">
-            <Box className="quiz-card-header">
-                <Typography className="quiz-card-index quiz-card-title">
-                    Quiz Details
+        <Box className="quiz-preview-root">
+            <Box className="quiz-preview-header">
+                <Typography className="quiz-preview-title">
+                    Quiz Preview
                 </Typography>
-                <Typography className={`quiz-status-badge ${quiz.programmingLanguage === 'Python' ? 'PENDING' : 'APPROVED'}`}>
+                <Box className={`quiz-preview-badge ${badgeClass}`}>
                     {quiz.programmingLanguage}
-                </Typography>
+                </Box>
             </Box>
             
-            <Box className="quiz-card-body">
-                <Typography className="quiz-section-label">Source Code</Typography>
-                <Box className="quiz-code-block">
-                    {quiz.codeSnippet}
-                </Box>
-                
-                <Typography className="quiz-section-label mt-2">Answers</Typography>
-                <Box className="quiz-answers-grid">
-                    <Box className="quiz-answer-item correct">
-                        <Box className="quiz-answer-dot correct" />
-                        <Typography className="quiz-answer-text">{quiz.correctAnswer}</Typography>
+            <Box className="quiz-preview-body">
+                <Box className="quiz-code-section">
+                    <Typography className="quiz-section-label">Source Code</Typography>
+                    <Box className="quiz-preview-code">
+                        {quiz.codeSnippet}
                     </Box>
-                    {quiz.distractors.map((ans, i) => (
-                        <Box key={i} className="quiz-answer-item">
-                            <Box className="quiz-answer-dot" />
-                            <Typography className="quiz-answer-text">{ans}</Typography>
-                        </Box>
-                    ))}
                 </Box>
+            
+                <Box className="quiz-answers-section">
+                    <Typography className="quiz-section-label">Possible Answers</Typography>
+                    <Box className="quiz-answers-grid">
+                        
+                        <Box className="quiz-answer-box correct">
+                            <Box className="quiz-answer-indicator correct" />
+                            <Typography className="quiz-answer-text">{quiz.correctAnswer}</Typography>
+                        </Box>
+
+                        {quiz.distractors?.map((answer, index) => (
+                            <Box key={index} className="quiz-answer-box">
+                                <Box className="quiz-answer-indicator" />
+                                <Typography className="quiz-answer-text">{answer}</Typography>
+                            </Box>
+                        ))}
+
+                    </Box>
+                </Box>
+
             </Box>
         </Box>
     );

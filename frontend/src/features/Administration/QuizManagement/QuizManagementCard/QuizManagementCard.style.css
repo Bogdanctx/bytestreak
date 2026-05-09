@@ -1,167 +1,161 @@
-.quiz-card {
+.quiz-preview-root {
+    display: flex;
+    flex-direction: column;
+
     background-color: var(--bg-1);
     border-radius: 12px;
     border: 1px solid var(--bg-3);
-    overflow: hidden;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-}
 
-/* Modificator specific pentru componenta cardului din zona de preview */
-.quiz-card.preview-mode {
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    cursor: default;
+    width: 100%;
 }
 
-.quiz-card:hover {
-    border-color: var(--bg-5);
-}
-
-.quiz-card.preview-mode:hover {
-    border-color: var(--bg-3); /* Anulează hover-ul în modul de preview */
-}
-
-.quiz-card-header {
+.quiz-preview-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    align-items: center;
+    padding: 16px 24px;
     background-color: var(--bg-1);
     border-bottom: 1px solid var(--bg-3);
-    user-select: none;
+
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
-.quiz-card-header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.quiz-card-index {
-    color: var(--text-secondary) !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
+.quiz-preview-title {
     font-family: "Momo Trust Display", sans-serif !important;
-    min-width: 28px;
-}
-
-/* Folosită în locul lui sx={{ fontSize: '1rem', color: var(--text-primary) }} */
-.quiz-card-title {
-    font-size: 1rem !important;
+    font-size: 1.1rem !important;
     color: var(--text-primary) !important;
+    font-weight: 700 !important;
 }
 
-.quiz-status-badge {
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
+.quiz-preview-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 4px 12px;
-    border-radius: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
 }
 
-.quiz-status-badge.PENDING {
+.quiz-preview-badge.pending {
     color: var(--difficulty-medium);
     border: 1px solid rgba(255, 192, 30, 0.3);
     background-color: rgba(255, 192, 30, 0.05);
 }
 
-.quiz-status-badge.APPROVED {
+.quiz-preview-badge.approved {
     color: var(--accent-main);
     border: 1px solid rgba(35, 206, 107, 0.3);
     background-color: rgba(35, 206, 107, 0.05);
 }
 
-.quiz-card-preview {
-    color: var(--text-secondary) !important;
-    font-size: 0.8rem !important;
-    font-family: 'Courier New', monospace !important;
-    max-width: 120px; /* mutat din sx={{ maxWidth: '120px' }} */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.quiz-card-header-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.quiz-card-body {
-    padding: 20px;
+.quiz-preview-body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    flex: 1;
+
+    padding: 24px;
+    gap: 24px;
+
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.quiz-preview-body::-webkit-scrollbar {
+    width: 6px;
+}
+.quiz-preview-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.quiz-preview-body::-webkit-scrollbar-thumb {
+    background: var(--bg-4);
+    border-radius: 4px;
+}
+
+.quiz-answers-section {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 12px;
 }
 
 .quiz-section-label {
     color: var(--text-secondary) !important;
-    font-size: 0.75rem !important;
+    font-size: 0.8rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px !important;
-    margin-top: 0;
+    letter-spacing: 1.5px;
 }
 
-/* Clasă utilitară care înlocuiește mt={2} */
-.quiz-section-label.mt-2 {
-    margin-top: 16px !important;
-}
-
-.quiz-code-block {
+.quiz-preview-code {
     background-color: var(--bg-0);
     border-radius: 8px;
     border: 1px solid var(--bg-3);
     padding: 16px;
     font-family: 'Courier New', monospace;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-primary);
     white-space: pre-wrap;
     word-break: break-all;
-    max-height: fit-content;
-    overflow-y: auto;
     line-height: 1.6;
+    
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.quiz-code-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 12px;
 }
 
 .quiz-answers-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
 }
 
-.quiz-answer-item {
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--bg-3);
-    background-color: var(--bg-2);
+.quiz-answer-box {
     display: flex;
     align-items: center;
     gap: 12px;
+    padding: 16px;
+    background-color: var(--bg-2);
+    border-radius: 8px;
+    border: 1px solid var(--bg-3);
 }
 
-.quiz-answer-item.correct {
+.quiz-answer-box.correct {
     border-color: var(--accent-main);
-    background-color: rgba(35, 206, 107, 0.08);
+    background-color: rgba(35, 206, 107, 0.05);
 }
 
-.quiz-answer-dot {
-    width: 10px;
-    height: 10px;
+.quiz-answer-indicator {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background-color: var(--bg-5);
     flex-shrink: 0;
 }
 
-.quiz-answer-dot.correct {
+.quiz-answer-indicator.correct {
     background-color: var(--accent-main);
+    box-shadow: 0 0 8px rgba(35, 206, 107, 0.4);
 }
 
 .quiz-answer-text {
     font-family: 'Courier New', monospace !important;
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
     color: var(--text-primary) !important;
+}
+
+@media screen and (max-width: 1300px) {
+    .quiz-code-section {
+        min-height: fit-content;
+    }    
 }

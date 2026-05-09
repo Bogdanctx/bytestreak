@@ -11,6 +11,8 @@
 #admin-sidebar {
     background-color: var(--bg-2);
     border-radius: 12px;
+    padding: 16px;
+    min-width: 15%;
 }
 
 .admin-menu-item {
@@ -33,4 +35,11 @@
 #admin-content-area {
     overflow: hidden;
     flex: 1;
+}
+
+
+@media screen and (max-width: 1200px) {
+    #admin-container {
+        flex-direction: column;
+    }
 }
