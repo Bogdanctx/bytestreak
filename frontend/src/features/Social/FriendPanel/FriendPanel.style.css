@@ -25,6 +25,8 @@
     padding: 16px;
     background-color: var(--bg-2);
     border-bottom: 1px solid var(--bg-4);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 .friend-panel-back-btn {
@@ -165,6 +167,9 @@
     padding: 16px;
     background-color: var(--bg-2);
     border-top: 1px solid var(--bg-4);
+
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .friend-panel-file-preview {
