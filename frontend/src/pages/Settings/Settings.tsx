@@ -15,10 +15,14 @@ function Settings() {
                 </Typography>
 
                 <Box width={"100%"} display={"flex"} flexDirection={"column"}>
-                    <Button className="settings-menu-button" fullWidth>
+                    <Button className={`settings-menu-button ${selectedTab === 'account' ? 'active' : ''}`}
+                            onClick={() => setSelectedTab("account")}
+                            fullWidth>
                         Account
                     </Button>
-                    <Button className="settings-menu-button" fullWidth>
+                    <Button className={`settings-menu-button ${selectedTab === 'appearance' ? 'active' : ''}`}
+                            onClick={() => setSelectedTab("appearance")}
+                            fullWidth>
                         Appearance
                     </Button>
                 </Box>
@@ -26,6 +30,7 @@ function Settings() {
 
             <Box id="settings-content">
                 {selectedTab === "account" && <Account />}
+                {/* {selectedTab === "appearance" && <Appearance />} */}
             </Box>
 
         </Box>

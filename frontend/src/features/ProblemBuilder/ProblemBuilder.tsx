@@ -97,7 +97,6 @@ type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const isEditMode = Boolean(id);
 
     const [activeTab, setActiveTab] = useState("markdown");
