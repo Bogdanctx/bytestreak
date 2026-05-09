@@ -53,6 +53,7 @@ function ActivitySection() {
         }
     });
     const isQuizDoneToday = account.lastDailyQuizDate === todayUTCString;
+    const isCodingProblemDoneToday = false;
 
     return (
         <Box id="activity-section-container">
@@ -63,8 +64,15 @@ function ActivitySection() {
                 <Box display={"flex"} flexDirection={"column"} gap={"12px"}>
                     <ButtonBase className="daily-item">
                         <Box className="daily-item-content">
-                            <Typography className="daily-item-label">Problem of the Day</Typography>
-                            <Typography className="daily-item-title">Valid Palindrome</Typography>
+                            <Box>
+                                <Typography className="daily-item-label">Problem of the Day</Typography>
+                                <Typography className="daily-item-title">Valid Palindrome</Typography>    
+                            </Box>
+                            {isCodingProblemDoneToday ? (
+                                <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
+                            ) : (
+                                <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />
+                            )}
                         </Box>
                     </ButtonBase>
 
@@ -76,12 +84,13 @@ function ActivitySection() {
                     >
                         <Box className="daily-item-content">
                             <Typography className="daily-item-title" color="#E7BB41">Quiz of the Day</Typography>
+                        
+                            {isQuizDoneToday ? (
+                                <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
+                            ) : (
+                                <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />
+                            )}
                         </Box>
-                        {isQuizDoneToday ? (
-                            <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
-                        ) : (
-                            <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />
-                        )}
                     </ButtonBase>
                 </Box>
             </Box>
