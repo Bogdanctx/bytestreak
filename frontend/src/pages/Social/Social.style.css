@@ -1,11 +1,23 @@
 .social-container {
     display: flex;
-    justify-content: space-around;
-    height: 100%;
+    flex: 1;
+
+    gap: 24px;
 }
 
-.social-container-column {
+.social-box {
     background-color: var(--bg-2);
-    height: 100%;
-    border-radius: 16px;
+    min-width: 15%;
+    border-radius: 12px;
+    flex: 1;
+}
+
+.feed-box {
+    min-width: 70%;
+}
+
+@media screen and (max-width: 768px) {
+    .social-container {
+        flex-direction: column;
+    }   
 }

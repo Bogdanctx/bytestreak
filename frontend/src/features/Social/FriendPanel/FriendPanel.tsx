@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Box, Typography, Avatar, IconButton, TextField, CircularProgress, Paper } from '@mui/material';
+import { Box, Typography, Avatar, IconButton, TextField, Paper } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -8,18 +8,23 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { type IAccount } from '../../../types/account.types';
 import { type IMessage, type IAttachment } from '../../../types/message.types';
 import { api } from '../../../api';
-import { useAccount } from '../../../hooks/useAccount';
 import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import './FriendPanel.style.css';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Loading from '../../../components/ui/Loading';
 
-function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => void }) {
+interface IFriendPanelProps {
+    account: IAccount;
+    friendId: number;
+    onBack: () => void;
+}
+
+function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
     const queryClient = useQueryClient();
     const [messageInput, setMessageInput] = useState("");
     const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: account, isLoading: isAccountLoading } = useAccount();
     const { stompClient } = useWebSocket();
     const { data: friend, isLoading: isFriendLoading } = useQuery<IAccount>({
         queryKey: ['friend', friendId],
@@ -81,6 +86,7 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         const messageDTO = {
             text: messageInput,
             attachments: selectedFiles.map(file => ({
+                id: null,
                 filename: file.filename,
                 filedata: file.filedata
             }))
@@ -129,11 +135,9 @@ function FriendPanel({ friendId, onBack }: { friendId: number; onBack: () => voi
         });
     };
 
-    if (!friend || !account || isAccountLoading || isFriendLoading) {
+    if (!friend || isFriendLoading) {
         return (
-            <Box className="friend-panel-loading">
-                <CircularProgress className="friend-panel-progress" />
-            </Box>
+            <Loading />
         );
     }
 

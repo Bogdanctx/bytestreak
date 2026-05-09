@@ -7,27 +7,36 @@ import FriendPanel from '../../features/Social/FriendPanel/FriendPanel';
 import Master from '../../features/Social/Master/Master';
 import { type IAccount } from '../../types/account.types';
 import './Social.style.css';
+import { useAccount } from '../../hooks/useAccount';
+import Loading from '../../components/ui/Loading';
 
 function Social() {
+    const { data: account } = useAccount();
     const [selectedFriend, setSelectedFriend] = useState<IAccount | null>(null);
+
+    if (!account) {
+        return <Loading />;
+    }
 
     return (
         <Box className='social-container'>
-            <Box className='social-container-column' sx={{ width: '18%' }}>
-                <Master setSelectedFriend={setSelectedFriend} />
+            
+            <Box className='social-box'>
+                <Master account={account} setSelectedFriend={setSelectedFriend} />
             </Box>
-            <Box className='social-container-column' sx={{ width: '60%' }}>
+            
+            <Box className='social-box' sx={{ minWidth: "60%" }} >
                 {selectedFriend ? (
-                    <FriendPanel 
-                        friendId={selectedFriend.id}
-                        onBack = {() => setSelectedFriend(null)}/>
+                    <FriendPanel account={account} friendId={selectedFriend.id} onBack = {() => setSelectedFriend(null)}/>
                 ) : (
                     <Feed />
                 )}
             </Box>
-            <Box className='social-container-column' sx={{ width: '20%', padding: 2 }}>
-                <Discover />
+            
+            <Box className='social-box'>
+                <Discover account={account} />
             </Box>
+        
         </Box>
     );
 }

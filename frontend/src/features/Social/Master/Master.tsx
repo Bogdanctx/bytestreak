@@ -15,9 +15,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 
-function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAction<IAccount | null>> }) {
+interface IMasterProps {
+    account: IAccount;
+    setSelectedFriend: Dispatch<SetStateAction<IAccount | null>>;
+}
+
+function Master({ account, setSelectedFriend }: IMasterProps) {
     const queryClient = useQueryClient();
-    const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
     const { data: streakInvites = [] } = useQuery<IStreakInvite[]>({

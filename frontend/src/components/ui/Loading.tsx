@@ -1,11 +1,10 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Loading() {
     return (
-        <Box id="loading-container">
-            <Typography variant="h5" className="loading-text">
-                Loading...
-            </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
         </Box>
     )
 }

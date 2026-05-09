@@ -12,12 +12,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
 import { type IFriendInvite } from '../../../types/invite.types';
+import { type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
-import { useAccount } from '../../../hooks/useAccount';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
 
-function Discover() {
-    const { data: account } = useAccount();
+interface IDiscoverProps {
+    account: IAccount;
+}
+
+function Discover({ account }: IDiscoverProps) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
@@ -37,8 +40,7 @@ function Discover() {
         queryFn: async () => {
             const response = await api.get('/friends/sent-connections');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
     const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
@@ -46,8 +48,7 @@ function Discover() {
         queryFn: async () => {
             const response = await api.get('/friends/pending-connections');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
     useEffect(() => {
@@ -76,8 +77,6 @@ function Discover() {
     });
 
     const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
-
-    console.log('Discover Accounts:', discoverAccounts);
 
     return (
         <Box className="discover-container">
