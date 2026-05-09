@@ -10,6 +10,7 @@ import { useAccount } from '../../hooks/useAccount';
 import { type IProblem } from '../../types/problem.types';
 import './Creator.style.css';
 import notify from '../../components/ui/ToastNotification';
+import Loading from '../../components/ui/Loading';
 
 function Creator() {
     const navigate = useNavigate();
@@ -18,10 +19,11 @@ function Creator() {
     const { data: createdProblems = [] } = useQuery<IProblem[]>({
         queryKey: ['createdProblems'],
         queryFn: async () => {
+            if (!account) return [];
+
             const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
             return response.data;
-        },
-        enabled: !!account
+        }
     });
     const deleteCodingProblemMutation = useMutation({
         mutationFn: async (problemId: number) => {
@@ -52,8 +54,12 @@ function Creator() {
         }
     };
 
+    if (!account) {
+        return <Loading />;
+    }
+
     return (
-        <Box className="creator-page">
+        <Box className="creator-container">
             <Box className="creator-page-header">
                 <Box>
                     <Typography className="creator-page-header-title" variant="h6">Overview</Typography>
