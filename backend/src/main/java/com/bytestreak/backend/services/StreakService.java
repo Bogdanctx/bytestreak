@@ -109,19 +109,37 @@ public class StreakService {
                 streak.setParticipant2SolvedToday(true);
             }
 
+            streak.setOldLength(streak.getLength());
+
             if (isCorrect) {
-                // Only increase the streak length if both participants have solved their daily quiz today
+                // increase the streak length if both participants have solved their daily quiz today
                 if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
                     streak.setLength(streak.getLength() + 1);
                 }
             }
             else {
-                // Reset the streak length if either participant got their daily quiz wrong
+                // reset the streak length if either participant got their daily quiz wrong
                 streak.setLength(0);
             }
         }
 
         streakRepository.saveAll(activeStreaks);
+    }
+
+    public void saveStreakOfUser(Account solver) {
+        List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
+        if (activeStreaks.isEmpty()) {
+            return;
+        }
+
+        if (solver.getCoins() < 15) {
+            throw new IllegalArgumentException("Not enough coins to save the streak");
+        }
+
+        for (Streak streak: activeStreaks) {
+            streak.setLength(streak.getOldLength());
+            streakRepository.save(streak);
+        }
     }
 
 }

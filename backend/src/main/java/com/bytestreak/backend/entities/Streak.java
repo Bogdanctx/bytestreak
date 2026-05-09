@@ -29,4 +29,5 @@ public class Streak {
     private boolean participant2SolvedToday = false;
 
     private int length = 0;
+    private int oldLength = 0;
 }

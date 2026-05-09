@@ -3,6 +3,7 @@ import { Box, Typography, Button, Modal, CircularProgress, Avatar, ButtonBase } 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import { api } from '../../../../api';
 import { type IAccount } from '../../../../types/account.types';
 import { type IStreak } from '../../../../types/streak.types';
@@ -19,7 +20,7 @@ interface QuizOfTheDayProps {
 
 export default function QuizOfTheDay({ open, onClose, account, streaks, onComplete }: QuizOfTheDayProps) {
     // `step` is used to manage the different states of the quiz modal: loading the quiz, showing the quiz, and showing the success screen after completion
-    const [step, setStep] = useState<'LOADING' | 'QUIZ' | 'SUCCESS'>('LOADING');
+    const [step, setStep] = useState<'LOADING' | 'QUIZ' | 'SUCCESS' | 'MISTAKE'>('LOADING');
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [answerStatus, setAnswerStatus] = useState<'IDLE' | 'CORRECT' | 'WRONG'>('IDLE');
     
@@ -54,10 +55,24 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                 setAnswerStatus('WRONG');
             
                 setTimeout(() => {
-                    onClose();
+                    onComplete();
+                    setStep('MISTAKE');
                 }, 1500);
             
             }
+        }
+    });
+    const saveStreakMutation = useMutation({
+        mutationFn: async () => {
+            const res = await api.post('/streaks/freeze-daily');
+            return res.data;
+        },
+        onSuccess: () => {
+            onComplete();
+            onClose();
+        },
+        onError: (error) => {
+            console.error("Error saving streak:", error);
         }
     });
 
@@ -149,10 +164,10 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                         {friendSolved ? (
                                             <Box className="qotd-streak-increase-anim">
                                                 <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
-                                                    {streak.length}
+                                                    {streak.length - 1}
                                                 </Typography>
                                                 <Typography color="var(--accent-main)" fontWeight="bold">
-                                                    {streak.length + 1}
+                                                    {streak.length}
                                                 </Typography>
                                                 <LocalFireDepartmentIcon sx={{ color: '#ff9800', ml: 0.5 }} />
                                             </Box>
@@ -170,6 +185,94 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                         </Box>
 
                         <Button className="qotd-close-btn" onClick={onClose}>Awesome!</Button>
+                    </Box>
+                )}
+                {step === 'MISTAKE' && (
+                    <Box 
+                        className="qotd-mistake-screen qotd-fade-in" 
+                        sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            alignItems: 'center', 
+                            textAlign: 'center',
+                            gap: 2,
+                            p: 3
+                        }}
+                    >
+                        <SentimentDissatisfiedIcon sx={{ fontSize: 64, color: 'var(--text-secondary)' }} />
+                        
+                        <Box>
+                            <Typography variant="h4" className="qotd-title" sx={{ fontWeight: 700, mb: 1 }}>
+                                Not Quite...
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: 'var(--text-secondary)' }}>
+                                Your answer was incorrect.
+                            </Typography>
+                        </Box>
+
+                        <Box 
+                            sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: 1, 
+                                px: 2, 
+                                py: 1, 
+                                mt: 1,
+                                borderRadius: 2, 
+                                backgroundColor: 'rgba(255, 68, 68, 0.1)',
+                                border: '1px solid rgba(255, 68, 68, 0.2)'
+                            }}
+                        >
+                            <LocalFireDepartmentIcon sx={{ color: '#FF4444' }} />
+                            <Typography variant="body2" sx={{ color: '#FF4444', fontWeight: 600 }}>
+                                The streak is now over!
+                            </Typography>
+                        </Box>
+
+                        <Box sx={{ display: 'flex', gap: 2, mt: 3, width: '100%', justifyContent: 'center' }}>
+                            <Button 
+                                className="qotd-close-btn" 
+                                variant="outlined"
+                                onClick={onClose}
+                                sx={{ 
+                                    borderColor: 'var(--text-secondary)', 
+                                    color: 'var(--text-secondary)',
+                                    '&:hover': {
+                                        borderColor: 'white',
+                                        color: 'white'
+                                    }
+                                }}
+                            >
+                                Accept Defeat
+                            </Button>
+
+                            <Button 
+                                variant="contained"
+                                onClick={() => saveStreakMutation.mutate()}
+                                disabled={account.coins < 15 || saveStreakMutation.isPending}
+                                sx={{ 
+                                    backgroundColor: '#E7BB41', // Gold coin color
+                                    color: '#000',
+                                    fontWeight: 700,
+                                    fontFamily: '"Momo Trust Display", sans-serif',
+                                    px: 3,
+                                    '&:hover': {
+                                        backgroundColor: '#d4a936'
+                                    },
+                                    '&.Mui-disabled': {
+                                        backgroundColor: 'rgba(231, 187, 65, 0.2)',
+                                        color: 'rgba(255, 255, 255, 0.3)'
+                                    }
+                                }}
+                            >
+                                {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (15 Coins)'}
+                            </Button>
+                        </Box>
+                        {account.coins < 15 && (
+                            <Typography variant="caption" sx={{ color: 'var(--difficulty-hard)', mt: 1 }}>
+                                Not enough coins. You have {account.coins}.
+                            </Typography>
+                        )}
                     </Box>
                 )}
             </Box>

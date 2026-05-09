@@ -215,9 +215,10 @@ public class QuizService {
             solver.setCurrentXP(solver.getCurrentXP() + 10);
             solver.setQuizzesSolved(solver.getQuizzesSolved() + 1);
             solver.setCoins(solver.getCoins() + 5);
-            solver.setLastDailyQuizDate(today);
-            accountRepository.save(solver);
         }
+
+        solver.setLastDailyQuizDate(today);
+        accountRepository.save(solver);
 
         streakService.handleSolvedDailyQuiz(solver, isCorrect);
 

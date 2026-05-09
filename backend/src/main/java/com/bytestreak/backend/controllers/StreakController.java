@@ -4,6 +4,7 @@ import com.bytestreak.backend.services.StreakService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -141,5 +144,21 @@ public class StreakController {
 
         streakService.removeStreakBetweenUsers(participant1, participant2);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("save-streak")
+    public ResponseEntity<?> saveStreak(@RequestParam Long streakId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to save a streak.");
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+    
+        try {
+            streakService.saveStreakOfUser(me);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
