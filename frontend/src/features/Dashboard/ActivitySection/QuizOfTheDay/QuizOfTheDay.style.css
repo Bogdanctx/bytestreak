@@ -3,6 +3,11 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(4px);
+
+    height: 100%;
+    width: 100%;
+
+    overflow-y: auto;
 }
 
 .qotd-modal-content {
@@ -10,10 +15,10 @@
     border: 1px solid var(--bg-3);
     border-radius: 16px;
     padding: 32px;
-    width: 600px;
-    max-width: 90vw;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
     outline: none;
+
+    max-width: 500px;
+    width: 90%;
 }
 
 .qotd-fade-in {

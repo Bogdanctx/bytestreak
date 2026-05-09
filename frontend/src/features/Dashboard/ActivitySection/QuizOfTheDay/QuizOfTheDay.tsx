@@ -9,6 +9,7 @@ import { type IAccount } from '../../../../types/account.types';
 import { type IStreak } from '../../../../types/streak.types';
 import { type IDailyQuizForm } from '../../../../types/quiz.types';
 import './QuizOfTheDay.style.css';
+import Loading from '../../../../components/ui/Loading';
 
 interface QuizOfTheDayProps {
     open: boolean;
@@ -32,6 +33,12 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
         },
         enabled: open
     });
+
+    if (!dailyQuiz) {
+        return (
+            <Loading />
+        )
+    }
 
     const submitQuizMutation = useMutation({
         mutationFn: async () => {
