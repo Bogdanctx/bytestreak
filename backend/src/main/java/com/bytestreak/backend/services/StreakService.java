@@ -104,17 +104,21 @@ public class StreakService {
         
             if (isParticipant1) {
                 streak.setParticipant1SolvedToday(true);
+                streak.setParticipant1SolvedCorrectly(isCorrect);
             }
             else {
                 streak.setParticipant2SolvedToday(true);
+                streak.setParticipant2SolvedCorrectly(isCorrect);
             }
 
             streak.setOldLength(streak.getLength());
 
             if (isCorrect) {
-                // increase the streak length if both participants have solved their daily quiz today
+                // increase the streak length if both participants have solved their daily quiz correctly today
                 if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
-                    streak.setLength(streak.getLength() + 1);
+                    if (streak.isParticipant1SolvedCorrectly() && streak.isParticipant2SolvedCorrectly()) {
+                        streak.setLength(streak.getLength() + 1);
+                    }
                 }
             }
             else {

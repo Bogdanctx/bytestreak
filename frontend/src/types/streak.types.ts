@@ -8,6 +8,9 @@ export interface IStreak {
 
     participant1SolvedToday: boolean;
     participant2SolvedToday: boolean;
+
+    participant1SolvedCorrectly: boolean;
+    participant2SolvedCorrectly: boolean;
 }
 
 export interface IStreakInvite {

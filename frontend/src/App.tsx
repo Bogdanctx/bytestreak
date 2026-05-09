@@ -14,6 +14,7 @@ import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
 import Layout from './components/ui/Layout.tsx';
+import ProtectedRoute from './components/ProtectedRoute.tsx';
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
 
-                            <Route element={<Layout />}>
+                            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />

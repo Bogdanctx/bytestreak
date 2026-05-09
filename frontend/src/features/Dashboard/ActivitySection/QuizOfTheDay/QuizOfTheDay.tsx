@@ -34,12 +34,6 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
         enabled: open
     });
 
-    if (!dailyQuiz) {
-        return (
-            <Loading />
-        )
-    }
-
     const submitQuizMutation = useMutation({
         mutationFn: async () => {
             const res = await api.post(`/quizzes/daily/submit-answer`, {
@@ -159,8 +153,10 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                             {streaks.map(streak => {
                                 const isMeP1 = streak.participant1.id === account.id;
                                 const friend = isMeP1 ? streak.participant2 : streak.participant1;
-                                const friendSolved = isMeP1 ? streak.participant2SolvedToday : streak.participant1SolvedToday;
                                 
+                                const friendSolved = isMeP1 ? streak.participant2SolvedToday : streak.participant1SolvedToday;
+                                const friendSolvedCorrectly = isMeP1 ? streak.participant2SolvedCorrectly : streak.participant1SolvedCorrectly;
+
                                 return (
                                     <Box key={streak.id} className="qotd-streak-item">
                                         <Box display="flex" alignItems="center" gap={1.5}>
@@ -168,7 +164,19 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                             <Typography color="var(--text-primary)">{friend.username}</Typography>
                                         </Box>
                                         
-                                        {friendSolved ? (
+                                        {!friendSolved && (
+                                            <Typography color="var(--text-secondary)" fontSize="0.8rem">
+                                                Waiting for friend...
+                                            </Typography>
+                                        )}
+
+                                        {friendSolved && !friendSolvedCorrectly && (
+                                            <Typography sx={{ color: 'var(--difficulty-hard)' }} fontSize="0.8rem">
+                                                Friend missed it 😢
+                                            </Typography>
+                                        )}
+
+                                        {friendSolved && friendSolvedCorrectly && (
                                             <Box className="qotd-streak-increase-anim">
                                                 <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
                                                     {streak.length - 1}
@@ -178,10 +186,6 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                                 </Typography>
                                                 <LocalFireDepartmentIcon sx={{ color: '#ff9800', ml: 0.5 }} />
                                             </Box>
-                                        ) : (
-                                            <Typography color="var(--text-secondary)" fontSize="0.8rem">
-                                                Waiting for friend...
-                                            </Typography>
                                         )}
                                     </Box>
                                 );

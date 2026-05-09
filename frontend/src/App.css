@@ -24,3 +24,7 @@
     --difficulty-medium: #ffc01e;
     --difficulty-hard: #ff375f;
 }
+
+body {
+    background-color: var(--bg-0) !important;
+}
