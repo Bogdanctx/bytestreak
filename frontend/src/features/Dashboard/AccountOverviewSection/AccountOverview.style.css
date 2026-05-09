@@ -99,7 +99,6 @@
     margin-bottom: 28px !important;
 }
 
-/* Container-ul pentru statistici stilizat sub formă de grid cu carduri */
 #account-overview-stats-container {
     display: flex;
     gap: 16px;
@@ -135,7 +134,7 @@
 }
 
 .account-overview-streak-value {
-    color: #FF7B00 !important; /* Culoare mai apropiată de "foc" */
+    color: #FF7B00 !important;
 }
 
 .account-overview-stat-label {
@@ -150,7 +149,6 @@
     font-size: 1rem;
 }
 
-/* Responsivitate îmbunătățită */
 @media (max-width: 768px) {
     #account-overview-stats-container {
         grid-template-columns: repeat(2, 1fr);

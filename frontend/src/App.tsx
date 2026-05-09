@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Box, CssBaseline } from '@mui/material';
 
@@ -13,7 +13,7 @@ import Social from './pages/Social/Social.tsx';
 import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
-import Navbar from './components/navbar/Navbar.tsx';
+import Layout from './components/ui/Layout.tsx';
 
 const queryClient = new QueryClient();
 
@@ -30,7 +30,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
 
-                            <Route element={<><Navbar /><Outlet /></>}>
+                            <Route element={<Layout />}>
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />

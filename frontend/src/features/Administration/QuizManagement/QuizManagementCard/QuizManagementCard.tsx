@@ -12,12 +12,9 @@ export default function QuizManagementCard({ quiz }: QuizManagementCardProps) {
     }
 
     return (
-        <Box 
-            className="quiz-card" 
-            sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', borderTop: 'none' }}
-        >
+        <Box className="quiz-card preview-mode">
             <Box className="quiz-card-header">
-                <Typography className="quiz-card-index" sx={{ fontSize: '1rem !important', color: 'var(--text-primary) !important' }}>
+                <Typography className="quiz-card-index quiz-card-title">
                     Quiz Details
                 </Typography>
                 <Typography className={`quiz-status-badge ${quiz.programmingLanguage === 'Python' ? 'PENDING' : 'APPROVED'}`}>
@@ -25,12 +22,13 @@ export default function QuizManagementCard({ quiz }: QuizManagementCardProps) {
                 </Typography>
             </Box>
             
-            <Box className="quiz-card-body" sx={{ flex: 1, overflowY: 'auto' }}>
+            <Box className="quiz-card-body">
+                <Typography className="quiz-section-label">Source Code</Typography>
                 <Box className="quiz-code-block">
                     {quiz.codeSnippet}
                 </Box>
                 
-                <Typography className="quiz-section-label" mt={2}>Answers</Typography>
+                <Typography className="quiz-section-label mt-2">Answers</Typography>
                 <Box className="quiz-answers-grid">
                     <Box className="quiz-answer-item correct">
                         <Box className="quiz-answer-dot correct" />

@@ -24,12 +24,3 @@
     --difficulty-medium: #ffc01e;
     --difficulty-hard: #ff375f;
 }
-
-#app-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 100vh;
-    min-width: 100vw;
-    padding: 12px;
-}

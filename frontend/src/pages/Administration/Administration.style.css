@@ -1,31 +1,16 @@
 #admin-container {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
     height: 100%;
     width: 100%;
-    display: flex;
+
     gap: 16px;
-    padding: 24px;
-    box-sizing: border-box;
-    overflow: hidden;
 }
 
 #admin-sidebar {
-    background-color: var(--bg-1);
-    border-radius: 16px;
-    width: 250px;
-    padding: 24px 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-}
-
-#admin-content-area {
-    background-color: var(--bg-1);
-    border-radius: 16px;
-    flex: 1;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    overflow-y: auto;
+    background-color: var(--bg-2);
+    border-radius: 12px;
 }
 
 .admin-menu-item {
@@ -43,4 +28,9 @@
     background-color: var(--bg-4) !important;
     color: var(--text-primary) !important;
     font-weight: bold;
+}
+
+#admin-content-area {
+    overflow: hidden;
+    flex: 1;
 }

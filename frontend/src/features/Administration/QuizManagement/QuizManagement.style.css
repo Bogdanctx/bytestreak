@@ -1,101 +1,56 @@
 #quiz-management-container {
-    height: 100%;
+    background-color: var(--bg-2);
+    border-radius: 12px;
+
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    overflow: hidden;
-}
-
-#quiz-management-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.quiz-toolbar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.quiz-btn-generate {
-    background-color: var(--accent-main) !important;
-    color: #000 !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    border-radius: 10px !important;
-    padding: 8px 20px !important;
-    transition: all 0.2s ease !important;
-}
-
-.quiz-btn-generate:hover {
-    background-color: #1db85e !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(35, 206, 107, 0.3) !important;
-}
-
-.quiz-btn-generate:disabled {
-    background-color: var(--bg-4) !important;
-    color: var(--text-secondary) !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.quiz-btn-create {
-    border: 1px solid var(--bg-4) !important;
-    color: var(--text-primary) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    border-radius: 10px !important;
-    padding: 8px 20px !important;
-    transition: all 0.2s ease !important;
-}
-
-.quiz-btn-create:hover {
-    background-color: var(--bg-3) !important;
-    border-color: var(--accent-main) !important;
-}
-
-#quiz-list-container {
     flex: 1;
-    min-height: 0;
-    overflow-y: scroll;
-    gap: 10px;
-    padding-right: 4px;
+
+    gap: 8px;
+    padding: 8px;
+
+    height: 100%;
+    width: 100%;
 }
 
-#quiz-list-container::-webkit-scrollbar {
-    width: 6px;
+#quiz-management-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px;
+    background-color: var(--bg-1);
+    border-radius: 12px;
 }
 
-#quiz-list-container::-webkit-scrollbar-track {
-    background: transparent;
+#quiz-select-programming-language {
+    background-color: var(--bg-2);
+    color: var(--text-primary);
+    min-width: 120px;
 }
 
-#quiz-list-container::-webkit-scrollbar-thumb {
-    background: var(--bg-4);
-    border-radius: 4px;
+#quiz-custom-topic {
+    background-color: var(--bg-2);
+    width: 200px;
+    color: var(--text-primary);
 }
 
-.quiz-empty-state {
-    color: var(--text-secondary) !important;
-    text-align: center;
-    padding: 48px 0;
+.quiz-generate-button {
+    background-color: var(--bg-7) !important; 
+    color: var(--text-primary) !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: background-color 0.2s !important;
 }
 
-.quiz-modal-btn-save {
-    background-color: var(--accent-main) !important;
-    color: #000 !important;
+#quiz-bulk-count {
+    background-color: var(--bg-2);
+    width: 80px;
+    color: var(--text-primary);
+}
+
+#quiz-save-quizzes-button {
+    background-color: var(--bg-7) !important;
+    color: var(--text-primary) !important;
     font-family: "Momo Trust Display", sans-serif !important;
     font-weight: 700 !important;
     font-size: 0.8rem !important;
@@ -105,11 +60,41 @@
     padding: 8px 24px !important;
 }
 
-.quiz-modal-btn-save:hover {
-    background-color: #1db85e !important;
-}
-
-.quiz-modal-btn-save:disabled {
+#quiz-save-quizzes-button:disabled {
     background-color: var(--bg-4) !important;
     color: var(--text-secondary) !important;
+}
+
+
+
+#quiz-management-content {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+
+    height: 100%;
+    width: 100%;
+
+    overflow: hidden;
+}
+
+#quiz-queue-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+
+    background-color: var(--bg-1);
+}
+
+#quiz-list-title {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    padding: 16px;
+    border-bottom: 1px solid var(--bg-3);
+}
+
+#quiz-scrollable-list {
+    overflow-y: auto;
 }
