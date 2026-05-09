@@ -113,7 +113,9 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         MY FRIENDS ({account.friends.length})
                     </Typography>
                 </Box>
+
                 
+
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
                     {account.friends.map((friend) => {
                         const isInvitePending = streakInvites.some(invite => 
