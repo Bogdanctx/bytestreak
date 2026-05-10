@@ -1,70 +1,151 @@
-#landing-logo-container {
-    width: 50vw;
-    justify-content: center;
-    align-items: center;
-    display: flex;
+#landing-root {
+    background-color: var(--bg-0);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+@media screen and (max-width: 1200px) {
+    #landing-root {
+        overflow: auto;
+    }
 }
 
 #landing-stack {
     height: 100vh;
+    position: relative;
+    z-index: 2;
+}
+
+#landing-hero-container {
+    width: 55vw;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4vw;
+    background: radial-gradient(circle at 50% 50%, rgba(35, 206, 107, 0.05) 0%, rgba(0,0,0,0) 70%);
+}
+
+#landing-logo-container {
+    margin-bottom: 24px;
+    z-index: 2;
+}
+
+#landing-code-background {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    right: 5%;
+    bottom: 10%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    color: var(--accent-main);
+    opacity: 0.15;
+    white-space: pre-wrap;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+}
+
+.blinking-cursor::after {
+    content: '|';
+    animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+#landing-auth-container {
+    width: 45vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#landing-auth-container::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: var(--accent-main);
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.1;
+    z-index: 0;
 }
 
 #landing-auth-content {
     display: grid;
     width: 100%;
     place-items: center;
+    z-index: 2;
 }
 
 #landing-auth-content > * {
     grid-area: 1 / 1;
     width: 100%;
-    max-width: 30vw;
-}
-
-#landing-auth-container {
-    width: 50vw;
-    justify-content: center;
-    align-items: center;
-    display: flex;
+    max-width: 450px;
 }
 
 #landing-tagline {
     color: var(--text-primary);
-    font-family: "Momo Trust Display";
-    margin-bottom: 0.5vw;
+    font-family: "Momo Trust Display", sans-serif !important;
+    margin-bottom: 32px !important;
+    font-weight: 700 !important;
 }
 
-/* Login Button */
 #landing-login-btn {
-    background-color: var(--accent-main);
-    font-family: "Momo Trust Display";
+    background-color: var(--accent-main) !important;
+    color: #000 !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+    padding: 12px 0 !important;
+    border-radius: 12px !important;
 }
+
 #landing-login-btn:hover {
-    background-color: var(--accent-hover);
+    background-color: var(--accent-hover) !important;
+    box-shadow: 0 4px 20px rgba(35, 206, 107, 0.4);
 }
-/****************************************/
 
-/* Signup Button */
 #landing-signup-btn {
-    font-family: "Momo Trust Display";
-    color: var(--text-primary);
-    border-color: var(--accent-main);
+    font-family: "Momo Trust Display", sans-serif !important;
+    color: var(--text-primary) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    padding: 12px 0 !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
 }
-#landing-signup-btn:hover {
-    color: var(--text-primary);
-    border-color: var(--accent-hover);
-}
-/****************************************/
 
-/* Stack Divider */
+#landing-signup-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--text-primary) !important;
+}
+
 #landing-page-stack-divider {
-    background-color: var(--bg-8);
-    height: 50vh;
+    background-color: rgba(255, 255, 255, 0.05);
+    height: 60vh;
     align-self: center;
 }
 
-/* Back Button */
-.landing-back-btn {
-    margin-top: 1vw;
-    color: var(--text-primary);
+@media (max-width: 900px) {
+    #landing-hero-container, #landing-auth-container {
+        width: 100vw;
+        padding: 24px;
+    }
+    
+    #landing-stats-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    #landing-code-background {
+        font-size: 0.8rem;
+    }
 }

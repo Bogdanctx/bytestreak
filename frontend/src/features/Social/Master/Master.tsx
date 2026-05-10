@@ -5,7 +5,6 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useAccount } from '../../../hooks/useAccount';
 import { type IAccount } from '../../../types/account.types';
 import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
@@ -48,6 +47,8 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
             return response.data;
         },
         onSuccess: () => {
+            if (!friendToRemove) return;
+
             setSelectedFriend(null);
             setFriendToRemove(null);
             queryClient.invalidateQueries({ queryKey: ['account'] });

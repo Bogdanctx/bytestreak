@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';

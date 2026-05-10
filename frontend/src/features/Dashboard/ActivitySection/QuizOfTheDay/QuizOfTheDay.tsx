@@ -35,6 +35,10 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
 
     const submitQuizMutation = useMutation({
         mutationFn: async () => {
+            if (!dailyQuiz) {
+                throw new Error("Daily quiz data is not available");
+            }
+
             const res = await api.post(`/quizzes/daily/submit-answer`, {
                 quizId: dailyQuiz.id,
                 selectedAnswer: selectedAnswer

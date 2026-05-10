@@ -15,6 +15,7 @@ import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
 import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
+import MagicLoginHandler from './features/Auth/MagicLoginHandler.tsx';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
 
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
+                            <Route path="/magic-login" element={<MagicLoginHandler />} />
 
                             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                                 <Route path="/dashboard" element={<Dashboard />} />

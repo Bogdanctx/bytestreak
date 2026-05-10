@@ -12,7 +12,7 @@ import notify from '../../components/ui/ToastNotification';
 
 interface CodeEditorWindowProps {
     problemId: number;
-    codeTemplates: { [key: string]: { starter_code: string } };
+    codeTemplates: any;
     setActiveTab: (tab: string) => void;
     setResults: (results: ISubmissionResult[]) => void;
 }

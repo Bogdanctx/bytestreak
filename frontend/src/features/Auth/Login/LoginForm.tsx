@@ -7,9 +7,8 @@ import { type LoginFormInputs } from '../../../types/auth.types';
 import './LoginForm.style.css';
 import { useMutation } from '@tanstack/react-query';
 
-
 interface LoginFormProps {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'forgot-password' | null>>;
 };
 
 const LOGIN_FORM_VALIDATION_RULES = {
@@ -32,6 +31,7 @@ function LoginForm(props: LoginFormProps) {
             password: ""
         }
     });
+
     const loginMutation = useMutation({
         mutationFn: async (data: LoginFormInputs) => {
             const response = await api.post("auth/login", data);
@@ -54,64 +54,86 @@ function LoginForm(props: LoginFormProps) {
     }
 
     return (
-        <Box id="login-container">
-            <Box id="login-header">
-                <Typography id="login-title">
-                    Login to Your Account
+        <Box className="auth-container">
+            <Box className="auth-header">
+                <Typography className="auth-title">
+                    Welcome Back
+                </Typography>
+                <Typography className="auth-subtitle">
+                    Log in to continue your streak
                 </Typography>
             </Box>
-            <Box id="login-form-container">
+            
+            <Box className="auth-form-container">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    { /* Email */ }
                     <Controller
-                        control = { control }
-                        name = "email"
-                        rules = { LOGIN_FORM_VALIDATION_RULES.email }
+                        control={control}
+                        name="email"
+                        rules={LOGIN_FORM_VALIDATION_RULES.email}
                         render={({ field }) => (
                             <TextField 
                                 {...field} 
-                                className="login-textfield"
-                                label = "Email"
-                                variant = "outlined"
-                                placeholder = "Enter your email"
-                                helperText = {
-                                    errors.email ? errors.email.message : ""
-                                }
-                                error = { !!errors.email }
+                                className="auth-textfield"
+                                label="Email"
+                                variant="outlined"
+                                placeholder="Enter your email"
+                                helperText={errors.email ? errors.email.message : ""}
+                                error={!!errors.email}
                                 margin="normal"
                                 fullWidth
                             />
                         )}
                     />
 
-                    { /* Password */ }
                     <Controller
-                        control = { control }
-                        name = "password"
-                        rules = { LOGIN_FORM_VALIDATION_RULES.password }
+                        control={control}
+                        name="password"
+                        rules={LOGIN_FORM_VALIDATION_RULES.password}
                         render={({ field }) => (
                             <TextField 
                                 {...field}
                                 fullWidth
-                                className="login-textfield"
-                                type = "password"
-                                label = "Password"
-                                variant = "outlined"
-                                placeholder = "Enter your password"
-                                margin = "normal"
-                                error = { !!errors.password }
-                                helperText = { errors.password ? errors.password.message : "" }
+                                className="auth-textfield"
+                                type="password"
+                                label="Password"
+                                variant="outlined"
+                                placeholder="Enter your password"
+                                margin="normal"
+                                error={!!errors.password}
+                                helperText={errors.password ? errors.password.message : ""}
                             />
                         )}
                     />
 
-                    
-                    <Button id="login-button" variant = "contained" type = "submit" fullWidth>
-                        login
-                    </Button>
-                    <Button id="login-back-button" onClick={() => props.setShowAuthState(null)} variant = "contained" fullWidth>
-                        back
-                    </Button>
+                    <Box display="flex" justifyContent="flex-end" mt={0.5} mb={2}>
+                        <Typography 
+                            variant="body2" 
+                            className="forgot-password-link"
+                            onClick={() => props.setShowAuthState('forgot-password')}
+                        >
+                            Forgot password?
+                        </Typography>
+                    </Box>
+
+                    <Box className="auth-actions">
+                        <Button 
+                            className="auth-primary-btn" 
+                            variant="contained" 
+                            type="submit" 
+                            fullWidth
+                            disabled={loginMutation.isPending}
+                        >
+                            {loginMutation.isPending ? "Logging in..." : "Login"}
+                        </Button>
+                        <Button 
+                            className="auth-secondary-btn" 
+                            onClick={() => props.setShowAuthState(null)} 
+                            variant="outlined" 
+                            fullWidth
+                        >
+                            Back
+                        </Button>
+                    </Box>
                 </form>
             </Box>
         </Box>

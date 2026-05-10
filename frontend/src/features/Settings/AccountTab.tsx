@@ -45,7 +45,7 @@ function Account() {
             const response = await api.patch('/accounts/update', formData);
             return response.data;
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['account'] });
             notify("Your account has been updated successfully.", "success");
         },
