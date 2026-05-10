@@ -8,6 +8,16 @@
     gap: 16px;
 }
 
+@media screen and (max-width: 1200px) {
+    #admin-container {
+        display: block;
+        overflow: auto;
+    }
+    #admin-sidebar {
+        margin-bottom: 16px;
+    }
+}
+
 #admin-sidebar {
     background-color: var(--bg-2);
     border-radius: 12px;
@@ -35,11 +45,4 @@
 #admin-content-area {
     overflow: hidden;
     flex: 1;
-}
-
-@media screen and (max-width: 1200px) {
-    #admin-container {
-        flex-direction: column;
-    }
-    
 }
