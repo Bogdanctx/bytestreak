@@ -21,6 +21,14 @@
     border-radius: 12px;
 }
 
+@media screen and (max-width: 1200px) {
+    #quiz-management-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+
 #quiz-select-programming-language {
     background-color: var(--bg-2);
     color: var(--text-primary);

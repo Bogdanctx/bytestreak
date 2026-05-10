@@ -9,6 +9,12 @@
     height: 100%;
 }
 
+@media screen and (max-width: 768px) {
+    .creator-container {
+        overflow: auto;
+    }
+}
+
 .creator-page-header {
     width: 100%;
     padding: 24px;

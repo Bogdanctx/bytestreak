@@ -37,9 +37,9 @@
     flex: 1;
 }
 
-
 @media screen and (max-width: 1200px) {
     #admin-container {
         flex-direction: column;
     }
+    
 }
