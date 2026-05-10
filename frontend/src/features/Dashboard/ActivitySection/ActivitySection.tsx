@@ -115,7 +115,7 @@ function ActivitySection() {
                 <List className="friends-list">
                     {streaksData.map(streak => {
                         const streakFriend = streak.participant1.id === account.id ? streak.participant2 : streak.participant1;
-                        const isCompleted = streak.participant1SolvedToday && streak.participant2SolvedToday;
+                        const friendCompletedQuiz = streak.participant1.id === account.id ? streak.participant2SolvedToday : streak.participant1SolvedToday;
 
                         return (
                             <ListItem key={streak.id} className="streak-list-item">
@@ -131,8 +131,8 @@ function ActivitySection() {
                                             {streakFriend.username}
                                         </Typography>
                                         
-                                        <Box className={`streak-status ${isCompleted ? 'completed' : 'incomplete'}`}>
-                                            {isCompleted ? (
+                                        <Box className={`streak-status ${friendCompletedQuiz ? 'completed' : 'incomplete'}`}>
+                                            {friendCompletedQuiz ? (
                                                 <><CheckCircleOutlineIcon sx={{ fontSize: 14 }} /> Completed today</>
                                             ) : (
                                                 <><RadioButtonUncheckedIcon sx={{ fontSize: 14 }} /> Incomplete</>
