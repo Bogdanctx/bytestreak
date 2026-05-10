@@ -122,6 +122,11 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20250517</version>
+		</dependency>
 
 		<!-- ============================= -->
 		<!-- Test Dependencies -->

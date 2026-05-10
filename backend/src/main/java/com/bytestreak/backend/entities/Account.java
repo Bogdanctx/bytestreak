@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,15 +52,14 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private int level = 0;
-
     private int currentXP = 0;
 
     private int problemsSolved = 0;
 
-    private int quizzesSolved = 0;
-
     private int streakLength = 0;
+
+    private int coins = 0;
+    private LocalDate lastDailyQuizDate;
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

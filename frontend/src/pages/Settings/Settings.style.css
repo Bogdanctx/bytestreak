@@ -1,71 +1,60 @@
 #settings-container {
-    margin: 16px auto;
-
-    border-radius: 16px;
-    display: flex;
-
     height: 100%;
-
+    display: flex;
+    flex-direction: row;
     gap: 16px;
 }
 
 .settings-left-panel {
-    background-color: #111111;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-
-    border-radius: 16px;
-
-    height: 100%;
-    width: 20%;
-
+    background-color: var(--bg-2);
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    width: 250px;
+    padding: 24px;
+    flex-shrink: 0;
 }
 
 .settings-left-panel-title {
     font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 1.8rem !important;
+    font-size: 1.5rem !important;
     font-weight: bold;
-    color: #F7F7F9;
-    margin: 24px 0;
-    padding: 24px;
+    color: var(--text-primary);
+    margin-bottom: 24px !important;
+    text-align: center;
 }
 
 #settings-content {
-    background-color: #111111;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-
-    border-radius: 16px;
-    flex: 1;
-}
-
-#settings-container .settings-menu-button {
-    height: 64px;
-    width: 100%;
-    
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    
-    background-color: transparent;
-    border: 1px solid transparent;
+    background-color: var(--bg-2);
     border-radius: 12px;
-    
-    color: #888 !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 1rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
-#settings-container .settings-menu-button:hover {
-    background-color: rgba(35, 206, 107, 0.08);
-    color: #F7F7F9 !important;
-    border-color: rgba(35, 206, 107, 0.3);
-    transform: translateX(4px);
+.settings-menu-button {
+    height: 48px !important;
+    width: 100%;
+    justify-content: flex-start !important;
+    padding: 0 16px !important;
+    background-color: transparent !important;
+    border-radius: 8px !important;
+    color: var(--text-secondary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.settings-menu-button:hover {
+    background-color: var(--bg-5) !important;
+    color: var(--text-primary) !important;
+}
+
+.settings-menu-button.active {
+    background-color: var(--bg-3) !important;
+    color: #fff !important;
 }

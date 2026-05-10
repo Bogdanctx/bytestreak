@@ -5,11 +5,16 @@
     border-radius: 60px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     margin: 0 auto;
-    margin-top: 8px;
-
     display: flex;
     justify-content: space-between;
 }
+
+@media screen and (max-width: 1200px) {
+    #navbar-container {
+        overflow-x: auto;
+    }
+}
+
 
 #navbar-logo-button {
     padding: 0;

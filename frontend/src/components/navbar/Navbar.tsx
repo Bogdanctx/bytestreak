@@ -20,15 +20,27 @@ function Navbar() {
             </Button>
 
             <Box id="navbar-links">
-                <Notifications />
-                
-
                 <Button 
                     className={`navbar-link-button ${currentPath === "/dashboard" ? "navbar-selected-link" : ""}`}
                     onClick={() => navigate("/dashboard")}
                     disableRipple>
                     Dashboard
                 </Button>
+
+                <Button 
+                    className={`navbar-link-button ${currentPath === "/leaderboard" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/leaderboard")}
+                    disableRipple>
+                    Leaderboard
+                </Button>
+
+                <Button 
+                    className={`navbar-link-button ${currentPath === "/people" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/social")}
+                    disableRipple>
+                    Social
+                </Button>
+
                 <Button 
                     className={`navbar-link-button ${currentPath === "/creator" ? "navbar-selected-link" : ""}`}
                     onClick={() => navigate("/creator")}
@@ -36,7 +48,23 @@ function Navbar() {
                     Creator
                 </Button>
 
-                <Button
+                <Button 
+                    className={`navbar-link-button ${currentPath === "/admin" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/admin")}
+                    disableRipple>
+                    Administration
+                </Button>
+
+                <Button 
+                    className={`navbar-link-button ${currentPath === "/people" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/settings")}
+                    disableRipple>
+                    Settings
+                </Button>
+
+                <Notifications />
+
+                {/* <Button
                     className={`navbar-link-button ${isMoreSelected ? "navbar-selected-link" : ""}`}
                     aria-controls={Boolean(moreAnchorEl) ? 'more-menu' : undefined}
                     aria-haspopup="true"
@@ -94,7 +122,7 @@ function Navbar() {
                             Settings
                         </Button>
                     </MenuItem>
-                </Menu>
+                </Menu> */}
             </Box>
         </Box>
     )

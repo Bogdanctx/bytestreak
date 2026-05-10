@@ -5,7 +5,7 @@ import { Box, LinearProgress, Tooltip, Typography, Zoom } from '@mui/material';
 import { type ISubmissionResult } from '../../../types/problem.types';
 import './SubmissionResults.style.css';
 
-function SubmissionResults(results: ISubmissionResult[]) {
+function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
     if (results.length === 0) {
         return (
             <Box className="submission-result-container">

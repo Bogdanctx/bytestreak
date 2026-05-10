@@ -1,0 +1,48 @@
+#admin-container {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+
+    gap: 16px;
+}
+
+@media screen and (max-width: 1200px) {
+    #admin-container {
+        display: block;
+        overflow: auto;
+    }
+    #admin-sidebar {
+        margin-bottom: 16px;
+    }
+}
+
+#admin-sidebar {
+    background-color: var(--bg-2);
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 15%;
+}
+
+.admin-menu-item {
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+    transition: background-color 0.2s !important;
+    color: var(--text-secondary) !important;
+}
+
+.admin-menu-item:hover {
+    background-color: var(--bg-3) !important;
+}
+
+.admin-menu-item.Mui-selected {
+    background-color: var(--bg-4) !important;
+    color: var(--text-primary) !important;
+    font-weight: bold;
+}
+
+#admin-content-area {
+    overflow: hidden;
+    flex: 1;
+}

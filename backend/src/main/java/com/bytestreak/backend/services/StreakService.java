@@ -1,7 +1,6 @@
 package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.StreakInviteNotificationPayload;
@@ -13,7 +12,8 @@ import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
-import com.bytestreak.backend.entities.Notification;
+
+import java.util.List;
 
 @Service
 public class StreakService {
@@ -50,19 +50,14 @@ public class StreakService {
 
     public Streak removeStreakBetweenUsers(Account me, Account friend) {
         StreakInvite invite = streakInviteRepository.findByAccount1AndAccount2(me, friend);
-        
-        if (invite == null) {
-            throw new IllegalArgumentException("No active streak invite found between these users");
+        if (invite != null) {
+            streakInviteRepository.delete(invite);
         }
 
         Streak streak = streakRepository.findStreakBetweenUsers(me, friend);
-
-        if (streak == null) {
-            throw new IllegalArgumentException("No active streak found between these users");
+        if (streak != null) {
+            streakRepository.delete(streak);
         }
-
-        streakInviteRepository.delete(invite);
-        streakRepository.delete(streak);
 
         return streak;
     }
@@ -100,4 +95,55 @@ public class StreakService {
         notificationRepository.deleteById(notificationId);
         streakInviteRepository.delete(invite);
     }
+
+    public void handleSolvedDailyQuiz(Account solver, boolean isCorrect) {
+        List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
+    
+        for (Streak streak: activeStreaks) {
+            boolean isParticipant1 = streak.getParticipant1().getId().equals(solver.getId());
+        
+            if (isParticipant1) {
+                streak.setParticipant1SolvedToday(true);
+                streak.setParticipant1SolvedCorrectly(isCorrect);
+            }
+            else {
+                streak.setParticipant2SolvedToday(true);
+                streak.setParticipant2SolvedCorrectly(isCorrect);
+            }
+
+            streak.setOldLength(streak.getLength());
+
+            if (isCorrect) {
+                // increase the streak length if both participants have solved their daily quiz correctly today
+                if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
+                    if (streak.isParticipant1SolvedCorrectly() && streak.isParticipant2SolvedCorrectly()) {
+                        streak.setLength(streak.getLength() + 1);
+                    }
+                }
+            }
+            else {
+                // reset the streak length if either participant got their daily quiz wrong
+                streak.setLength(0);
+            }
+        }
+
+        streakRepository.saveAll(activeStreaks);
+    }
+
+    public void saveStreakOfUser(Account solver) {
+        List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
+        if (activeStreaks.isEmpty()) {
+            return;
+        }
+
+        if (solver.getCoins() < 15) {
+            throw new IllegalArgumentException("Not enough coins to save the streak");
+        }
+
+        for (Streak streak: activeStreaks) {
+            streak.setLength(streak.getOldLength());
+            streakRepository.save(streak);
+        }
+    }
+
 }

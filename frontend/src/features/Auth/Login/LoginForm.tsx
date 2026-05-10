@@ -5,6 +5,7 @@ import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { type LoginFormInputs } from '../../../types/auth.types';
 import './LoginForm.style.css';
+import { useMutation } from '@tanstack/react-query';
 
 
 interface LoginFormProps {
@@ -31,25 +32,25 @@ function LoginForm(props: LoginFormProps) {
             password: ""
         }
     });
-
-    const onSubmit = async (data: LoginFormInputs) => {
-        try {
+    const loginMutation = useMutation({
+        mutationFn: async (data: LoginFormInputs) => {
             const response = await api.post("auth/login", data);
-
-            if(response.status === 200) {
-                notify("Login successful!", "success");
-                setTimeout(() => {
-                    window.location.href = "/dashboard";
-                }, 1500);
-            }
-            else {
-                notify(`${response.data.message}`, "error");
-            }
-        }
-        catch (error) {
+            return response;
+        },
+        onSuccess: () => {
+            notify("Login successful!", "success");
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 1500);
+        },
+        onError: (error) => {
             notify("An error occurred during login.", "error");
             console.error("Login error:", error);
         }
+    });
+
+    const onSubmit = (data: LoginFormInputs) => {
+        loginMutation.mutate(data);
     }
 
     return (

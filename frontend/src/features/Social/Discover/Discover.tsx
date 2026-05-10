@@ -12,12 +12,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './Discover.style.css';
 import { api } from '../../../api';
 import { type IFriendInvite } from '../../../types/invite.types';
+import { type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
-import { useAccount } from '../../../hooks/useAccount';
-import { useQueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
 
-function Discover() {
-    const { data: account } = useAccount();
+interface IDiscoverProps {
+    account: IAccount;
+}
+
+function Discover({ account }: IDiscoverProps) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
@@ -37,8 +40,7 @@ function Discover() {
         queryFn: async () => {
             const response = await api.get('/friends/sent-connections');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
     const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
@@ -46,8 +48,7 @@ function Discover() {
         queryFn: async () => {
             const response = await api.get('/friends/pending-connections');
             return response.data;
-        },
-        enabled: !!account
+        }
     });
 
     useEffect(() => {
@@ -60,24 +61,22 @@ function Discover() {
         };
     }, [searchQuery]);
 
-    const handleAddFriend = async (accountId: number) => {
-        try {
+    const addFriendMutation = useMutation({
+        mutationFn: async (accountId: number) => {
             const response = await api.post(`/friends/send-request?friendId=${accountId}`);
-
-            if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
-                notify('Friend invite sent successfully!', 'success');
-            }
-        }
-        catch (error) {
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            notify('Friend invite sent successfully!', 'success');
+        },
+        onError: (error) => {
             console.error('Error sending friend invite:', error);
             notify('Failed to send friend invite. Please try again.', 'error');
         }
-    }
+    });
 
     const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
-
-    console.log('Discover Accounts:', discoverAccounts);
 
     return (
         <Box className="discover-container">
@@ -153,7 +152,7 @@ function Discover() {
                                 </Typography>
                             ) : (
                                 <Button variant="outlined" size="small" className="discover-add-button" 
-                                        onClick={() => handleAddFriend(mappedAccount.id)}
+                                        onClick={() => addFriendMutation.mutate(mappedAccount.id)}
                                 >
                                     <PersonAddIcon fontSize="small" />
                                 </Button>

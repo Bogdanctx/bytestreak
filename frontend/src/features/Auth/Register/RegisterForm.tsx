@@ -5,6 +5,7 @@ import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { type AccountCredentials, type RegisterFormInputs } from '../../../types/auth.types';
 import './RegisterForm.style.css';
+import { useMutation } from '@tanstack/react-query';
 
 interface RegisterFormProps {
     setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | null>>;
@@ -42,8 +43,7 @@ const REGISTER_VALIDATION_RULES = {
     },
     confirmPassword: {
         required: "Please confirm your password",
-        validate: (value: string, formValues: RegisterFormInputs) => 
-            value === formValues.password || "Passwords do not match"
+        validate: (value: string, formValues: RegisterFormInputs) => value === formValues.password || "Passwords do not match"
     }
 };
 
@@ -56,31 +56,29 @@ function RegisterForm(props: RegisterFormProps) {
             confirmPassword: ""
         }
     });
+    const registerMutation = useMutation({
+        mutationFn: async (data: RegisterFormInputs) => {
+            var account: AccountCredentials = {
+                username: data.username,
+                email: data.email,
+                password: data.password
+            };
 
-    const onSubmit = async (data: RegisterFormInputs) => {
-        var account: AccountCredentials = {
-            username: data.username,
-            email: data.email,
-            password: data.password
-        };
-
-        notify("Processing your registration...", "info");
-
-        try {
             const response = await api.post('auth/register', account);
-
-            if (response.status === 200) {
-                notify("Your account has been registered. Please log in.", "success");
-                props.setShowAuthState("login");
-            }
-            else {
-                notify("Registration failed. Please try again.", "error");
-            }
-        }
-        catch (error) {
+            return response;
+        },
+        onSuccess: () => {
+            notify("Your account has been registered. Please log in.", "success");
+            props.setShowAuthState("login");
+        },
+        onError: (error) => {
             notify("Registration failed. Please try again.", "error");
             console.error("Registration error:", error);
         }
+    })
+
+    const onSubmit = (data: RegisterFormInputs) => {
+        registerMutation.mutate(data);
     }
 
     return (

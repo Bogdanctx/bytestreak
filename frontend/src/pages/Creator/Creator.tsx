@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,6 +9,8 @@ import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
 import { type IProblem } from '../../types/problem.types';
 import './Creator.style.css';
+import notify from '../../components/ui/ToastNotification';
+import Loading from '../../components/ui/Loading';
 
 function Creator() {
     const navigate = useNavigate();
@@ -17,30 +19,29 @@ function Creator() {
     const { data: createdProblems = [] } = useQuery<IProblem[]>({
         queryKey: ['createdProblems'],
         queryFn: async () => {
+            if (!account) return [];
+
             const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
             return response.data;
+        }
+    });
+    const deleteCodingProblemMutation = useMutation({
+        mutationFn: async (problemId: number) => {
+            return api.delete(`/creator/delete-problem?problemId=${problemId}`);
         },
-        enabled: !!account
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['createdProblems'] });
+            notify("Problem deleted successfully.", "success");
+        },
+        onError: (error) => {
+            console.error("Error deleting problem:", error);
+            notify("An error occurred while deleting the problem. Please try again.", "error");
+        }
     });
 
     const handleDeleteProblem = async (problemId: number) => {
         if (window.confirm("Are you sure you want to delete this problem? This action cannot be undone.")) {
-            
-            try {
-                const response = await api.delete(`/creator/delete-problem?problemId=${problemId}`);
-
-                if (response.status === 200) {
-                    alert("Problem deleted successfully.");
-                    queryClient.invalidateQueries({ queryKey: ['createdProblems'] });                    
-                } 
-                else {
-                    alert("Failed to delete problem. Please try again.");
-                }
-            }
-            catch (error) {
-                console.error("Error deleting problem:", error);
-                alert("An error occurred while deleting the problem. Please try again.");
-            }
+            deleteCodingProblemMutation.mutate(problemId);
         }
     }
 
@@ -53,8 +54,12 @@ function Creator() {
         }
     };
 
+    if (!account) {
+        return <Loading />;
+    }
+
     return (
-        <Box className="creator-page">
+        <Box className="creator-container">
             <Box className="creator-page-header">
                 <Box>
                     <Typography className="creator-page-header-title" variant="h6">Overview</Typography>

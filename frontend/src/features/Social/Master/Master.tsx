@@ -9,18 +9,19 @@ import { useAccount } from '../../../hooks/useAccount';
 import { type IAccount } from '../../../types/account.types';
 import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
-import { 
-    getRankByLevel, 
-    getRankColor 
-} from '../../../utils/rankUtils';
+import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
 import { api } from '../../../api';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 
-function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAction<IAccount | null>> }) {
+interface IMasterProps {
+    account: IAccount;
+    setSelectedFriend: Dispatch<SetStateAction<IAccount | null>>;
+}
+
+function Master({ account, setSelectedFriend }: IMasterProps) {
     const queryClient = useQueryClient();
-    const { data: account } = useAccount();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
     const { data: streakInvites = [] } = useQuery<IStreakInvite[]>({
@@ -41,6 +42,24 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
         refetchInterval: 1000 * 10
     });
 
+    const deleteFriendMutation = useMutation({
+        mutationFn: async (friendId: number) => {
+            const response = await api.post(`/friends/remove?friendId=${friendId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            setSelectedFriend(null);
+            setFriendToRemove(null);
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
+        },
+        onError: (error) => {
+            console.error('Error removing friend:', error);
+            notify("Failed to remove friend. Please try again.", "error");
+        }
+    });
+
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
         setFriendToRemove(friend);
@@ -51,24 +70,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
             return;
         }
         
-        try {
-            const response = await api.post(`/friends/remove?friendId=${friendToRemove.id}`);
-
-            if (response.status === 200) {
-                setSelectedFriend(null);
-
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-                queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
-
-                notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
-            }
-        } 
-        catch (error) {
-            console.error('Error removing friend:', error);
-        } 
-        finally {
-            setFriendToRemove(null); 
-        }
+        deleteFriendMutation.mutate(friendToRemove.id);
     };
 
     const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {
@@ -87,8 +89,9 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
         }
     };
 
-    const rankName = getRankByLevel(account.level);
-    const rankColor = getRankColor(rankName);
+    const level = getLevel(account.currentXP);
+    const rank = getRank(level);
+    const rankColor = getRankColor(rank);
 
     return (
         <Box className='master-container'>
@@ -100,7 +103,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
                     {account.username}
                 </Typography>
                 <Typography variant="body2" color={rankColor} mt={0.5}>
-                    Level {account.level} • {rankName}
+                    Level {level} • {rank}
                 </Typography>
             </Box>
 
@@ -110,7 +113,9 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
                         MY FRIENDS ({account.friends.length})
                     </Typography>
                 </Box>
+
                 
+
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
                     {account.friends.map((friend) => {
                         const isInvitePending = streakInvites.some(invite => 
@@ -138,7 +143,7 @@ function Master({ setSelectedFriend }: { setSelectedFriend: Dispatch<SetStateAct
                                     </ListItemAvatar>
                                     <ListItemText 
                                         primary={friend.username} 
-                                        secondary={`Level ${friend.level} • ${getRankByLevel(friend.level)}`}
+                                        secondary={`Level ${level} • ${rank}`}
                                         slotProps={{
                                             primary: {
                                                 fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"

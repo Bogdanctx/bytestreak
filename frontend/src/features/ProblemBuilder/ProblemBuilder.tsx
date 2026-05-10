@@ -5,22 +5,91 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
 
-import { api } from '../../../api';
-import notify from '../../../components/ui/ToastNotification';
-import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
-import { type IProblemCreateDTO, type ITestCase } from '../../../types/problem.types';
-import MetadataTab from './MetadataTab';
-import TestCasesTab from './TestCasesTab';
+import { api } from '../../api';
+import notify from '../../components/ui/ToastNotification';
+import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
+import { type IProblemCreateDTO, type ITestCase } from '../../types/problem.types';
+import MetadataTab from './MetadataTab/MetadataTab';
+import TestCasesTab from './TestCasesTab/TestCasesTab';
 import './ProblemBuilder.style.css';
+import { useMutation } from '@tanstack/react-query';
 
 const DEFAULT_STARTER_CODE = {
-    cpp: `// ======= IMPORTANT =======\n// Starter Code template...\n\nint solve(vector<int>& nums) {\n    return 0;\n}`,
-    python: `# ======= IMPORTANT =======\n# Starter Code template...\n\ndef solve(nums):\n    return 0`
+    cpp: `// ======= STARTER CODE =======
+// >> This code is the template the user will see in their editor <<
+// >> Define the function signature that the user is expected to implement <<
+// >> Any libraries that the user needs to import must be included in this starter code <<
+// >> Make sure to match the function signature exactly, as the driver code relies on it << 
+// >> The code below is just a placeholder and should be replaced with the actual function signature <<
+// ===============================
+
+int solve(vector<int>& nums) {
+    int sum = 0;
+    for(int i: nums) {
+        sum += i;
+    }
+    return sum;
+}`,
+    python: `# ======= STARTER CODE =======
+# >> This code is the template the user will see in their editor <<
+# >> Define the function signature that the user is expected to implement <<
+# >> Any libraries that the user needs to import must be included in this starter code <<
+# >> Make sure to match the function signature exactly, as the driver code relies on it << 
+# >> The code below is just a placeholder and should be replaced with the actual function signature <<
+# ===============================
+
+def solve(nums):
+    sum = 0
+    for i in nums:
+        sum += i
+    return sum`
 };
 
 const DEFAULT_DRIVER_CODE = {
-    cpp: `// ======= IMPORTANT =======\n// Driver Code template...\n\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n{{CODE}}\n\nint main() {\n    return 0;\n}`,
-    python: `# ======= IMPORTANT =======\n# Driver Code template...\n\n{{CODE}}\n\nif __name__ == "__main__":\n    pass`
+    cpp: `// ======= DRIVER CODE =======
+// >> This code must use the function signature defined in the starter code to call the user's solution <<
+// >> The user's solution (Starter Code) will be automatically injected at this exact position <<
+// >> You can write code here to read input, call the solve function, and print output for testing <<
+// >> Input is read from standard input and output is printed to standard output <<
+// >> The code below is just an example. You may include any necessary headers and write any logic needed to test the user's solution. <<
+// ===============================
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// << This marker is mandatory and indicates where the user's code will be injected >>
+{{CODE}}
+
+int main() {
+    // Logic for reading the input and calling the solve function
+    int n;
+    cin >> n;
+    vector<int> nums(n);
+    for (int i = 0; i < n; i++) {
+        cin >> nums[i];
+    }
+    int result = solve(nums);
+    cout << result << endl;
+    return 0;
+}`,
+    python: `# ======= DRIVER CODE =======
+# >> This code must use the function signature defined in the starter code to call the user's solution <<
+# >> The user's solution (Starter Code) will be automatically injected at this exact position <<
+# >> You can write code here to read input, call the solve function, and print output for testing <<
+# >> Input is read from standard input and output is printed to standard output <<
+# >> The code below is just an example. You may write any logic needed to test the user's solution. <<
+# ===============================
+
+# << This marker is mandatory and indicates where the user's code will be injected >>
+{{CODE}}
+
+if __name__ == "__main__":
+    # Logic for reading the input and calling the solve function
+    n = int(input())
+    nums = list(map(int, input().split()))
+    result = solve(nums)
+    print(result)`
 };
 
 type ProgrammingLanguage = "cpp" | "python";
@@ -28,7 +97,6 @@ type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const isEditMode = Boolean(id);
 
     const [activeTab, setActiveTab] = useState("markdown");
@@ -67,13 +135,13 @@ function ProblemBuilder() {
             const parsedTemplates = JSON.parse(data.codeTemplates);
 
             setStarterCode({
-                cpp: parsedTemplates.cpp.starterCode,
-                python: parsedTemplates.python.starterCode
+                cpp: parsedTemplates.cpp.starter_code,
+                python: parsedTemplates.python.starter_code
             });
 
             setDriverCode({
-                cpp: parsedTemplates.cpp.driverCode,
-                python: parsedTemplates.python.driverCode
+                cpp: parsedTemplates.cpp.driver_code,
+                python: parsedTemplates.python.driver_code
             });
 
             const formattedTestCases = testCasesResponse.data.map((testCase: any) => ({
@@ -90,6 +158,26 @@ function ProblemBuilder() {
         }
     };
 
+    const submitCodingProblemMutation = useMutation({
+        mutationFn: async (problemData: IProblemCreateDTO) => {
+            if (isEditMode) {
+                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
+                return response.data;
+            } 
+            else {
+                const response = await api.post('/creator/new-problem', problemData);
+                return response.data;
+            }
+        },
+        onSuccess: () => {
+            notify(isEditMode ? "Problem updated successfully!" : "Problem created successfully!", "success");
+        },
+        onError: (error) => {
+            console.error('Error saving problem:', error);
+            notify("Failed to save problem. Please try again.", "error");
+        }
+    })
+
     const handleSubmitProblem = async () => {
         if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
             notify("Please fill out all required fields (Title, Difficulty, Tags, Test Cases).", "error");
@@ -97,8 +185,8 @@ function ProblemBuilder() {
         }
 
         const codeTemplates = {
-            cpp: { starterCode: starterCode.cpp, driverCode: driverCode.cpp },
-            python: { starterCode: starterCode.python, driverCode: driverCode.python }
+            cpp: { starter_code: starterCode.cpp, driver_code: driverCode.cpp },
+            python: { starter_code: starterCode.python, driver_code: driverCode.python }
         };
 
         const problemData: IProblemCreateDTO = {
@@ -106,32 +194,11 @@ function ProblemBuilder() {
             description,
             difficulty: difficulty as "EASY" | "MEDIUM" | "HARD",
             codeTemplates: JSON.stringify(codeTemplates),
-            testCases: JSON.stringify(testCases),
+            testCases: testCases,
             tags: tags,
         };
         
-        try {
-            if (isEditMode) {
-                const response = await api.put(`/creator/edit-problem/${id}`, problemData);
-
-                if (response.status === 200) {
-                    notify("Problem updated successfully!", "success");
-                    navigate("/dashboard");
-                }
-            } 
-            else {
-                const response = await api.post('/creator/new-problem', problemData);
-
-                if (response.status === 200) {
-                    notify("Problem created successfully!", "success");
-                    navigate("/dashboard");
-                }
-            }
-        } 
-        catch (error) {
-            console.error('Error saving problem:', error);
-            notify("Failed to save problem. Please try again.", "error");
-        }
+        submitCodingProblemMutation.mutate(problemData);
     }
 
     const handleEditorChange = (value: string | undefined) => {

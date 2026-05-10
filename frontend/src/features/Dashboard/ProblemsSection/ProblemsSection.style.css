@@ -1,10 +1,7 @@
 #problems-section-container {
     background-color: var(--bg-2);
     border-radius: 16px;
-    box-shadow: 0 4px 12px #00000080;
-    box-sizing: border-box;
     display: flex;
-    flex: 1;
     flex-direction: column;
     height: 100%;
 }
@@ -19,6 +16,14 @@
     justify-content: space-between;
     margin-bottom: 4px;
     padding: 12px 32px;
+}
+
+@media screen and (max-width: 1200px) {
+    #problems-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
 }
 
 .problems-section-header-copy {
@@ -100,62 +105,6 @@
     background-color: var(--bg-4) !important;
     color: var(--text-primary);
     font-weight: 700;
-}
-
-.problem-filter-select {
-    background-color: var(--bg-2);
-    color: var(--text-primary) !important;
-    border-radius: 12px;
-    height: 40px;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 0.875rem !important;
-    min-width: 160px;
-    transition: background-color 0.2s ease;
-}
-
-.problem-filter-select:hover {
-    background-color: var(--bg-3);
-}
-
-.problem-filter-select .MuiOutlinedInput-notchedOutline {
-    border: 1px solid var(--bg-3) !important;
-}
-
-.problem-filter-select:hover .MuiOutlinedInput-notchedOutline {
-    border-color: transparent !important;
-}
-
-.problem-filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(--accent-main) !important;
-    border-width: 1px !important;
-}
-
-.problem-filter-select .MuiSvgIcon-root {
-    color: var(--text-primary) !important;
-}
-
-.filter-menu-paper {
-    background-color: var(--bg-5) !important;
-    border-radius: 8px !important;
-    border: 1px solid var(--bg-1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
-    margin-top: 8px;
-}
-
-.filter-menu-item {
-    color: var(--text-primary) !important;
-    font-size: 0.875rem !important;
-}
-
-.filter-menu-item:hover {
-    background-color: var(--bg-3) !important;
-    font-weight: bold;
-    color: var(--text-primary) !important;
-}
-
-.filter-menu-item.Mui-selected {
-    background-color: rgba(35, 206, 107, 0.3) !important;
-    color: var(--text-primary) !important;
 }
 
 .show-tags-switch .MuiSwitch-track {

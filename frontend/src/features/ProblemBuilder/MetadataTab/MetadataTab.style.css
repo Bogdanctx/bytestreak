@@ -1,18 +1,15 @@
 .metadata-container {
     padding: 32px;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
     overflow-y: auto;
+    background-color: var(--bg-2);
+    display: flex;
+    justify-content: center;
 }
 
 .metadata-field-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
 .metadata-label {
@@ -25,9 +22,9 @@
 
 /* Custom TextField Styling */
 .metadata-input .MuiOutlinedInput-root {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--bg-1);
     border-radius: 8px;
-    color: #F7F7F9;
+    color: var(--text-primary);
     transition: all 0.2s;
 }
 
@@ -64,7 +61,7 @@
 }
 
 .difficulty-select {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: var(--bg-1);
     color: var(--text-primary) !important;
     font-size: 0.85rem !important;
     font-weight: 500 !important;

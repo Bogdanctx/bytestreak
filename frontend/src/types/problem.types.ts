@@ -26,7 +26,7 @@ export interface IProblemCreateDTO {
     description: string;
     difficulty: "EASY" | "MEDIUM" | "HARD";
     codeTemplates: string;
-    testCases: string;
+    testCases: ITestCase[];
     tags: string[];
 }
 

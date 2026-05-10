@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
 import LockIcon from '@mui/icons-material/Lock';
@@ -23,6 +23,37 @@ function Account() {
         profilePictureUrl: account?.profilePictureUrl || "",
         password: ""
     });
+    const deleteAccountMutation = useMutation({
+        mutationFn: async () => {
+            await api.delete('/accounts/delete');
+            notify("Your account has been deleted.", "success");
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 2000);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+        },
+        onError: (error) => {
+            notify("An error occurred while deleting your account.", "error");
+            console.error("Delete account error:", error);
+        }
+    })
+
+    const saveChangesMutation = useMutation({
+        mutationFn: async () => {
+            const response = await api.patch('/accounts/update', formData);
+            return response.data;
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+            notify("Your account has been updated successfully.", "success");
+        },
+        onError: (error) => {
+            notify("An error occurred while updating your account.", "error");
+            console.error("Update account error:", error);
+        }
+    });
 
     const handleSaveChanges = async () => {
         console.log("Form data to be sent:", formData);
@@ -34,39 +65,7 @@ function Account() {
             return;
         }
 
-        try {
-            const response = await api.patch('/accounts/update', formData);
-
-            if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-                notify("Your account has been updated successfully.", "success");
-            } 
-            else {
-                notify("Failed to update your account.", "error");
-                console.error("Unexpected response status:", response.status);
-            }
-        }
-        catch (error) {
-            notify("An error occurred while updating your account.", "error");
-            console.error("Update account error:", error);
-        }
-    }
-
-    const handleDeleteAccount = () => {
-        api.delete('/accounts/delete')
-            .then(response => {
-                if (response.status === 200) {
-                    notify("Your account has been deleted.", "success");
-
-                    setTimeout(() => {
-                        window.location.href = "/"; // Redirect to homepage after deletion
-                    }, 2000);
-                }
-            })
-            .catch(error => {
-                notify("Failed to delete your account.", "error");
-                console.error("Delete account error:", error);
-            });
+        saveChangesMutation.mutate();
     }
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +199,7 @@ function Account() {
                         className="delete-account-btn"
                         onClick={() => {
                             if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                                handleDeleteAccount();
+                                deleteAccountMutation.mutate();
                             }
                         }}
                     >
