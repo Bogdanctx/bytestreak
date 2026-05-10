@@ -58,7 +58,7 @@ function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags
                         freeSolo
                         options={["Dynamic Programming", "Sliding Window", "Two pointers", "Graph", "Tree", "Array", "String", "Hash Table", "Math", "Greedy", "Backtracking", "Divide and Conquer"]}
                         value={tags}
-                        onChange={(event, newValue) => setTags(newValue)}
+                        onChange={(_, newValue) => setTags(newValue)}
                         renderValue={(value: string[], getTagProps) =>
                             value.map((option: string, index: number) => {
                                 const { key, ...tagProps } = getTagProps({ index });

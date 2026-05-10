@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Menu, MenuItem } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import ByteStreakLogo from '../../ByteStreak.logo';
 import Notifications from './Notifications';
 import './Navbar.style.css';
 
 function Navbar() {
-    const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
 
     const currentPath = window.location.pathname;
-    const isMoreSelected = currentPath === "/leaderboard" || currentPath === "/people";
 
     return (
         <Box id="navbar-container">

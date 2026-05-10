@@ -15,6 +15,7 @@ import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
 import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
+import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
 
                         <Routes>
                             <Route path="/" element={<LandingPage />} /> 
+                            <Route path="/recover-account" element={<RecoverAccountHandler />} />
 
                             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                                 <Route path="/dashboard" element={<Dashboard />} />

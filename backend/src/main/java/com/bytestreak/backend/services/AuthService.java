@@ -19,6 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
 @Service
 public class AuthService {
     @Autowired
@@ -26,6 +29,9 @@ public class AuthService {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -88,5 +94,18 @@ public class AuthService {
         accountRepository.save(newAccount);
     
         return newAccount;
+    }
+
+    public void sendRecoveryLink(String toEmail, String token) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("bytestreakofficial@outlook.com");
+        message.setTo(toEmail);
+        message.setSubject("ByteStreak - Account Recovery Request");
+
+
+        String loginLink = "http://localhost:5173/recover-account?token=" + token;
+        message.setText("Click the link below to log in to your account:\n\n" + loginLink + "\n\nThis link will expire in 15 minutes.");
+
+        mailSender.send(message);
     }
 }

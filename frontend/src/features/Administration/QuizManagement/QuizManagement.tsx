@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Box, Typography, Button, CircularProgress, TextField, MenuItem, Select, IconButton } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, TextField, MenuItem, Select } from '@mui/material';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { api } from '../../../api';
 import { type IQuiz } from '../../../types/quiz.types';
 
