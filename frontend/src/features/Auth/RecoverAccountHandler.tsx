@@ -5,14 +5,14 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 
-function MagicLoginHandler() {
+function RecoverAccountHandler() {
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
 
     const loginMutation = useMutation({
         mutationFn: async () => {
-            return api.post(`/auth/magic-login?token=${token}`);
+            return api.post(`/auth/recover-account?token=${token}`);
         },
         onSuccess: () => {
             notify("Successfully logged in!", "success");
@@ -41,4 +41,4 @@ function MagicLoginHandler() {
     );
 }
 
-export default MagicLoginHandler;
+export default RecoverAccountHandler;

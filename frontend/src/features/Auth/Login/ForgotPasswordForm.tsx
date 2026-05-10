@@ -5,35 +5,35 @@ import { useMutation } from '@tanstack/react-query';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 
-interface ForgotPasswordProps {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'forgot-password' | null>>;
+interface IRecoverAccountProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'recover-account' | null>>;
 };
 
-interface ForgotPasswordInputs {
+interface IRecoverAccountInputs {
     email: string;
 }
 
-function ForgotPasswordForm(props: ForgotPasswordProps) {
-    const { control, handleSubmit, formState: { errors } } = useForm<ForgotPasswordInputs>({
+function RecoverAccountForm(props: IRecoverAccountProps) {
+    const { control, handleSubmit, formState: { errors } } = useForm<IRecoverAccountInputs>({
         defaultValues: { email: "" }
     });
 
     const resetMutation = useMutation({
-        mutationFn: async (data: ForgotPasswordInputs) => {
-            const response = await api.post(`/auth/request-magic-link?email=${data.email}`);
+        mutationFn: async (data: IRecoverAccountInputs) => {
+            const response = await api.post(`/auth/request-recovery-link?email=${data.email}`);
             return response;
         },
         onSuccess: () => {
-            notify("If an account exists, a magic link was sent to your email.", "success");
+            notify("If an account exists, a recovery link was sent to your email. Be sure to check your spam folder.", "success");
             props.setShowAuthState("login");
         },
         onError: (error) => {
-            notify("Failed to send reset link. Try again.", "error");
-            console.error("Reset error:", error);
+            notify("Failed to send recovery link. Try again.", "error");
+            console.error("Recovery error:", error);
         }
     });
 
-    const onSubmit = (data: ForgotPasswordInputs) => {
+    const onSubmit = (data: IRecoverAccountInputs) => {
         resetMutation.mutate(data);
     }
 
@@ -41,10 +41,10 @@ function ForgotPasswordForm(props: ForgotPasswordProps) {
         <Box className="auth-container">
             <Box className="auth-header">
                 <Typography className="auth-title">
-                    Reset Password
+                    Recover Your Account
                 </Typography>
                 <Typography className="auth-subtitle">
-                    Enter your email to receive a magic login link
+                    Enter your email to receive a recovery link
                 </Typography>
             </Box>
             
@@ -83,7 +83,7 @@ function ForgotPasswordForm(props: ForgotPasswordProps) {
                             fullWidth
                             disabled={resetMutation.isPending}
                         >
-                            {resetMutation.isPending ? "Sending..." : "Send Magic Link"}
+                            {resetMutation.isPending ? "Sending..." : "Send Recovery Link"}
                         </Button>
                         <Button 
                             className="auth-secondary-btn" 
@@ -100,4 +100,4 @@ function ForgotPasswordForm(props: ForgotPasswordProps) {
     );
 }
 
-export default ForgotPasswordForm;
+export default RecoverAccountForm;

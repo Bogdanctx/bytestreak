@@ -32,7 +32,7 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/auth/login", "/auth/register", "/auth/request-magic-link", "/auth/magic-login", "/ws/**").permitAll()
+                .requestMatchers("/auth/login", "/auth/register", "/auth/request-recovery-link", "/auth/recover-account", "/ws/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

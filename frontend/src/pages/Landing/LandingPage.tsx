@@ -4,7 +4,7 @@ import { Box, Button, Divider, Slide, Stack, Typography, useMediaQuery, useTheme
 import ByteStreakLogo from '../../ByteStreak.logo';
 import LoginForm from '../../features/Auth/Login/LoginForm';
 import RegisterForm from '../../features/Auth/Register/RegisterForm';
-import ForgotPasswordForm from '../../features/Auth/Login/ForgotPasswordForm';
+import RecoverAccountForm from '../../features/Auth/Login/ForgotPasswordForm';
 import './LandingPage.style.css';
 
 const CODE_SNIPPETS = [
@@ -15,7 +15,7 @@ const CODE_SNIPPETS = [
 ];
 
 function LandingPage() {
-    const [showAuthState, setShowAuthState] = useState<'login' | 'register' | 'forgot-password' | null>(null);
+    const [showAuthState, setShowAuthState] = useState<'login' | 'register' | 'recover-account' | null>(null);
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
     
@@ -81,9 +81,9 @@ function LandingPage() {
                             </Box>
                         </Slide>
 
-                        <Slide direction="down" in={showAuthState === 'forgot-password'} mountOnEnter unmountOnExit>
+                        <Slide direction="down" in={showAuthState === 'recover-account'} mountOnEnter unmountOnExit>
                             <Box>
-                                <ForgotPasswordForm setShowAuthState={setShowAuthState} />
+                                <RecoverAccountForm setShowAuthState={setShowAuthState} />
                             </Box>
                         </Slide>
 

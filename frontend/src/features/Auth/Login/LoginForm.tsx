@@ -7,8 +7,8 @@ import { type LoginFormInputs } from '../../../types/auth.types';
 import './LoginForm.style.css';
 import { useMutation } from '@tanstack/react-query';
 
-interface LoginFormProps {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'forgot-password' | null>>;
+interface ILoginFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'recover-account' | null>>;
 };
 
 const LOGIN_FORM_VALIDATION_RULES = {
@@ -24,7 +24,7 @@ const LOGIN_FORM_VALIDATION_RULES = {
     }
 };
 
-function LoginForm(props: LoginFormProps) {
+function LoginForm(props: ILoginFormProps) {
     const { control, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
         defaultValues: {
             email: "",
@@ -109,9 +109,9 @@ function LoginForm(props: LoginFormProps) {
                         <Typography 
                             variant="body2" 
                             className="forgot-password-link"
-                            onClick={() => props.setShowAuthState('forgot-password')}
+                            onClick={() => props.setShowAuthState('recover-account')}
                         >
-                            Forgot password?
+                            Lost account?
                         </Typography>
                     </Box>
 

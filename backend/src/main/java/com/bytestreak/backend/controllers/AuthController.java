@@ -106,8 +106,8 @@ public class AuthController {
         return ResponseEntity.ok(newAccount);
     }
 
-    @PostMapping("/request-magic-link")
-    public ResponseEntity<?> requestMagicLink(@RequestParam String email) {
+    @PostMapping("/request-recovery-link")
+    public ResponseEntity<?> requestRecoveryLink(@RequestParam String email) {
         Account account = accountRepository.findByEmail(email);
 
         if (account == null) {
@@ -121,12 +121,12 @@ public class AuthController {
         token.setExpiryDate(LocalDateTime.now().plusMinutes(15));
 
         magicLinkRepository.save(token);
-        authService.sendMagicLink(email, tokenString);
+        authService.sendRecoveryLink(email, tokenString);
         return ResponseEntity.ok("If the email exists, a link was sent.");
     }
 
-    @PostMapping("/magic-login")
-    public ResponseEntity<?> magicLogin(@RequestParam String token, HttpServletResponse response) {
+    @PostMapping("/recover-account")
+    public ResponseEntity<?> recoverAccount(@RequestParam String token, HttpServletResponse response) {
         MagicLinkToken magicToken = magicLinkRepository.findByToken(token);
 
         if (magicToken == null) {

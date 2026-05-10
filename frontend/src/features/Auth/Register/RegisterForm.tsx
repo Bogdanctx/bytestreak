@@ -7,8 +7,8 @@ import { type AccountCredentials, type RegisterFormInputs } from '../../../types
 import './RegisterForm.style.css'; 
 import { useMutation } from '@tanstack/react-query';
 
-interface RegisterFormProps {
-    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'forgot-password' | null>>;
+interface IRegisterFormProps {
+    setShowAuthState: React.Dispatch<React.SetStateAction<'login' | 'register' | 'recover-account' | null>>;
 };
 
 const REGISTER_VALIDATION_RULES = {
@@ -35,7 +35,7 @@ const REGISTER_VALIDATION_RULES = {
     }
 };
 
-function RegisterForm(props: RegisterFormProps) {
+function RegisterForm(props: IRegisterFormProps) {
     const { control, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
         defaultValues: {
             username: "",

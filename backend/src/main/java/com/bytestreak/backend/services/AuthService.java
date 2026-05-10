@@ -96,15 +96,15 @@ public class AuthService {
         return newAccount;
     }
 
-    public void sendMagicLink(String toEmail, String token) {
+    public void sendRecoveryLink(String toEmail, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("bytestreakofficial@outlook.com");
         message.setTo(toEmail);
-        message.setSubject("ByteStreak - Login Request");
+        message.setSubject("ByteStreak - Account Recovery Request");
 
 
-        String loginLink = "http://localhost:5173/magic-login?token=" + token;
-        message.setText("Click the link below to securely log in to your account:\n\n" + loginLink + "\n\nThis link will expire in 15 minutes.");
+        String loginLink = "http://localhost:5173/recover-account?token=" + token;
+        message.setText("Click the link below to log in to your account:\n\n" + loginLink + "\n\nThis link will expire in 15 minutes.");
 
         mailSender.send(message);
     }
