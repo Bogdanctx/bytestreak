@@ -110,7 +110,7 @@ function Discover({ account }: IDiscoverProps) {
             </Typography>
 
             <Box className="discover-users-list">
-                {discoverAccounts.map((mappedAccount) => {
+                {discoverAccounts.map((mappedAccount: IAccount) => {
                     // exclude the current user's account from the list
                     if (mappedAccount.id === account.id) {
                         return null;
@@ -137,10 +137,7 @@ function Discover({ account }: IDiscoverProps) {
                                         {mappedAccount.username}
                                     </Typography>
                                     <Typography variant="caption" className="discover-user-role" noWrap>
-                                        Mock role
-                                    </Typography>
-                                    <Typography variant="caption" className="discover-user-location" noWrap>
-                                        Mock location
+                                        {mappedAccount.bio.slice(0, 15) + "..." || "No bio available"}
                                     </Typography>
                                 </Box>
                             </Box>

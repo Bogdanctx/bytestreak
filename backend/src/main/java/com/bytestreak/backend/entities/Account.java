@@ -60,7 +60,7 @@ public class Account {
     private int streakLength = 0;
 
     private int coins = 0;
-    private String bio = "This is a bio placeholder.";
+    private String bio = "";
     private LocalDate lastDailyQuizDate;
 
     // Base64 encoded profile picture

@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bytestreak.backend.dto.AccountUpdateDTO;
-import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;

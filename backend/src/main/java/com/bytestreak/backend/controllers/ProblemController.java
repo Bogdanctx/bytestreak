@@ -16,11 +16,14 @@ import java.util.List;
 import com.bytestreak.backend.dto.ExecutionResultDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
+import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.Account;
 
 import org.json.JSONObject;
 
@@ -36,12 +39,21 @@ public class ProblemController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private ActivityTrackerService activityTrackerService;
 
     @Autowired
     private ProblemService problemService;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @GetMapping("/{id}/description")
-    public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id) {
+    public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
         Problem problem = repository.findById(id).orElse(null);
 
         if (problem == null) {
@@ -64,7 +76,11 @@ public class ProblemController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO) {
+    public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
         if (solutionDTO.getCode() == null || solutionDTO.getProgrammingLanguage() == null || solutionDTO.getProblemId() == null) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -88,7 +104,10 @@ public class ProblemController {
             String sourceCode = driverCode.replace("{{CODE}}", solutionCode);
 
             List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, sourceCode, slug, problem.getTestCasesPath());
-            
+
+            Account account = accountRepository.findByEmail(authentication.getName());
+
+            activityTrackerService.recordActivity(account);
             return ResponseEntity.ok(results);
 
         } catch (Exception e) {

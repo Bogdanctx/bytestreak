@@ -9,7 +9,7 @@ import com.bytestreak.backend.repositories.StreakRepository;
 
 import com.bytestreak.backend.entities.Account;
 
-
+import java.util.List;
 
 @Service
 public class ProfileService {
@@ -19,6 +19,9 @@ public class ProfileService {
     @Autowired
     private StreakRepository streakRepository;
 
+    @Autowired
+    private ActivityTrackerService activityTrackerService;
+
     public UserProfileDTO getUserProfile(String username) {
         Account target = accountRepository.findByUsername(username);
 
@@ -26,9 +29,12 @@ public class ProfileService {
             throw new RuntimeException("User not found");
         }
 
+        List<Integer> activityGraph = activityTrackerService.getYearlyActivityGraph(target.getId());
+
         UserProfileDTO userProfile = new UserProfileDTO(
             target, 
-            streakRepository.findActiveStreaksForUser(target.getId())
+            streakRepository.findActiveStreaksForUser(target.getId()),
+            activityGraph
         );
 
 

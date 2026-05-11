@@ -71,6 +71,9 @@ public class AccountService {
         if(!updates.getEmail().isBlank()) {
             me.setEmail(updates.getEmail());
         }
+        if(!updates.getBio().isBlank()) {
+            me.setBio(updates.getBio());
+        }
         
         accountRepository.save(me);
 

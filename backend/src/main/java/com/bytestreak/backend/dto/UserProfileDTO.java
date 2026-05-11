@@ -13,4 +13,5 @@ import com.bytestreak.backend.entities.Streak;
 public class UserProfileDTO {
     Account account;
     List<Streak> streaks;
+    List<Integer> activityGraph;
 }

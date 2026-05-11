@@ -318,6 +318,42 @@
     background-color: rgba(35, 206, 107, 0.02);
 }
 
+.activity-graph-container {
+    background-color: var(--bg-2);
+    padding: 24px;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid var(--bg-3);
+}
+
+.activity-grid {
+    display: grid;
+    /* 7 rows for 7 days of the week */
+    grid-template-rows: repeat(7, 1fr); 
+    grid-auto-flow: column;
+    gap: 4px;
+    width: max-content;
+}
+
+.activity-day {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background-color: var(--bg-4);
+    transition: transform 0.1s ease;
+}
+
+.activity-day:hover {
+    transform: scale(1.2);
+    border: 1px solid var(--text-primary);
+}
+
+/* Heatmap intensities matching your ByteStreak theme */
+.activity-level-1 { background-color: rgba(35, 206, 107, 0.2); }
+.activity-level-2 { background-color: rgba(35, 206, 107, 0.5); }
+.activity-level-3 { background-color: rgba(35, 206, 107, 0.8); }
+.activity-level-4 { background-color: var(--accent-main); box-shadow: 0 0 8px rgba(35, 206, 107, 0.4); }
+
 /* Dialogs */
 .MuiDialog-paper {
     border-radius: 12px !important;

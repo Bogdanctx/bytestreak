@@ -177,6 +177,14 @@ function UserProfile() {
         s => s.participant1.id === account.id || s.participant2.id === account.id
     );
 
+    const getActivityClass = (count: number) => {
+        if (count === 0) return 'activity-day';
+        if (count < 3) return 'activity-day activity-level-1';
+        if (count < 6) return 'activity-day activity-level-2';
+        if (count < 10) return 'activity-day activity-level-3';
+        return 'activity-day activity-level-4';
+    };
+
     return (
         <Box className="user-profile-container">
             {/* Header Section */}
@@ -208,21 +216,6 @@ function UserProfile() {
                                 {account.bio}
                             </Typography>
                         )}
-                    </Box>
-
-                    <Box className="profile-stats">
-                        <Box className="stat-item">
-                            <Typography className="stat-label">Coins</Typography>
-                            <Typography className="stat-value">{account.coins}</Typography>
-                        </Box>
-                        <Box className="stat-item">
-                            <Typography className="stat-label">Problems Solved</Typography>
-                            <Typography className="stat-value">{account.codingProblemsSolved}</Typography>
-                        </Box>
-                        <Box className="stat-item">
-                            <Typography className="stat-label">Quizzes Solved</Typography>
-                            <Typography className="stat-value">{account.quizzesSolved}</Typography>
-                        </Box>
                     </Box>
                 </Box>
 
@@ -459,10 +452,23 @@ function UserProfile() {
                                 </Box>
                             </Box>
 
-                            <Box className="activity-chart-placeholder">
-                                <Typography variant="body2" sx={{ color: 'var(--text-secondary)', textAlign: 'center', py: 4 }}>
-                                    Daily activity history coming soon
-                                </Typography>
+                           <Box className="activity-graph-container">
+                                <Box className="activity-grid">
+                                    {userData.activityGraph?.map((count: number, index: number) => {
+                                        const date = new Date();
+                                        date.setDate(date.getDate() - (userData.activityGraph.length - 1 - index));
+
+                                        const day = date.getDate();
+                                        const month = date.toLocaleString('default', { month: 'short' });
+                                        const year = date.getFullYear();
+                                        
+                                        return (
+                                            <Tooltip key={index} title={`${count} contributions on ${month} ${day}, ${year}`}>
+                                                <Box className={getActivityClass(count)} />
+                                            </Tooltip>
+                                        )
+                                    })}
+                                </Box>
                             </Box>
                         </Paper>
                     </Box>
