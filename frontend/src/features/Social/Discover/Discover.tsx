@@ -15,6 +15,7 @@ import { type IFriendInvite } from '../../../types/invite.types';
 import { type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface IDiscoverProps {
     account: IAccount;
@@ -24,7 +25,7 @@ function Discover({ account }: IDiscoverProps) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
-    
+    const navigate = useNavigate();
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
         queryFn: async ({ pageParam = "" }) => {
@@ -126,6 +127,7 @@ function Discover({ account }: IDiscoverProps) {
                         <Box 
                             key={mappedAccount.id} 
                             className="discover-user-card"
+                            onClick={() => navigate(`/profile/${mappedAccount.username}`)}
                         >
                             <Box className="discover-user-info">
                                 <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
@@ -149,7 +151,10 @@ function Discover({ account }: IDiscoverProps) {
                                 </Typography>
                             ) : (
                                 <Button variant="outlined" size="small" className="discover-add-button" 
-                                        onClick={() => addFriendMutation.mutate(mappedAccount.id)}
+                                        onClick={(event) => {
+                                            event.stopPropagation(); // prevent card click
+                                            addFriendMutation.mutate(mappedAccount.id)
+                                        }}
                                 >
                                     <PersonAddIcon fontSize="small" />
                                 </Button>
