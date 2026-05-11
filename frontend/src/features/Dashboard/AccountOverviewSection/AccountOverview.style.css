@@ -107,10 +107,6 @@
 }
 
 .account-overview-stat-card {
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 20px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -118,9 +114,7 @@
 }
 
 .account-overview-stat-card:hover {
-    background-color: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .account-overview-stat-value {

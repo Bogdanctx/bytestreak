@@ -5,6 +5,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EmailIcon from '@mui/icons-material/Email';
 import { type IAccount } from '../../../types/account.types';
 import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
@@ -13,6 +14,7 @@ import { api } from '../../../api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface IMasterProps {
     account: IAccount;
@@ -20,6 +22,7 @@ interface IMasterProps {
 }
 
 function Master({ account, setSelectedFriend }: IMasterProps) {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
@@ -132,7 +135,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         );
 
                         return (
-                            <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
+                            <ListItem disablePadding key={friend.id} onClick={() => navigate(`/profile/${friend.username}`)}>
                                 <ListItemButton>
                                     <ListItemAvatar sx={{ minWidth: 50 }}>
                                         <Avatar 
@@ -179,6 +182,19 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                             {isInvitePending ? 'Pending' : 'Invite'}
                                         </Button>
                                     )}
+
+
+                                    <IconButton
+                                        size="small"
+                                        className='master-delete-friend-button'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedFriend(friend)
+                                        }}
+                                        sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-easy)' } }}
+                                    >
+                                        <EmailIcon fontSize="small" />
+                                    </IconButton>
 
                                     <IconButton
                                         size="small"

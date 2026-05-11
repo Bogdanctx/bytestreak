@@ -118,10 +118,19 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.problemsSolved}
+                        {account.codingProblemsSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems
+                    </Typography>
+                </Box>
+
+                <Box className="account-overview-stat-card">
+                    <Typography variant="h4" className="account-overview-stat-value">
+                        {account.quizzesSolved}
+                    </Typography>
+                    <Typography variant="caption" className="account-overview-stat-label">
+                        Quizzes
                     </Typography>
                 </Box>
 

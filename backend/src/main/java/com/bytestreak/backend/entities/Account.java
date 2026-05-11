@@ -54,11 +54,13 @@ public class Account {
 
     private int currentXP = 0;
 
-    private int problemsSolved = 0;
+    private int codingProblemsSolved = 0;
+    private int quizzesSolved = 0;
 
     private int streakLength = 0;
 
     private int coins = 0;
+    private String bio = "This is a bio placeholder.";
     private LocalDate lastDailyQuizDate;
 
     // Base64 encoded profile picture

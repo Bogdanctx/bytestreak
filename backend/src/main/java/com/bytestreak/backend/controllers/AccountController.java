@@ -88,17 +88,4 @@ public class AccountController {
         return ResponseEntity.ok().build();
     
     }
-
-    @GetMapping("/profile/{username}")
-    public ResponseEntity<UserProfileDTO> getUserProfile(
-            @PathVariable String username, 
-            Authentication authentication) {
-        
-        // Find out who is making the request (could be null if not logged in)
-        String currentEmail = authentication != null ? authentication.getName() : null;
-        
-        UserProfileDTO profile = accountService.getProfileData(username, currentEmail);
-        
-        return ResponseEntity.ok(profile);
-    }
 }
