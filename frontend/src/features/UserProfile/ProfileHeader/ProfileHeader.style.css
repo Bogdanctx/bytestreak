@@ -1,0 +1,74 @@
+.profile-header {
+    background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border-bottom: 1px solid var(--bg-3);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.profile-header-content {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.profile-avatar {
+    width: 120px !important;
+    height: 120px !important;
+    border: 3px solid;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-username {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+}
+
+.profile-rank-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-rank {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem !important;
+}
+
+
+.profile-level {
+    color: var(--text-secondary) !important;
+    font-size: 0.9rem !important;
+}
+
+.profile-bio {
+    color: var(--text-secondary) !important;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.profile-actions button {
+    border-radius: 8px;
+    text-transform: none;
+    font-weight: 600;
+    min-width: 140px;
+    transition: all 0.2s ease;
+}
