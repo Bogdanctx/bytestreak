@@ -14,6 +14,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.bytestreak.backend.enums.InviteStatus;
 
@@ -27,10 +29,12 @@ public class FriendInvite {
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account receiver;
 
     @Enumerated(EnumType.STRING)

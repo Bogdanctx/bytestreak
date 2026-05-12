@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Getter
 @Setter
@@ -20,6 +23,7 @@ public class DailyActivity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
 
     @Column(name = "activity_date", nullable = false)

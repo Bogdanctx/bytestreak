@@ -6,6 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +23,12 @@ public class Streak {
 
     @ManyToOne
     @JoinColumn(name = "participant1_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account participant1;
 
     @ManyToOne
     @JoinColumn(name = "participant2_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account participant2;
 
     private boolean participant1SolvedToday = false;

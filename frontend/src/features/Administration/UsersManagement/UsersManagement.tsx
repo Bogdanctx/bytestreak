@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { Box, Typography, TextField, CircularProgress, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { api } from '../../../api';
 import { type AccountRole, type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
@@ -13,7 +12,6 @@ export default function UsersManagement() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [userToDelete, setUserToDelete] = useState<IAccount | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
 
@@ -29,7 +27,7 @@ export default function UsersManagement() {
 
     const deleteUserMutation = useMutation({
         mutationFn: async (userId: number) => {
-            const response = await api.delete(`/accounts/delete?accountId=${userId}`);
+            const response = await api.delete(`/accounts/delete/${userId}`);
             return response.data;
         },
         onSuccess: () => {
@@ -109,7 +107,6 @@ export default function UsersManagement() {
                             user={user}
                             onDeleteClick={handleDeleteClick}
                             onRoleChangeClick={handleRoleChange}
-                            navigate={navigate}
                         />
                     ))}
                 </Box>

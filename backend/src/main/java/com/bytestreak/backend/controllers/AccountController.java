@@ -74,32 +74,21 @@ public class AccountController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAccount(@RequestParam(required = false) Long accountId, Authentication authentication) {
-        if (authentication == null) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account targetAccount = null;
-
-        if (accountId != null) {
-            targetAccount = accountRepository.findById(accountId).orElse(null);
-        
-            if (targetAccount == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-        }
-
-        targetAccount = accountRepository.findByUsername(authentication.getName());
+        Account targetAccount = accountRepository.findById(id).orElse(null);
 
         if (targetAccount == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         accountRepository.delete(targetAccount);
 
-        return ResponseEntity.ok().build();
-    
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/set-role")

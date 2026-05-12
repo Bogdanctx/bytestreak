@@ -9,10 +9,10 @@ interface IUserRowProps {
     user: IAccount;
     onDeleteClick: (user: IAccount) => void;
     onRoleChangeClick: (user: IAccount, newRole: AccountRole) => void;
-    navigate: ReturnType<typeof useNavigate>;
 }
 
-function UserRow({ user, onDeleteClick, onRoleChangeClick, navigate }: IUserRowProps) {
+function UserRow({ user, onDeleteClick, onRoleChangeClick }: IUserRowProps) {
+    const navigate = useNavigate();
     const [selectedRole, setSelectedRole] = useState(user.role);
 
     const handleRoleChange = (newRole: AccountRole) => {
