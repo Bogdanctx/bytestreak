@@ -17,12 +17,12 @@ import notify from '../../../components/ui/ToastNotification';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-function Discover(account: IAccount) {
+function Discover({ account }: { account: IAccount }) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
     const navigate = useNavigate();
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    const { data: discoverableAccounts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
         queryFn: async ({ pageParam = "" }) => {
             const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
@@ -33,7 +33,7 @@ function Discover(account: IAccount) {
     });
 
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
-        queryKey: ['accountFriends'],
+        queryKey: ['accountFriends', account.id],
         queryFn: async () => {
             const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
             return response.data;
@@ -64,7 +64,7 @@ function Discover(account: IAccount) {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['pendingConnections'] });
+            queryClient.invalidateQueries({ queryKey: ['pendingFriendRequests'] });
             notify('Friend invite sent successfully!', 'success');
         },
         onError: (error) => {
@@ -73,7 +73,7 @@ function Discover(account: IAccount) {
         }
     });
 
-    const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
+    const discoverAccounts = discoverableAccounts?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box className="discover-container">

@@ -61,7 +61,7 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtService.generateToken(account.getEmail());
+        String token = jwtService.generateToken(account);
 
         ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", token)
                 .httpOnly(true)

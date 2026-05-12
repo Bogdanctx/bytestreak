@@ -17,6 +17,11 @@ import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';
 import UserProfile from './pages/UserProfile/UserProfile.tsx';
+import AdminRoute from './components/AdminRoute.tsx';
+import CreatorRoute from './components/CreatorRoute.tsx';
+import ModeratorRoute from './components/ModeratorRoute.tsx';
+import QuizManagement from './features/Administration/QuizManagement/QuizManagement.tsx';
+import UsersManagement from './features/Administration/UsersManagement/UsersManagement.tsx';
 
 const queryClient = new QueryClient();
 
@@ -31,20 +36,35 @@ function App() {
                         <ToastContainer />
 
                         <Routes>
-                            <Route path="/" element={<LandingPage />} /> 
+                            <Route path="/" element={<LandingPage />} />
+
                             <Route path="/recover-account" element={<RecoverAccountHandler />} />
 
                             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
-                                <Route path="/admin" element={<Administration />} />
                                 <Route path="/accounts/profile/:username" element={<UserProfile />} />
 
-                                <Route path="/creator" element={<Creator />} />
-                                <Route path="/creator/new" element={<ProblemBuilder />} />
-                                <Route path="/creator/edit/:id" element={<ProblemBuilder />} />
+
+                                <Route path="/creator" element={<CreatorRoute />}>
+                                    <Route index element={<Creator />} />
+                                    <Route path="/creator/new" element={<ProblemBuilder />} />
+                                    <Route path="/creator/edit/:id" element={<ProblemBuilder />} />
+                                </Route>
+
+                                
+                                <Route path="/admin" element={<ModeratorRoute><Administration /></ModeratorRoute>}>  
+                                    <Route path="/admin/manage-quizzes" element={<QuizManagement />} />
+                                    <Route path="/admin/manage-users" element={
+                                        <AdminRoute>
+                                            <UsersManagement />
+                                        </AdminRoute>
+                                    } />
+                                </Route>
+
                             </Route>
                         </Routes>
                         

@@ -20,12 +20,17 @@ export interface IStreakInviteNotificationPayload {
     inviteId: number;
 }
 
+export interface IRoleUpdateNotificationPayload {
+    message: string;
+}
+
 export interface INotification {
     id: number;
     receiver: IAccount;
-    type: 'FRIEND_REQUEST' | 'STREAK_INVITE';
+    type: NotificationType;
     read: boolean;
     timestamp: string;
     payload: IFriendRequestNotificationPayload | IStreakInviteNotificationPayload;
 };
 
+export type NotificationType = 'FRIEND_REQUEST' | 'STREAK_INVITE' | 'ROLE_UPDATE';

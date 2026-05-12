@@ -12,10 +12,12 @@ import { Avatar, Box, Button, Divider, InputAdornment, TextField, Typography } f
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 import { useAccount } from '../../hooks/useAccount';
+import { useNavigate } from 'react-router-dom';
 import './AccountTab.style.css';
 
 
 function Account() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
     const [formData, setFormData] = useState({
@@ -30,7 +32,7 @@ function Account() {
             await api.delete('/accounts/delete');
             notify("Your account has been deleted.", "success");
             setTimeout(() => {
-                window.location.href = "/";
+                navigate('/', { replace: true });
             }, 2000);
         },
         onSuccess: () => {

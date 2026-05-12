@@ -39,6 +39,9 @@ function StreakInviteNotification({ notification }: StreakInviteNotificationProp
                 <Typography variant="body2" className='streak-invite-text'>
                     <strong>{notification.payload.username}</strong> has invited you to a streak!
                 </Typography>
+                <Typography variant="caption" className="streak-invite-timestamp">
+                    {new Date(notification.timestamp).toLocaleString()}
+                </Typography>
             </Box>
             <Box className='streak-invite-actions'>
                 <IconButton size="small" className='streak-invite-accept' onClick={() => streakInviteMutation.mutate({ accepted: true, inviteId: notification.payload.inviteId, notificationId: notification.id })}>

@@ -11,9 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bytestreak.backend.NotificationPayload;
+import com.bytestreak.backend.RoleUpdateNotificationPayload;
 import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.enums.NotificationTypes;
+import com.bytestreak.backend.enums.Role;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
 
@@ -28,6 +32,9 @@ public class AccountService {
 
     @Autowired
     private ActivityTrackerService activityTrackerService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -102,5 +109,23 @@ public class AccountService {
 
 
         return userProfile;
+    }
+
+    public void setUserRole(Long accountId, String newRole) {
+        Account target = accountRepository.findById(accountId).orElse(null);
+
+        if (target == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        Role roleEnum = Role.valueOf(newRole.toUpperCase());
+
+        target.setRole(roleEnum);
+        accountRepository.save(target);
+
+        RoleUpdateNotificationPayload payload = new RoleUpdateNotificationPayload();
+        payload.setMessage("Your role has been updated to " + newRole + ". Permissions and access may have changed accordingly.");
+
+        notificationService.sendNotification(target, NotificationTypes.ROLE_UPDATE, payload);
     }
 }

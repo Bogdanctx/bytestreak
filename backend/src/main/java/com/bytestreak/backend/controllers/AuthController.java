@@ -139,7 +139,7 @@ public class AuthController {
         }
 
         Account account = magicToken.getAccount();
-        String jwtToken = jwtService.generateToken(account.getEmail());
+        String jwtToken = jwtService.generateToken(account);
 
         ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", jwtToken)
                 .httpOnly(true)

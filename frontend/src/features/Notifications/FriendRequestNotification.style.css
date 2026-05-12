@@ -29,6 +29,11 @@
 	gap: 4px;
 }
 
+.friend-request-timestamp {
+	color: var(--text-secondary);
+	margin-top: 6px;
+}
+
 .friend-request-accept {
 	color: var(--accent-main) !important;
 }

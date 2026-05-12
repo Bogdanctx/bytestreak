@@ -1,6 +1,8 @@
 package com.bytestreak.backend.entities;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,10 +34,12 @@ public class Friendship {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account1_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account1;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account2_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account2;
     
     @CreationTimestamp

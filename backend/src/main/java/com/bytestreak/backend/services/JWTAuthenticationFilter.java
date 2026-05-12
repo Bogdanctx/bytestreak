@@ -7,10 +7,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -33,12 +36,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                     if (jwtService.validateJwtToken(token)) {
                         String email = jwtService.getEmailFromToken(token);
+                        String role = jwtService.getRoleFromToken(token);
+
+                        // TREBUIE adăugat acest fallback:
+                        if (role == null || role.trim().isEmpty()) {
+                            role = "USER";
+                        }
+
+                        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 
                         UsernamePasswordAuthenticationToken auth =
                                 new UsernamePasswordAuthenticationToken(
                                         email,
                                         null,
-                                        Collections.emptyList()
+                                        authorities
                                 );
 
                         SecurityContextHolder.getContext().setAuthentication(auth);

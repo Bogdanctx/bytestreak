@@ -32,7 +32,17 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/auth/login", "/auth/register", "/auth/request-recovery-link", "/auth/recover-account", "/ws/**").permitAll()
+                .requestMatchers(
+                    "/welcome",
+                    "/auth/login", 
+                    "/auth/register", 
+                    "/auth/request-recovery-link", 
+                    "/auth/recover-account", 
+                    "/ws/**"
+                ).permitAll()
+                .requestMatchers("/creator/**").hasAnyAuthority("CREATOR", "MODERATOR", "ADMIN")
+                .requestMatchers("/admin/manage-quizzes").hasAnyAuthority("ADMIN", "MODERATOR")
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

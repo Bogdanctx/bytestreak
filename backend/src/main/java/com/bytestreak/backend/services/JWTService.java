@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+import com.bytestreak.backend.entities.Account;
+
 @Service
 public class JWTService {
     private String secret = "847b14c1fe6a7add809954e0b8f44cb3e93419223e2909050f540e23865b986f";
@@ -22,9 +24,10 @@ public class JWTService {
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email) {
+    public String generateToken(Account account) {
         return Jwts.builder()
-                .subject(email)
+                .subject(account.getEmail())
+                .claim("role", account.getRole().name())
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + expiration))
                 .signWith(secretKey)
@@ -38,6 +41,15 @@ public class JWTService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role", String.class);
     }
 
     public boolean validateJwtToken(String token) {

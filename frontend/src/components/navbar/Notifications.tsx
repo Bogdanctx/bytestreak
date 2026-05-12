@@ -7,6 +7,7 @@ import { Box, Button, Popover } from '@mui/material';
 import { api } from '../../api';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
 import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
+import RoleUpdateNotification from '../../features/Notifications/RoleUpdateNotification';
 import { type INotification } from '../../types/notification.types';
 import './Navbar.style.css';
 import './Notifications.style.css';
@@ -80,13 +81,17 @@ function Notifications() {
                 ) : (
                     <Box className='notifications-list'>
                         {notifications.map(notification => {
-                            if (notification.type === 'FRIEND_REQUEST') {
-                                return <FriendRequestNotification key={notification.id} notification={notification} />;
+                            
+                            switch (notification.type) {
+                                case 'FRIEND_REQUEST':
+                                    return <FriendRequestNotification key={notification.id} notification={notification} />;
+                                case 'STREAK_INVITE':
+                                    return <StreakInviteNotification key={notification.id} notification={notification} />;
+                                case 'ROLE_UPDATE':
+                                    return <RoleUpdateNotification key={notification.id} notification={notification} />;
+                                default:
+                                    return null;
                             }
-                            else if (notification.type === 'STREAK_INVITE') {
-                                return <StreakInviteNotification key={notification.id} notification={notification} />;
-                            }
-                            return null;
                         })}
                     </Box>
                 )}

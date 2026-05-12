@@ -40,6 +40,9 @@ function FriendRequestNotification({ notification }: FriendRequestNotificationPr
                 <Typography variant="body2" className='friend-request-text'>
                     <strong>{notification.payload.username}</strong> wants to connect.
                 </Typography>
+                <Typography variant="caption" className="friend-request-timestamp">
+                    {new Date(notification.timestamp).toLocaleString()}
+                </Typography>
             </Box>
             <Box className='friend-request-actions'>
                 <IconButton size="small" className='friend-request-accept' onClick={() => friendInviteMutation.mutate({ accepted: true, inviteId: notification.payload.inviteId, notificationId: notification.id })}>

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useAccount } from '../../hooks/useAccount';
 import { Box, Button } from '@mui/material';
 
 import ByteStreakLogo from '../../ByteStreak.logo';
@@ -7,7 +8,7 @@ import './Navbar.style.css';
 
 function Navbar() {
     const navigate = useNavigate();
-
+    const { data: account } = useAccount();
     const currentPath = window.location.pathname;
 
     return (
@@ -38,19 +39,23 @@ function Navbar() {
                     Social
                 </Button>
 
-                <Button 
-                    className={`navbar-link-button ${currentPath === "/creator" ? "navbar-selected-link" : ""}`}
-                    onClick={() => navigate("/creator")}
-                    disableRipple>
-                    Creator
-                </Button>
+                {account?.role === 'CREATOR' && (
+                    <Button 
+                        className={`navbar-link-button ${currentPath === "/creator" ? "navbar-selected-link" : ""}`}
+                        onClick={() => navigate("/creator")}
+                        disableRipple>
+                        Creator
+                    </Button>
+                )}
 
-                <Button 
-                    className={`navbar-link-button ${currentPath === "/admin" ? "navbar-selected-link" : ""}`}
-                    onClick={() => navigate("/admin")}
-                    disableRipple>
-                    Administration
-                </Button>
+                {(account?.role === 'ADMIN' || account?.role === 'MODERATOR') && (
+                    <Button 
+                        className={`navbar-link-button ${currentPath === "/admin" ? "navbar-selected-link" : ""}`}
+                        onClick={() => navigate("/admin")}
+                        disableRipple>
+                        Administration
+                    </Button>
+                )}
 
                 <Button 
                     className={`navbar-link-button ${currentPath === "/people" ? "navbar-selected-link" : ""}`}

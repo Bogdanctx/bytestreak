@@ -8,6 +8,7 @@ export const useAccount = () => {
         queryFn: async () => {
             const response = await api.get('/auth/me');
             return response.data;
-        }
+        },
+        refetchInterval: 1000 * 60 * 5
     });
 };

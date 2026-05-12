@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { Box, Typography, List, ListItemButton, ListItemText, Divider } from '@mui/material';
-import QuizManagement from '../../features/Administration/QuizManagement/QuizManagement';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import './Administration.style.css';
 
 export default function Administration() {
-    const [activeTab, setActiveTab] = useState('quizzes');
+    const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <Box id="admin-container">
@@ -16,24 +16,23 @@ export default function Administration() {
                 <List>
                     <ListItemButton 
                         className="admin-menu-item"
-                        selected={activeTab === 'quizzes'} 
-                        onClick={() => setActiveTab('quizzes')}
+                        selected={location.pathname.includes('/manage-quizzes')} 
+                        onClick={() => navigate("/admin/manage-quizzes")}
                     >
                         <ListItemText primary="Quiz Management" />
                     </ListItemButton>
                     <ListItemButton 
                         className="admin-menu-item"
-                        selected={activeTab === 'users'} 
-                        onClick={() => setActiveTab('users')}
+                        selected={location.pathname.includes('/manage-users')} 
+                        onClick={() => navigate("/admin/manage-users")}
                     >
-                        <ListItemText primary="Ban Users" />
+                        <ListItemText primary="Users Management" />
                     </ListItemButton>
                 </List>
             </Box>
 
             <Box id="admin-content-area">
-                {activeTab === 'quizzes' && <QuizManagement />}
-                {activeTab === 'users' && <Typography color="white">User management coming soon...</Typography>}
+                <Outlet />
             </Box>
         </Box>
     );

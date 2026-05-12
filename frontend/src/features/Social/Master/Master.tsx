@@ -58,11 +58,16 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
             return response.data;
         },
         onSuccess: () => {
-            if (!friendToRemove) return;
+            if (!friendToRemove) {
+                return;
+            }
 
             setSelectedFriend(null);
             setFriendToRemove(null);
-            queryClient.invalidateQueries({ queryKey: ['account', 'sentConnections'] });
+
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+            queryClient.invalidateQueries({ queryKey: ['accountFriends'] });
+
             notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
         },
         onError: (error) => {
