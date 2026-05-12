@@ -48,7 +48,7 @@ function Navbar() {
                     </Button>
                 )}
 
-                {account?.role === 'ADMIN' && (
+                {account?.role === 'ADMIN' || account?.role === 'MODERATOR' && (
                     <Button 
                         className={`navbar-link-button ${currentPath === "/admin" ? "navbar-selected-link" : ""}`}
                         onClick={() => navigate("/admin")}

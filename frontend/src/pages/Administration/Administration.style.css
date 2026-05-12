@@ -45,4 +45,6 @@
 #admin-content-area {
     overflow: hidden;
     flex: 1;
+    background-color: var(--bg-2);
+    border-radius: 12px;
 }

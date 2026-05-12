@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                     "/ws/**"
                 ).permitAll()
                 .requestMatchers("/creator/**").hasAnyAuthority("CREATOR", "MODERATOR", "ADMIN")
+                .requestMatchers("/admin/manage-quizzes").hasAnyAuthority("ADMIN", "MODERATOR")
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             )

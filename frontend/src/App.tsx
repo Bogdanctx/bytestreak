@@ -19,6 +19,8 @@ import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';
 import UserProfile from './pages/UserProfile/UserProfile.tsx';
 import AdminRoute from './components/AdminRoute.tsx';
 import CreatorRoute from './components/CreatorRoute.tsx';
+import ModeratorRoute from './components/ModeratorRoute.tsx';
+import QuizManagement from './features/Administration/QuizManagement/QuizManagement.tsx';
 
 const queryClient = new QueryClient();
 
@@ -38,13 +40,11 @@ function App() {
                             <Route path="/recover-account" element={<RecoverAccountHandler />} />
 
                             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                                <Route path="/admin/*" element={<AdminRoute><Administration /></AdminRoute>} />
 
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
-
                                 <Route path="/accounts/profile/:username" element={<UserProfile />} />
 
 
@@ -52,6 +52,20 @@ function App() {
                                     <Route index element={<Creator />} />
                                     <Route path="/creator/new" element={<ProblemBuilder />} />
                                     <Route path="/creator/edit/:id" element={<ProblemBuilder />} />
+                                </Route>
+
+                                
+                                <Route path="/admin" element={
+                                    <ModeratorRoute>
+                                        <Administration />
+                                    </ModeratorRoute>
+                                }>  
+                                    <Route path="/admin/manage-quizzes" element={<QuizManagement />} />
+                                    <Route path="/admin/manage-users" element={
+                                        <AdminRoute>
+                                            <div>Manage Users Page</div> 
+                                        </AdminRoute>
+                                    } />
                                 </Route>
 
                             </Route>
