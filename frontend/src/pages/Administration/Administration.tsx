@@ -26,7 +26,7 @@ export default function Administration() {
                         selected={location.pathname.includes('/manage-users')} 
                         onClick={() => navigate("/admin/manage-users")}
                     >
-                        <ListItemText primary="Ban Users" />
+                        <ListItemText primary="Users Management" />
                     </ListItemButton>
                 </List>
             </Box>

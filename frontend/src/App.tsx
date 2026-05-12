@@ -21,6 +21,7 @@ import AdminRoute from './components/AdminRoute.tsx';
 import CreatorRoute from './components/CreatorRoute.tsx';
 import ModeratorRoute from './components/ModeratorRoute.tsx';
 import QuizManagement from './features/Administration/QuizManagement/QuizManagement.tsx';
+import UsersManagement from './features/Administration/UsersManagement/UsersManagement.tsx';
 
 const queryClient = new QueryClient();
 
@@ -55,15 +56,11 @@ function App() {
                                 </Route>
 
                                 
-                                <Route path="/admin" element={
-                                    <ModeratorRoute>
-                                        <Administration />
-                                    </ModeratorRoute>
-                                }>  
+                                <Route path="/admin" element={<ModeratorRoute><Administration /></ModeratorRoute>}>  
                                     <Route path="/admin/manage-quizzes" element={<QuizManagement />} />
                                     <Route path="/admin/manage-users" element={
                                         <AdminRoute>
-                                            <div>Manage Users Page</div> 
+                                            <UsersManagement />
                                         </AdminRoute>
                                     } />
                                 </Route>
