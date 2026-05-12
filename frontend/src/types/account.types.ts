@@ -11,4 +11,5 @@ export interface IAccount {
     lastDailyQuizDate: string;
     profilePictureUrl: string;
     joinedDate: string;
+    role: 'USER' | 'CREATOR' | 'ADMIN';
 }
