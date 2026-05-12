@@ -10,6 +10,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { type IFriendInvite } from '../../../types/invite.types';
+import { type IFriendship } from '../../../types/friendship.types';
+import Loading from '../../../components/ui/Loading';
 
 interface IProfileHeaderProps {
     target: IUserProfile;
@@ -33,6 +35,14 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
             return response.data;
         }
     });
+    const { data: friendship, isSuccess: friendshipQueryIsSuccess, isEnabled: friendshipQueryIsEnabled } = useQuery<IFriendship>({
+        queryKey: ['friendship', target.account.id],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friendship?accountId1=${target.account.id}&accountId2=${myAccount.id}`);
+            return response.data;
+        },
+        enabled: !isMyProfile && isFriend
+    })
 
     const addFriendMutation = useMutation({
         mutationFn: async (accountId: number) => {
@@ -48,6 +58,10 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
             notify('Failed to send friend invite. Please try again.', 'error');
         }
     });
+
+    if (!friendshipQueryIsSuccess && friendshipQueryIsEnabled) {
+        return <Loading />;
+    }
 
     return (
         <Box className="profile-header">
@@ -76,6 +90,20 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                     {target.account.bio && (
                         <Typography className="profile-bio" variant="body2">
                             {target.account.bio}
+                        </Typography>
+                    )}
+                </Box>
+
+                <Box className="profile-meta">
+                    <Typography className="profile-meta-item">
+                        Leaderboard #7 
+                    </Typography>
+                    <Typography className="profile-meta-item">
+                        Joined on {new Date(target.account.joinedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </Typography>
+                    {isFriend && (
+                        <Typography className="profile-meta-item">
+                            Friends since {new Date(friendship.friendsSince).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>
                     )}
                 </Box>

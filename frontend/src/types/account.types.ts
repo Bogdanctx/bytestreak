@@ -10,4 +10,5 @@ export interface IAccount {
     bio: string;
     lastDailyQuizDate: string;
     profilePictureUrl: string;
+    joinedDate: string;
 }

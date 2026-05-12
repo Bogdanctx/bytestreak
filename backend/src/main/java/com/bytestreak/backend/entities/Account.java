@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,4 +61,7 @@ public class Account {
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
     private String profilePictureUrl = "";
+
+    @CreationTimestamp
+    private String joinedDate;
 }

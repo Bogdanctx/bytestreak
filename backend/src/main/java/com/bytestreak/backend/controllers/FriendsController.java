@@ -116,5 +116,27 @@ public class FriendsController {
 
         return ResponseEntity.ok(friends);
     }
+
+    @GetMapping("/get-friendship")
+    public ResponseEntity<?> getFriendship(@RequestParam Long accountId1, @RequestParam Long accountId2, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        Account account1 = accountRepository.findById(accountId1).orElse(null);
+        Account account2 = accountRepository.findById(accountId2).orElse(null);
+
+        if (account1 == null || account2 == null) {
+            return ResponseEntity.status(404).body("Account not found");
+        }
+
+        Friendship friendship = friendshipRepository.findByAccount1AndAccount2(account1, account2);
+
+        if (friendship == null) {
+            return ResponseEntity.status(404).body("Friendship not found");
+        }
+
+        return ResponseEntity.ok(friendship);
+    }
     
 }
