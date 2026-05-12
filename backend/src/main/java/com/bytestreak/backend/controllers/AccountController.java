@@ -109,7 +109,7 @@ public class AccountController {
         }
 
         try {
-            accountService.setUserRole(body.getAccountId(), body.getRole());
+            accountService.setUserRole(body.getAccountId(), body.getNewRole());
             return ResponseEntity.ok().build();
         }
         catch (RuntimeException e) {

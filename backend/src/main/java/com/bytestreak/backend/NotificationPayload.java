@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 )
 @JsonSubTypes({
     @JsonSubTypes.Type(value = FriendRequestNotificationPayload.class, name = "FRIEND_REQUEST"),
-    @JsonSubTypes.Type(value = StreakInviteNotificationPayload.class, name = "STREAK_INVITE")
+    @JsonSubTypes.Type(value = StreakInviteNotificationPayload.class, name = "STREAK_INVITE"),
+    @JsonSubTypes.Type(value = RoleUpdateNotificationPayload.class, name = "ROLE_UPDATE")
 })
 public interface NotificationPayload {
     
