@@ -15,7 +15,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../../../components/ui/Loading';
 
 interface IMasterProps {
     account: IAccount;
@@ -72,6 +71,21 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
         }
     });
 
+    const inviteFriendToStreakMutation = useMutation({
+        mutationFn: async (friendId: number) => {
+            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+            notify("Streak invite sent!", "success");
+        },
+        onError: (error) => {
+            console.error('Error inviting friend to streak:', error);
+            notify("Failed to send streak invite. Please try again.", "error");
+        }
+    });
+
     const confirmDelete = (friend: IAccount, event: React.MouseEvent) => {
         event.stopPropagation();
         setFriendToRemove(friend);
@@ -83,22 +97,6 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
         }
         
         deleteFriendMutation.mutate(friendToRemove.id);
-    };
-
-    const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {
-        event.stopPropagation();
-
-        try {
-            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
-            
-            if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
-                notify("Streak invite sent!", "success");
-            }
-        }
-        catch (error) {
-            console.error('Error inviting friend to streak:', error);
-        }
     };
 
     const level = getLevel(account.currentXP);
@@ -169,7 +167,10 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                     {!isInActiveStreak && (
                                         <Button
                                             size="small"
-                                            onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                inviteFriendToStreakMutation.mutate(friend.id);
+                                            }}
                                             disabled={isInvitePending}
                                             sx={{
                                                 mr: 1,

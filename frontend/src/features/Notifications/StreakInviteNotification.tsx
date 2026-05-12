@@ -5,12 +5,31 @@ import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import { type INotification } from '../../types/notification.types';
 import './StreakInviteNotification.style.css';
 
+import { api } from '../../api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 interface StreakInviteNotificationProps {
     notification: INotification;
-    handleStreakInviteAction: (accepted: boolean, inviteId: number, notificationId: number) => void;
 }
 
-function StreakInviteNotification({ notification, handleStreakInviteAction }: StreakInviteNotificationProps) {
+function StreakInviteNotification({ notification }: StreakInviteNotificationProps) {
+    const queryClient = useQueryClient();
+    const streakInviteMutation = useMutation({
+        mutationFn: async ({ accepted, inviteId, notificationId }: { accepted: boolean, inviteId: number, notificationId: number }) => {
+            return api.post(`/streaks/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
+        },
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+                queryClient.invalidateQueries({ queryKey: ['accountFriends'] }),
+                queryClient.invalidateQueries({ queryKey: ['activeStreaks'] })
+            ]);
+        },
+        onError: (error) => {
+            console.error('Error responding to streak invite:', error);
+        }
+    });
+
     return (
         <Box key={notification.id} className='streak-invite-notification'>
             <Avatar src={notification.payload.profilePictureUrl} className='streak-invite-avatar'>
@@ -22,10 +41,10 @@ function StreakInviteNotification({ notification, handleStreakInviteAction }: St
                 </Typography>
             </Box>
             <Box className='streak-invite-actions'>
-                <IconButton size="small" className='streak-invite-accept' onClick={() => handleStreakInviteAction(true, notification.payload.inviteId, notification.id)}>
+                <IconButton size="small" className='streak-invite-accept' onClick={() => streakInviteMutation.mutate({ accepted: true, inviteId: notification.payload.inviteId, notificationId: notification.id })}>
                     <CheckIcon fontSize="small" />
                 </IconButton>
-                <IconButton size="small" className='streak-invite-decline' onClick={() => handleStreakInviteAction(false, notification.payload.inviteId, notification.id)}>
+                <IconButton size="small" className='streak-invite-decline' onClick={() => streakInviteMutation.mutate({ accepted: false, inviteId: notification.payload.inviteId, notificationId: notification.id })}>
                     <CloseIcon fontSize="small" />
                 </IconButton>
             </Box>

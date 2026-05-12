@@ -17,11 +17,7 @@ import notify from '../../../components/ui/ToastNotification';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-interface IDiscoverProps {
-    account: IAccount;
-}
-
-function Discover({ account }: IDiscoverProps) {
+function Discover(account: IAccount) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
@@ -44,8 +40,8 @@ function Discover({ account }: IDiscoverProps) {
         }
     });
 
-    const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
-        queryKey: ['pendingConnections'],
+    const { data: pendingFriendRequests = [] } = useQuery<IFriendInvite[]>({
+        queryKey: ['pendingFriendRequests'],
         queryFn: async () => {
             const response = await api.get('/friends/invites/pending-connections');
             return response.data;
@@ -145,7 +141,7 @@ function Discover({ account }: IDiscoverProps) {
                             </Box>
 
                             {/* `Pending Connection` will appear for both users if they try to add each other */}
-                            {pendingConnections.some((connection) => connection.receiver.id === mappedAccount.id || connection.sender.id === mappedAccount.id) ? (
+                            {pendingFriendRequests.some((connection) => connection.receiver.id === mappedAccount.id || connection.sender.id === mappedAccount.id) ? (
                                 <Typography variant="caption" className="discover-pending-connection">
                                     Pending Connection
                                 </Typography>

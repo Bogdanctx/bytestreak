@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Box, Button, Popover } from '@mui/material';
@@ -7,15 +7,15 @@ import { Box, Button, Popover } from '@mui/material';
 import { api } from '../../api';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
 import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
-import { type IFriendInvite } from '../../types/invite.types';
 import { type INotification } from '../../types/notification.types';
 import './Navbar.style.css';
 import './Notifications.style.css';
+import Loading from '../ui/Loading';
 
 function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const queryClient = useQueryClient();
-    const { data: notifications = [] } = useQuery<INotification[]>({
+    const { data: notifications = [], isSuccess: notificationsQueryIsSuccess } = useQuery<INotification[]>({
         queryKey: ['notifications'],
         queryFn: async () => {
             const response = await api.get('/notifications/fetch');
@@ -26,65 +26,28 @@ function Notifications() {
 
     useEffect(() => {
         if (anchorEl) {
-            markNotificationsAsRead();
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });    
+            readNotificationsMutation.mutate();
         }
     }, [anchorEl]);
 
-    const markNotificationsAsRead = async () => {
-        try {
-            const response = await api.post('/notifications/mark-as-read');
-            if (response.status === 200) {
-                console.log('Notifications marked as read');
-                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
-                    old.map(notifications => ({ ...notifications, read: true }))
-                );
-            }
-        }
-        catch (error) {
+    const readNotificationsMutation = useMutation({
+        mutationFn: async () => {
+            return api.post('/notifications/mark-as-read');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+        onError: (error) => {
             console.error('Error marking notifications as read:', error);
         }
-    }
-  
-    const handleFriendRequestAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
-        try {
-            const response = await api.post(`/friends/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
-
-            if (response.status === 200) {
-                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
-                    old.filter(notification => notification.id !== notificationId)
-                );
-
-                queryClient.invalidateQueries({ queryKey: ['account', 'discoverAccounts', 'pendingConnections'] });
-            }
-        }
-        catch (error) {
-            console.error('Error responding to friend request:', error);
-        }
-    };
-
-    const handleStreakInviteAction = async (accepted: boolean, inviteId: number, notificationId: number) => {
-        try {
-            const response = await api.post(`/streaks/respond?inviteId=${inviteId}&notificationId=${notificationId}&accepted=${accepted}`);
-
-            if (response.status === 200) {
-                queryClient.setQueryData(['notifications'], (old: INotification[] = []) => 
-                    old.filter(notification => notification.id !== notificationId)
-                );
-            
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
-
-                if (accepted) {
-                    queryClient.invalidateQueries({ queryKey: ['activeStreaks'] });
-                }
-            }
-        }        
-        catch (error) {
-            console.error('Error responding to streak invite:', error);
-        }
-    };
+    });
 
     const hasUnreadNotifications = notifications.some(notification => !notification.read);
+
+    if (!notificationsQueryIsSuccess) {
+        return <Loading />;
+    }
 
     return (
         <>
@@ -118,10 +81,10 @@ function Notifications() {
                     <Box className='notifications-list'>
                         {notifications.map(notification => {
                             if (notification.type === 'FRIEND_REQUEST') {
-                                return <FriendRequestNotification key={notification.id} notification={notification} handleFriendRequestAction={handleFriendRequestAction} />;
+                                return <FriendRequestNotification key={notification.id} notification={notification} />;
                             }
                             else if (notification.type === 'STREAK_INVITE') {
-                                return <StreakInviteNotification key={notification.id} notification={notification} handleStreakInviteAction={handleStreakInviteAction} />;
+                                return <StreakInviteNotification key={notification.id} notification={notification} />;
                             }
                             return null;
                         })}
