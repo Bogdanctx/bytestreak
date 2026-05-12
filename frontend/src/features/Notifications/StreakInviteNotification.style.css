@@ -36,3 +36,8 @@
 .streak-invite-decline {
 	color: var(--difficulty-hard) !important;
 }
+
+.streak-invite-timestamp {
+	color: var(--text-secondary);
+	margin-top: 6px;
+}
