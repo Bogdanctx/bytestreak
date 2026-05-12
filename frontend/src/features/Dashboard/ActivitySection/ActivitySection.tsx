@@ -25,10 +25,12 @@ import notify from "../../../components/ui/ToastNotification";
 import { useState } from "react";
 import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
 import Loading from "../../../components/ui/Loading";
+import { useNavigate } from "react-router-dom";
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
 function ActivitySection() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: account, refetch: refetchAccount } = useAccount();
     const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
@@ -118,7 +120,10 @@ function ActivitySection() {
                         const friendCompletedQuiz = streak.participant1.id === account.id ? streak.participant2SolvedToday : streak.participant1SolvedToday;
 
                         return (
-                            <ListItem key={streak.id} className="streak-list-item">
+                            <ListItem key={streak.id} 
+                                        className="streak-list-item"
+                                        onClick={() => navigate(`/accounts/profile/${streakFriend.username}`)}
+                            >
                                 <Box className="streak-user-info">
                                     <ListItemAvatar sx={{ minWidth: '48px' }}>
                                         <Avatar src={streakFriend.profilePictureUrl} alt={streakFriend.username} className="friend-avatar">
@@ -153,7 +158,10 @@ function ActivitySection() {
                                         <IconButton 
                                             size="small" 
                                             className="streak-delete-btn"
-                                            onClick={() => removeStreakMutation.mutate(streak.id)}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                removeStreakMutation.mutate(streak.id);
+                                            }}
                                             disabled={removeStreakMutation.isPending}
                                         >
                                             {removeStreakMutation.isPending ? (

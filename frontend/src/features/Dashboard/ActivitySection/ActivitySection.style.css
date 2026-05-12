@@ -102,6 +102,7 @@
 
 .streak-list-item:hover {
     background-color: var(--bg-4);
+    cursor: pointer;
 }
 
 .streak-user-info {
