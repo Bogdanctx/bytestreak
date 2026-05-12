@@ -34,6 +34,9 @@ public class QuizService {
     @Autowired
     private StreakService streakService;
 
+    @Autowired
+    private ActivityTrackerService activityTrackerService;
+
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
     public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
@@ -219,6 +222,7 @@ public class QuizService {
 
         solver.setLastDailyQuizDate(today);
         accountRepository.save(solver);
+        activityTrackerService.recordActivity(solver);
 
         streakService.handleSolvedDailyQuiz(solver, isCorrect);
 

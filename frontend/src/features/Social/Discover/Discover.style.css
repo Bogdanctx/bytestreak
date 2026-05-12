@@ -75,6 +75,7 @@
 
 .discover-user-card:hover {
 	background-color: var(--bg-4);
+	cursor: pointer;
 }
 
 .discover-user-info {

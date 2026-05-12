@@ -2,7 +2,6 @@ package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +11,10 @@ import com.bytestreak.backend.repositories.FriendInviteRepository;
 import com.bytestreak.backend.FriendRequestNotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.FriendInvite;
-import com.bytestreak.backend.entities.Notification;
+import com.bytestreak.backend.entities.Friendship;
 import com.bytestreak.backend.enums.InviteStatus;
 import com.bytestreak.backend.enums.NotificationTypes;
+import com.bytestreak.backend.repositories.FriendshipRepository;
 
 import java.util.List;
 
@@ -31,6 +31,9 @@ public class FriendService {
 
     @Autowired
     private FriendInviteRepository friendInviteRepository;
+
+    @Autowired
+    private FriendshipRepository friendshipRepository;
 
     @Autowired
     private StreakService streakService;
@@ -68,11 +71,8 @@ public class FriendService {
 
         Account sender = invite.getSender();
 
-        me.getFriends().add(sender);
-        sender.getFriends().add(me);
-        
-        accountRepository.save(me);
-        accountRepository.save(sender);
+        Friendship friendship = new Friendship(me, sender);
+        friendshipRepository.save(friendship);
 
         // delete the invite
         friendInviteRepository.delete(invite);
@@ -101,25 +101,18 @@ public class FriendService {
     }
 
     public void removeFriend(Account me, Long friendId) {
-        Account friend = accountRepository
-                            .findById(friendId)
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Account friend = accountRepository.findById(friendId).orElse(null);
 
-        me.getFriends().removeIf(a -> a.getId().equals(friendId));
-        friend.getFriends().removeIf(a -> a.getId().equals(me.getId()));
+        if (friend == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend not found");
+        }
 
-        accountRepository.save(me);
-        accountRepository.save(friend);
+        Friendship friendship = friendshipRepository.findByAccount1AndAccount2(me, friend);
+        if (friendship == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friendship not found");
+        }
 
+        friendshipRepository.delete(friendship);
         streakService.removeStreakBetweenUsers(me, friend);
-                
-    }
-
-    public List<FriendInvite> getPendingConnections(Account me) {
-        return friendInviteRepository.findByReceiverAndStatus(me, InviteStatus.PENDING);
-    }
-
-    public List<FriendInvite> getSentConnections(Account me) {
-        return friendInviteRepository.findBySenderAndStatus(me, InviteStatus.PENDING);
     }
 }

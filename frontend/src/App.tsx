@@ -16,6 +16,7 @@ import './App.css';
 import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';
+import UserProfile from './pages/UserProfile/UserProfile.tsx';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ function App() {
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
                                 <Route path="/admin" element={<Administration />} />
+                                <Route path="/accounts/profile/:username" element={<UserProfile />} />
 
                                 <Route path="/creator" element={<Creator />} />
                                 <Route path="/creator/new" element={<ProblemBuilder />} />

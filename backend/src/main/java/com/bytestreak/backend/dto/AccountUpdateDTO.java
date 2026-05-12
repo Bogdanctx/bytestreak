@@ -9,4 +9,5 @@ public class AccountUpdateDTO {
     private String email;
     private String password;
     private String profilePictureUrl;
+    private String bio;
 }

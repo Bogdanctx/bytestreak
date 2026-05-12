@@ -1,0 +1,376 @@
+.user-profile-container {
+    background-color: var(--bg-1);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 1.5rem !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+}
+
+
+/* Tabs Section */
+.profile-tabs-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.profile-tabs {
+    background-color: var(--bg-2) !important;
+    min-height: 64px;
+}
+
+.profile-tabs .MuiTab-root {
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+    text-transform: none;
+    min-height: 64px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.profile-tabs .MuiTab-root:hover {
+    color: var(--text-primary) !important;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.profile-tabs .Mui-selected {
+    color: var(--accent-main) !important;
+}
+
+/* Tab Content */
+.profile-tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* Scrollbar Styling */
+.profile-tab-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-tab-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-tab-content::-webkit-scrollbar-thumb {
+    background: var(--bg-8);
+    border-radius: 4px;
+}
+
+.profile-tab-content::-webkit-scrollbar-thumb:hover {
+    background: var(--bg-7);
+}
+
+/* Empty State */
+.empty-state {
+    color: var(--text-secondary) !important;
+    text-align: center;
+    padding: 48px 24px;
+    font-style: italic;
+}
+
+/* Friends Tab */
+.friends-list {
+    background-color: var(--bg-2);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--bg-3);
+}
+
+.friend-item {
+    padding: 0 !important;
+}
+
+.friend-button {
+    background-color: var(--bg-2) !important;
+    transition: all 0.2s ease !important;
+    padding: 16px !important;
+    border-radius: 0 !important;
+
+    &:hover {
+        background-color: var(--bg-3) !important;
+        cursor: pointer;
+    }
+}
+
+.friend-button .MuiTypography-root {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Streaks Tab */
+.streaks-list {
+    background-color: var(--bg-2);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--bg-3);
+}
+
+.streak-item {
+    padding: 0 !important;
+}
+
+.streak-button {
+    background-color: var(--bg-2) !important;
+    transition: all 0.2s ease !important;
+    padding: 16px !important;
+    border-radius: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+        background-color: var(--bg-3) !important;
+        cursor: pointer;
+    }
+}
+
+.streak-flame {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+    padding: 8px 12px;
+    background-color: rgba(255, 107, 53, 0.1);
+    border-radius: 8px;
+}
+
+/* Activity Tab */
+.activity-section {
+    background-color: var(--bg-2) !important;
+    border: 1px solid var(--bg-3) !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+}
+
+.activity-header {
+    margin-bottom: 24px;
+}
+
+.activity-header .MuiTypography-root {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+}
+
+.activity-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.activity-stat {
+    background-color: var(--bg-3);
+    border: 1px solid var(--bg-4);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.activity-stat:hover {
+    border-color: var(--accent-main);
+    background-color: rgba(35, 206, 107, 0.05);
+}
+
+.activity-stat-label {
+    color: var(--text-secondary) !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.activity-stat-value {
+    color: var(--text-primary) !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+}
+
+.streak-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity-chart-placeholder {
+    background-color: var(--bg-3);
+    border: 2px dashed var(--bg-4);
+    border-radius: 12px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.activity-chart-placeholder:hover {
+    border-color: var(--accent-main);
+    background-color: rgba(35, 206, 107, 0.02);
+}
+
+.activity-graph-container {
+    background-color: var(--bg-2);
+    padding: 24px;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid var(--bg-3);
+}
+
+.activity-grid {
+    display: grid;
+    /* 7 rows for 7 days of the week */
+    grid-template-rows: repeat(7, 1fr); 
+    grid-auto-flow: column;
+    gap: 4px;
+    width: max-content;
+}
+
+.activity-day {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background-color: var(--bg-4);
+    transition: transform 0.1s ease;
+}
+
+.activity-day:hover {
+    transform: scale(1.2);
+    border: 1px solid var(--text-primary);
+}
+
+/* Heatmap intensities matching your ByteStreak theme */
+.activity-level-1 { background-color: rgba(35, 206, 107, 0.2); }
+.activity-level-2 { background-color: rgba(35, 206, 107, 0.5); }
+.activity-level-3 { background-color: rgba(35, 206, 107, 0.8); }
+.activity-level-4 { background-color: var(--accent-main); box-shadow: 0 0 8px rgba(35, 206, 107, 0.4); }
+
+/* Dialogs */
+.MuiDialog-paper {
+    border-radius: 12px !important;
+}
+
+/* Chat Styles */
+.chat-message-bubble {
+    border-radius: 12px;
+    padding: 8px 12px;
+    max-width: 70%;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease;
+}
+
+.chat-bubble-mine {
+    background-color: var(--accent-main);
+    color: white;
+    margin-left: auto;
+}
+
+.chat-bubble-theirs {
+    background-color: var(--bg-3);
+    color: var(--text-primary);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-avatar {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .profile-stats {
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+    }
+
+    .profile-actions button {
+        width: 100%;
+    }
+
+    .activity-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-tab-content {
+        padding: 16px;
+    }
+
+    .friend-button,
+    .streak-button {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-header {
+        padding: 16px 12px;
+    }
+
+    .profile-username {
+        font-size: 1.5rem !important;
+    }
+
+    .stat-value {
+        font-size: 1.25rem !important;
+    }
+
+    .profile-tabs .MuiTab-root {
+        font-size: 0.9rem;
+        min-height: 56px;
+    }
+}

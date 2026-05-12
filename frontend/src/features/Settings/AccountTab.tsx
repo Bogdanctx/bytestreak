@@ -6,6 +6,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { Avatar, Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
 
 import { api } from '../../api';
@@ -21,7 +22,8 @@ function Account() {
         username: account?.username || "",
         email: account?.email || "",
         profilePictureUrl: account?.profilePictureUrl || "",
-        password: ""
+        password: "",
+        bio: account?.bio || ""
     });
     const deleteAccountMutation = useMutation({
         mutationFn: async () => {
@@ -118,6 +120,23 @@ function Account() {
                 </Box>
 
                 <Box className="account-input-group">
+                    <TextField 
+                        className="account-input-field"
+                        label="Bio" 
+                        variant="outlined"
+                        value={formData.bio || ""}
+                        onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <QuestionMarkIcon className="account-input-icon" />
+                                    </InputAdornment>
+                                )
+                            }
+                        }}
+                    />
+
                     <TextField 
                         className="account-input-field"
                         label="Username" 

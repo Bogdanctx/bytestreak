@@ -15,16 +15,13 @@ import { type IFriendInvite } from '../../../types/invite.types';
 import { type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
-interface IDiscoverProps {
-    account: IAccount;
-}
-
-function Discover({ account }: IDiscoverProps) {
+function Discover(account: IAccount) {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
-    
+    const navigate = useNavigate();
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
         queryFn: async ({ pageParam = "" }) => {
@@ -35,18 +32,18 @@ function Discover({ account }: IDiscoverProps) {
         initialPageParam: ""
     });
 
-    const { data: sentConnections = [] } = useQuery<IFriendInvite[]>({
-        queryKey: ['sentConnections'],
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
         queryFn: async () => {
-            const response = await api.get('/friends/sent-connections');
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
             return response.data;
         }
     });
 
-    const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
-        queryKey: ['pendingConnections'],
+    const { data: pendingFriendRequests = [] } = useQuery<IFriendInvite[]>({
+        queryKey: ['pendingFriendRequests'],
         queryFn: async () => {
-            const response = await api.get('/friends/pending-connections');
+            const response = await api.get('/friends/invites/pending-connections');
             return response.data;
         }
     });
@@ -67,7 +64,7 @@ function Discover({ account }: IDiscoverProps) {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            queryClient.invalidateQueries({ queryKey: ['pendingConnections'] });
             notify('Friend invite sent successfully!', 'success');
         },
         onError: (error) => {
@@ -110,14 +107,14 @@ function Discover({ account }: IDiscoverProps) {
             </Typography>
 
             <Box className="discover-users-list">
-                {discoverAccounts.map((mappedAccount) => {
+                {discoverAccounts.map((mappedAccount: IAccount) => {
                     // exclude the current user's account from the list
                     if (mappedAccount.id === account.id) {
                         return null;
                     }
 
                     // exclude accounts that are already friends
-                    if (account.friends.some(friend => friend.id === mappedAccount.id)) {
+                    if (accountFriends.some(friend => friend.id === mappedAccount.id)) {
                         return null;
                     }
 
@@ -126,6 +123,7 @@ function Discover({ account }: IDiscoverProps) {
                         <Box 
                             key={mappedAccount.id} 
                             className="discover-user-card"
+                            onClick={() => navigate(`/accounts/profile/${mappedAccount.username}`)}
                         >
                             <Box className="discover-user-info">
                                 <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
@@ -137,22 +135,22 @@ function Discover({ account }: IDiscoverProps) {
                                         {mappedAccount.username}
                                     </Typography>
                                     <Typography variant="caption" className="discover-user-role" noWrap>
-                                        Mock role
-                                    </Typography>
-                                    <Typography variant="caption" className="discover-user-location" noWrap>
-                                        Mock location
+                                        {mappedAccount.bio.length > 0 ? mappedAccount.bio.slice(0, 15) + "..." : "No bio available"}
                                     </Typography>
                                 </Box>
                             </Box>
 
                             {/* `Pending Connection` will appear for both users if they try to add each other */}
-                            {sentConnections.some((connection) => connection.receiver.id === mappedAccount.id) || pendingConnections.some((connection) => connection.sender.id === mappedAccount.id) ? (
+                            {pendingFriendRequests.some((connection) => connection.receiver.id === mappedAccount.id || connection.sender.id === mappedAccount.id) ? (
                                 <Typography variant="caption" className="discover-pending-connection">
                                     Pending Connection
                                 </Typography>
                             ) : (
                                 <Button variant="outlined" size="small" className="discover-add-button" 
-                                        onClick={() => addFriendMutation.mutate(mappedAccount.id)}
+                                        onClick={(event) => {
+                                            event.stopPropagation(); // prevent card click
+                                            addFriendMutation.mutate(mappedAccount.id)
+                                        }}
                                 >
                                     <PersonAddIcon fontSize="small" />
                                 </Button>

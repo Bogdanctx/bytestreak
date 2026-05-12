@@ -14,12 +14,23 @@ import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
 import { getLevel, getRank, getXPProgress, getRankColor } from '../../../utils/rankUtils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
+import type { IAccount } from '../../../types/account.types';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 function AccountOverview() {
-    const { data: account } = useAccount();
+    const { data: account, isSuccess: accountQueryIsSuccess } = useAccount();
     const navigate = useNavigate();
+
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
@@ -37,7 +48,7 @@ function AccountOverview() {
         }
     });
 
-    if (!account) {
+    if (!accountQueryIsSuccess) {
         return <Loading />;
     }
 
@@ -107,9 +118,14 @@ function AccountOverview() {
             <Box id="account-overview-stats-container">
                 
                 <Box className="account-overview-stat-card">
-                    <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
+                    <Typography variant="h4" 
+                                className={`account-overview-stat-value`}
+                                sx={{
+                                    color: account.streakLength > 0 ? '#ff9800;' : 'var(--text-primary)',
+                                }}
+                    >
                         {account.streakLength}
-                        {account.streakLength > 0 && <span className="stat-emoji">🔥</span>}
+                        {account.streakLength > 0 && <LocalFireDepartmentIcon />}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label" style = {{ textAlign: "center" }}>
                         Day Streak
@@ -118,7 +134,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.problemsSolved}
+                        {account.codingProblemsSolved}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems
@@ -127,7 +143,16 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.friends.length}
+                        {account.quizzesSolved}
+                    </Typography>
+                    <Typography variant="caption" className="account-overview-stat-label">
+                        Quizzes
+                    </Typography>
+                </Box>
+
+                <Box className="account-overview-stat-card">
+                    <Typography variant="h4" className="account-overview-stat-value">
+                        {accountFriends.length}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Friends

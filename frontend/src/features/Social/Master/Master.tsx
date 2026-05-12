@@ -5,6 +5,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EmailIcon from '@mui/icons-material/Email';
 import { type IAccount } from '../../../types/account.types';
 import { type IStreakInvite, type IStreak } from '../../../types/streak.types';
 import './Master.style.css';
@@ -13,6 +14,7 @@ import { api } from '../../../api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface IMasterProps {
     account: IAccount;
@@ -20,6 +22,7 @@ interface IMasterProps {
 }
 
 function Master({ account, setSelectedFriend }: IMasterProps) {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
@@ -41,6 +44,14 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
         refetchInterval: 1000 * 10
     });
 
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            return response.data;
+        }
+    });
+
     const deleteFriendMutation = useMutation({
         mutationFn: async (friendId: number) => {
             const response = await api.post(`/friends/remove?friendId=${friendId}`);
@@ -51,13 +62,27 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
 
             setSelectedFriend(null);
             setFriendToRemove(null);
-            queryClient.invalidateQueries({ queryKey: ['account'] });
-            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            queryClient.invalidateQueries({ queryKey: ['account', 'sentConnections'] });
             notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
         },
         onError: (error) => {
             console.error('Error removing friend:', error);
             notify("Failed to remove friend. Please try again.", "error");
+        }
+    });
+
+    const inviteFriendToStreakMutation = useMutation({
+        mutationFn: async (friendId: number) => {
+            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
+            notify("Streak invite sent!", "success");
+        },
+        onError: (error) => {
+            console.error('Error inviting friend to streak:', error);
+            notify("Failed to send streak invite. Please try again.", "error");
         }
     });
 
@@ -72,22 +97,6 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
         }
         
         deleteFriendMutation.mutate(friendToRemove.id);
-    };
-
-    const handleInviteFriendToStreak = async (friendId: number, event: React.MouseEvent) => {
-        event.stopPropagation();
-
-        try {
-            const response = await api.post(`/streaks/invite?friendId=${friendId}`);
-            
-            if (response.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['streakInvites'] });
-                notify("Streak invite sent!", "success");
-            }
-        }
-        catch (error) {
-            console.error('Error inviting friend to streak:', error);
-        }
     };
 
     const level = getLevel(account.currentXP);
@@ -111,14 +120,14 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
             <Box className='master-content'>
                 <Box p={2} borderBottom="1px solid var(--bg-4)">
                     <Typography variant="subtitle2" fontWeight="600" color="var(--text-secondary)">
-                        MY FRIENDS ({account.friends.length})
+                        MY FRIENDS ({accountFriends.length})
                     </Typography>
                 </Box>
 
                 
 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                    {account.friends.map((friend) => {
+                    {accountFriends.map((friend) => {
                         const isInvitePending = streakInvites.some(invite => 
                             (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
                             && invite.status === 'PENDING'
@@ -132,7 +141,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         );
 
                         return (
-                            <ListItem disablePadding key={friend.id} onClick={() => setSelectedFriend(friend)}>
+                            <ListItem disablePadding key={friend.id} onClick={() => navigate(`/accounts/profile/${friend.username}`)}>
                                 <ListItemButton>
                                     <ListItemAvatar sx={{ minWidth: 50 }}>
                                         <Avatar 
@@ -158,7 +167,10 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                     {!isInActiveStreak && (
                                         <Button
                                             size="small"
-                                            onClick={(e) => handleInviteFriendToStreak(friend.id, e)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                inviteFriendToStreakMutation.mutate(friend.id);
+                                            }}
                                             disabled={isInvitePending}
                                             sx={{
                                                 mr: 1,
@@ -180,6 +192,19 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                         </Button>
                                     )}
 
+
+                                    <IconButton
+                                        size="small"
+                                        className='master-delete-friend-button'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedFriend(friend)
+                                        }}
+                                        sx={{ color: 'var(--text-secondary)', '&:hover': { color: 'var(--difficulty-easy)' } }}
+                                    >
+                                        <EmailIcon fontSize="small" />
+                                    </IconButton>
+
                                     <IconButton
                                         size="small"
                                         className='master-delete-friend-button'
@@ -193,7 +218,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         )
                     })}
 
-                    {account.friends.length === 0 && (
+                    {accountFriends.length === 0 && (
                         <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>
                             No friends yet. Start connecting!
                         </Typography>

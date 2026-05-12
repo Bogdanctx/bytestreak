@@ -3,10 +3,12 @@ export interface IAccount {
     username: string;
     email: string;
     currentXP: number;
-    problemsSolved: number;
+    codingProblemsSolved: number;
+    quizzesSolved: number;
     streakLength: number;
     coins: number;
+    bio: string;
     lastDailyQuizDate: string;
     profilePictureUrl: string;
-    friends: IAccount[];
+    joinedDate: string;
 }

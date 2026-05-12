@@ -18,7 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
 import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.entities.Friendship;
 import com.bytestreak.backend.entities.Message;
+
+import com.bytestreak.backend.repositories.FriendshipRepository;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/social/messages")
@@ -28,6 +33,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private FriendshipRepository friendshipRepository;
 
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestParam Long receiverId, @RequestBody MessageDTO payload, Authentication authentication) {
@@ -42,7 +50,17 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        if (!sender.getFriends().contains(receiver)) {
+        // Check if sender and receiver are friends
+        List<Friendship> friendships = friendshipRepository.findFriendshipsOfAccount(sender);
+        boolean isFriendWithReceiver = false;
+        for(Friendship friendship: friendships) {
+            if (friendship.getAccount1().getId() == receiver.getId() || friendship.getAccount2().getId() == receiver.getId()) {
+                isFriendWithReceiver = true;
+                break;
+            }
+        }
+
+        if (!isFriendWithReceiver) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only message your friends");
         }
 
