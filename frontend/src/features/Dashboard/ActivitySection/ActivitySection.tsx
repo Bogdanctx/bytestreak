@@ -146,7 +146,7 @@ function ActivitySection() {
                                         <Typography variant="body1" fontWeight="bold">
                                             {streak.length}
                                         </Typography>
-                                        <LocalFireDepartmentIcon className="streak-flame-icon" />
+                                        <LocalFireDepartmentIcon />
                                     </Box>
 
                                     <Tooltip title="Remove Streak">

@@ -127,10 +127,6 @@
     font-weight: 700 !important;
 }
 
-.account-overview-streak-value {
-    color: #FF7B00 !important;
-}
-
 .account-overview-stat-label {
     color: var(--text-secondary);
     text-transform: uppercase;
@@ -141,6 +137,10 @@
 
 .stat-emoji {
     font-size: 1rem;
+}
+
+.streak-flame-icon {
+    color: #FF7B00;
 }
 
 @media (max-width: 768px) {

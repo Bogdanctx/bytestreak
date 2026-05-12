@@ -17,9 +17,10 @@ import { getLevel, getRank, getXPProgress, getRankColor } from '../../../utils/r
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
 import type { IAccount } from '../../../types/account.types';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 function AccountOverview() {
-    const { data: account } = useAccount();
+    const { data: account, isSuccess: accountQueryIsSuccess } = useAccount();
     const navigate = useNavigate();
 
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
@@ -47,7 +48,7 @@ function AccountOverview() {
         }
     });
 
-    if (!account) {
+    if (!accountQueryIsSuccess) {
         return <Loading />;
     }
 
@@ -117,9 +118,14 @@ function AccountOverview() {
             <Box id="account-overview-stats-container">
                 
                 <Box className="account-overview-stat-card">
-                    <Typography variant="h4" className="account-overview-stat-value account-overview-streak-value">
+                    <Typography variant="h4" 
+                                className={`account-overview-stat-value`}
+                                sx={{
+                                    color: account.streakLength > 0 ? '#ff9800;' : 'var(--text-primary)',
+                                }}
+                    >
                         {account.streakLength}
-                        {account.streakLength > 0 && <span className="stat-emoji">🔥</span>}
+                        {account.streakLength > 0 && <LocalFireDepartmentIcon />}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label" style = {{ textAlign: "center" }}>
                         Day Streak

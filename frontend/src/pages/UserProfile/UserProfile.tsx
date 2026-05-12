@@ -145,8 +145,11 @@ function UserProfile() {
                                                     <Avatar src={otherParticipant.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{otherParticipant.username.charAt(0).toUpperCase()}</Avatar>
                                                     <Box sx={{ flex: 1 }}><Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{otherParticipant.username}</Typography></Box>
                                                     <Box className="streak-flame">
-                                                        <Typography variant="body2" fontWeight="bold">{streak.length}</Typography>
-                                                        <LocalFireDepartmentIcon sx={{ fontSize: 20, color: '#FF6B35' }} />
+                                                        <Typography variant="body2" fontWeight="bold" color={streak.length > 0 ? "#ff9800" : "var(--text-primary)"}> {streak.length}</Typography>
+                                                        <LocalFireDepartmentIcon sx={{ 
+                                                            fontSize: 20, 
+                                                            color: streak.length > 0 ? "#ff9800" : "var(--text-primary)" 
+                                                        }} />
                                                     </Box>
                                                     {currentAccount?.id === otherParticipant.id && (
                                                         <Tooltip title="Cancel Streak">
