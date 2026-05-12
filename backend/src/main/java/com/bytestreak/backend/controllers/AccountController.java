@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bytestreak.backend.dto.AccountSetRoleDTO;
 import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
@@ -73,20 +75,46 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAccount(Authentication authentication) {
+    public ResponseEntity<?> deleteAccount(@RequestParam(required = false) Long accountId, Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Account account = accountRepository.findByEmail(authentication.getName());
+        Account targetAccount = null;
 
-        if (account == null) {
+        if (accountId != null) {
+            targetAccount = accountRepository.findById(accountId).orElse(null);
+        
+            if (targetAccount == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
+
+        targetAccount = accountRepository.findByUsername(authentication.getName());
+
+        if (targetAccount == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        accountRepository.delete(account);
+        accountRepository.delete(targetAccount);
+
         return ResponseEntity.ok().build();
     
+    }
+
+    @PutMapping("/set-role")
+    public ResponseEntity<?> setUserRole(@RequestBody AccountSetRoleDTO body, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            accountService.setUserRole(body.getAccountId(), body.getRole());
+            return ResponseEntity.ok().build();
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/profile/{username}")

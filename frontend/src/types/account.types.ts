@@ -11,5 +11,7 @@ export interface IAccount {
     lastDailyQuizDate: string;
     profilePictureUrl: string;
     joinedDate: string;
-    role: 'USER' | 'CREATOR' | 'MODERATOR' | 'ADMIN';
+    role: AccountRole;
 }
+
+export type AccountRole = 'USER' | 'CREATOR' | 'MODERATOR' | 'ADMIN';

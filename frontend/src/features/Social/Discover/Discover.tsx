@@ -22,7 +22,7 @@ function Discover(account: IAccount) {
     const [searchQuery, setSearchQuery] = useState("");
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
     const navigate = useNavigate();
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    const { data: discoverableAccounts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
         queryFn: async ({ pageParam = "" }) => {
             const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
@@ -73,7 +73,7 @@ function Discover(account: IAccount) {
         }
     });
 
-    const discoverAccounts = data?.pages.flatMap(page => page.accounts) || [];
+    const discoverAccounts = discoverableAccounts?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box className="discover-container">

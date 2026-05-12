@@ -1,6 +1,6 @@
 import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { type IAccount } from "../../../../types/account.types";
+import { type IAccount, type AccountRole } from "../../../../types/account.types";
 import { useState } from "react";
 
 import './UserCard.style.css';
@@ -8,17 +8,16 @@ import './UserCard.style.css';
 interface IUserRowProps {
     user: IAccount;
     onDeleteClick: (user: IAccount) => void;
-    onRoleChangeClick: (user: IAccount, newRole: string) => void;
-    canDelete: boolean;
-    canSetRole: boolean;
+    onRoleChangeClick: (user: IAccount, newRole: AccountRole) => void;
     navigate: ReturnType<typeof useNavigate>;
 }
 
-function UserRow({ user, onDeleteClick, onRoleChangeClick, canDelete, canSetRole, navigate }: IUserRowProps) {
+function UserRow({ user, onDeleteClick, onRoleChangeClick, navigate }: IUserRowProps) {
     const [selectedRole, setSelectedRole] = useState(user.role);
 
-    const handleRoleChange = (newRole: string) => {
+    const handleRoleChange = (newRole: AccountRole) => {
         setSelectedRole(newRole);
+
         if (newRole !== user.role) {
             onRoleChangeClick(user, newRole);
         }
@@ -36,32 +35,28 @@ function UserRow({ user, onDeleteClick, onRoleChangeClick, canDelete, canSetRole
                 <Typography className="user-stat">Quizzes Solved: {user.quizzesSolved}</Typography>
             </Box>
             <Box className="user-actions" onClick={(e) => e.stopPropagation()}>
-                {canSetRole && (
-                    <Select
-                        id={`user-role-select-${user.id}`}
-                        size="small"
-                        value={selectedRole}
-                        onChange={(e) => handleRoleChange(e.target.value)}
-                        className="user-role-select"
-                    >
-                        <MenuItem value="USER">USER</MenuItem>
-                        <MenuItem value="CREATOR">CREATOR</MenuItem>
-                        <MenuItem value="MODERATOR">MODERATOR</MenuItem>
-                    </Select>
-                )}
-                {!canSetRole && (
-                    <Typography className="user-role-display">{user.role}</Typography>
-                )}
-                {canDelete && (
-                    <Button
-                        size="small"
-                        color="error"
-                        onClick={() => onDeleteClick(user)}
-                        className="user-delete-button"
-                    >
-                        Delete account
-                    </Button>
-                )}
+                <Select
+                    id={`user-role-select-${user.id}`}
+                    size="small"
+                    value={selectedRole}
+                    onChange={(e) => handleRoleChange(e.target.value)}
+                    className="user-role-select"
+                >
+                    <MenuItem value="USER">USER</MenuItem>
+                    <MenuItem value="CREATOR">CREATOR</MenuItem>
+                    <MenuItem value="MODERATOR">MODERATOR</MenuItem>
+                </Select>
+                
+                <Typography className="user-role-display">{user.role}</Typography>
+                
+                <Button
+                    size="small"
+                    color="error"
+                    onClick={() => onDeleteClick(user)}
+                    className="user-delete-button"
+                >
+                    Delete account
+                </Button>
             </Box>
         </Box>
     );

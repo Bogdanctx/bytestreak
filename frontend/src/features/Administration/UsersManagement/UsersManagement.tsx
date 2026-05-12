@@ -1,16 +1,13 @@
-import { useState, useMemo } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { Box, Typography, TextField, CircularProgress, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../api';
-import { type IAccount } from '../../../types/account.types';
-import { useAccount } from '../../../hooks/useAccount';
+import { type AccountRole, type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
 import UserCard from './UserCard/UserCard';
 
 import './UsersManagement.style.css';
-
-
 
 export default function UsersManagement() {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -18,29 +15,21 @@ export default function UsersManagement() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { data: account } = useAccount();
+    const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
 
-    const canDeleteUsers = account?.role === 'MODERATOR' || account?.role === 'ADMIN';
-    const canSetRole = account?.role === 'ADMIN';
-
-    const { data: users = [], isLoading } = useQuery<IAccount[]>({
-        queryKey: ['users'],
-        queryFn: async () => {
-            const response = await api.get('/accounts/fetch-accounts');
-            return response.data.accounts;
-        }
+    const { data: users, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+        queryKey: ['users', debounceSearchQuery],
+        queryFn: async ({ pageParam = "" }) => {
+            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => lastPage.nextCursor || null,
+        initialPageParam: ""
     });
-
-    const filteredUsers = useMemo(() => {
-        return users.filter(user =>
-            user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }, [users, searchQuery]);
 
     const deleteUserMutation = useMutation({
         mutationFn: async (userId: number) => {
-            const response = await api.delete(`/accounts/${userId}`);
+            const response = await api.delete(`/accounts/delete?accountId=${userId}`);
             return response.data;
         },
         onSuccess: () => {
@@ -55,8 +44,8 @@ export default function UsersManagement() {
     });
 
     const setRoleMutation = useMutation({
-        mutationFn: async ({ userId, role }: { userId: number; role: string }) => {
-            const response = await api.put(`/accounts/${userId}/role`, { role });
+        mutationFn: async ({ userId, role }: { userId: number; role: AccountRole }) => {
+            const response = await api.put(`/accounts/set-role`, { accountId: userId, newRole: role });
             return response.data;
         },
         onSuccess: () => {
@@ -67,6 +56,17 @@ export default function UsersManagement() {
             notify('Failed to update user role', 'error');
         }
     });
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebounceSearchQuery(searchQuery);
+        }, 200);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchQuery]);
+
 
     const handleDeleteClick = (user: IAccount) => {
         setUserToDelete(user);
@@ -79,15 +79,17 @@ export default function UsersManagement() {
         }
     };
 
-    const handleRoleChange = (user: IAccount, newRole: string) => {
+    const handleRoleChange = (user: IAccount, newRole: AccountRole) => {
         setRoleMutation.mutate({ userId: user.id, role: newRole });
     };
+
+    const searchableUsers = users?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box id="users-management-container">
             <Box id="users-management-header">
                 <Typography id="users-management-title" variant="h5">
-                    Users Management ({filteredUsers.length})
+                    Users Management
                 </Typography>
                 <TextField
                     id="users-search-input"
@@ -100,30 +102,17 @@ export default function UsersManagement() {
             </Box>
 
             <Box id="users-management-content">
-                {isLoading ? (
-                    <Box className="users-loading-state">
-                        <CircularProgress />
-                        <Typography>Loading users...</Typography>
-                    </Box>
-                ) : filteredUsers.length === 0 ? (
-                    <Box className="users-empty-state">
-                        <Typography>No users found.</Typography>
-                    </Box>
-                ) : (
-                    <Box id="users-list">
-                        {filteredUsers.map((user) => (
-                            <UserCard
-                                key={user.id}
-                                user={user}
-                                onDeleteClick={handleDeleteClick}
-                                onRoleChangeClick={handleRoleChange}
-                                canDelete={canDeleteUsers}
-                                canSetRole={canSetRole}
-                                navigate={navigate}
-                            />
-                        ))}
-                    </Box>
-                )}
+                <Box id="users-list">
+                    {searchableUsers.map((user: IAccount) => (
+                        <UserCard
+                            key={user.id}
+                            user={user}
+                            onDeleteClick={handleDeleteClick}
+                            onRoleChangeClick={handleRoleChange}
+                            navigate={navigate}
+                        />
+                    ))}
+                </Box>
             </Box>
 
             <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
@@ -144,6 +133,18 @@ export default function UsersManagement() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {hasNextPage && (
+                <Button 
+                    variant="text" 
+                    size="small" 
+                    className="discover-load-more-button"
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                >
+                    {isFetchingNextPage ? 'Loading...' : 'Load More'}
+                </Button>
+            )}
         </Box>
     );
 }
