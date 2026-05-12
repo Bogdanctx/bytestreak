@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.repositories.FriendInviteRepository;
+import com.bytestreak.backend.repositories.FriendshipRepository;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.services.FriendService;
 import com.bytestreak.backend.entities.FriendInvite;
+import com.bytestreak.backend.entities.Friendship;
 
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class FriendsController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private FriendshipRepository friendshipRepository;
+
+    @Autowired
+    private FriendInviteRepository friendInviteRepository;
 
     @PostMapping("/send-request")
     public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
@@ -69,29 +78,43 @@ public class FriendsController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/pending-connections")
-    public ResponseEntity<?> getPendingConnections(Authentication authentication) {
+    // This endpoint return the list of pending invites that the authenticated user has sent to other users.
+    @GetMapping("/invites/pending-connections")
+    public ResponseEntity<?> getPendingInvites(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
         Account me = accountRepository.findByEmail(authentication.getName());
+        List<FriendInvite> friendInvites = friendInviteRepository.findPendingFriendInvitesOfAccount(me);
+        return ResponseEntity.ok(friendInvites);
+    }   
 
-        List<FriendInvite> pendingConnections = friendService.getPendingConnections(me);
-
-        return ResponseEntity.ok(pendingConnections);
-    }
-
-    @GetMapping("/sent-connections")
-    public ResponseEntity<?> getSentConnections(Authentication authentication) {
+    @GetMapping("/get-friends")
+    public ResponseEntity<?> getFriendsList(@RequestParam Long accountId, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        Account me = accountRepository.findByEmail(authentication.getName());
+        Account targetAccount = accountRepository.findById(accountId).orElse(null);
 
-        List<FriendInvite> sentConnections = friendService.getSentConnections(me);
+        if (targetAccount == null) {
+            return ResponseEntity.status(404).body("Account not found");
+        }
 
-        return ResponseEntity.ok(sentConnections);
+        List<Friendship> friendships = friendshipRepository.findFriendshipsOfAccount(targetAccount);
+
+        List<Account> friends = friendships.stream()
+            .map(friendship -> {
+                if (friendship.getAccount1().getId().equals(targetAccount.getId())) {
+                    return friendship.getAccount2();
+                } else {
+                    return friendship.getAccount1();
+                }
+            })
+            .toList();
+
+        return ResponseEntity.ok(friends);
     }
+    
 }

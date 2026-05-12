@@ -1,26 +1,53 @@
 import { Avatar, Box, Button, Typography } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './ProfileHeader.style.css';
 import type { IAccount } from '../../../types/account.types';
 import type { IUserProfile } from '../../../types/userProfile.types';
 import { getLevel, getRank, getRankColor } from '../../../utils/rankUtils';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { api } from '../../../api';
+import notify from '../../../components/ui/ToastNotification';
+import { type IFriendInvite } from '../../../types/invite.types';
 
 interface IProfileHeaderProps {
     target: IUserProfile;
     myAccount: IAccount;
     setMessageChatOpen: (open: boolean) => void;
     setFriendToRemove: (account: IAccount) => void;
+    friendList: IAccount[];
 }
 
-function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemove }: IProfileHeaderProps) {
-
+function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemove, friendList }: IProfileHeaderProps) {
     const level = getLevel(target.account.currentXP);
     const rank = getRank(level);
     const rankColor = getRankColor(rank);
     const isMyProfile = myAccount?.id === target.account.id;
-    const isFriend = target.account.friends?.some(friend => friend.id === myAccount?.id);
+    const isFriend = friendList.some(friend => friend.id === myAccount?.id);
+    const queryClient = useQueryClient();
+    const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
+        queryKey: ['pendingConnections'],
+        queryFn: async () => {
+            const response = await api.get('/friends/invites/pending-connections');
+            return response.data;
+        }
+    });
 
+    const addFriendMutation = useMutation({
+        mutationFn: async (accountId: number) => {
+            const response = await api.post(`/friends/send-request?friendId=${accountId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['pendingConnections'] });
+            notify('Friend invite sent successfully!', 'success');
+        },
+        onError: (error) => {
+            console.error('Error sending friend invite:', error);
+            notify('Failed to send friend invite. Please try again.', 'error');
+        }
+    });
 
     return (
         <Box className="profile-header">
@@ -86,6 +113,24 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                             Remove Friend
                         </Button>
                     </>
+                )}
+                {!isMyProfile && !isFriend && !pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
+                    <Button
+                        variant="contained"
+                        startIcon={<PersonAddIcon />}
+                        onClick={() => addFriendMutation.mutate(target.account.id)}
+                        sx={{
+                            backgroundColor: 'var(--accent-main)',
+                            '&:hover': { backgroundColor: 'var(--accent-hover)' }
+                        }}
+                    >
+                        Add Friend
+                    </Button>
+                )}
+                {!isMyProfile && !isFriend && pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
+                    <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
+                        Pending Connection
+                    </Typography>
                 )}
             </Box>
         </Box>

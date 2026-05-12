@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../../components/ui/Loading';
 
 interface IMasterProps {
     account: IAccount;
@@ -44,6 +45,14 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
         refetchInterval: 1000 * 10
     });
 
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            return response.data;
+        }
+    });
+
     const deleteFriendMutation = useMutation({
         mutationFn: async (friendId: number) => {
             const response = await api.post(`/friends/remove?friendId=${friendId}`);
@@ -54,8 +63,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
 
             setSelectedFriend(null);
             setFriendToRemove(null);
-            queryClient.invalidateQueries({ queryKey: ['account'] });
-            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            queryClient.invalidateQueries({ queryKey: ['account', 'sentConnections'] });
             notify(`${friendToRemove.username} has been removed from your friends list.`, "info");
         },
         onError: (error) => {
@@ -114,14 +122,14 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
             <Box className='master-content'>
                 <Box p={2} borderBottom="1px solid var(--bg-4)">
                     <Typography variant="subtitle2" fontWeight="600" color="var(--text-secondary)">
-                        MY FRIENDS ({account.friends.length})
+                        MY FRIENDS ({accountFriends.length})
                     </Typography>
                 </Box>
 
                 
 
                 <List disablePadding sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                    {account.friends.map((friend) => {
+                    {accountFriends.map((friend) => {
                         const isInvitePending = streakInvites.some(invite => 
                             (invite.receiver.id === friend.id || invite.sender.id === friend.id) 
                             && invite.status === 'PENDING'
@@ -135,7 +143,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         );
 
                         return (
-                            <ListItem disablePadding key={friend.id} onClick={() => navigate(`/profile/${friend.username}`)}>
+                            <ListItem disablePadding key={friend.id} onClick={() => navigate(`/accounts/profile/${friend.username}`)}>
                                 <ListItemButton>
                                     <ListItemAvatar sx={{ minWidth: 50 }}>
                                         <Avatar 
@@ -209,7 +217,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         )
                     })}
 
-                    {account.friends.length === 0 && (
+                    {accountFriends.length === 0 && (
                         <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>
                             No friends yet. Start connecting!
                         </Typography>

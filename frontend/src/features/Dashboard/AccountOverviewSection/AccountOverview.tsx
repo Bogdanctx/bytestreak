@@ -14,12 +14,22 @@ import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { useNavigate } from 'react-router-dom';
 import { getLevel, getRank, getXPProgress, getRankColor } from '../../../utils/rankUtils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
+import type { IAccount } from '../../../types/account.types';
 
 function AccountOverview() {
     const { data: account } = useAccount();
     const navigate = useNavigate();
+
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            return response.data;
+        },
+        enabled: !!account
+    });
 
     const logoutMutation = useMutation({
         mutationFn: async () => {
@@ -136,7 +146,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.friends.length}
+                        {accountFriends.length}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Friends

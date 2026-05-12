@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Avatar, Divider, Button, Tooltip, IconButton, CircularProgress, Dialog, Paper } from '@mui/material';
+import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Avatar, Divider, Button, Tooltip, IconButton, Dialog, Paper } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -19,23 +19,38 @@ function UserProfile() {
     const { username } = useParams<{ username: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { data: currentAccount } = useAccount();
+    const { data: currentAccount, isSuccess: currentAccountQuerySuccess } = useAccount();
 
     const [activeTab, setActiveTab] = useState(0);
     const [messageChatOpen, setMessageChatOpen] = useState(false);
     const [friendToRemove, setFriendToRemove] = useState<IAccount | null>(null);
 
-    const { data: userData, isLoading } = useQuery<IUserProfile>({
+    const { data: userData, isSuccess: userDataQuerySuccess } = useQuery<IUserProfile>({
         queryKey: ['userProfile', username],
-        queryFn: async () => (await api.get(`/profile/${username}`)).data,
+        queryFn: async () => {
+            const response = await api.get(`/accounts/profile/${username}`);
+            return response.data;
+        },
         enabled: !!username,
+    });
+
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends', userData?.account.id],
+        queryFn: async () => {
+            const response = await api.get(`/friends/get-friends?accountId=${userData.account.id}`);
+            return response.data;
+        },
+        enabled: !!userData?.account.id,
     });
 
     const removeFriendMutation = useMutation({
         mutationFn: async (friendId: number) => api.post(`/friends/remove?friendId=${friendId}`),
         onSuccess: () => {
             setFriendToRemove(null);
+    
             queryClient.invalidateQueries({ queryKey: ['userProfile', username] });
+            queryClient.invalidateQueries({ queryKey: ['accountFriends', userData?.account.id] });
+    
             notify("Friend removed successfully.", "success");
         }
     });
@@ -48,11 +63,11 @@ function UserProfile() {
         }
     });
 
-    if (isLoading || !userData) return <Loading />;
+    if (!userDataQuerySuccess || !currentAccountQuerySuccess) {
+        return <Loading />;
+    }
 
-    const { account, streaks } = userData;
-    const isMyProfile = currentAccount?.id === account.id;
-    const userStreaks = streaks.filter(s => s.participant1.id === account.id || s.participant2.id === account.id);
+    const userStreaks = userData.streaks.filter(s => s.participant1.id === userData.account.id || s.participant2.id === userData.account.id);
 
     const getActivityClass = (count: number) => {
         if (count === 0) return 'activity-day';
@@ -68,12 +83,13 @@ function UserProfile() {
                 target={userData} 
                 myAccount={currentAccount!} 
                 setMessageChatOpen={setMessageChatOpen} 
-                setFriendToRemove={setFriendToRemove} 
+                setFriendToRemove={setFriendToRemove}
+                friendList={accountFriends}
             />
 
             <Box className="profile-tabs-container">
                 <Tabs value={activeTab} onChange={(_, nv) => setActiveTab(nv)} className="profile-tabs" sx={{ borderBottom: '1px solid var(--bg-3)' }}>
-                    <Tab label={`Friends (${account.friends.length})`} sx={{ color: 'var(--text-secondary)', '&.Mui-selected': { color: 'var(--text-primary)' } }} />
+                    <Tab label={`Friends (${accountFriends.length})`} sx={{ color: 'var(--text-secondary)', '&.Mui-selected': { color: 'var(--text-primary)' } }} />
                     <Tab label={`Streaks (${userStreaks.length})`} sx={{ color: 'var(--text-secondary)', '&.Mui-selected': { color: 'var(--text-primary)' } }} />
                     <Tab label="Activity" sx={{ color: 'var(--text-secondary)', '&.Mui-selected': { color: 'var(--text-primary)' } }} />
                 </Tabs>
@@ -81,19 +97,28 @@ function UserProfile() {
                 {/* Friends tab */}
                 {activeTab === 0 && (
                     <Box className="profile-tab-content">
-                        {account.friends.length > 0 ? (
+                        {accountFriends.length > 0 ? (
                             <List className="friends-list">
-                                {account.friends.map((friend) => (
+                                {accountFriends.map((friend) => (
                                     <Box key={friend.id}>
                                         <ListItem className="friend-item" disablePadding>
-                                            <ListItemButton onClick={() => navigate(`/profile/${friend.username}`)} className="friend-button">
+                                            <ListItemButton onClick={() => navigate(`/accounts/profile/${friend.username}`)} className="friend-button">
                                                 <Avatar src={friend.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{friend.username.charAt(0).toUpperCase()}</Avatar>
                                                 <Box sx={{ flex: 1 }}>
                                                     <Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{friend.username}</Typography>
                                                     <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.codingProblemsSolved} problems solved</Typography>
                                                 </Box>
-                                                {!isMyProfile && currentAccount?.id === friend.id && (
-                                                    <Button size="small" variant="outlined" onClick={(e) => { e.stopPropagation(); setFriendToRemove(account); }} color="error">Remove</Button>
+                                                {currentAccount.id !== friend.id && (
+                                                    <Button size="small" 
+                                                            variant="outlined" 
+                                                            onClick={(event) => { 
+                                                                event.stopPropagation(); 
+                                                                setFriendToRemove(friend); 
+                                                            }} 
+                                                            color="error"
+                                                    >
+                                                        Remove
+                                                    </Button>
                                                 )}
                                             </ListItemButton>
                                         </ListItem>
@@ -111,18 +136,19 @@ function UserProfile() {
                         {userStreaks.length > 0 ? (
                             <List className="streaks-list">
                                 {userStreaks.map((streak) => {
-                                    const friend = streak.participant1.id === account.id ? streak.participant2 : streak.participant1;
+                                    const otherParticipant = streak.participant1.id === userData.account.id ? streak.participant2 : streak.participant1;
+
                                     return (
                                         <Box key={streak.id}>
                                             <ListItem className="streak-item" disablePadding>
-                                                <ListItemButton onClick={() => navigate(`/profile/${friend.username}`)} className="streak-button">
-                                                    <Avatar src={friend.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{friend.username.charAt(0).toUpperCase()}</Avatar>
-                                                    <Box sx={{ flex: 1 }}><Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{friend.username}</Typography></Box>
+                                                <ListItemButton onClick={() => navigate(`/accounts/profile/${otherParticipant.username}`)} className="streak-button">
+                                                    <Avatar src={otherParticipant.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{otherParticipant.username.charAt(0).toUpperCase()}</Avatar>
+                                                    <Box sx={{ flex: 1 }}><Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{otherParticipant.username}</Typography></Box>
                                                     <Box className="streak-flame">
                                                         <Typography variant="body2" fontWeight="bold">{streak.length}</Typography>
                                                         <LocalFireDepartmentIcon sx={{ fontSize: 20, color: '#FF6B35' }} />
                                                     </Box>
-                                                    {currentAccount?.id === account.id && (
+                                                    {currentAccount?.id === otherParticipant.id && (
                                                         <Tooltip title="Cancel Streak">
                                                             <IconButton size="small" onClick={(e) => { e.stopPropagation(); removeStreakMutation.mutate(streak.id); }} color="error">
                                                                 <DeleteOutlineIcon fontSize="small" />
@@ -146,9 +172,9 @@ function UserProfile() {
                         <Paper className="activity-section" elevation={0}>
                             <Typography variant="h6" sx={{ mb: 3 }}>Activity Overview</Typography>
                             <Box className="activity-stats">
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{account.codingProblemsSolved}</Typography></Box>
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Quizzes Solved</Typography><Typography className="activity-stat-value">{account.quizzesSolved}</Typography></Box>
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.codingProblemsSolved}</Typography></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Quizzes Solved</Typography><Typography className="activity-stat-value">{userData.account.quizzesSolved}</Typography></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{userData.account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
                             </Box>
                             <Box className="activity-graph-container">
                                 <Box className="activity-grid">

@@ -10,5 +10,4 @@ export interface IAccount {
     bio: string;
     lastDailyQuizDate: string;
     profilePictureUrl: string;
-    friends: IAccount[];
 }

@@ -7,22 +7,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.repositories.StreakRepository;
 
 @Service
 public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private StreakRepository streakRepository;
+
+    @Autowired
+    private ActivityTrackerService activityTrackerService;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -78,5 +83,24 @@ public class AccountService {
         accountRepository.save(me);
 
         return me;
+    }
+
+    public UserProfileDTO getUserProfile(String username) {
+        Account target = accountRepository.findByUsername(username);
+
+        if (target == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        List<Integer> activityGraph = activityTrackerService.getYearlyActivityGraph(target.getId());
+
+        UserProfileDTO userProfile = new UserProfileDTO(
+            target, 
+            streakRepository.findActiveStreaksForUser(target.getId()),
+            activityGraph
+        );
+
+
+        return userProfile;
     }
 }

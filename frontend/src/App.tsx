@@ -40,7 +40,7 @@ function App() {
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
                                 <Route path="/admin" element={<Administration />} />
-                                <Route path="/profile/:username" element={<UserProfile />} />
+                                <Route path="/accounts/profile/:username" element={<UserProfile />} />
 
                                 <Route path="/creator" element={<Creator />} />
                                 <Route path="/creator/new" element={<ProblemBuilder />} />

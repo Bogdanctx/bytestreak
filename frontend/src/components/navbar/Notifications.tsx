@@ -54,17 +54,7 @@ function Notifications() {
                     old.filter(notification => notification.id !== notificationId)
                 );
 
-                queryClient.setQueryData(['pendingConnections'], (old: IFriendInvite[] = []) => 
-                    old.filter(invite => invite.id !== inviteId)
-                );
-                
-                queryClient.setQueryData(['sentConnections'], (old: IFriendInvite[] = []) => 
-                    old.filter(invite => invite.id !== inviteId)
-                );
-            
-
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-                queryClient.invalidateQueries({ queryKey: ['discoverAccounts'] });
+                queryClient.invalidateQueries({ queryKey: ['account', 'discoverAccounts', 'pendingConnections'] });
             }
         }
         catch (error) {

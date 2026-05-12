@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bytestreak.backend.dto.AccountUpdateDTO;
+import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
@@ -86,5 +87,16 @@ public class AccountController {
         accountRepository.delete(account);
         return ResponseEntity.ok().build();
     
+    }
+
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        UserProfileDTO userProfile = accountService.getUserProfile(username);
+        
+        return ResponseEntity.ok(userProfile);
     }
 }

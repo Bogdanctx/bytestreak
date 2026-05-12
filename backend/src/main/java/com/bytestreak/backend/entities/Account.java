@@ -1,6 +1,5 @@
 package com.bytestreak.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -12,16 +11,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Accounts")
@@ -66,13 +60,4 @@ public class Account {
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
     private String profilePictureUrl = "";
-
-    @ManyToMany
-    @JoinTable(
-        name = "account_friends",
-        joinColumns = @JoinColumn(name = "account_id"),
-        inverseJoinColumns = @JoinColumn(name = "friend_id")
-    )
-    @JsonIgnoreProperties("friends")
-    private List<Account> friends = new ArrayList<>();
 }

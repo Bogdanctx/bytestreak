@@ -36,10 +36,10 @@ function Discover({ account }: IDiscoverProps) {
         initialPageParam: ""
     });
 
-    const { data: sentConnections = [] } = useQuery<IFriendInvite[]>({
-        queryKey: ['sentConnections'],
+    const { data: accountFriends = [] } = useQuery<IAccount[]>({
+        queryKey: ['accountFriends'],
         queryFn: async () => {
-            const response = await api.get('/friends/sent-connections');
+            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
             return response.data;
         }
     });
@@ -47,7 +47,7 @@ function Discover({ account }: IDiscoverProps) {
     const { data: pendingConnections = [] } = useQuery<IFriendInvite[]>({
         queryKey: ['pendingConnections'],
         queryFn: async () => {
-            const response = await api.get('/friends/pending-connections');
+            const response = await api.get('/friends/invites/pending-connections');
             return response.data;
         }
     });
@@ -68,7 +68,7 @@ function Discover({ account }: IDiscoverProps) {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['sentConnections'] });
+            queryClient.invalidateQueries({ queryKey: ['pendingConnections'] });
             notify('Friend invite sent successfully!', 'success');
         },
         onError: (error) => {
@@ -118,7 +118,7 @@ function Discover({ account }: IDiscoverProps) {
                     }
 
                     // exclude accounts that are already friends
-                    if (account.friends.some(friend => friend.id === mappedAccount.id)) {
+                    if (accountFriends.some(friend => friend.id === mappedAccount.id)) {
                         return null;
                     }
 
@@ -127,7 +127,7 @@ function Discover({ account }: IDiscoverProps) {
                         <Box 
                             key={mappedAccount.id} 
                             className="discover-user-card"
-                            onClick={() => navigate(`/profile/${mappedAccount.username}`)}
+                            onClick={() => navigate(`/accounts/profile/${mappedAccount.username}`)}
                         >
                             <Box className="discover-user-info">
                                 <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
@@ -139,13 +139,13 @@ function Discover({ account }: IDiscoverProps) {
                                         {mappedAccount.username}
                                     </Typography>
                                     <Typography variant="caption" className="discover-user-role" noWrap>
-                                        {mappedAccount.bio.slice(0, 15) + "..." || "No bio available"}
+                                        {mappedAccount.bio.length > 0 ? mappedAccount.bio.slice(0, 15) + "..." : "No bio available"}
                                     </Typography>
                                 </Box>
                             </Box>
 
                             {/* `Pending Connection` will appear for both users if they try to add each other */}
-                            {sentConnections.some((connection) => connection.receiver.id === mappedAccount.id) || pendingConnections.some((connection) => connection.sender.id === mappedAccount.id) ? (
+                            {pendingConnections.some((connection) => connection.receiver.id === mappedAccount.id || connection.sender.id === mappedAccount.id) ? (
                                 <Typography variant="caption" className="discover-pending-connection">
                                     Pending Connection
                                 </Typography>
