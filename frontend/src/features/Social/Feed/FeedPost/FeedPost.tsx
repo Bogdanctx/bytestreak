@@ -2,6 +2,7 @@ import { Box, Typography, Avatar } from "@mui/material";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { type IPost } from "../../../../types/post.types";
 import './FeedPost.style.css';
+import { useNavigate } from "react-router-dom";
 
 interface IFeedPostProps {
     post: IPost;
@@ -9,6 +10,8 @@ interface IFeedPostProps {
 }
 
 function FeedPost({ post, onClick }: IFeedPostProps) {
+    const navigate = useNavigate();
+
     const isImage = (filedata: string, filename: string) => {
         return filedata?.startsWith('data:image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
     };
@@ -21,7 +24,18 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
                     className="feed-post-avatar"
                 />
                 <Box className="feed-post-meta">
-                    <Typography className="feed-post-author-name">
+                    <Typography className="feed-post-author-name" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/accounts/profile/${post.author.username}`);
+                                }}
+                                sx={{
+                                    "&:hover": {
+                                        textDecoration: "underline",
+                                        cursor: "pointer"
+                                    }
+                                }}
+                    >
                         {post.author.username}
                     </Typography>
                     <Typography className="feed-post-date">

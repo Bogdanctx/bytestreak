@@ -10,6 +10,7 @@ import { type IPostComment, type IPost } from "../../../../types/post.types";
 import { type IAttachment } from "../../../../types/message.types";
 import Loading from "../../../../components/ui/Loading";
 import notify from "../../../../components/ui/ToastNotification";
+import { useNavigate } from "react-router-dom";
 import './ViewPost.style.css';
 
 interface IViewPostProps {
@@ -22,6 +23,7 @@ function ViewPost({ post, goBack } : IViewPostProps) {
     const [commentText, setCommentText] = useState("");
     const [commentAttachments, setCommentAttachments] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
     const { data: postComments, isLoading } = useQuery<IPostComment[]>({
         queryKey: ['postComments', post.id],
@@ -97,7 +99,20 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                 <Box className="view-post-header">
                     <Avatar src={post.author.profilePictureUrl} className="view-post-avatar" />
                     <Box>
-                        <Typography className="view-post-author-name">{post.author.username}</Typography>
+                        <Typography className="view-post-author-name"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/accounts/profile/${post.author.username}`);
+                                }}
+                                sx={{
+                                    "&:hover": {
+                                        textDecoration: "underline",
+                                        cursor: "pointer"
+                                    }
+                                }}
+                        >
+                            {post.author.username}
+                        </Typography>
                         <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
                     </Box>
                 </Box>
@@ -128,7 +143,20 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                             <Avatar src={comment.author?.profilePictureUrl} className="comment-avatar" />
                             <Box className="comment-content">
                                 <Box className="comment-meta">
-                                    <Typography className="comment-author">{comment.author.username}</Typography>
+                                    <Typography className="comment-author"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(`/accounts/profile/${post.author.username}`);
+                                                }}
+                                                sx={{
+                                                    "&:hover": {
+                                                        textDecoration: "underline",
+                                                        cursor: "pointer"
+                                                    }
+                                                }}
+                                    >
+                                        {comment.author.username}
+                                    </Typography>
                                     <Typography className="comment-date">{new Date(comment.createdAt).toLocaleString()}</Typography>
                                 </Box>
                                 <Typography className="comment-text">{comment.text}</Typography>
