@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.bytestreak.backend.entities.Post;
+import com.bytestreak.backend.dto.PostCommentDTO;
 import com.bytestreak.backend.dto.PostCreateDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
@@ -154,7 +155,7 @@ public class FeedController {
 
     // POST /social/feed/posts/{postId}/comment - Add a comment to a specific post
     @PostMapping("/posts/{postId}/comment")
-    public ResponseEntity<?> addCommentToPost(@PathVariable Long postId, @RequestBody Map<String, String> payload, Authentication authentication) {
+    public ResponseEntity<?> addCommentToPost(@PathVariable Long postId, PostCommentDTO postComment, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
@@ -162,7 +163,7 @@ public class FeedController {
         Account me = accountRepository.findByEmail(authentication.getName());
 
         try {
-            PostComment newComment = feedService.createComment(me, postId, payload.get("text"));
+            PostComment newComment = feedService.createComment(me, postId, postComment);
             return ResponseEntity.ok(newComment);
         }
         catch (Exception e) {

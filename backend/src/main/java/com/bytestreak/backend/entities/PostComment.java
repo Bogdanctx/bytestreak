@@ -1,5 +1,7 @@
 package com.bytestreak.backend.entities;
 
+import java.util.ArrayList;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,8 +13,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +32,9 @@ public class PostComment {
     private Account author;
     
     private String text;
+
+    @OneToMany(mappedBy = "postComment", fetch = FetchType.LAZY)
+    private List<Attachment> attachments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
