@@ -25,7 +25,6 @@ import com.bytestreak.backend.services.FeedService;
 import com.bytestreak.backend.repositories.PostRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/social/feed")
@@ -155,7 +154,7 @@ public class FeedController {
 
     // POST /social/feed/posts/{postId}/comment - Add a comment to a specific post
     @PostMapping("/posts/{postId}/comment")
-    public ResponseEntity<?> addCommentToPost(@PathVariable Long postId, PostCommentDTO postComment, Authentication authentication) {
+    public ResponseEntity<?> addCommentToPost(@PathVariable Long postId, @RequestBody PostCommentDTO postComment, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
         }

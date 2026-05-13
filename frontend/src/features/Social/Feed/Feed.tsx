@@ -7,6 +7,8 @@ import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import './Feed.style.css';
 import type { IAttachment } from '../../../types/message.types';
+import { useState } from 'react';
+import ViewPost from './ViewPost/ViewPost';
 
 function Feed() {
     const queryClient = useQueryClient();
@@ -17,6 +19,7 @@ function Feed() {
             return response.data;
         }
     });
+    const [viewingPost, setViewingPost] = useState<IPost | null>(null);
 
     const newPostMutation = useMutation({
         mutationFn: async ({ text, attachments }: { text: string; attachments: IAttachment[] }) => {
@@ -40,23 +43,28 @@ function Feed() {
 
     return (
         <Box id="feed-container">
-            <FeedHeader onPost={handleCreateNewPost} />
+            {viewingPost === null ? (
+                <>
+                    <FeedHeader onPost={handleCreateNewPost} />
 
-            <Box id="feed-posts-container">
-                {feedPosts && feedPosts.length > 0 ? (
-                    feedPosts.map(post => (
-                        <FeedPost key={post.id} 
-                                    post={post}
-                                    
-                        />
-                    ))
-                ) : (
-                    <Typography variant="body1" sx={{ color: "var(--text-primary)" }}>
-                        No posts to display. Start by creating a new post!
-                    </Typography>
-                )}
-            </Box>
-            
+                    <Box id="feed-posts-container">
+                        {feedPosts && feedPosts.length > 0 ? (
+                            feedPosts.map(post => (
+                                <FeedPost key={post.id} 
+                                            post={post}
+                                            onClick={() => setViewingPost(post)}                               
+                                />
+                            ))
+                        ) : (
+                            <Typography variant="body1" sx={{ color: "var(--text-primary)" }}>
+                                No posts to display. Start by creating a new post!
+                            </Typography>
+                        )}
+                    </Box>
+                </>
+            ) : (
+                <ViewPost post={viewingPost} goBack={() => setViewingPost(null)}/>
+            )}
         </Box>
     );
 }

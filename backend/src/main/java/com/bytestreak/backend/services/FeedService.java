@@ -16,6 +16,7 @@ import com.bytestreak.backend.dto.PostCommentDTO;
 import com.bytestreak.backend.dto.PostCreateDTO;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class FeedService {
@@ -31,7 +32,7 @@ public class FeedService {
     public List<Post> getFeedPosts(Account account) {
         List<Friendship> friendships = friendshipRepository.findFriendshipsOfAccount(account);
 
-        List<Post> feedPosts = new java.util.ArrayList<>();
+        List<Post> feedPosts = new ArrayList<>();
         for (Friendship friendship : friendships) {
             Account friendAccount = friendship.getAccount1();
 
@@ -79,8 +80,12 @@ public class FeedService {
         }
 
         Account postAuthor = post.getAuthor();
-        if(friendshipRepository.findByAccount1AndAccount2(author, postAuthor) == null) {
-            throw new RuntimeException("You can only comment on posts of your friends");
+
+        boolean isOwnPost = postAuthor.getId().equals(author.getId());
+        boolean isFriendPost = friendshipRepository.findByAccount1AndAccount2(author, postAuthor) != null;
+
+        if (!isOwnPost && !isFriendPost) {
+            throw new RuntimeException("You can only comment on your or your friends' posts");
         }
 
         PostComment newComment = new PostComment();

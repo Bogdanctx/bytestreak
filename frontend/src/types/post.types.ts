@@ -5,6 +5,7 @@ export interface IPostComment {
     id: number | null;
     author: IAccount;
     text: string;
+    attachments: IAttachment[];
     createdAt: string
 }
 
@@ -15,13 +16,4 @@ export interface IPost {
     attachments: IAttachment[];
     createdAt: string
     comments: IPostComment[];
-}
-
-export interface IPostDTO {
-    text: string;
-    attachments: IAttachment[];
-}
-
-export interface IPostCommentDTO {
-    text: string;
 }
