@@ -19,6 +19,9 @@ export interface IProblem {
     testCasesPath: string;
     tags: string[];
     creator: IAccount;
+    visibility: "PUBLIC" | "HIDDEN";
+    likes: number;
+    dislikes: number;
 }
 
 export interface IProblemCreateDTO {

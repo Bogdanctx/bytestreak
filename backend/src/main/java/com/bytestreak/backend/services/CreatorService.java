@@ -12,6 +12,7 @@ import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.enums.Difficulty;
+import com.bytestreak.backend.enums.Visibility;
 
 import java.util.List;
 
@@ -136,6 +137,11 @@ public class CreatorService {
         }
 
         existingProblem.setTestCasesPath(testCasesPath);
+
+        if (updatedProblem.getVisibility() != null) {
+            Visibility visibility = Visibility.valueOf(updatedProblem.getVisibility().toString().toUpperCase());
+            existingProblem.setVisibility(visibility);
+        }
 
         return problemRepository.save(existingProblem);
     }

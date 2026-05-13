@@ -1,5 +1,6 @@
-import { Box, Typography, Avatar } from "@mui/material";
+import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import FlagIcon from '@mui/icons-material/Flag';
 import { type IPost } from "../../../../types/post.types";
 import './FeedPost.style.css';
 import { useNavigate } from "react-router-dom";
@@ -67,6 +68,14 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
                 <Typography className="feed-post-comment-count">
                     {post.comments?.length || 0} Comments
                 </Typography>
+
+                <IconButton 
+                    size="small" 
+                    className="feed-post-report-btn"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <FlagIcon fontSize="small" />
+                </IconButton>
             </Box>
         </Box>
     );

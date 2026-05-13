@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import com.bytestreak.backend.TagStringListConverter;
 import com.bytestreak.backend.enums.Difficulty;
+import com.bytestreak.backend.enums.Visibility;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public class Problem {
     private String codeTemplates;
 
     private String testCasesPath;
+
+    private int likes = 0;
+    private int dislikes = 0;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.HIDDEN;
 
     @Convert(converter = TagStringListConverter.class)
     private List<String> tags = new ArrayList<>();

@@ -117,6 +117,18 @@
     font-weight: 500 !important;
 }
 
+.feed-post-report-btn {
+    margin-left: auto !important;
+    color: #ff6b6b !important;
+    padding: 6px !important;
+    transition: all 0.2s ease;
+}
+
+.feed-post-report-btn:hover {
+    background-color: rgba(255, 107, 107, 0.1) !important;
+    color: #ff5252 !important;
+}
+
 /* Comments Section */
 .feed-post-comments-section {
     margin-top: 20px;
