@@ -72,7 +72,9 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
                 <IconButton 
                     size="small" 
                     className="feed-post-report-btn"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
                 >
                     <FlagIcon fontSize="small" />
                 </IconButton>

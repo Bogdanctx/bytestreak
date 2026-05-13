@@ -91,7 +91,7 @@ public class ReportController {
         return ResponseEntity.ok("Post reported successfully");
     }
 
-    @PostMapping("/submit/post/{id}")
+    @PostMapping("/submit/message/{id}")
     private ResponseEntity<?> reportMessage(@PathVariable Long id,  Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
