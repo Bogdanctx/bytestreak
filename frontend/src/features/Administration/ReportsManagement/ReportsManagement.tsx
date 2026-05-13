@@ -1,16 +1,15 @@
 import { Box, Typography, Avatar, Button, CircularProgress, Divider } from "@mui/material";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../../api"; // Ajustează calea dacă este necesar
+import { api } from "../../../api"; 
 import { type IReport } from "../../../types/report.types";
 import notify from "../../../components/ui/ToastNotification";
-import './ReportsManagement.css';
+import './ReportsManagement.style.css';
 
 export default function ReportsManagement() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
-    // Fetch reports
     const { data: reports = [], isLoading } = useQuery<IReport[]>({
         queryKey: ['reports'],
         queryFn: async () => {
@@ -19,7 +18,6 @@ export default function ReportsManagement() {
         }
     });
 
-    // Dismiss report mutation
     const dismissMutation = useMutation({
         mutationFn: async (reportId: number) => {
             await api.delete(`/reports/delete/${reportId}`);
@@ -30,11 +28,10 @@ export default function ReportsManagement() {
         }
     });
 
-    // Delete entity & dismiss report mutation
     const deleteEntityMutation = useMutation({
         mutationFn: async ({ endpoint, reportId }: { endpoint: string, reportId: number }) => {
-            await api.delete(endpoint); // Șterge entitatea (post, cont, etc)
-            await api.delete(`/reports/delete/${reportId}`); // Șterge și report-ul
+            await api.delete(endpoint); 
+            await api.delete(`/reports/delete/${reportId}`); 
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['reports'] });
@@ -51,7 +48,6 @@ export default function ReportsManagement() {
 
     const handleDelete = (reportId: number, type: string, targetId: number) => {
         let endpoint = '';
-        // Asigură-te că aceste rute există în controllerele tale de pe backend!
         if (type === 'ACCOUNT') endpoint = `/accounts/${targetId}`;
         else if (type === 'POST') endpoint = `/social/feed/posts/${targetId}`;
         else if (type === 'COMMENT') endpoint = `/social/feed/comments/${targetId}`; 
@@ -64,20 +60,20 @@ export default function ReportsManagement() {
 
     if (isLoading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+            <Box className="reports-loading">
                 <CircularProgress />
             </Box>
         );
     }
 
     return (
-        <Box id="reports-management-container" sx={{ p: 3, maxWidth: 800, margin: '0 auto' }}>
-            <Typography variant="h5" sx={{ mb: 3, color: 'var(--text-primary)', fontWeight: 'bold' }}>
+        <Box id="reports-management-container" className="reports-container">
+            <Typography variant="h5" className="reports-title">
                 Reports Management ({reports.length})
             </Typography>
 
             {reports.length === 0 && (
-                <Typography sx={{ color: 'var(--text-secondary)' }}>No pending reports.</Typography>
+                <Typography className="reports-empty">No pending reports.</Typography>
             )}
 
             {reports.map(report => {
@@ -126,9 +122,9 @@ export default function ReportsManagement() {
                 }
 
                 return (
-                    <Box key={report.id} sx={{ mb: 3, p: 2.5, border: '1px solid var(--bg-3)', borderRadius: 2, bgcolor: 'var(--bg-2)' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Typography variant="caption" sx={{ color: '#ef5350', fontWeight: 'bold' }}>
+                    <Box key={report.id} className="report-card">
+                        <Box className="report-header">
+                            <Typography variant="caption" className="report-reporter-text">
                                 REPORTED BY: 
                                 <span className="report-account-underline" 
                                     onClick={() => navigate(`/accounts/profile/${report.reporter.username}`)}
@@ -136,24 +132,24 @@ export default function ReportsManagement() {
                                     {report.reporter.username}
                                 </span>
                             </Typography>
-                            <Typography variant="caption" sx={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>
+                            <Typography variant="caption" className="report-type-text">
                                 TYPE: {type}
                             </Typography>
                         </Box>
 
                         {/* Rendering Account */}
                         {type === 'ACCOUNT' && author && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                <Avatar src={author.profilePictureUrl} sx={{ width: 56, height: 56 }}>
+                            <Box className="report-account-box">
+                                <Avatar src={author.profilePictureUrl} className="report-account-avatar">
                                     {!author.profilePictureUrl && author.username.charAt(0)}
                                 </Avatar>
                                 <Box>
-                                    <Typography className="report-account-underline" sx={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                                    <Typography className="report-account-underline report-account-username"
                                             onClick={() => navigate(`/accounts/profile/${author.username}`)}
                                     >
                                         {author.username}
                                     </Typography>
-                                    <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>{content}</Typography>
+                                    <Typography variant="body2" className="report-account-bio">{content}</Typography>
                                 </Box>
                             </Box>
                         )}
@@ -161,24 +157,25 @@ export default function ReportsManagement() {
                         {/* Rendering Post, Comment, Message */}
                         {(type === 'POST' || type === 'COMMENT' || type === 'MESSAGE') && author && (
                             <Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                                    <Avatar sx={{ width: 32, height: 32 }} src={author.profilePictureUrl}>
+                                <Box className="report-content-header">
+                                    <Avatar className="report-content-avatar" src={author.profilePictureUrl}>
                                         {!author.profilePictureUrl && author.username.charAt(0)}
                                     </Avatar>
-                                    <Typography className="report-account-underline" 
-                                            sx={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '14px' }}
+                                    <Typography className="report-account-underline report-content-username" 
                                             onClick={() => navigate(`/accounts/profile/${author.username}`)}
                                     >
                                         {author.username}
                                     </Typography>
                                 </Box>
-                                <Typography sx={{ color: 'var(--text-primary)', mb: attachments.length > 0 ? 2 : 0 }}>
+                                
+                                <Typography className="report-content-text">
                                     {content}
                                 </Typography>
+
                                 {attachments.length > 0 && (
-                                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                    <Box className="report-content-attachments">
                                         {attachments.map((att: any, idx: number) => (
-                                            <img key={idx} src={att.filedata} alt="attachment" style={{ maxHeight: 120, borderRadius: 6, objectFit: 'cover' }} />
+                                            <img key={idx} src={att.filedata} alt="attachment" className="report-attachment-image" />
                                         ))}
                                     </Box>
                                 )}
@@ -188,8 +185,8 @@ export default function ReportsManagement() {
                         {/* Rendering Problem */}
                         {type === 'PROBLEM' && (
                             <Box>
-                                <Typography variant="h6" sx={{ color: 'var(--text-primary)' }}>{content}</Typography>
-                                <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
+                                <Typography variant="h6" className="report-problem-title">{content}</Typography>
+                                <Typography variant="caption" className="report-problem-author">
                                     Created by: 
                                     <span className="report-account-underline"  
                                         onClick={() => navigate(`/accounts/profile/${author?.username}`)}
@@ -200,10 +197,10 @@ export default function ReportsManagement() {
                             </Box>
                         )}
 
-                        <Divider sx={{ my: 2, borderColor: 'var(--bg-3)' }} />
+                        <Divider className="report-divider" />
                         
                         {/* Actions */}
-                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Box className="report-actions">
                             {type === 'PROBLEM' ? (
                                 <>
                                     <Button size="small" variant="contained" color="primary" onClick={() => navigate(`/creator/edit/${targetId}`)}>
@@ -218,7 +215,7 @@ export default function ReportsManagement() {
                                     <Button size="small" variant="contained" color="error" onClick={() => handleDelete(report.id, type, targetId)} disabled={deleteEntityMutation.isPending}>
                                         Delete {type.toLowerCase()}
                                     </Button>
-                                    <Button size="small" variant="outlined" sx={{ color: 'var(--text-secondary)', borderColor: 'var(--bg-4)' }} onClick={() => handleDismiss(report.id)} disabled={dismissMutation.isPending}>
+                                    <Button size="small" variant="outlined" className="report-action-dismiss" onClick={() => handleDismiss(report.id)} disabled={dismissMutation.isPending}>
                                         Dismiss
                                     </Button>
                                 </>

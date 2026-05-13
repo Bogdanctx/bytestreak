@@ -17,12 +17,10 @@ import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';
 import UserProfile from './pages/UserProfile/UserProfile.tsx';
-import AdminRoute from './components/AdminRoute.tsx';
-import CreatorRoute from './components/CreatorRoute.tsx';
-import ModeratorRoute from './components/ModeratorRoute.tsx';
 import QuizManagement from './features/Administration/QuizManagement/QuizManagement.tsx';
 import UsersManagement from './features/Administration/UsersManagement/UsersManagement.tsx';
 import ReportsManagement from './features/Administration/ReportsManagement/ReportsManagement.tsx';
+import RoleRoute from './components/RoleRoute.tsx';
 
 const queryClient = new QueryClient();
 
@@ -50,28 +48,17 @@ function App() {
                                 <Route path="/accounts/profile/:username" element={<UserProfile />} />
 
 
-                                <Route path="/creator" element={<CreatorRoute />}>
+                                <Route path="/creator" element={<RoleRoute allowedRoles={['CREATOR', 'MODERATOR', 'ADMIN']} />}>
                                     <Route index element={<Creator />} />
                                     <Route path="/creator/new" element={<ProblemBuilder />} />
                                     <Route path="/creator/edit/:id" element={<ProblemBuilder />} />
                                 </Route>
 
-                                
-                                <Route path="/admin" element={<ModeratorRoute><Administration /></ModeratorRoute>}>  
-                                    <Route path="/admin/manage-quizzes" element={<QuizManagement />} />
-                                    
-                                    <Route path="/admin/manage-users" element={
-                                        <AdminRoute>
-                                            <UsersManagement />
-                                        </AdminRoute>
-                                    } />
-                                    <Route path="/admin/manage-reports" element={
-                                        <AdminRoute>
-                                            <ReportsManagement />
-                                        </AdminRoute>
-                                    } />
+                                <Route path="/admin" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><Administration /></RoleRoute>}>
+                                    <Route path="/admin/manage-users" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><UsersManagement /></RoleRoute>} />
+                                    <Route path="/admin/manage-quizzes" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><QuizManagement /></RoleRoute>} />
+                                    <Route path="/admin/manage-reports" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><ReportsManagement /></RoleRoute>} />
                                 </Route>
-
                             </Route>
                         </Routes>
                         

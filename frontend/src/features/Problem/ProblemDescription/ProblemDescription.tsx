@@ -40,6 +40,14 @@ function ProblemDescription({ problem }: { problem: IProblem }) {
                 <Typography variant="h4" className="problem-title">
                     {problem.title}
                 </Typography>
+                <IconButton
+                    className="report-flag"
+                    onClick={() => reportProblemMutation.mutate()}
+                    disabled={reportProblemMutation.isPending}
+                    aria-label="Report coding problem"
+                >
+                    <FlagIcon fontSize="small" />
+                </IconButton>
             </Box>
 
             <Box className="problem-meta-bar">
@@ -53,14 +61,6 @@ function ProblemDescription({ problem }: { problem: IProblem }) {
                 >
                     TAGS
                 </Button>
-                <IconButton
-                    className="report-flag"
-                    onClick={() => reportProblemMutation.mutate()}
-                    disabled={reportProblemMutation.isPending}
-                    aria-label="Report coding problem"
-                >
-                    <FlagIcon fontSize="small" />
-                </IconButton>
                 <Popover open={Boolean(anchorEl)}
                     anchorEl={anchorEl}
                     onClose={() => setAnchorEl(null)}

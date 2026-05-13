@@ -1,0 +1,133 @@
+.report-account-underline:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.reports-container {
+    padding: 24px;
+    margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.reports-loading {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.reports-title {
+    margin-bottom: 24px !important;
+    color: var(--text-primary);
+    font-weight: bold !important;
+}
+
+.reports-empty {
+    color: var(--text-secondary);
+}
+
+.report-card {
+    margin-bottom: 24px;
+    padding: 20px;
+    border: 1px solid var(--bg-3);
+    border-radius: 8px;
+    background-color: var(--bg-2);
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.report-reporter-text {
+    color: #ef5350;
+    font-weight: bold !important;
+}
+
+.report-type-text {
+    color: var(--text-secondary);
+    font-weight: bold !important;
+}
+
+/* Account Rendering */
+.report-account-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.report-account-avatar {
+    width: 56px !important;
+    height: 56px !important;
+}
+
+.report-account-username {
+    color: var(--text-primary);
+    font-weight: bold !important;
+}
+
+.report-account-bio {
+    color: var(--text-secondary);
+}
+
+/* Post/Comment/Message Rendering */
+.report-content-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.report-content-avatar {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.report-content-username {
+    color: var(--text-primary);
+    font-weight: bold !important;
+    font-size: 14px !important;
+}
+
+.report-content-text {
+    color: var(--text-primary);
+}
+
+.report-content-attachments {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.report-attachment-image {
+    max-height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* Problem Rendering */
+.report-problem-title {
+    color: var(--text-primary);
+}
+
+.report-problem-author {
+    color: var(--text-secondary);
+}
+
+.report-divider {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+    border-color: var(--bg-3) !important;
+}
+
+.report-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.report-action-dismiss {
+    color: var(--text-secondary) !important;
+    border-color: var(--bg-4) !important;
+}
