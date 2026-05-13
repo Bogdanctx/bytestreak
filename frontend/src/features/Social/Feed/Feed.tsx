@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import FeedHeader from './FeedHeader/FeedHeader';
 import FeedPost from './FeedPost/FeedPost';
-import { QueryClient, useQuery, useMutation } from '@tanstack/react-query';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 import { type IPost } from '../../../types/post.types';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
@@ -9,7 +9,7 @@ import './Feed.style.css';
 import type { IAttachment } from '../../../types/message.types';
 
 function Feed() {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
     const { data: feedPosts } = useQuery<IPost[]>({
         queryKey: ['feedPosts'],
         queryFn: async () => {
@@ -23,9 +23,11 @@ function Feed() {
             const response = await api.post('/social/feed/posts', { text, attachments });
             return response.data;
         },
-        onSuccess: (newPost) => {
+        onSuccess: (newPost: IPost) => {
             // On success, append the post to the feed without refetching
-            queryClient.setQueryData<IPost[]>(['feedPosts'], (oldPosts) => [newPost, ...(oldPosts || [])]);
+            queryClient.setQueryData<IPost[]>(['feedPosts'], (oldPosts) => {
+                return [newPost, ...(oldPosts || [])];
+            });
         },
         onError: (error) => {
             notify('Failed to create post. Please try again.', 'error');
@@ -43,7 +45,10 @@ function Feed() {
             <Box id="feed-posts-container">
                 {feedPosts && feedPosts.length > 0 ? (
                     feedPosts.map(post => (
-                        <FeedPost key={post.id} post={post} />
+                        <FeedPost key={post.id} 
+                                    post={post}
+                                    
+                        />
                     ))
                 ) : (
                     <Typography variant="body1" sx={{ color: "var(--text-primary)" }}>

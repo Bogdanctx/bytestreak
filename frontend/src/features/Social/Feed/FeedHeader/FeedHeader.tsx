@@ -8,10 +8,9 @@ import type { IAttachment } from '../../../../types/message.types';
 
 interface IFeedHeaderProps {
     onPost: (text: string, attachments: IAttachment[]) => void;
-    isLoading?: boolean;
 }
 
-function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
+function FeedHeader({ onPost }: IFeedHeaderProps) {
     const [text, setText] = useState('');
     const [selectedFiles, setSelectedFiles] = useState<IAttachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,17 +24,21 @@ function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
         files.forEach(file => {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setSelectedFiles(prev => [...prev, {
+
+                const attachment: IAttachment = {
                     id: null,
                     filename: file.name,
                     filedata: reader.result as string
-                }]);
+                };
+
+                setSelectedFiles(prev => [...prev, attachment]);
             };
             reader.readAsDataURL(file);
         });
         
-        // Reset input so the same file can be selected again if removed
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     const handleRemoveFile = (index: number) => {
@@ -43,7 +46,10 @@ function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
     };
 
     const handleSend = () => {
-        if ((text.trim() === '' && selectedFiles.length === 0) || isLoading) return;
+        if ((text.trim() === '' && selectedFiles.length === 0)) {
+            return;
+        }
+        
         onPost(text, selectedFiles);
         setText('');
         setSelectedFiles([]);
@@ -69,7 +75,6 @@ function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
                     onKeyDown={handleKeyDown}
                     multiline
                     maxRows={6}
-                    disabled={isLoading}
                     className="feed-header-text-input"
                 />
 
@@ -104,7 +109,6 @@ function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
                         />
                         <IconButton
                             onClick={() => fileInputRef.current?.click()}
-                            disabled={isLoading}
                             className={`feed-header-action-btn ${selectedFiles.length > 0 ? 'active' : ''}`}
                         >
                             <AttachFileIcon fontSize="small" />
@@ -118,7 +122,7 @@ function FeedHeader({ onPost, isLoading = false }: IFeedHeaderProps) {
 
                     <IconButton
                         onClick={handleSend}
-                        disabled={isFormEmpty || isLoading}
+                        disabled={isFormEmpty}
                         className={`feed-header-send-btn ${!isFormEmpty ? 'enabled' : ''}`}
                     >
                         <SendIcon fontSize="small" />

@@ -254,7 +254,7 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                 
                 <Box className="friend-panel-input-row">
                     <input type="file" multiple ref={fileInputRef} onChange={handleFileSelect} 
-                        className="friend-panel-hidden-file-input" accept="image/*,.pdf,.txt"
+                        className="friend-panel-hidden-file-input" accept="image/*,.pdf,.txt,.doc,.docx"
                     />
                     <IconButton 
                         onClick={() => fileInputRef.current?.click()} 
