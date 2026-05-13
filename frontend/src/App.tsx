@@ -55,7 +55,7 @@ function App() {
                                 </Route>
 
                                 <Route path="/admin" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><Administration /></RoleRoute>}>
-                                    <Route path="/admin/manage-users" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><UsersManagement /></RoleRoute>} />
+                                    <Route path="/admin/manage-users" element={<RoleRoute allowedRoles={['ADMIN']}><UsersManagement /></RoleRoute>} />
                                     <Route path="/admin/manage-quizzes" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><QuizManagement /></RoleRoute>} />
                                     <Route path="/admin/manage-reports" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><ReportsManagement /></RoleRoute>} />
                                 </Route>
