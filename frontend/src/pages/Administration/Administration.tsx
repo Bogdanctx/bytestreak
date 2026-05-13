@@ -19,14 +19,21 @@ export default function Administration() {
                         selected={location.pathname.includes('/manage-quizzes')} 
                         onClick={() => navigate("/admin/manage-quizzes")}
                     >
-                        <ListItemText primary="Quiz Management" />
+                        <ListItemText primary="Manage quizzes" />
                     </ListItemButton>
                     <ListItemButton 
                         className="admin-menu-item"
                         selected={location.pathname.includes('/manage-users')} 
                         onClick={() => navigate("/admin/manage-users")}
                     >
-                        <ListItemText primary="Users Management" />
+                        <ListItemText primary="Manage users" />
+                    </ListItemButton>
+                    <ListItemButton 
+                        className="admin-menu-item"
+                        selected={location.pathname.includes('/manage-reports')} 
+                        onClick={() => navigate("/admin/manage-reports")}
+                    >
+                        <ListItemText primary="Manage reports" />
                     </ListItemButton>
                 </List>
             </Box>

@@ -33,7 +33,6 @@ public class WebSecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(request -> request
                 .requestMatchers(
-                    "/welcome",
                     "/auth/login", 
                     "/auth/register", 
                     "/auth/request-recovery-link", 
@@ -41,8 +40,7 @@ public class WebSecurityConfig {
                     "/ws/**"
                 ).permitAll()
                 .requestMatchers("/creator/**").hasAnyAuthority("CREATOR", "MODERATOR", "ADMIN")
-                .requestMatchers("/admin/manage-quizzes").hasAnyAuthority("ADMIN", "MODERATOR")
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "MODERATOR")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

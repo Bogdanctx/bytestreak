@@ -1,0 +1,215 @@
+.feed-post-container {
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-4);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.feed-post-container:hover {
+    cursor: pointer;
+}
+
+/* Header */
+.feed-post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.feed-post-back-btn {
+    color: var(--text-secondary) !important;
+    margin-right: 4px;
+}
+
+.feed-post-back-btn:hover {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-4) !important;
+}
+
+.feed-post-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    background-color: var(--bg-4) !important;
+}
+
+.feed-post-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.feed-post-author-name {
+    color: var(--text-primary);
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+}
+
+.feed-post-date {
+    color: var(--text-secondary);
+    font-size: 0.8rem !important;
+}
+
+/* Body */
+.feed-post-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.feed-post-text {
+    color: var(--text-primary);
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.feed-post-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.feed-post-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--bg-4);
+}
+
+.feed-post-file-link {
+    background-color: var(--bg-4);
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--accent-main);
+    text-decoration: none;
+    border: 1px solid var(--bg-5);
+    font-size: 0.85rem;
+}
+
+.feed-post-file-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer (Summary Mode) */
+.feed-post-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--bg-4);
+    color: var(--text-secondary);
+}
+
+.feed-post-icon {
+    color: var(--text-secondary);
+}
+
+.feed-post-comment-count {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+}
+
+.feed-post-report-btn {
+    margin-left: auto !important;
+    color: #ff6b6b !important;
+    padding: 6px !important;
+    transition: all 0.2s ease;
+}
+
+.feed-post-report-btn:hover {
+    background-color: rgba(255, 107, 107, 0.1) !important;
+    color: #ff5252 !important;
+}
+
+/* Comments Section */
+.feed-post-comments-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--bg-4);
+}
+
+.comments-header {
+    color: var(--text-primary);
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+}
+
+.comment-avatar {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.comment-content {
+    background-color: var(--bg-3);
+    padding: 10px 14px;
+    border-radius: 12px;
+    border-top-left-radius: 2px;
+    flex: 1;
+}
+
+.comment-author {
+    color: var(--text-primary);
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+}
+
+.comment-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem !important;
+    word-break: break-word;
+}
+
+/* Comment Input */
+.comment-input-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background-color: var(--bg-3);
+    border: 1px solid var(--bg-5);
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.comment-input-box:focus-within {
+    border-color: var(--bg-7);
+}
+
+.comment-text-input {
+    color: var(--text-primary) !important;
+    font-size: 0.95rem !important;
+    padding: 4px 0 !important;
+}
+
+.comment-send-btn {
+    color: var(--text-secondary) !important;
+    padding: 6px !important;
+}
+
+.comment-send-btn.enabled {
+    color: var(--accent-main) !important;
+}
+
+.comment-send-btn.enabled:hover {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+}
