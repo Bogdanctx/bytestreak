@@ -4,6 +4,9 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { type IPost } from "../../../../types/post.types";
 import './FeedPost.style.css';
 import { useNavigate } from "react-router-dom";
+import { api } from '../../../../api';
+import { useMutation } from '@tanstack/react-query';
+import notify from '../../../../components/ui/ToastNotification';
 
 interface IFeedPostProps {
     post: IPost;
@@ -12,6 +15,19 @@ interface IFeedPostProps {
 
 function FeedPost({ post, onClick }: IFeedPostProps) {
     const navigate = useNavigate();
+
+    const reportPostMutation = useMutation({
+        mutationFn: async () => {
+            const response = await api.post(`/reports/submit/post/${post.id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Post reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report post', 'error');
+        }
+    });
 
     const isImage = (filedata: string, filename: string) => {
         return filedata?.startsWith('data:image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
@@ -74,7 +90,10 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
                     className="feed-post-report-btn"
                     onClick={(e) => {
                         e.stopPropagation();
+                        reportPostMutation.mutate();
                     }}
+                    disabled={reportPostMutation.isPending}
+                    aria-label="Report post"
                 >
                     <FlagIcon fontSize="small" />
                 </IconButton>

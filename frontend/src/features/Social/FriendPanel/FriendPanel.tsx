@@ -5,6 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DownloadIcon from '@mui/icons-material/Download';
+import FlagIcon from '@mui/icons-material/Flag';
 import { type IAccount } from '../../../types/account.types';
 import { type IMessage, type IAttachment } from '../../../types/message.types';
 import { api } from '../../../api';
@@ -13,6 +14,7 @@ import './FriendPanel.style.css';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
+import notify from '../../../components/ui/ToastNotification';
 
 interface IFriendPanelProps {
     account: IAccount;
@@ -55,6 +57,19 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
         },
         onError: (error) => {
             console.error('Error sending message:', error);
+        }
+    });
+
+    const reportMessageMutation = useMutation({
+        mutationFn: async (messageId: number) => {
+            const response = await api.post(`/reports/submit/message/${messageId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Message reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report message', 'error');
         }
     });
 
@@ -187,6 +202,11 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                         <Box 
                             key={message.id} 
                             className={`chat-bubble-container ${message.sender.id === account.id ? 'chat-mine' : 'chat-theirs'}`}
+                            sx={{
+                                '&:hover #report-flag-container': {
+                                    display: 'flex',
+                                }
+                            }}
                         >
                             <Paper className={`chat-bubble ${message.sender.id === account.id ? 'bubble-mine' : 'bubble-theirs'}`}>
                                 {/* render each attachment */}
@@ -224,6 +244,23 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                                     </Typography>
                                 )}
                             </Paper>
+
+                            <Box id="report-flag-container" className="report-flag" 
+                                sx={{ 
+                                    display: 'none', 
+                                    justifyContent: 'flex-end', 
+                                    mb: 0.5 ,
+                                }}
+                                >
+                                <IconButton
+                                    size="small"
+                                    onClick={() => reportMessageMutation.mutate(message.id)}
+                                    disabled={reportMessageMutation.isPending}
+                                    aria-label="Report message"
+                                >
+                                    <FlagIcon fontSize="small" sx={{color: 'var(--difficulty-hard)'}} />
+                                </IconButton>
+                            </Box>
                         </Box>
                     ))
                 )}

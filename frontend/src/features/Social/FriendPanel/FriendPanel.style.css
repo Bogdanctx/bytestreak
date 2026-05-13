@@ -95,6 +95,11 @@
     width: 100%;
 }
 
+.chat-bubble-container:hover #private-message-report-flag {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
 .chat-mine {
     justify-content: flex-end;
 }

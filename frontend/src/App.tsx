@@ -59,6 +59,7 @@ function App() {
                                 
                                 <Route path="/admin" element={<ModeratorRoute><Administration /></ModeratorRoute>}>  
                                     <Route path="/admin/manage-quizzes" element={<QuizManagement />} />
+                                    
                                     <Route path="/admin/manage-users" element={
                                         <AdminRoute>
                                             <UsersManagement />

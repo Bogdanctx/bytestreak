@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../../api"; // Ajustează calea dacă este necesar
 import { type IReport } from "../../../types/report.types";
 import notify from "../../../components/ui/ToastNotification";
+import './ReportsManagement.css';
 
 export default function ReportsManagement() {
     const queryClient = useQueryClient();
@@ -91,38 +92,49 @@ export default function ReportsManagement() {
                     author = report.reportedAccount;
                     content = author.bio || 'No bio available.';
                     targetId = author.id;
-                } else if (report.reportedPost) {
+                } 
+                else if (report.reportedPost) {
                     type = 'POST';
                     author = report.reportedPost.author;
                     content = report.reportedPost.text;
                     attachments = report.reportedPost.attachments || [];
                     targetId = report.reportedPost.id!;
-                } else if (report.reportedComment) {
+                } 
+                else if (report.reportedComment) {
                     type = 'COMMENT';
                     author = report.reportedComment.author;
                     content = report.reportedComment.text;
                     attachments = report.reportedComment.attachments || [];
                     targetId = report.reportedComment.id!;
-                } else if (report.reportedMessage) {
+                } 
+                else if (report.reportedMessage) {
                     type = 'MESSAGE';
                     author = report.reportedMessage.sender;
                     content = report.reportedMessage.text;
                     attachments = report.reportedMessage.attachments || [];
                     targetId = report.reportedMessage.id!;
-                } else if (report.reportedCodingProblem) {
+                } 
+                else if (report.reportedCodingProblem) {
                     type = 'PROBLEM';
                     author = report.reportedCodingProblem.creator;
                     content = report.reportedCodingProblem.title;
                     targetId = report.reportedCodingProblem.id;
                 }
 
-                if (!type) return null;
+                if (!type) {
+                    return null;
+                }
 
                 return (
                     <Box key={report.id} sx={{ mb: 3, p: 2.5, border: '1px solid var(--bg-3)', borderRadius: 2, bgcolor: 'var(--bg-2)' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                             <Typography variant="caption" sx={{ color: '#ef5350', fontWeight: 'bold' }}>
-                                REPORTED BY: {report.reporter.username}
+                                REPORTED BY: 
+                                <span className="report-account-underline" 
+                                    onClick={() => navigate(`/accounts/profile/${report.reporter.username}`)}
+                                >
+                                    {report.reporter.username}
+                                </span>
                             </Typography>
                             <Typography variant="caption" sx={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>
                                 TYPE: {type}
@@ -136,7 +148,11 @@ export default function ReportsManagement() {
                                     {!author.profilePictureUrl && author.username.charAt(0)}
                                 </Avatar>
                                 <Box>
-                                    <Typography sx={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>{author.username}</Typography>
+                                    <Typography className="report-account-underline" sx={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                                            onClick={() => navigate(`/accounts/profile/${author.username}`)}
+                                    >
+                                        {author.username}
+                                    </Typography>
                                     <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>{content}</Typography>
                                 </Box>
                             </Box>
@@ -149,7 +165,10 @@ export default function ReportsManagement() {
                                     <Avatar sx={{ width: 32, height: 32 }} src={author.profilePictureUrl}>
                                         {!author.profilePictureUrl && author.username.charAt(0)}
                                     </Avatar>
-                                    <Typography sx={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '14px' }}>
+                                    <Typography className="report-account-underline" 
+                                            sx={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '14px' }}
+                                            onClick={() => navigate(`/accounts/profile/${author.username}`)}
+                                    >
                                         {author.username}
                                     </Typography>
                                 </Box>
@@ -171,7 +190,12 @@ export default function ReportsManagement() {
                             <Box>
                                 <Typography variant="h6" sx={{ color: 'var(--text-primary)' }}>{content}</Typography>
                                 <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
-                                    Created by: {author?.username}
+                                    Created by: 
+                                    <span className="report-account-underline"  
+                                        onClick={() => navigate(`/accounts/profile/${author?.username}`)}
+                                    >
+                                        {author?.username}
+                                    </span>
                                 </Typography>
                             </Box>
                         )}

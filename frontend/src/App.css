@@ -28,3 +28,7 @@
 body {
     background-color: var(--bg-0) !important;
 }
+
+.report-flag {
+    color: red;
+}

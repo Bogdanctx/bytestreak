@@ -1,0 +1,4 @@
+.report-account-underline:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

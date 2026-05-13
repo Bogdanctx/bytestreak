@@ -2,6 +2,7 @@ import { Avatar, Box, Button, Typography } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import FlagIcon from '@mui/icons-material/Flag';
 import './ProfileHeader.style.css';
 import type { IAccount } from '../../../types/account.types';
 import type { IUserProfile } from '../../../types/userProfile.types';
@@ -56,6 +57,19 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
         onError: (error) => {
             console.error('Error sending friend invite:', error);
             notify('Failed to send friend invite. Please try again.', 'error');
+        }
+    });
+
+    const reportAccountMutation = useMutation({
+        mutationFn: async () => {
+            const response = await api.post(`/reports/submit/account/${target.account.id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Account reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report account', 'error');
         }
     });
 
@@ -159,6 +173,17 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                     <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
                         Pending Connection
                     </Typography>
+                )}
+                {!isMyProfile && (
+                    <Button
+                        variant="text"
+                        startIcon={<FlagIcon />}
+                        onClick={() => reportAccountMutation.mutate()}
+                        disabled={reportAccountMutation.isPending}
+                        sx={{ color: 'var(--text-secondary)' }}
+                    >
+                        Report Account
+                    </Button>
                 )}
             </Box>
         </Box>

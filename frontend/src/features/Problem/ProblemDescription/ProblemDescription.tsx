@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { Box, Button, Popover, Typography } from '@mui/material';
+import { Box, Button, IconButton, Popover, Typography } from '@mui/material';
+import FlagIcon from '@mui/icons-material/Flag';
 
 import MarkdownRenderer from '../../../components/MarkdownRenderer/MarkdownRenderer';
 import { type IProblem } from '../../../types/problem.types';
+import { api } from '../../../api';
+import { useMutation } from '@tanstack/react-query';
+import notify from '../../../components/ui/ToastNotification';
 import './ProblemDescription.style.css';
 
 function getDifficultyColorClass(diff: string) {
@@ -16,6 +20,19 @@ function getDifficultyColorClass(diff: string) {
 
 function ProblemDescription({ problem }: { problem: IProblem }) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const reportProblemMutation = useMutation({
+        mutationFn: async () => {
+            const response = await api.post(`/reports/submit/coding-problem/${problem.id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Coding problem reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report coding problem', 'error');
+        }
+    });
 
     return (
         <Box className="problem-content">
@@ -36,6 +53,13 @@ function ProblemDescription({ problem }: { problem: IProblem }) {
                 >
                     TAGS
                 </Button>
+                <IconButton
+                    onClick={() => reportProblemMutation.mutate()}
+                    disabled={reportProblemMutation.isPending}
+                    aria-label="Report coding problem"
+                >
+                    <FlagIcon fontSize="small" />
+                </IconButton>
                 <Popover open={Boolean(anchorEl)}
                     anchorEl={anchorEl}
                     onClose={() => setAnchorEl(null)}

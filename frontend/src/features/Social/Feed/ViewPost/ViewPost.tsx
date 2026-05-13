@@ -6,6 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import CloseIcon from '@mui/icons-material/Close';
+import FlagIcon from '@mui/icons-material/Flag';
 import { type IPostComment, type IPost } from "../../../../types/post.types";
 import { type IAttachment } from "../../../../types/message.types";
 import Loading from "../../../../components/ui/Loading";
@@ -46,6 +47,32 @@ function ViewPost({ post, goBack } : IViewPostProps) {
         },
         onError: () => {
             notify('Failed to post comment', 'error');
+        }
+    });
+
+    const reportPostMutation = useMutation({
+        mutationFn: async () => {
+            const response = await api.post(`/reports/submit/post/${post.id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Post reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report post', 'error');
+        }
+    });
+
+    const reportCommentMutation = useMutation({
+        mutationFn: async (commentId: number) => {
+            const response = await api.post(`/reports/submit/comment/${commentId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Comment reported successfully', 'success');
+        },
+        onError: () => {
+            notify('Failed to report comment', 'error');
         }
     });
 
@@ -115,6 +142,17 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                         </Typography>
                         <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
                     </Box>
+                    <IconButton
+                        size="small"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            reportPostMutation.mutate();
+                        }}
+                        disabled={reportPostMutation.isPending}
+                        aria-label="Report post"
+                    >
+                        <FlagIcon fontSize="small" />
+                    </IconButton>
                 </Box>
                 
                 <Typography className="view-post-text">{post.text}</Typography>
@@ -158,6 +196,17 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                                         {comment.author.username}
                                     </Typography>
                                     <Typography className="comment-date">{new Date(comment.createdAt).toLocaleString()}</Typography>
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            reportCommentMutation.mutate(comment.id);
+                                        }}
+                                        disabled={reportCommentMutation.isPending}
+                                        aria-label="Report comment"
+                                    >
+                                        <FlagIcon fontSize="small" />
+                                    </IconButton>
                                 </Box>
                                 <Typography className="comment-text">{comment.text}</Typography>
                                 
