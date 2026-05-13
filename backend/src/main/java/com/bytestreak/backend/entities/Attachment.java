@@ -32,4 +32,9 @@ public class Attachment {
     @JoinColumn(name = "message_id")
     @JsonIgnore
     private Message message;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    @JsonIgnore
+    private Post post;
 }
