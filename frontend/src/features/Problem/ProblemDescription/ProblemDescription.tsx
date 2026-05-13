@@ -54,6 +54,7 @@ function ProblemDescription({ problem }: { problem: IProblem }) {
                     TAGS
                 </Button>
                 <IconButton
+                    className="report-flag"
                     onClick={() => reportProblemMutation.mutate()}
                     disabled={reportProblemMutation.isPending}
                     aria-label="Report coding problem"

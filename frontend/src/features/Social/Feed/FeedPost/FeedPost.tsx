@@ -87,7 +87,7 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
 
                 <IconButton 
                     size="small" 
-                    className="feed-post-report-btn"
+                    className="feed-post-report-btn report-flag"
                     onClick={(e) => {
                         e.stopPropagation();
                         reportPostMutation.mutate();

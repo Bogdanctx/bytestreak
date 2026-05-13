@@ -177,7 +177,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                 {!isMyProfile && (
                     <Button
                         variant="text"
-                        startIcon={<FlagIcon />}
+                        startIcon={<FlagIcon className='report-flag' />}
                         onClick={() => reportAccountMutation.mutate()}
                         disabled={reportAccountMutation.isPending}
                         sx={{ color: 'var(--text-secondary)' }}

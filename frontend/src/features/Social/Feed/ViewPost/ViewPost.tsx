@@ -143,6 +143,7 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                         <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
                     </Box>
                     <IconButton
+                        className="report-flag"
                         size="small"
                         onClick={(e) => {
                             e.stopPropagation();
