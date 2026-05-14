@@ -11,4 +11,5 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     List<Problem> findByCreatorId(Long creatorId);
     List<Problem> findByDifficulty(Difficulty difficulty);
     Problem findBySlug(String slug);
+    Problem findByIsProblemOfTheDayTrue();
 }

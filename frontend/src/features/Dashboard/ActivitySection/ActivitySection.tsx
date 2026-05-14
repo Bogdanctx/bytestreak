@@ -26,6 +26,7 @@ import { useState } from "react";
 import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
 import Loading from "../../../components/ui/Loading";
 import { useNavigate } from "react-router-dom";
+import { type IProblem } from "../../../types/problem.types";
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
@@ -55,13 +56,20 @@ function ActivitySection() {
             notify("Failed to remove streak", "error");
         }
     });
+    const { data: problemOfTheDay } = useQuery<IProblem>({
+        queryKey: ['problemOfTheDay'],
+        queryFn: async () => {
+            const response = await api.get('/problems/problem-of-the-day');
+            return response.data;
+        }
+    });
 
     if (!account) {
         return <Loading />;
     }
 
     const isQuizDoneToday = account.lastDailyQuizDate === todayUTCString;
-    const isCodingProblemDoneToday = false;
+    const isCodingProblemDoneToday = account.lastDailyProblemDate === todayUTCString;
 
     return (
         <Box id="activity-section-container">
@@ -70,11 +78,12 @@ function ActivitySection() {
                     Daily Challenges
                 </Typography>
                 <Box display={"flex"} flexDirection={"column"} gap={"12px"}>
-                    <ButtonBase className="daily-item">
+                    <ButtonBase className="daily-item" 
+                                onClick={() => navigate(`/problems/${problemOfTheDay?.id}/description`)}>
                         <Box className="daily-item-content">
                             <Box>
                                 <Typography className="daily-item-label">Problem of the Day</Typography>
-                                <Typography className="daily-item-title">Valid Palindrome</Typography>    
+                                <Typography className="daily-item-title">{problemOfTheDay?.title}</Typography>    
                             </Box>
                             {isCodingProblemDoneToday ? (
                                 <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />

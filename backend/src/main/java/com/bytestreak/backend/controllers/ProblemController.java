@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
@@ -75,6 +77,21 @@ public class ProblemController {
         return ResponseEntity.ok(testCases);
     }
 
+    @GetMapping("/problem-of-the-day")
+    public ResponseEntity<Problem> getProblemOfTheDay(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        try {
+            Problem problemOfTheDay = problemService.getProblemOfTheDay();
+            return ResponseEntity.ok(problemOfTheDay);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
     @PostMapping("/submit")
     public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -108,6 +125,27 @@ public class ProblemController {
             Account account = accountRepository.findByEmail(authentication.getName());
 
             activityTrackerService.recordActivity(account);
+
+            for (ExecutionResultDTO result : results) {
+                if (result.getStatusId() != 3) {
+                    return ResponseEntity.ok(results);
+                }
+            }
+
+            // if the solution is correct and solved the problem of the day, update the user's streak
+            if (problem.isProblemOfTheDay()) {
+                LocalDate today = LocalDate.now(ZoneOffset.UTC);
+
+                if (!today.equals(account.getLastDailyQuizDate())) {
+                    account.setStreakLength(account.getStreakLength() + 1);
+                    account.setLastDailyProblemDate(today);
+                    account.setCurrentXP(account.getCurrentXP() + 20);
+                    account.setCoins(account.getCoins() + 10);
+                    
+                    accountRepository.save(account);
+                }
+            }
+
             return ResponseEntity.ok(results);
 
         } catch (Exception e) {

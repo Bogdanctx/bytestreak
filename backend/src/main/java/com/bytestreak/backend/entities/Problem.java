@@ -59,6 +59,7 @@ public class Problem {
 
     private int likes = 0;
     private int dislikes = 0;
+    private boolean isProblemOfTheDay = false;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.HIDDEN;
