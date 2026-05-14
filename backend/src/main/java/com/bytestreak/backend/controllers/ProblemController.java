@@ -20,11 +20,13 @@ import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.repositories.SubmissionRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.Submission;
 import com.bytestreak.backend.entities.Account;
 
 import org.json.JSONObject;
@@ -49,6 +51,9 @@ public class ProblemController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private SubmissionRepository submissionRepository;
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
@@ -125,6 +130,14 @@ public class ProblemController {
             Account account = accountRepository.findByEmail(authentication.getName());
 
             activityTrackerService.recordActivity(account);
+
+            Submission submission = new Submission();
+            submission.setAccount(account);
+            submission.setProblem(problem);
+            submission.setStarterCode(solutionCode);
+            submission.setPercentageCorrect((float) results.stream().filter(r -> r.getStatusId() == 3).count() / results.size() * 100);
+            submissionRepository.save(submission);
+
 
             for (ExecutionResultDTO result : results) {
                 if (result.getStatusId() != 3) {

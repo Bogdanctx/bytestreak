@@ -15,9 +15,10 @@ interface CodeEditorWindowProps {
     codeTemplates: any;
     setActiveTab: (tab: string) => void;
     setResults: (results: ISubmissionResult[]) => void;
+    editorWidth: string;
 }
 
-function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }: CodeEditorWindowProps) {
+function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, editorWidth }: CodeEditorWindowProps) {
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
@@ -60,7 +61,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults }
     }
 
     return (
-        <Box className="problem-editor-section">
+        <Box className="problem-editor-section" sx={{ flexBasis: editorWidth }}>
             <Box className="problem-editor-header">
                 <Typography variant="h6" className="problem-editor-title">
                     <EditNoteIcon />Code Editor

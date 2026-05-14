@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import ProblemDescription from './ProblemDescription/ProblemDescription';
 import SubmissionResults from './SubmissionResults/SubmissionResults';
 import { type IProblem, type ISubmissionResult } from '../../types/problem.types';
+import ProblemSubmissions from './ProblemSubmissions/ProblemSubmissions';
 import './ProblemDataPanel.style.css';
 
 interface ProblemDataPanelProps {
@@ -12,11 +13,12 @@ interface ProblemDataPanelProps {
     activeTab: string;
     setActiveTab: (tab: string) => void;
     results: ISubmissionResult[];
+    panelWidth: number;
 }
 
-function ProblemDataPanel({ problem, activeTab, setActiveTab, results }: ProblemDataPanelProps) {
+function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidth }: ProblemDataPanelProps) {
     return (
-        <Box className="problem-data-panel-container">
+        <Box className="problem-data-panel-container" sx={{ flexBasis: `${panelWidth}px` }}>
             <Box className="problem-header-tabs">
                 <Box 
                     className={`problem-tab ${activeTab === "description" ? "active" : ""}`}
@@ -43,6 +45,7 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results }: Problem
             </Box>
 
             {activeTab === "description" && <ProblemDescription problem={problem} />}
+            {activeTab === "submissions" && <ProblemSubmissions problemId={problem.id} />}
             {activeTab === "results" && <SubmissionResults results={results} />}
 
             <Box className="problem-footer">

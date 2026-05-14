@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -16,11 +16,14 @@ const todayUTCString = new Date().toISOString().split('T')[0];
 
 function Problem() {
     const queryClient = useQueryClient();
+    const problemPageRef = useRef<HTMLDivElement | null>(null);
     const { data: account, isLoading: accountQueryIsLoading } = useAccount();
     const { id } = useParams<{ id: string }>();
     const [activeTab, setActiveTab] = useState("description");
     const [results, setResults] = useState<ISubmissionResult[]>([]);
     const [solvedDailyChallenge, setSolvedDailyChallenge] = useState(false);
+    const [problemPanelWidth, setProblemPanelWidth] = useState(440);
+    const [isResizingPanels, setIsResizingPanels] = useState(false);
     const { data: codingProblem, isLoading } = useQuery<IProblem>({
         queryKey: ['codingProblem'],
         queryFn: async () => {
@@ -45,12 +48,48 @@ function Problem() {
 
     }, [results]);
 
+    useEffect(() => {
+        const handlePointerMove = (event: PointerEvent) => {
+            if (!isResizingPanels || !problemPageRef.current) {
+                return;
+            }
+
+            const pageBounds = problemPageRef.current.getBoundingClientRect();
+            const leftBoundary = 320;
+            const rightBoundary = Math.max(leftBoundary, pageBounds.width - 480);
+            const nextWidth = event.clientX - pageBounds.left;
+            const constrainedWidth = Math.min(Math.max(nextWidth, leftBoundary), rightBoundary);
+
+            setProblemPanelWidth(constrainedWidth);
+        };
+
+        const handlePointerUp = () => {
+            setIsResizingPanels(false);
+        };
+
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+
+        return () => {
+            window.removeEventListener('pointermove', handlePointerMove);
+            window.removeEventListener('pointerup', handlePointerUp);
+        };
+    }, [isResizingPanels]);
+
     if (isLoading || !codingProblem || accountQueryIsLoading || !account) {
         return <Loading />;
     }
 
+    const handleResizeStart = () => {
+        setIsResizingPanels(true);
+    };
+
+    const editorPanelWidth = isResizingPanels
+        ? 'calc(100% - 452px)'
+        : 'auto';
+
     return (
-        <Box className="problem-page-container">
+        <Box className={`problem-page-container ${isResizingPanels ? 'is-resizing' : ''}`} ref={problemPageRef}>
             {solvedDailyChallenge && (
                 <Dialog 
                     open={solvedDailyChallenge} 
@@ -107,8 +146,29 @@ function Problem() {
                 </Dialog>
             )}
 
-            <ProblemDataPanel problem={codingProblem} activeTab={activeTab} setActiveTab={setActiveTab} results={results} />
-            <CodeEditorWindow problemId={codingProblem.id} codeTemplates={codingProblem.codeTemplates} setActiveTab={setActiveTab} setResults={setResults} />
+            <ProblemDataPanel
+                problem={codingProblem}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                results={results}
+                panelWidth={problemPanelWidth}
+            />
+
+            <Box
+                className="problem-resize-handle"
+                role="separator"
+                aria-orientation="vertical"
+                aria-label="Resize problem panels"
+                onPointerDown={handleResizeStart}
+            />
+
+            <CodeEditorWindow
+                problemId={codingProblem.id}
+                codeTemplates={codingProblem.codeTemplates}
+                setActiveTab={setActiveTab}
+                setResults={setResults}
+                editorWidth={editorPanelWidth}
+            />
         </Box>
     )
 }

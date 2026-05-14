@@ -1,0 +1,211 @@
+.problem-submissions-container {
+    height: 100%;
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.problem-submissions-toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.submission-scope-button {
+    color: #cfcfcf !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 999px !important;
+    padding: 8px 16px !important;
+    min-height: 34px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: none !important;
+}
+
+.submission-scope-button.active {
+    color: #f7f7f9 !important;
+    border-color: rgba(35, 206, 107, 0.55) !important;
+    background: linear-gradient(135deg, rgba(35, 206, 107, 0.16), rgba(35, 206, 107, 0.06)) !important;
+}
+
+.submission-empty-state {
+    flex: 1;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #bdbdbd;
+    padding: 24px;
+    text-align: center;
+}
+
+.problem-submissions-layout {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 16px;
+    overflow: hidden;
+}
+
+.problem-submissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.submission-card {
+    width: 100%;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 14px !important;
+    border-radius: 16px !important;
+    text-transform: none !important;
+    color: #f7f7f9 !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease !important;
+}
+
+.submission-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(35, 206, 107, 0.25) !important;
+    background: rgba(255, 255, 255, 0.055) !important;
+}
+
+.submission-card.selected {
+    border-color: rgba(35, 206, 107, 0.6) !important;
+    background: linear-gradient(135deg, rgba(35, 206, 107, 0.14), rgba(255, 255, 255, 0.04)) !important;
+}
+
+.submission-card-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.submission-author {
+    color: #f7f7f9 !important;
+    font-weight: 600 !important;
+    text-align: left;
+}
+
+.submission-score-badge {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(35, 206, 107, 0.14);
+    color: #75e39d;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.submission-card-date {
+    color: #9a9a9a !important;
+    text-align: left;
+}
+
+.submission-detail-panel {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.submission-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.submission-detail-label,
+.submission-code-label {
+    display: block;
+    color: #9a9a9a !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 4px !important;
+}
+
+.submission-detail-score {
+    color: #f7f7f9 !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-size: 2rem !important;
+    line-height: 1 !important;
+}
+
+.submission-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.submission-detail-meta-line {
+    color: #cfcfcf !important;
+}
+
+.submission-code-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.submission-code-editor-shell {
+    position: relative;
+    flex: 1;
+    min-height: 320px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #111111;
+}
+
+@media (max-width: 1100px) {
+    .problem-submissions-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .submission-detail-meta {
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    .problem-submissions-container {
+        padding: 16px;
+    }
+
+    .submission-card {
+        padding: 12px !important;
+    }
+
+    .submission-code-editor-shell {
+        min-height: 260px;
+    }
+}
