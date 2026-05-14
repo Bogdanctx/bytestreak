@@ -1,6 +1,9 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
-import { Box } from '@mui/material';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, Box, Button, Typography } from '@mui/material';
 
 import ProblemDescription from './ProblemDescription/ProblemDescription';
 import SubmissionResults from './SubmissionResults/SubmissionResults';
@@ -17,6 +20,10 @@ interface ProblemDataPanelProps {
 }
 
 function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidth }: ProblemDataPanelProps) {
+    const navigate = useNavigate();
+
+    // To do: add like/dislike functionality, and display the number of likes/dislikes for the problem
+
     return (
         <Box className="problem-data-panel-container" sx={{ flexBasis: `${panelWidth}px` }}>
             <Box className="problem-header-tabs">
@@ -49,7 +56,33 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidt
             {activeTab === "results" && <SubmissionResults results={results} />}
 
             <Box className="problem-footer">
-                footer
+                <Box display={"flex"} alignItems={"center"}>
+                    <Button className='problem-data-feedback-button'>
+                        <ThumbUpIcon className='problem-data-feedback-icon' fontSize="small" />
+                        <Typography variant="body2" sx={{ ml: 0.5 }}>
+                            {problem.likes}
+                        </Typography>
+                    </Button>
+
+                    <Button className='problem-data-feedback-button'>
+                        <ThumbDownIcon className='problem-data-feedback-icon' fontSize="small" />
+                        <Typography variant="body2" sx={{ ml: 0.5 }}>
+                            {problem.dislikes}
+                        </Typography>
+                    </Button>
+                </Box>
+
+                <Box display={"flex"} alignItems={"center"} marginLeft={"auto"} >
+                    <Typography variant="body2" sx={{ mr: 0.5 }}>
+                        Created by
+                    </Typography>
+                    <Typography id="problem-data-panel-problem-creator"
+                                variant="body2" 
+                                onClick={() => navigate(`/accounts/profile/${problem.creator.username}`)}>
+                    {problem.creator.username}
+                    </Typography>
+                    <Avatar src={problem.creator.profilePictureUrl} alt={problem.creator.username} sx={{ width: 24, height: 24, ml: 1 }} />
+                </Box>
             </Box>
         </Box>
     )
