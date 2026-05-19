@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
@@ -18,11 +20,13 @@ import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.repositories.SubmissionRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.Submission;
 import com.bytestreak.backend.entities.Account;
 
 import org.json.JSONObject;
@@ -47,6 +51,9 @@ public class ProblemController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private SubmissionRepository submissionRepository;
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
@@ -73,6 +80,21 @@ public class ProblemController {
 
         List<TestCaseDTO> testCases = fileStorageService.getTestCases(problem.getTestCasesPath());
         return ResponseEntity.ok(testCases);
+    }
+
+    @GetMapping("/problem-of-the-day")
+    public ResponseEntity<Problem> getProblemOfTheDay(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        try {
+            Problem problemOfTheDay = problemService.getProblemOfTheDay();
+            return ResponseEntity.ok(problemOfTheDay);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
     @PostMapping("/submit")
@@ -108,6 +130,35 @@ public class ProblemController {
             Account account = accountRepository.findByEmail(authentication.getName());
 
             activityTrackerService.recordActivity(account);
+
+            Submission submission = new Submission();
+            submission.setAccount(account);
+            submission.setProblem(problem);
+            submission.setStarterCode(solutionCode);
+            submission.setPercentageCorrect((float) results.stream().filter(r -> r.getStatusId() == 3).count() / results.size() * 100);
+            submissionRepository.save(submission);
+
+
+            for (ExecutionResultDTO result : results) {
+                if (result.getStatusId() != 3) {
+                    return ResponseEntity.ok(results);
+                }
+            }
+
+            // if the solution is correct and solved the problem of the day, update the user's streak
+            if (problem.isProblemOfTheDay()) {
+                LocalDate today = LocalDate.now(ZoneOffset.UTC);
+
+                if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {
+                    account.setStreakLength(account.getStreakLength() + 1);
+                    account.setLastDailyProblemDate(today);
+                    account.setCurrentXP(account.getCurrentXP() + 20);
+                    account.setCoins(account.getCoins() + 10);
+                    
+                    accountRepository.save(account);
+                }
+            }
+
             return ResponseEntity.ok(results);
 
         } catch (Exception e) {

@@ -7,8 +7,8 @@
     flex-direction: column;
     overflow: hidden;
 
-    min-width: 35%;
-    max-width: 35%;
+    flex: 0 0 auto;
+    min-width: 320px;
 }
 
 .problem-header-tabs {
@@ -51,13 +51,34 @@
 }
 
 .problem-footer {
-    height: 6%;
-    background-color: rgba(255, 255, 255, 0.02);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: var(--bg-3);
     color: #888;
-    font-size: 0.9rem;
-    margin-top: auto;
+    padding: 12px;
+
+    display: flex;
+    justify-content: flex-start;
+}
+
+#problem-data-panel-problem-creator {
+    color: #888;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+#problem-data-panel-problem-creator:hover {
+    text-decoration: underline;
+}
+
+.problem-data-feedback-button {
+    color: #888 !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease !important;
+    min-width: 0 !important;
+}
+
+.problem-data-feedback-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
 }

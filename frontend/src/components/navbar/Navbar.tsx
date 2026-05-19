@@ -39,7 +39,7 @@ function Navbar() {
                     Social
                 </Button>
 
-                {account?.role === 'CREATOR' || account?.role === 'MODERATOR' || account?.role === 'ADMIN' && (
+                {(account?.role === 'CREATOR' || account?.role === 'MODERATOR' || account?.role === 'ADMIN') && (
                     <Button 
                         className={`navbar-link-button ${currentPath === "/creator" ? "navbar-selected-link" : ""}`}
                         onClick={() => navigate("/creator")}

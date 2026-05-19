@@ -2,8 +2,41 @@
     height: 100%;
     width: 100%;
     display: flex;
-    gap: 12px;
+    gap: 0;
     padding: 12px;
     background-color: #0C0C0C;
     overflow: hidden;
+}
+
+.problem-page-container.is-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.problem-resize-handle {
+    width: 12px;
+    flex: 0 0 12px;
+    align-self: stretch;
+    cursor: col-resize;
+    position: relative;
+    touch-action: none;
+}
+
+.problem-resize-handle::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.problem-resize-handle:hover::before,
+.problem-page-container.is-resizing .problem-resize-handle::before {
+    background: rgba(35, 206, 107, 0.7);
+    box-shadow: 0 0 10px rgba(35, 206, 107, 0.35);
 }

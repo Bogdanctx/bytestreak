@@ -29,4 +29,13 @@ public class ProblemService {
             throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
         }
     }
+
+    public Problem getProblemOfTheDay() {
+        Problem problemOfTheDay = problemRepository.findByIsProblemOfTheDayTrue();
+        if (problemOfTheDay == null) {
+            throw new RuntimeException("No problem of the day found");
+        }
+
+        return problemOfTheDay;
+    }
 }

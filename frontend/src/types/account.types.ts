@@ -9,6 +9,7 @@ export interface IAccount {
     coins: number;
     bio: string;
     lastDailyQuizDate: string;
+    lastDailyProblemDate: string;
     profilePictureUrl: string;
     joinedDate: string;
     role: AccountRole;

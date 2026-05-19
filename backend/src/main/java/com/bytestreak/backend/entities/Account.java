@@ -61,6 +61,7 @@ public class Account {
     private int coins = 0;
     private String bio = "";
     private LocalDate lastDailyQuizDate;
+    private LocalDate lastDailyProblemDate;
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb
