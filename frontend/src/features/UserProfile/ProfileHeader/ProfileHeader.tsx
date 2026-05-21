@@ -110,7 +110,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
 
                 <Box className="profile-meta">
                     <Typography className="profile-meta-item">
-                        Leaderboard #7 
+                        Leaderboard #{target.account.globalRank}
                     </Typography>
                     <Typography className="profile-meta-item">
                         Joined on {new Date(target.account.joinedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
