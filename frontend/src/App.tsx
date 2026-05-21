@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard/Dashboard.tsx';
 import Problem from './pages/Problem/Problem.tsx';
 import Settings from './pages/Settings/Settings.tsx';
 import LandingPage from './pages/Landing/LandingPage.tsx';
+import Leaderboard from './pages/Leaderboard/Leaderboard.tsx';
 import Social from './pages/Social/Social.tsx';
 import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
@@ -43,6 +44,7 @@ function App() {
 
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
+                                <Route path="/leaderboard" element={<Leaderboard />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
                                 <Route path="/accounts/profile/:username" element={<UserProfile />} />

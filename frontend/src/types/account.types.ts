@@ -13,6 +13,7 @@ export interface IAccount {
     profilePictureUrl: string;
     joinedDate: string;
     role: AccountRole;
+    globalRank?: number;
 }
 
 export type AccountRole = 'USER' | 'CREATOR' | 'MODERATOR' | 'ADMIN';

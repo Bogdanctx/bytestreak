@@ -99,6 +99,9 @@ public class AccountService {
             throw new RuntimeException("User not found");
         }
 
+        Long globalRank = accountRepository.countByCurrentXPGreaterThan(target.getCurrentXP()) + 1;
+        target.setGlobalRank(globalRank);
+
         List<Integer> activityGraph = activityTrackerService.getYearlyActivityGraph(target.getId());
 
         UserProfileDTO userProfile = new UserProfileDTO(

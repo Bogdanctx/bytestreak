@@ -1,0 +1,362 @@
+.leaderboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 16px;
+    padding: 24px;
+    background-color: var(--bg-2);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.leaderboard-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.leaderboard-search-field {
+    max-width: 420px;
+}
+
+.leaderboard-search-field .MuiOutlinedInput-root {
+    background-color: var(--bg-1);
+    color: var(--text-primary);
+}
+
+.leaderboard-search-field .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.leaderboard-search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.leaderboard-search-field .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--accent-main) !important;
+}
+
+.leaderboard-title {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 2rem !important;
+    margin-bottom: 4px;
+}
+
+.leaderboard-subtitle {
+    color: var(--text-secondary) !important;
+    font-size: 0.9rem !important;
+}
+
+/* Countdown */
+.leaderboard-countdown {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: rgba(35, 206, 107, 0.1);
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(35, 206, 107, 0.2);
+    flex-shrink: 0;
+}
+
+.countdown-icon {
+    color: var(--accent-main) !important;
+    font-size: 28px !important;
+}
+
+.countdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.countdown-label {
+    color: var(--text-secondary) !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500 !important;
+}
+
+.countdown-value {
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    line-height: 1;
+}
+
+/* Leaderboard Content */
+.leaderboard-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 12px;
+}
+
+.leaderboard-table-container {
+    background-color: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px !important;
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Table Header */
+.leaderboard-table-container table {
+    border-collapse: collapse;
+}
+
+.leaderboard-table-container thead {
+    background-color: #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.leaderboard-table-container thead tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-table-container thead th {
+    background-color: #1a1a1a !important;
+    color: #888 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Table Rows */
+.leaderboard-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.leaderboard-row:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.leaderboard-row.current-user {
+    background-color: rgba(35, 206, 107, 0.08);
+}
+
+.leaderboard-row.current-user:hover {
+    background-color: rgba(35, 206, 107, 0.12);
+}
+
+.leaderboard-row.current-user-rank {
+    background-color: rgba(35, 206, 107, 0.12);
+    border-top: 2px solid rgba(35, 206, 107, 0.3);
+    border-bottom: 2px solid rgba(35, 206, 107, 0.3);
+}
+
+/* Table Cells */
+.leaderboard-cell-rank,
+.leaderboard-cell-user,
+.leaderboard-cell-rank-badge,
+.leaderboard-cell-xp {
+    color: #F7F7F9 !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.leaderboard-row.current-user .leaderboard-cell-rank,
+.leaderboard-row.current-user .leaderboard-cell-user,
+.leaderboard-row.current-user .leaderboard-cell-rank-badge,
+.leaderboard-row.current-user .leaderboard-cell-xp,
+.leaderboard-row.current-user-rank .leaderboard-cell-rank,
+.leaderboard-row.current-user-rank .leaderboard-cell-user,
+.leaderboard-row.current-user-rank .leaderboard-cell-rank-badge,
+.leaderboard-row.current-user-rank .leaderboard-cell-xp {
+    border-bottom: 1px solid rgba(35, 206, 107, 0.15) !important;
+}
+
+/* Rank Number */
+.rank-number {
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.leaderboard-username {
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-username:hover {
+    color: var(--accent-main) !important;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Rank Name */
+.rank-name {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+}
+
+/* XP Value */
+.xp-value {
+    color: var(--accent-main) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    font-family: 'Courier New', monospace;
+}
+
+/* Separator Row */
+.separator-row {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 0 !important;
+}
+
+.separator-row td {
+    border-bottom: none !important;
+    padding: 8px 16px !important;
+}
+
+.separator-text {
+    color: var(--text-secondary) !important;
+    font-size: 1.2rem !important;
+    font-weight: 300 !important;
+}
+
+.leaderboard-empty-cell {
+    padding: 24px !important;
+}
+
+.leaderboard-empty-text {
+    color: var(--text-secondary) !important;
+}
+
+/* Load More Button */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    padding: 0 0 4px;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.load-more-button {
+    border: 1px solid var(--accent-main) !important;
+    color: var(--accent-main) !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease;
+}
+
+.load-more-button:hover:not(:disabled) {
+    background-color: rgba(35, 206, 107, 0.1) !important;
+    border-color: var(--accent-secondary) !important;
+}
+
+.load-more-button:disabled {
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .leaderboard-container {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .leaderboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .leaderboard-toolbar {
+        width: 100%;
+    }
+
+    .leaderboard-search-field {
+        max-width: none;
+        width: 100%;
+    }
+
+    .leaderboard-countdown {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .leaderboard-title {
+        font-size: 1.5rem !important;
+    }
+
+    .leaderboard-cell-rank,
+    .leaderboard-cell-user,
+    .leaderboard-cell-rank-badge,
+    .leaderboard-cell-xp {
+        padding: 10px 8px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .rank-number {
+        font-size: 0.9rem !important;
+    }
+
+    .username {
+        font-size: 0.85rem !important;
+    }
+
+    .rank-name,
+    .xp-value {
+        font-size: 0.8rem !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .leaderboard-cell-rank,
+    .leaderboard-cell-user,
+    .leaderboard-cell-rank-badge,
+    .leaderboard-cell-xp {
+        padding: 8px 6px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .user-info {
+        gap: 8px;
+    }
+
+    .username {
+        font-size: 0.75rem !important;
+    }
+
+    .countdown-value {
+        font-size: 1.2rem !important;
+    }
+}

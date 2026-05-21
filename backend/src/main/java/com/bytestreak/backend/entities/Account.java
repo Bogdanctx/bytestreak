@@ -8,6 +8,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -62,6 +63,9 @@ public class Account {
     private String bio = "";
     private LocalDate lastDailyQuizDate;
     private LocalDate lastDailyProblemDate;
+
+    @Transient
+    private Long globalRank;
 
     // Base64 encoded profile picture
     @Column(length = 5242880) // max 5mb

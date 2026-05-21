@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 
 import org.springframework.security.core.Authentication;
@@ -25,6 +28,7 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
 
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/accounts")
@@ -115,5 +119,50 @@ public class AccountController {
         UserProfileDTO userProfile = accountService.getUserProfile(username);
         
         return ResponseEntity.ok(userProfile);
+    }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<?> getLeaderboard(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String query,
+            Authentication authentication) 
+    {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Account> topAccounts;
+
+        if (query == null || query.isBlank()) {
+            topAccounts = accountRepository.findAllByOrderByCurrentXPDesc(pageable);
+
+            for (int i = 0; i < topAccounts.getContent().size(); i++) {
+                long globalRank = page * size + i + 1;
+                topAccounts.getContent().get(i).setGlobalRank(globalRank);
+            }
+        } 
+        else {
+            topAccounts = accountRepository.findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDesc(query.trim(), pageable);
+        
+            for (Account acc : topAccounts.getContent()) {
+                long realRank = accountRepository.countByCurrentXPGreaterThan(acc.getCurrentXP()) + 1;
+                acc.setGlobalRank(realRank);
+            }
+        }
+
+        Long myRank = accountRepository.countByCurrentXPGreaterThan(me.getCurrentXP()) + 1;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accounts", topAccounts.getContent());
+        response.put("totalPages", topAccounts.getTotalPages());
+        response.put("myRank", myRank);
+        response.put("myAccount", me);
+
+        return ResponseEntity.ok(response);
     }
 }
