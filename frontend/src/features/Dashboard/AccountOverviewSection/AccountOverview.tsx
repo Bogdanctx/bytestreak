@@ -1,7 +1,6 @@
 import { 
     Box, 
     Typography, 
-    Avatar, 
     LinearProgress, 
     Divider, 
     IconButton
@@ -18,6 +17,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
 import type { IAccount } from '../../../types/account.types';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import AccountAvatar from '../../../components/ui/AccountAvatar'; 
 
 function AccountOverview() {
     const { data: account, isSuccess: accountQueryIsSuccess } = useAccount();
@@ -61,11 +61,7 @@ function AccountOverview() {
         <Box id="account-overview-container">
             <Box id="account-overview-header">
                 <Box className="account-overview-avatar-ring" sx={{ border: `2px solid ${color}` }}>
-                    <Avatar 
-                        src={account.profilePictureUrl} 
-                        alt={account.username} 
-                        className="account-overview-avatar" 
-                    />
+                    <AccountAvatar avatarUrl={account.profilePictureUrl} effectId={account.activeEffect} width={86} height={86} />
                 </Box>
 
                 <Box className="account-overview-info-column">

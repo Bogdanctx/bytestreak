@@ -14,6 +14,8 @@ export interface IAccount {
     joinedDate: string;
     role: AccountRole;
     globalRank?: number;
+    activeEffect: number;
+    purchasedEffects: number[];
 }
 
 export type AccountRole = 'USER' | 'CREATOR' | 'MODERATOR' | 'ADMIN';

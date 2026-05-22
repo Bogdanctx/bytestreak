@@ -13,6 +13,7 @@ import notify from '../../../components/ui/ToastNotification';
 import { type IFriendInvite } from '../../../types/invite.types';
 import { type IFriendship } from '../../../types/friendship.types';
 import Loading from '../../../components/ui/Loading';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 interface IProfileHeaderProps {
     target: IUserProfile;
@@ -80,15 +81,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
     return (
         <Box className="profile-header">
             <Box className="profile-header-content">
-                <Avatar
-                    src={target.account.profilePictureUrl}
-                    alt={target.account.username}
-                    className="profile-avatar"
-                    sx={{ borderColor: rankColor }}
-                >
-                    {target.account.username.charAt(0).toUpperCase()}
-                </Avatar>
-
+                <AccountAvatar avatarUrl={target.account.profilePictureUrl} effectId={target.account.activeEffect} width={86} height={86} />
                 <Box className="profile-header-info">
                     <Typography className="profile-username" variant="h4">
                         {target.account.username}

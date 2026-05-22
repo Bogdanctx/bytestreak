@@ -22,6 +22,7 @@ import QuizManagement from './features/Administration/QuizManagement/QuizManagem
 import UsersManagement from './features/Administration/UsersManagement/UsersManagement.tsx';
 import ReportsManagement from './features/Administration/ReportsManagement/ReportsManagement.tsx';
 import RoleRoute from './components/RoleRoute.tsx';
+import Shop from './pages/Shop/Shop.tsx';
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ function App() {
 
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
+                                <Route path="/shop" element={<Shop />} />
                                 <Route path="/leaderboard" element={<Leaderboard />} />
                                 <Route path="/problems/:id/description" element={<Problem />} />
                                 <Route path="/social" element={<Social />} />
