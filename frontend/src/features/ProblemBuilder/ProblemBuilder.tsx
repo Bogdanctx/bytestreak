@@ -13,6 +13,7 @@ import MetadataTab from './MetadataTab/MetadataTab';
 import TestCasesTab from './TestCasesTab/TestCasesTab';
 import './ProblemBuilder.style.css';
 import { useMutation } from '@tanstack/react-query';
+import ValidationTab from './ValidationScriptTab/ValidationScriptTab';
 
 const DEFAULT_STARTER_CODE = {
     cpp: `// ======= STARTER CODE =======
@@ -100,10 +101,12 @@ function ProblemBuilder() {
     const isEditMode = Boolean(id);
 
     const [activeTab, setActiveTab] = useState("markdown");
+    const [validationTabActive, setValidationTabActive] = useState(false);
 
     const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguage>("cpp");
     const [starterCode, setStarterCode] = useState<CodeTemplateMap>(DEFAULT_STARTER_CODE);
     const [driverCode, setDriverCode] = useState<CodeTemplateMap>(DEFAULT_DRIVER_CODE);
+    const [validationCode, setValidationCode] = useState("");
     
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
     const [testCases, setTestCases] = useState<ITestCase[]>([]);
@@ -184,6 +187,11 @@ function ProblemBuilder() {
             return;
         }
 
+        if (validationTabActive && !validationCode) {
+            notify("Validation script cannot be empty if the Validation Script tab is active.", "error");
+            return;
+        }
+
         const codeTemplates = {
             cpp: { starter_code: starterCode.cpp, driver_code: driverCode.cpp },
             python: { starter_code: starterCode.python, driver_code: driverCode.python }
@@ -196,6 +204,7 @@ function ProblemBuilder() {
             codeTemplates: JSON.stringify(codeTemplates),
             testCases: testCases,
             tags: tags,
+            validationScript: validationTabActive ? validationCode : undefined
         };
         
         submitCodingProblemMutation.mutate(problemData);
@@ -228,6 +237,9 @@ function ProblemBuilder() {
                             <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
                             <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={() => setActiveTab("testcases")} />
                             <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={() => setActiveTab("metadata")} />
+                            {validationTabActive && 
+                                <Tab className='problem-builder-tab' label="Validation script" value="validation" onClick={() => setActiveTab("validation")} />
+                            }
                         </Tabs>
 
                         {(activeTab === "starter-code" || activeTab === "driver-code") && (
@@ -291,7 +303,13 @@ function ProblemBuilder() {
                     {activeTab === "testcases" && ( <TestCasesTab testCases={testCases} setTestCases={setTestCases} /> )}
 
                     {activeTab === "metadata" && ( <MetadataTab title={title} difficulty={difficulty} tags={tags}
-                                                                setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} /> )}
+                                                                setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} 
+                                                                setValidationTabActive={setValidationTabActive}
+                                                                /> )}
+
+                    {activeTab === "validation" && (
+                        <ValidationTab validationCode={validationCode} setValidationCode={setValidationCode} />
+                    )}
                 </Box>
             </Box>
 

@@ -61,6 +61,26 @@ public class FileStorageService {
         return problemDirectory.toString();
     }
 
+    public String saveValidationScript(String slug, String validationScript) throws RuntimeException {
+        Path problemDirectory = root.resolve(slug);
+
+        if (!Files.exists(problemDirectory)) {
+            throw new RuntimeException("Problem directory does not exist for slug: " + slug);
+        }
+
+        Path validationScriptPath = problemDirectory.resolve("validation_script.py");
+
+        try {
+            Files.writeString(validationScriptPath, validationScript);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to save validation script: " + e.getMessage());
+        }
+
+        return validationScriptPath.toString();
+    }
+    
+
     public ArrayList<TestCaseDTO> getTestCases(String testCasesPath) {
         ArrayList<TestCaseDTO> testCases = new ArrayList<>();
 

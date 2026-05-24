@@ -65,9 +65,14 @@ public class CreatorService {
         String slug = newCodingProblemDTO.getTitle().toLowerCase().replace(" ", "-");
         List<TestCaseDTO> testsJSON = newCodingProblemDTO.getTestCases();
         String testCasesPath = null;
+        String validationScriptPath = null;
 
         try {
             testCasesPath = fileStorageService.saveTestCases(slug, testsJSON);
+            
+            if (newCodingProblemDTO.getValidationScript() != null) {
+                validationScriptPath = fileStorageService.saveValidationScript(slug, newCodingProblemDTO.getValidationScript());
+            }
         } 
         catch (Exception e) {
             throw new RuntimeException("Failed to store test cases: " + e.getMessage());
@@ -83,6 +88,7 @@ public class CreatorService {
             Difficulty.valueOf(newCodingProblemDTO.getDifficulty().toString().toUpperCase()),
             newCodingProblemDTO.getCodeTemplates(),
             testCasesPath,
+            validationScriptPath,
             newCodingProblemDTO.getTags(),
             creator
         );

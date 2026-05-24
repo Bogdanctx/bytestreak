@@ -21,4 +21,5 @@ public class NewCodingProblemDTO {
     private String codeTemplates;
     private List<TestCaseDTO> testCases;
     private List<String> tags;
+    private String validationScript;
 }
