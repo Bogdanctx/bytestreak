@@ -5,6 +5,7 @@
 	align-items: center;
 	gap: 12px;
 	transition: background-color 0.2s ease;
+	width: fit-content;
 }
 
 .streak-invite-notification:hover {
@@ -17,7 +18,7 @@
 }
 
 .streak-invite-content {
-	flex: 1;
+	min-width: fit-content;
 }
 
 .streak-invite-text {

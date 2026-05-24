@@ -63,6 +63,12 @@
     padding-right: 4px;
 }
 
+.submission-author-information:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    
+}
+
 .submission-card {
     width: 100%;
     align-items: flex-start !important;

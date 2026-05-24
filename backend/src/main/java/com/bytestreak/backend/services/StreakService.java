@@ -42,6 +42,7 @@ public class StreakService {
         payload.setProfilePictureUrl(me.getProfilePictureUrl());
         payload.setUsername(me.getUsername());
         payload.setInviteId(invite.getId());
+        payload.setCssEffectStyle(me.getCssEffectStyle());
 
         notificationService.sendNotification(friend, NotificationTypes.STREAK_INVITE, payload);
                 

@@ -9,6 +9,7 @@ import { type IAccount } from '../../../../types/account.types';
 import { type IStreak } from '../../../../types/streak.types';
 import { type IDailyQuizForm } from '../../../../types/quiz.types';
 import './QuizOfTheDay.style.css';
+import AccountAvatar from '../../../../components/ui/AccountAvatar';
 
 interface QuizOfTheDayProps {
     open: boolean;
@@ -163,7 +164,8 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                 return (
                                     <Box key={streak.id} className="qotd-streak-item">
                                         <Box display="flex" alignItems="center" gap={1.5}>
-                                            <Avatar src={friend.profilePictureUrl} sx={{ width: 32, height: 32 }} />
+                                            <AccountAvatar avatarUrl={friend.profilePictureUrl} cssEffectStyle={friend.cssEffectStyle} width={32} height={32} />
+
                                             <Typography color="var(--text-primary)">{friend.username}</Typography>
                                         </Box>
                                         

@@ -10,6 +10,7 @@ import SubmissionResults from './SubmissionResults/SubmissionResults';
 import { type IProblem, type ISubmissionResult } from '../../types/problem.types';
 import ProblemSubmissions from './ProblemSubmissions/ProblemSubmissions';
 import './ProblemDataPanel.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 interface ProblemDataPanelProps {
     problem: IProblem;
@@ -81,7 +82,9 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidt
                                 onClick={() => navigate(`/accounts/profile/${problem.creator.username}`)}>
                     {problem.creator.username}
                     </Typography>
-                    <Avatar src={problem.creator.profilePictureUrl} alt={problem.creator.username} sx={{ width: 24, height: 24, ml: 1 }} />
+                    <Box ml={1}>
+                        <AccountAvatar avatarUrl={problem.creator.profilePictureUrl} cssEffectStyle={problem.creator.cssEffectStyle} width={20} height={20} />
+                    </Box>
                 </Box>
             </Box>
         </Box>

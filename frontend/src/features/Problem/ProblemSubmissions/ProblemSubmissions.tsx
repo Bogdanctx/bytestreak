@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { Box, Button, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../../api';
 import { useAccount } from '../../../hooks/useAccount';
 import { type ISubmission } from '../../../types/submission.types';
 import './ProblemSubmissions.style.css';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 type SubmissionScope = 'your' | 'all';
 
@@ -23,6 +25,7 @@ function formatSubmissionScore(score: number) {
 }
 
 function ProblemSubmissions({ problemId }: ProblemSubmissionsProps) {
+    const navigate = useNavigate();
     const { data: account, isLoading: isAccountLoading } = useAccount();
     const [activeScope, setActiveScope] = useState<SubmissionScope>('your');
     const [selectedSubmissionId, setSelectedSubmissionId] = useState<number | null>(null);
@@ -124,9 +127,13 @@ function ProblemSubmissions({ problemId }: ProblemSubmissionsProps) {
                                 onClick={() => setSelectedSubmissionId(submission.id)}
                             >
                                 <Box className="submission-card-header">
-                                    <Typography className="submission-author" variant="body2">
-                                        {submission.account.username}
-                                    </Typography>
+                                    <Box display={'flex'} alignItems={'center'} gap={1}>
+                                        <AccountAvatar avatarUrl={submission.account.profilePictureUrl} cssEffectStyle={submission.account.cssEffectStyle} width={20} height={20} />
+
+                                        <Typography className="submission-author" variant="body2">
+                                            {submission.account.username}
+                                        </Typography>
+                                    </Box>
                                     <Box className="submission-score-badge"
                                     >
                                         {formatSubmissionScore(submission.percentageCorrect)}
@@ -152,9 +159,14 @@ function ProblemSubmissions({ problemId }: ProblemSubmissionsProps) {
                             </Box>
 
                             <Box className="submission-detail-meta">
-                                <Typography className="submission-detail-meta-line" variant="body2">
-                                    By {selectedSubmission.account.username}
-                                </Typography>
+                                <Box display={'flex'} alignItems={'center'} gap={1}>
+                                    <Typography className="submission-detail-meta-line" variant="body2">
+                                        By <span className='submission-author-information' onClick={() => navigate(`/accounts/profile/${selectedSubmission.account.username}`)}>
+                                            {selectedSubmission.account.username}
+                                        </span>
+                                    </Typography>
+                                    <AccountAvatar avatarUrl={selectedSubmission.account.profilePictureUrl} cssEffectStyle={selectedSubmission.account.cssEffectStyle} width={20} height={20} />
+                                </Box>
                                 <Typography className="submission-detail-meta-line" variant="body2">
                                     {formatSubmissionDate(selectedSubmission.createdAt)}
                                 </Typography>

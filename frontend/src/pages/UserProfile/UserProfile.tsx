@@ -145,7 +145,10 @@ function UserProfile() {
                                         <Box key={streak.id}>
                                             <ListItem className="streak-item" disablePadding>
                                                 <ListItemButton onClick={() => navigate(`/accounts/profile/${otherParticipant.username}`)} className="streak-button">
-                                                    <Avatar src={otherParticipant.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{otherParticipant.username.charAt(0).toUpperCase()}</Avatar>
+                                                    <Box mr={1}>
+                                                        <AccountAvatar avatarUrl={otherParticipant.profilePictureUrl} cssEffectStyle={otherParticipant.cssEffectStyle} width={40} height={40} />
+                                                    </Box>
+
                                                     <Box sx={{ flex: 1 }}><Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{otherParticipant.username}</Typography></Box>
                                                     <Box className="streak-flame">
                                                         <Typography variant="body2" fontWeight="bold" color={streak.length > 0 ? "#ff9800" : "var(--text-primary)"}> {streak.length}</Typography>

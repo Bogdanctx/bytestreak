@@ -27,6 +27,7 @@ import QuizOfTheDay from "./QuizOfTheDay/QuizOfTheDay";
 import Loading from "../../../components/ui/Loading";
 import { useNavigate } from "react-router-dom";
 import { type IProblem } from "../../../types/problem.types";
+import AccountAvatar from "../../../components/ui/AccountAvatar";
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
@@ -135,9 +136,7 @@ function ActivitySection() {
                             >
                                 <Box className="streak-user-info">
                                     <ListItemAvatar sx={{ minWidth: '48px' }}>
-                                        <Avatar src={streakFriend.profilePictureUrl} alt={streakFriend.username} className="friend-avatar">
-                                            {!streakFriend.profilePictureUrl && streakFriend.username.charAt(0).toUpperCase()}
-                                        </Avatar>
+                                        <AccountAvatar avatarUrl={streakFriend.profilePictureUrl} cssEffectStyle={streakFriend.cssEffectStyle} width={36} height={36} />
                                     </ListItemAvatar>
                                     
                                     <Box className="streak-details">

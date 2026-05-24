@@ -9,6 +9,7 @@ public class StreakInviteNotificationPayload implements NotificationPayload {
     // Fields to identify the sender of the streak invite
     private Long senderId;
     private String profilePictureUrl;
+    private String cssEffectStyle;
     private String username;
 
     // Field to identify the friend request id

@@ -11,11 +11,6 @@
 	background-color: var(--bg-2);
 }
 
-.friend-request-avatar {
-	width: 32px;
-	height: 32px;
-}
-
 .friend-request-content {
 	flex: 1;
 }

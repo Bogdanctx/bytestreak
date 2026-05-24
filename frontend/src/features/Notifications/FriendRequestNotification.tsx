@@ -7,6 +7,7 @@ import './FriendRequestNotification.style.css';
 
 import { api } from '../../api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 interface FriendRequestNotificationProps {
     notification: INotification;
@@ -33,9 +34,11 @@ function FriendRequestNotification({ notification }: FriendRequestNotificationPr
 
     return (
         <Box key={notification.id} className='friend-request-notification'>
+            <AccountAvatar avatarUrl={notification.payload.profilePictureUrl} cssEffectStyle={notification.payload.cssEffectStyle} width={40} height={40} />
+{/* 
             <Avatar src={notification.payload.profilePictureUrl} className='friend-request-avatar'>
                 {notification.payload.username.charAt(0).toUpperCase()}
-            </Avatar>
+            </Avatar> */}
             <Box className='friend-request-content'>
                 <Typography variant="body2" className='friend-request-text'>
                     <strong>{notification.payload.username}</strong> wants to connect.

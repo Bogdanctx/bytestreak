@@ -52,6 +52,7 @@ public class FriendService {
         payload.setProfilePictureUrl(sender.getProfilePictureUrl());
         payload.setMessage("You have a friend request from " + sender.getUsername());
         payload.setInviteId(invite.getId());
+        payload.setCssEffectStyle(sender.getCssEffectStyle());
 
         notificationService.sendNotification(receiver, NotificationTypes.FRIEND_REQUEST, payload);
 
