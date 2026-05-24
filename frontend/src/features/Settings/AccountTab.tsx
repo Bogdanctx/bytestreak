@@ -7,7 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { Avatar, Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
 
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
@@ -17,7 +17,7 @@ import './AccountTab.style.css';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 
 
-function Account() {
+function AccountTab() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
@@ -235,4 +235,4 @@ function Account() {
     );
 }
 
-export default Account;
+export default AccountTab;

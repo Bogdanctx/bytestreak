@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 
-import Account from '../../features/Settings/AccountTab';
 import './Settings.style.css';
+import AccountTab from '../../features/Settings/AccountTab';
+import AppearanceTab from '../../features/Settings/AppearanceTab'; 
 
 function Settings() {
     const [selectedTab, setSelectedTab] = useState("account");
@@ -29,8 +30,8 @@ function Settings() {
             </Box>
 
             <Box id="settings-content">
-                {selectedTab === "account" && <Account />}
-                {/* {selectedTab === "appearance" && <Appearance />} */}
+                {selectedTab === "account" && <AccountTab />}
+                {selectedTab === "appearance" && <AppearanceTab />}
             </Box>
 
         </Box>
