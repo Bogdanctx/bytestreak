@@ -127,8 +127,8 @@ function Discover({ account }: { account: IAccount }) {
                             onClick={() => navigate(`/accounts/profile/${mappedAccount.username}`)}
                         >
                             <Box className="discover-user-info">
-                                <AccountAvatar avatarUrl={mappedAccount.profilePictureUrl} effectId={mappedAccount.activeEffect} width={40} height={40} />
-                                
+                                <AccountAvatar avatarUrl={mappedAccount.profilePictureUrl} cssEffectStyle={mappedAccount.cssEffectStyle} width={35} height={35} />
+
                                 <Box className="discover-user-meta">
                                     <Typography variant="body2" className="discover-user-name" noWrap>
                                         {mappedAccount.username}

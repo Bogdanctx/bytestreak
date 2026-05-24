@@ -14,6 +14,7 @@ import Social from './pages/Social/Social.tsx';
 import ProblemBuilder from './features/ProblemBuilder/ProblemBuilder.tsx';
 import Administration from './pages/Administration/Administration.tsx';
 import './App.css';
+import './avatarEffects.css';
 import Layout from './components/ui/Layout.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import RecoverAccountHandler from './features/Auth/RecoverAccountHandler.tsx';

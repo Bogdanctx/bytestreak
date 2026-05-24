@@ -27,6 +27,7 @@ import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
 import type { IAccount } from '../../types/account.types';
 import Loading from '../../components/ui/Loading';
 import './Leaderboard.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 interface LeaderboardPage {
     accounts: IAccount[];
@@ -177,12 +178,8 @@ export default function Leaderboard() {
                                             </TableCell>
                                             <TableCell className="leaderboard-cell-user">
                                                 <Box className="user-info">
-                                                    <Avatar
-                                                        src={account.profilePictureUrl}
-                                                        sx={{ width: 32, height: 32, border: `2px solid ${rankColor}` }}
-                                                    >
-                                                        {!account.profilePictureUrl && account.username?.charAt(0).toUpperCase()}
-                                                    </Avatar>
+                                                    <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={28} height={28} />
+                                                
                                                     <Typography className="leaderboard-username"
                                                                 onClick={() => navigate(`/accounts/profile/${account.username}`)}
                                                     >

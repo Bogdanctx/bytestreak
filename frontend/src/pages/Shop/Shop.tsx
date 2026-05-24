@@ -1,102 +1,86 @@
-import { Box, Typography, Button, Avatar, CircularProgress } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api';
+import { Box, Typography, Button, Avatar } from '@mui/material';
 import { useAccount } from '../../hooks/useAccount';
-import notify from '../../components/ui/ToastNotification';
 import './Shop.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
-const EFFECTS = [
-    { id: 0, name: "Default", price: 0, cssClass: "effect-none" },
-    { id: 1, name: "Code Stream", price: 150, cssClass: "effect-code-stream" },
-    { id: 2, name: "Velocity Strike", price: 300, cssClass: "effect-velocity-strike" },
-    { id: 3, name: "Pixel Victory", price: 400, cssClass: "effect-pixel-victory" },
-    { id: 4, name: "Quantum Pulse", price: 500, cssClass: "effect-quantum-pulse" }
+const SHOP_ITEMS = [
+    { name: 'Fire', cssName: 'cssEffectFire', price: 100 },
+    { name: 'Ice', cssName: 'cssEffectIce', price: 200 },
+    { name: 'Lightning', cssName: 'cssEffectLightning', price: 300 },
+    { name: 'Quantum Pulse', cssName: 'cssEffectQuantumPulse', price: 500 },
 ];
 
-function Shop() {
+export default function Shop() {
     const queryClient = useQueryClient();
-    const { data: account, isLoading } = useAccount();
+    const { data: account } = useAccount();
 
     const buyMutation = useMutation({
-        mutationFn: async (effectId: number) => {
-            await api.post(`/api/shop/buy/${effectId}`);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['account'] });
-            notify('Effect purchased!', 'success');
-        },
-        onError: () => notify('Not enough coins or error.', 'error')
+        mutationFn: (effectName: string) => api.post(`/api/shop/buy/${effectName}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['account'] })
     });
 
-    const equipMutation = useMutation({
-        mutationFn: async (effectId: number) => {
-            await api.put(`/api/shop/activate/${effectId}`);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['account'] });
-            notify('Effect equipped!', 'success');
-        }
+    const activateMutation = useMutation({
+        mutationFn: (effectName: string) => api.put(`/api/shop/activate/${effectName}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['account'] })
     });
 
-    if (isLoading || !account) {
-        return <CircularProgress />;
-    }
-
-    const purchased = account.purchasedEffects;
-    const active = account.activeEffect;
+    const purchasedEffects = account?.purchasedEffects || [];
+    const activeEffect = account?.cssEffectStyle || '';
 
     return (
         <Box className="shop-container">
-            <Box className="shop-header">
-                <Typography variant="h4" fontWeight="bold">Avatar Effects</Typography>
-                <Box className="coin-display">
-                    <Typography fontWeight="bold" sx={{ color: '#FFD700' }}>
-                        {account.coins} Coins
-                    </Typography>
-                </Box>
-            </Box>
+            <Typography variant="h4" className="shop-title">Avatar Shop</Typography>
+            <Typography variant="subtitle1" className="shop-coins">
+                Your Coins: 🪙 {account?.coins || 0}
+            </Typography>
 
             <Box className="shop-grid">
-                {EFFECTS.map(effect => {
-                    const isOwned = purchased.includes(effect.id);
-                    const isActive = active === effect.id;
+                {SHOP_ITEMS.map((item) => {
+                    const isPurchased = purchasedEffects.includes(item.cssName);
+                    const isActive = activeEffect === item.cssName;
+                    const canAfford = (account?.coins || 0) >= item.price;
 
                     return (
-                        <Box key={effect.id} className={`shop-card ${isActive ? 'active-card' : ''}`}>
-                            <Box className="preview-container">
-                                <Box className={`avatar-wrapper ${effect.cssClass}`}>
-                                    <Avatar src={account.profilePictureUrl} sx={{ width: 80, height: 80 }} />
-                                </Box>
-                            </Box>
+                        <Box key={item.cssName} className="shop-card">
+                            {/* <Box className={`avatar-wrapper ${item.cssName}`}>
+                                <Avatar 
+                                    src={account?.profilePictureUrl} 
+                                    sx={{ width: 80, height: 80 }} 
+                                />
+                            </Box> */}
+                            <AccountAvatar avatarUrl={account?.profilePictureUrl} cssEffectStyle={item.cssName} width={80} height={80} />
+
+                            <Typography variant="h6" className="item-name">{item.name}</Typography>
                             
-                            <Typography variant="h6" fontWeight="bold" mt={2}>{effect.name}</Typography>
-                            {!isOwned && (
-                                <Typography sx={{ color: '#FFD700', fontWeight: 'bold' }}>
-                                    {effect.price} Coins
-                                </Typography>
+                            {!isPurchased && (
+                                <Typography className="item-price">🪙 {item.price}</Typography>
                             )}
 
-                            <Box mt={2}>
-                                {!isOwned ? (
-                                    <Button 
-                                        variant="contained" 
-                                        color="primary" 
-                                        onClick={() => buyMutation.mutate(effect.id)}
-                                        disabled={account.coins < effect.price || buyMutation.isPending}
-                                    >
-                                        Buy
-                                    </Button>
-                                ) : (
-                                    <Button 
-                                        variant={isActive ? "outlined" : "contained"} 
-                                        color={isActive ? "secondary" : "success"}
-                                        onClick={() => equipMutation.mutate(effect.id)}
-                                        disabled={isActive || equipMutation.isPending}
-                                    >
-                                        {isActive ? "Equipped" : "Equip"}
-                                    </Button>
-                                )}
-                            </Box>
+                            {isActive ? (
+                                <Button disabled variant="contained" className="shop-btn active-btn">
+                                    Equipped
+                                </Button>
+                            ) : isPurchased ? (
+                                <Button 
+                                    variant="outlined" 
+                                    className="shop-btn equip-btn"
+                                    onClick={() => activateMutation.mutate(item.cssName)}
+                                    disabled={activateMutation.isPending}
+                                >
+                                    Equip
+                                </Button>
+                            ) : (
+                                <Button 
+                                    variant="contained" 
+                                    className="shop-btn buy-btn"
+                                    disabled={!canAfford || buyMutation.isPending}
+                                    onClick={() => buyMutation.mutate(item.cssName)}
+                                >
+                                    Buy
+                                </Button>
+                            )}
                         </Box>
                     );
                 })}
@@ -104,5 +88,3 @@ function Shop() {
         </Box>
     );
 }
-
-export default Shop;

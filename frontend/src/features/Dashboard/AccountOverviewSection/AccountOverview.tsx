@@ -60,8 +60,8 @@ function AccountOverview() {
     return (
         <Box id="account-overview-container">
             <Box id="account-overview-header">
-                <Box className="account-overview-avatar-ring" sx={{ border: `2px solid ${color}` }}>
-                    <AccountAvatar avatarUrl={account.profilePictureUrl} effectId={account.activeEffect} width={86} height={86} />
+                <Box>
+                    <AccountAvatar avatarUrl={account?.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={80} height={80} />
                 </Box>
 
                 <Box className="account-overview-info-column">

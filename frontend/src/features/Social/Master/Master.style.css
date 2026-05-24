@@ -12,14 +12,6 @@
     border-bottom: 1px solid var(--bg-4);
 }
 
-.master-header-profile-picture {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 8px;
-    background-color: var(--bg-4);
-    border: 2px solid var(--accent-main);
-}
-
 .master-content {
     display: flex;
     flex-direction: column;

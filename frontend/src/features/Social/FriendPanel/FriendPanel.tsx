@@ -15,6 +15,7 @@ import { useWebSocket } from '../../../context/WebSocketContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
 import notify from '../../../components/ui/ToastNotification';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 interface IFriendPanelProps {
     account: IAccount;
@@ -167,13 +168,9 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                     <ArrowBackIcon /> {/* return to feed */}
                 </IconButton>
                 
-                <Avatar 
-                    src={friend.profilePictureUrl} 
-                    sx={{ width: 48, height: 48, border: `2px solid ${rankColor}`, ml: 1, mr: 2 }}
-                >
-                    {/* display the profile picture if available, otherwise show the first letter of the username */}
-                    {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
-                </Avatar>
+                <Box mr={1}>
+                    <AccountAvatar avatarUrl={friend.profilePictureUrl} cssEffectStyle={friend.cssEffectStyle} width={40} height={40} />
+                </Box>
 
                 <Box className="friend-panel-user-info">
                     <Typography variant="h6" className="friend-panel-username">

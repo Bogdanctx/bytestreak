@@ -73,11 +73,11 @@ public class Account {
     private LocalDate lastDailyQuizDate;
     private LocalDate lastDailyProblemDate;
 
-    private Integer activeEffect = 0; // default effect
+    private String cssEffectStyle; // default effect
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private List<Integer> purchasedEffects = new ArrayList<>(List.of(0));
+    private List<String> purchasedEffects = new ArrayList<>();
  
     
     @Transient

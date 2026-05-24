@@ -14,6 +14,7 @@ import notify from '../../components/ui/ToastNotification';
 import { useAccount } from '../../hooks/useAccount';
 import { useNavigate } from 'react-router-dom';
 import './AccountTab.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 
 function Account() {
@@ -100,7 +101,8 @@ function Account() {
                 </Typography>
 
                 <Box className="account-avatar-wrapper">
-                    <Avatar className="account-avatar" src={formData.profilePictureUrl} />
+                    <AccountAvatar avatarUrl={formData.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={90} height={90} />
+                    
                     <Box>
                         <Button
                             className="account-change-avatar-button"

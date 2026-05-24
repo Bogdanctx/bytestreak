@@ -81,7 +81,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
     return (
         <Box className="profile-header">
             <Box className="profile-header-content">
-                <AccountAvatar avatarUrl={target.account.profilePictureUrl} effectId={target.account.activeEffect} width={86} height={86} />
+                <AccountAvatar avatarUrl={target.account.profilePictureUrl} cssEffectStyle={target.account.cssEffectStyle} width={86} height={86} />
                 <Box className="profile-header-info">
                     <Typography className="profile-username" variant="h4">
                         {target.account.username}
