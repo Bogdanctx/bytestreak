@@ -93,6 +93,28 @@ if __name__ == "__main__":
     print(result)`
 };
 
+const DEFAULT_VALIDATION_CODE = `
+import sys
+
+raw_data = sys.stdin.read().split("@@@USER_OUTPUT@@@")
+
+original_input = raw_data[0]
+user_output = raw_data[1]
+
+def check_logic(original_input, user_output):
+    # Parse original_input and user_output as needed
+    # Implement the logic to check if user_output is a valid solution for the given original_input
+    # Return True if valid, False otherwise
+    return True  # Placeholder return value
+
+is_valid = check_logic(original_input, user_output)
+
+if is_valid:
+    print("True")
+else:
+    print("False")
+`
+
 type ProgrammingLanguage = "cpp" | "python";
 type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
@@ -106,7 +128,7 @@ function ProblemBuilder() {
     const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguage>("cpp");
     const [starterCode, setStarterCode] = useState<CodeTemplateMap>(DEFAULT_STARTER_CODE);
     const [driverCode, setDriverCode] = useState<CodeTemplateMap>(DEFAULT_DRIVER_CODE);
-    const [validationCode, setValidationCode] = useState("");
+    const [validationCode, setValidationCode] = useState(DEFAULT_VALIDATION_CODE);
     
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
     const [testCases, setTestCases] = useState<ITestCase[]>([]);

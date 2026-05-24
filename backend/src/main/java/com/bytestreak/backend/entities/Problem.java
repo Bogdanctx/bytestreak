@@ -56,8 +56,8 @@ public class Problem {
     @Column(columnDefinition = "TEXT")
     private String codeTemplates;
 
-    private String testCasesPath;
-    private String validationScriptPath;
+    private String testCasesPath = null;
+    private String validationScriptPath = null;
 
     private int likes = 0;
     private int dislikes = 0;

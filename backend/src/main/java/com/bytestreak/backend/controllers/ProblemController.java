@@ -164,7 +164,12 @@ public class ProblemController {
             String driverCode = codeTemplatesJson.getJSONObject(programmingLanguage).getString("driver_code");
             String sourceCode = driverCode.replace("{{CODE}}", solutionCode);
 
-            List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, sourceCode, slug, problem.getTestCasesPath());
+            List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, 
+                                                                            sourceCode, 
+                                                                            slug, 
+                                                                            problem.getTestCasesPath(),
+                                                                            problem.getValidationScriptPath()
+                                                                        );
 
             Account account = accountRepository.findByEmail(authentication.getName());
 
