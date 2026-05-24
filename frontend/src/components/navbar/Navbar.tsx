@@ -33,6 +33,13 @@ function Navbar() {
                 </Button>
 
                 <Button 
+                    className={`navbar-link-button ${currentPath === "/shop" ? "navbar-selected-link" : ""}`}
+                    onClick={() => navigate("/shop")}
+                    disableRipple>
+                    Shop
+                </Button>
+
+                <Button 
                     className={`navbar-link-button ${currentPath === "/people" ? "navbar-selected-link" : ""}`}
                     onClick={() => navigate("/social")}
                     disableRipple>

@@ -13,6 +13,7 @@ import { getLevel } from '../../../utils/rankUtils';
 import './ChatDialog.style.css';
 import type { IAccount } from '../../../types/account.types';
 import type { IMessage, IAttachment } from '../../../types/message.types';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 interface IChatDialogProps {
     open: boolean;
@@ -111,7 +112,8 @@ function ChatDialog({ open, onClose, targetAccount, currentAccount }: IChatDialo
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth PaperProps={{ className: 'chat-dialog-container' }}>
             <Box className="chat-dialog-header">
                 <Box className="chat-dialog-header-user">
-                    <Avatar src={targetAccount.profilePictureUrl} className="chat-dialog-avatar">{targetAccount.username.charAt(0).toUpperCase()}</Avatar>
+                    <AccountAvatar avatarUrl={targetAccount.profilePictureUrl} cssEffectStyle={targetAccount.cssEffectStyle} width={36} height={36} />
+                                                
                     <Box className="chat-dialog-user-info">
                         <Typography variant="body2" className="chat-dialog-user-name">{targetAccount.username}</Typography>
                         <Typography variant="caption" className="chat-dialog-user-level">Level {getLevel(targetAccount.currentXP)}</Typography>

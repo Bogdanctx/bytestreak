@@ -11,6 +11,7 @@ import { type IProblem } from '../../types/problem.types';
 import './Creator.style.css';
 import notify from '../../components/ui/ToastNotification';
 import Loading from '../../components/ui/Loading';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 function Creator() {
     const navigate = useNavigate();
@@ -128,7 +129,7 @@ function Creator() {
 
             <Box className="creator-page-footer">
                 <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar src={account?.profilePictureUrl} sx={{ width: 48, height: 48, border: "2px solid #23CE6B" }} />
+                    <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={42} height={42} />
                     <Box display="flex" flexDirection="column">
                         <Typography variant="subtitle1" color="white" fontWeight="600" lineHeight="1">
                             {account.username}

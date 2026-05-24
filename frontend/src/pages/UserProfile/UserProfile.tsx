@@ -14,6 +14,7 @@ import ChatDialog from '../../features/UserProfile/ChatDialog/ChatDialog';
 import type { IUserProfile } from '../../types/userProfile.types';
 import type { IAccount } from '../../types/account.types';
 import './UserProfile.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 function UserProfile() {
     const { username } = useParams<{ username: string }>();
@@ -103,7 +104,9 @@ function UserProfile() {
                                     <Box key={friend.id}>
                                         <ListItem className="friend-item" disablePadding>
                                             <ListItemButton onClick={() => navigate(`/accounts/profile/${friend.username}`)} className="friend-button">
-                                                <Avatar src={friend.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{friend.username.charAt(0).toUpperCase()}</Avatar>
+                                                <Box mr={1}>
+                                                    <AccountAvatar avatarUrl={friend.profilePictureUrl} cssEffectStyle={friend.cssEffectStyle} width={40} height={40} />
+                                                </Box>
                                                 <Box sx={{ flex: 1 }}>
                                                     <Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{friend.username}</Typography>
                                                     <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.codingProblemsSolved} problems solved</Typography>
@@ -142,7 +145,10 @@ function UserProfile() {
                                         <Box key={streak.id}>
                                             <ListItem className="streak-item" disablePadding>
                                                 <ListItemButton onClick={() => navigate(`/accounts/profile/${otherParticipant.username}`)} className="streak-button">
-                                                    <Avatar src={otherParticipant.profilePictureUrl} sx={{ mr: 2, width: 40, height: 40 }}>{otherParticipant.username.charAt(0).toUpperCase()}</Avatar>
+                                                    <Box mr={1}>
+                                                        <AccountAvatar avatarUrl={otherParticipant.profilePictureUrl} cssEffectStyle={otherParticipant.cssEffectStyle} width={40} height={40} />
+                                                    </Box>
+
                                                     <Box sx={{ flex: 1 }}><Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{otherParticipant.username}</Typography></Box>
                                                     <Box className="streak-flame">
                                                         <Typography variant="body2" fontWeight="bold" color={streak.length > 0 ? "#ff9800" : "var(--text-primary)"}> {streak.length}</Typography>

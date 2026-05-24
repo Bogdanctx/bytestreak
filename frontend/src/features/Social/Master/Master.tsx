@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import notify from '../../../components/ui/ToastNotification';
 import { type Dispatch, type SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 interface IMasterProps {
     account: IAccount;
@@ -111,9 +112,9 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
     return (
         <Box className='master-container'>
             <Box className='master-header'>
-                <Avatar src={account.profilePictureUrl} className='master-header-profile-picture' sx={{ borderColor: `${rankColor} !important` }}>
-                    {!account.profilePictureUrl && account.username?.charAt(0).toUpperCase()}
-                </Avatar>
+                <Box mb={2}>
+                    <AccountAvatar avatarUrl={account?.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={64} height={64} />
+                </Box>
                 <Typography variant="h6" fontWeight="600" color="var(--text-primary)" lineHeight={1}>
                     {account.username}
                 </Typography>
@@ -148,13 +149,8 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                         return (
                             <ListItem disablePadding key={friend.id} onClick={() => navigate(`/accounts/profile/${friend.username}`)}>
                                 <ListItemButton>
-                                    <ListItemAvatar sx={{ minWidth: 50 }}>
-                                        <Avatar 
-                                            src={friend.profilePictureUrl}
-                                            sx={{ width: 36, height: 36, bgcolor: "var(--bg-4)" }}
-                                        >
-                                            {!friend.profilePictureUrl && friend.username.charAt(0).toUpperCase()}
-                                        </Avatar>
+                                    <ListItemAvatar sx={{ minWidth: '60px' }}>
+                                        <AccountAvatar avatarUrl={friend.profilePictureUrl} cssEffectStyle={friend.cssEffectStyle} width={36} height={36} />
                                     </ListItemAvatar>
                                     <ListItemText 
                                         primary={friend.username} 

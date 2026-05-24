@@ -11,13 +11,6 @@
     margin-bottom: 28px;
 }
 
-.account-overview-avatar-ring {
-    padding: 4px;
-    border-radius: 50%;
-    background-color: var(--bg-2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
 .account-overview-avatar {
     width: 86px !important;
     height: 86px !important;

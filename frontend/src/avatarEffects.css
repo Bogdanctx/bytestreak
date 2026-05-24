@@ -1,0 +1,88 @@
+.avatar-wrapper {
+    position: relative;
+    display: inline-flex;
+    border-radius: 50%;
+}
+
+.avatar-wrapper > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 1. Fire Effect */
+.cssEffectFire::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    z-index: 1;
+    background: linear-gradient(45deg, #ff4e00, #ec9f05, #ff4e00);
+    background-size: 200% 200%;
+    filter: blur(5px);
+    animation: fire-flicker 1.5s infinite alternate, gradient-shift 3s infinite linear;
+}
+
+/* 2. Ice Effect */
+.cssEffectIce::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    z-index: 1;
+    background: transparent;
+    box-shadow: 0 0 10px 2px #00d2ff, inset 0 0 10px 2px #00d2ff;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    animation: ice-pulse 3s infinite ease-in-out;
+}
+
+/* 3. Lightning Effect */
+.cssEffectLightning::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    z-index: 1;
+    border: 2px solid transparent;
+    box-shadow: 0 0 15px #8a2be2, inset 0 0 10px #00ffff;
+    animation: lightning-flash 0.5s infinite;
+}
+
+/* 4. Quantum Pulse Effect */
+.cssEffectQuantumPulse::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    z-index: 1;
+    background: conic-gradient(from 0deg, transparent 0%, #23CE6B 25%, transparent 50%, #00d2ff 75%, transparent 100%);
+    animation: quantum-spin 2s infinite linear;
+    mask-image: radial-gradient(closest-side, transparent 80%, black 100%);
+    -webkit-mask-image: radial-gradient(closest-side, transparent 80%, black 100%);
+}
+
+/* Animations */
+@keyframes fire-flicker {
+    0% { transform: scale(0.98); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+@keyframes ice-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes lightning-flash {
+    0%, 100% { opacity: 1; border-color: #8a2be2; box-shadow: 0 0 20px #8a2be2; }
+    50% { opacity: 0.3; border-color: #00ffff; box-shadow: 0 0 5px #00ffff; }
+    75% { opacity: 0.9; border-color: #ffffff; box-shadow: 0 0 25px #ffffff; }
+}
+
+@keyframes quantum-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

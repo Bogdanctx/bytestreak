@@ -7,16 +7,17 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { Avatar, Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
 
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 import { useAccount } from '../../hooks/useAccount';
 import { useNavigate } from 'react-router-dom';
 import './AccountTab.style.css';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 
-function Account() {
+function AccountTab() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: account } = useAccount();
@@ -100,7 +101,8 @@ function Account() {
                 </Typography>
 
                 <Box className="account-avatar-wrapper">
-                    <Avatar className="account-avatar" src={formData.profilePictureUrl} />
+                    <AccountAvatar avatarUrl={formData.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={90} height={90} />
+                    
                     <Box>
                         <Button
                             className="account-change-avatar-button"
@@ -233,4 +235,4 @@ function Account() {
     );
 }
 
-export default Account;
+export default AccountTab;

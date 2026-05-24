@@ -7,6 +7,7 @@ import './StreakInviteNotification.style.css';
 
 import { api } from '../../api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import AccountAvatar from '../../components/ui/AccountAvatar';
 
 interface StreakInviteNotificationProps {
     notification: INotification;
@@ -32,9 +33,8 @@ function StreakInviteNotification({ notification }: StreakInviteNotificationProp
 
     return (
         <Box key={notification.id} className='streak-invite-notification'>
-            <Avatar src={notification.payload.profilePictureUrl} className='streak-invite-avatar'>
-                {notification.payload.username.charAt(0).toUpperCase()}
-            </Avatar>
+            <AccountAvatar avatarUrl={notification.payload.profilePictureUrl} cssEffectStyle={notification.payload.cssEffectStyle} width={40} height={40} />
+
             <Box className='streak-invite-content'>
                 <Typography variant="body2" className='streak-invite-text'>
                     <strong>{notification.payload.username}</strong> has invited you to a streak!

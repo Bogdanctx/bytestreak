@@ -16,6 +16,7 @@ import { type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
 import { useQueryClient, useInfiniteQuery, useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import AccountAvatar from '../../../components/ui/AccountAvatar';
 
 function Discover({ account }: { account: IAccount }) {
     const queryClient = useQueryClient();
@@ -126,10 +127,8 @@ function Discover({ account }: { account: IAccount }) {
                             onClick={() => navigate(`/accounts/profile/${mappedAccount.username}`)}
                         >
                             <Box className="discover-user-info">
-                                <Avatar src={mappedAccount.profilePictureUrl} className="discover-user-avatar">
-                                    {!mappedAccount.profilePictureUrl && mappedAccount.username.charAt(0)}
-                                </Avatar>
-                                
+                                <AccountAvatar avatarUrl={mappedAccount.profilePictureUrl} cssEffectStyle={mappedAccount.cssEffectStyle} width={35} height={35} />
+
                                 <Box className="discover-user-meta">
                                     <Typography variant="body2" className="discover-user-name" noWrap>
                                         {mappedAccount.username}

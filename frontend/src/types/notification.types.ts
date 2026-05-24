@@ -5,6 +5,7 @@ export interface IFriendRequestNotificationPayload {
 
     senderId: number;
     profilePictureUrl: string;
+    cssEffectStyle: string;
     username: string;
 
     inviteId: number;
@@ -15,6 +16,7 @@ export interface IStreakInviteNotificationPayload {
 
     senderId: number;
     profilePictureUrl: string;
+    cssEffectStyle: string;
     username: string;
 
     inviteId: number;
