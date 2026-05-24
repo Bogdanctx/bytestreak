@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.entities.Submission;
+import com.bytestreak.backend.enums.Visibility;
 import com.bytestreak.backend.entities.Account;
 
 import org.json.JSONObject;
@@ -54,6 +56,43 @@ public class ProblemController {
 
     @Autowired
     private SubmissionRepository submissionRepository;
+
+
+    @GetMapping("")
+    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        List<Problem> problems = problemService.getPublicProblems(difficulty);
+
+        return ResponseEntity.ok(problems);
+    }
+
+    @PutMapping("/{id}/toggle-problem-visibility")
+    public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Problem problem = repository.findById(id).orElse(null);
+
+        if (problem == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (problem.getVisibility() == Visibility.PUBLIC) {
+            problem.setVisibility(Visibility.HIDDEN);
+        } 
+        else {
+            problem.setVisibility(Visibility.PUBLIC);
+        }
+
+        repository.save(problem);
+
+        return ResponseEntity.ok(problem);
+    }
+
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
@@ -125,7 +164,12 @@ public class ProblemController {
             String driverCode = codeTemplatesJson.getJSONObject(programmingLanguage).getString("driver_code");
             String sourceCode = driverCode.replace("{{CODE}}", solutionCode);
 
-            List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, sourceCode, slug, problem.getTestCasesPath());
+            List<ExecutionResultDTO> results = executionService.executeCode(programmingLanguage, 
+                                                                            sourceCode, 
+                                                                            slug, 
+                                                                            problem.getTestCasesPath(),
+                                                                            problem.getValidationScriptPath()
+                                                                        );
 
             Account account = accountRepository.findByEmail(authentication.getName());
 
@@ -166,16 +210,5 @@ public class ProblemController {
         }
 
         return ResponseEntity.ok(null);
-    }
-
-    @GetMapping("/fetch-all")
-    public ResponseEntity<?> getAllProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
-        List<Problem> problems = problemService.getAllProblems(difficulty);
-
-        return ResponseEntity.ok(problems);
     }
 }

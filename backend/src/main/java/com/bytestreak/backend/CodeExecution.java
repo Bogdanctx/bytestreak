@@ -33,7 +33,7 @@ public class CodeExecution {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String judge0ApiUrl = "http://localhost:2358/submissions?base64_encoded=true&wait=true";
 
-    public List<ExecutionResultDTO> executeCode(String programmingLanguage, String sourceCode, String slug, String testCasesDirectory) {
+    public List<ExecutionResultDTO> executeCode(String programmingLanguage, String sourceCode, String slug, String testCasesDirectory, String validationScriptPath) {
         Map<String, Integer> j0_progLanguageIds = new HashMap<>();
         j0_progLanguageIds.put("python", 71);
         j0_progLanguageIds.put("cpp", 54);
@@ -42,6 +42,18 @@ public class CodeExecution {
 
         Path directory = Paths.get(testCasesDirectory);
         
+        String validationScriptCode = null;
+        if (validationScriptPath != null) {
+            try {
+                Path vPath = Paths.get(validationScriptPath);
+                if (Files.exists(vPath)) {
+                    validationScriptCode = Files.readString(vPath);
+                }
+            } catch (Exception e) {
+                System.out.println("Error reading validation script: " + e.getMessage());
+            }
+        }
+
         try {
             List<Path> files = Files.list(directory).filter(Files::isRegularFile).toList();
             
@@ -56,7 +68,7 @@ public class CodeExecution {
                         String input = Files.readString(file);
                         String expectedOutput = Files.readString(outputFile);
 
-                        ExecutionResultDTO result = judge0Execute(j0_progLanguageIds.get(programmingLanguage), sourceCode, input, expectedOutput, testCaseId);
+                        ExecutionResultDTO result = judge0Execute(j0_progLanguageIds.get(programmingLanguage), sourceCode, input, expectedOutput, testCaseId, validationScriptCode);
                         results.add(result);
                     }
                 }
@@ -70,7 +82,7 @@ public class CodeExecution {
         return results;
     }
 
-    private ExecutionResultDTO judge0Execute(int languageId, String sourceCode, String input, String expectedOutput, int testCaseId) {
+    private ExecutionResultDTO judge0Execute(int languageId, String sourceCode, String input, String expectedOutput, int testCaseId, String validationScriptCode) {
         RestTemplate restTemplate = new RestTemplate();
         
         // encode data to base64
@@ -100,20 +112,40 @@ public class CodeExecution {
             Map<String, Object> responseBody = response.getBody();
 
             Map<String, Object> status = (Map<String, Object>) responseBody.get("status");
-
-            System.out.println("Received response from Judge0 API: " + responseBody);
-
             int statusId = (int) status.get("id");
             String executionStatus = (String) status.get("description");
 
-            float executionTime = 0;
+            if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
+                return new ExecutionResultDTO(statusId, executionStatus, testCaseId, 0); 
+            }
 
-            return new ExecutionResultDTO(
-                statusId,
-                executionStatus,
-                testCaseId,
-                executionTime
-            );
+            // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
+            String base64Stdout = (String) responseBody.get("stdout");
+            String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
+
+            String validationStdin = input + "@@@USER_OUTPUT@@@" + userOutput;
+            String encodedValidationStdin = Base64.getEncoder().encodeToString(validationStdin.getBytes());
+            String encodedValidationScript = Base64.getEncoder().encodeToString(validationScriptCode.getBytes());
+
+            Map<String, Object> validationRequestBody = new HashMap<>();
+            validationRequestBody.put("source_code", encodedValidationScript);
+            validationRequestBody.put("language_id", 71); 
+            validationRequestBody.put("stdin", encodedValidationStdin);
+            validationRequestBody.put("cpu_time_limit", 2.0);
+
+            HttpEntity<String> validationReq = new HttpEntity<>(objectMapper.writeValueAsString(validationRequestBody), headers);
+            ResponseEntity<Map> validationRes = restTemplate.postForEntity(judge0ApiUrl, validationReq, Map.class);
+            
+            String valStdoutBase64 = (String) validationRes.getBody().get("stdout");
+            String valStdout = valStdoutBase64 != null ? new String(Base64.getMimeDecoder().decode(valStdoutBase64)).trim() : "";
+
+            if ("True".equalsIgnoreCase(valStdout)) {
+                return new ExecutionResultDTO(3, "Accepted", testCaseId, 0);
+            } 
+            else {
+                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId, 0);
+            }
+
         }
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());

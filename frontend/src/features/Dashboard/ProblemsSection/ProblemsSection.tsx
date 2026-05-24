@@ -14,7 +14,7 @@ function ProblemsSection() {
     const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
         queryKey: ['codingProblems', selectedDifficulty],
         queryFn: async () => {
-            let url = `/problems/fetch-all`;
+            let url = `/problems`;
             
             if (selectedDifficulty !== "ALL") {
                 url += `?difficulty=${selectedDifficulty}`;

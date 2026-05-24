@@ -28,13 +28,14 @@ import java.util.ArrayList;
 public class Problem {
     protected Problem() {}
 
-    public Problem(String title, String description, Difficulty difficulty, String codeTemplates, String testCasesPath, List<String> tags, Account creator) {
+    public Problem(String title, String description, Difficulty difficulty, String codeTemplates, String testCasesPath, String validationScriptPath, List<String> tags, Account creator) {
         this.title = title;
         this.slug = title.toLowerCase().replace(" ", "-");
         this.description = description;
         this.difficulty = difficulty;
         this.codeTemplates = codeTemplates;
         this.testCasesPath = testCasesPath;
+        this.validationScriptPath = validationScriptPath;
         this.tags = tags;
         this.creator = creator;
     }
@@ -55,7 +56,8 @@ public class Problem {
     @Column(columnDefinition = "TEXT")
     private String codeTemplates;
 
-    private String testCasesPath;
+    private String testCasesPath = null;
+    private String validationScriptPath = null;
 
     private int likes = 0;
     private int dislikes = 0;

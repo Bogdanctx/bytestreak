@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Box, Button, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import EyeIcon from '@mui/icons-material/RemoveRedEye'; // open eye icon
+import EyeOffIcon from '@mui/icons-material/VisibilityOff'; // closed eye icon
+
+import { Box, Button, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
@@ -20,7 +23,9 @@ function Creator() {
     const { data: createdProblems = [] } = useQuery<IProblem[]>({
         queryKey: ['createdProblems'],
         queryFn: async () => {
-            if (!account) return [];
+            if (!account) {
+                return [];
+            }
 
             const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
             return response.data;
@@ -37,6 +42,20 @@ function Creator() {
         onError: (error) => {
             console.error("Error deleting problem:", error);
             notify("An error occurred while deleting the problem. Please try again.", "error");
+        }
+    });
+
+    const changeProblemVisibilityMutation = useMutation({
+        mutationFn: async (problemId: number) => {
+            return api.put(`/problems/${problemId}/toggle-problem-visibility`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['createdProblems'] });
+            notify("Problem visibility updated successfully.", "success");
+        },
+        onError: (error) => {
+            console.error("Error updating problem visibility:", error);
+            notify("An error occurred while updating the problem visibility. Please try again.", "error");
         }
     });
 
@@ -103,6 +122,14 @@ function Creator() {
                                     
                                     <TableCell className="creator-table-cell">
                                         <Box display="flex" justifyContent={"flex-end"} gap={1}>
+                                            <Button variant="outlined"
+                                                    startIcon={problem.visibility === "PUBLIC" ? <EyeOffIcon /> : <EyeIcon />}
+                                                    className="creator-table-action-button"
+                                                    onClick={(event) => { event.stopPropagation(); changeProblemVisibilityMutation.mutate(problem.id); }}
+                                                    sx={{ color: "white" }}>
+                                                Make {problem.visibility === "PUBLIC" ? " Hidden" : " Public"}
+                                            </Button>
+
                                             <Button variant="outlined"
                                                     startIcon={<EditIcon sx={{ color: "#E7BB41" }} />} 
                                                     className="creator-table-action-button"

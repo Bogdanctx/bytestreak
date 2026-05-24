@@ -31,6 +31,7 @@ export interface IProblemCreateDTO {
     codeTemplates: string;
     testCases: ITestCase[];
     tags: string[];
+    validationScript?: string;
 }
 
 export interface IProblemTestCaseDTO {

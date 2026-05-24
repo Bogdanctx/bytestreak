@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Chip, FormControl, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Chip, FormControl, MenuItem, Select, Switch, TextField, Typography } from '@mui/material';
 
 import './MetadataTab.style.css';
 
@@ -10,9 +10,10 @@ interface MetadataTabProps {
     setTitle: (title: string) => void;
     setDifficulty: (difficulty: string) => void;
     setTags: (tags: string[]) => void;
+    setValidationTabActive: (active: boolean) => void;
 }
 
-function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags }: MetadataTabProps) {
+function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags, setValidationTabActive }: MetadataTabProps) {
     return (
         <Box className="metadata-container">
             <Box sx={{ width: '600px', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -81,6 +82,16 @@ function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags
                             />
                         )}
                     />
+                </Box>
+
+                <Box className="metadata-field-group">
+                    <Typography className="metadata-label">Multiple right answers?</Typography>
+                    <Box className="metadata-switch-container">
+                        <Switch
+                            onChange={(e) => setValidationTabActive(e.target.checked)}
+                            className="metadata-switch"
+                        />
+                    </Box>
                 </Box>
             </Box>
 
