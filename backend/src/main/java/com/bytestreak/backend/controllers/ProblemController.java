@@ -149,7 +149,7 @@ public class ProblemController {
             if (problem.isProblemOfTheDay()) {
                 LocalDate today = LocalDate.now(ZoneOffset.UTC);
 
-                if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyQuizDate())) {
+                if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {
                     account.setStreakLength(account.getStreakLength() + 1);
                     account.setLastDailyProblemDate(today);
                     account.setCurrentXP(account.getCurrentXP() + 20);
