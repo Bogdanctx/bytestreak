@@ -52,36 +52,32 @@ public class ProblemService {
             throw new IllegalArgumentException("Problem not found");
         }
 
-        ProblemVote problemVote = problemVoteRepository.findByProblemAndAccount(problem, account);
-        boolean isLikeRequest = feedback.equalsIgnoreCase("like");
-        boolean isDislikeRequest = feedback.equalsIgnoreCase("dislike");
-
-        if (!isLikeRequest && !isDislikeRequest) {
-            throw new IllegalArgumentException("Invalid feedback value: " + feedback);
+        if (!feedback.equalsIgnoreCase("like") && !feedback.equalsIgnoreCase("dislike")) {
+            throw new IllegalArgumentException("Invalid feedback type: " + feedback);
         }
+
+        ProblemVote problemVote = problemVoteRepository.findByProblemAndAccount(problem, account);
+        boolean like = feedback.equalsIgnoreCase("like");
 
         if (problemVote == null) {
             problemVote = new ProblemVote();
             problemVote.setProblem(problem);
             problemVote.setAccount(account);
-            problemVote.setLike(isDislikeRequest);
+            problemVote.setLike(like);
             
             problemVoteRepository.save(problemVote);
-        } 
+        }
         else {
-            if (problemVote.isLike() && isLikeRequest) {
-                problemVoteRepository.delete(problemVote);
-            } 
-            else if (!problemVote.isLike() && isDislikeRequest) {
-                problemVoteRepository.delete(problemVote);
-            } 
-            else {
-                problemVote.setLike(isLikeRequest);
+            if (problemVote.isLike() == like) { 
+                problemVoteRepository.delete(problemVote); 
+            }
+            else { 
+                problemVote.setLike(like);
                 problemVoteRepository.save(problemVote);
             }
         }
 
-        return problem;
+        return problemRepository.findById(problemId).orElse(null); 
     }
 
 }

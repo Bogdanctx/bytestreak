@@ -11,7 +11,7 @@ import { type IProblem, type ISubmissionResult } from '../../types/problem.types
 import ProblemSubmissions from './ProblemSubmissions/ProblemSubmissions';
 import './ProblemDataPanel.style.css';
 import AccountAvatar from '../../components/ui/AccountAvatar';
-import { useMutation } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 
@@ -25,17 +25,15 @@ interface ProblemDataPanelProps {
 
 function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidth }: ProblemDataPanelProps) {
     const navigate = useNavigate();
-
-    // To do: add like/dislike functionality, and display the number of likes/dislikes for the problem
+    const queryClient = useQueryClient();
 
     const handleCodingProblemFeedback = useMutation({
         mutationFn: async (feedbackType: 'like' | 'dislike') => {
             const response = await api.post(`/problems/${problem.id}/feedback`, { feedback: feedbackType });
             return response.data;
         },
-        onSuccess: (updatedProblem) => {
-            problem.likes = updatedProblem.likes;
-            problem.dislikes = updatedProblem.dislikes;
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['codingProblem'] });
         },
         onError: () => {
             notify('Failed to submit feedback', 'error');
@@ -79,7 +77,7 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidt
                         <ThumbUpIcon className='problem-data-feedback-icon' 
                                     fontSize="small" 
                                     sx={{
-                                        color: problem.userVote === 'like' ? 'primary.main' : 'inherit'
+                                        color: problem.userVote === 'like' ? 'white' : 'inherit'
                                     }}            
                         />
                         <Typography variant="body2" sx={{ ml: 0.5 }}>
@@ -91,7 +89,7 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidt
                         <ThumbDownIcon className='problem-data-feedback-icon' 
                                         fontSize="small" 
                                         sx={{
-                                            color: problem.userVote === 'dislike' ? 'primary.main' : 'inherit'
+                                            color: problem.userVote === 'dislike' ? 'white' : 'inherit'
                                         }} 
                         />
                         <Typography variant="body2" sx={{ ml: 0.5 }}>

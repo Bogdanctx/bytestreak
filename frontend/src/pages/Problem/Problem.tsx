@@ -8,9 +8,10 @@ import CodeEditorWindow from '../../features/Problem/CodeEditorWindow';
 import ProblemDataPanel from '../../features/Problem/ProblemDataPanel';
 import { type IProblem, type ISubmissionResult } from '../../types/problem.types';
 import './Problem.style.css';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAccount } from '../../hooks/useAccount';
 import Loading from '../../components/ui/Loading';
+import notify from '../../components/ui/ToastNotification';
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
@@ -35,6 +36,7 @@ function Problem() {
             return response.data;
         },
     });
+
     const isCodingProblemDoneToday = account?.lastDailyProblemDate === todayUTCString;
 
     useEffect(() => {
