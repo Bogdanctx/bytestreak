@@ -109,18 +109,17 @@ public class CodeExecution {
 
             // send request 
             ResponseEntity<Map> response = restTemplate.postForEntity(judge0ApiUrl, request, Map.class);
-            Map<String, Object> responseBody = response.getBody();
+            JSONObject jsonResponse = new JSONObject(response.getBody());
 
-            Map<String, Object> status = (Map<String, Object>) responseBody.get("status");
-            int statusId = (int) status.get("id");
-            String executionStatus = (String) status.get("description");
+            int statusId = (int) jsonResponse.getJSONObject("status").getInt("id");
+            String executionStatus = (String) jsonResponse.getJSONObject("status").get("description");
 
             if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
                 return new ExecutionResultDTO(statusId, executionStatus, testCaseId, 0); 
             }
 
             // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
-            String base64Stdout = (String) responseBody.get("stdout");
+            String base64Stdout = (String) jsonResponse.get("stdout");
             String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
 
             String validationStdin = input + "@@@USER_OUTPUT@@@" + userOutput;
@@ -135,8 +134,8 @@ public class CodeExecution {
 
             HttpEntity<String> validationReq = new HttpEntity<>(objectMapper.writeValueAsString(validationRequestBody), headers);
             ResponseEntity<Map> validationRes = restTemplate.postForEntity(judge0ApiUrl, validationReq, Map.class);
-            
-            String valStdoutBase64 = (String) validationRes.getBody().get("stdout");
+            JSONObject validationJsonResponse = new JSONObject(validationRes.getBody());
+            String valStdoutBase64 = (String) validationJsonResponse.get("stdout");
             String valStdout = valStdoutBase64 != null ? new String(Base64.getMimeDecoder().decode(valStdoutBase64)).trim() : "";
 
             if ("True".equalsIgnoreCase(valStdout)) {
