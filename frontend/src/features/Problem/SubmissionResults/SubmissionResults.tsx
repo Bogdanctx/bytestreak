@@ -49,22 +49,22 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
 
             <Box className="submission-testcases-results">
                 {results.map((testCase) => (
-                    <Tooltip key={testCase.testCaseId} 
-                            title={`Execution Time: ${testCase.executionTime} ms`} 
-                            placement="top" 
-                            slots={{ transition: Zoom }}
-                            arrow>
-                        <Box className="submission-result-testcase">
-                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                                {testCase.statusId === 3 ? <CheckIcon sx={{ fontSize: "0.5rem" }} color="success" /> : <CloseIcon sx={{ fontSize: "0.5rem" }} color="error" />}
-                                <Typography className="testcase" variant="body1">
-                                    Test Case {testCase.testCaseId}
-                                    <Typography className="testcase-status">{testCase.statusDescription}</Typography>
-                                </Typography>
-                            </Box>
-
+                    <Box className="submission-result-testcase">
+                        <Box mr={1}>
+                            {testCase.statusId === 3 ? 
+                                <CheckIcon sx={{ fontSize: "0.6rem" }} color="success" /> 
+                                : 
+                                <CloseIcon sx={{ fontSize: "0.6rem" }} color="error" />
+                            }
                         </Box>
-                    </Tooltip>
+                        <Box >
+                            <Typography className="testcase" variant="body1">
+                                Test Case {testCase.testCaseId}
+                                <Typography className="testcase-status">{testCase.statusDescription}</Typography>
+                            </Typography>
+                        </Box>
+
+                    </Box>
                 ))}
             </Box>
         </Box>

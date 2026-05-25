@@ -115,7 +115,7 @@ public class CodeExecution {
             String executionStatus = (String) jsonResponse.getJSONObject("status").get("description");
 
             if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
-                return new ExecutionResultDTO(statusId, executionStatus, testCaseId, 0); 
+                return new ExecutionResultDTO(statusId, executionStatus, testCaseId); 
             }
 
             // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
@@ -139,16 +139,16 @@ public class CodeExecution {
             String valStdout = valStdoutBase64 != null ? new String(Base64.getMimeDecoder().decode(valStdoutBase64)).trim() : "";
 
             if ("True".equalsIgnoreCase(valStdout)) {
-                return new ExecutionResultDTO(3, "Accepted", testCaseId, 0);
+                return new ExecutionResultDTO(3, "Accepted", testCaseId);
             } 
             else {
-                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId, 0);
+                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId);
             }
 
         }
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());
-            return new ExecutionResultDTO(0, "System Error", testCaseId, 0);
+            return new ExecutionResultDTO(0, "System Error", testCaseId);
         }
     }
 

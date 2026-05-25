@@ -10,7 +10,7 @@
 
 .submission-testcases-results {
     border-radius: 12px;
-    padding: 4px;
+    padding: 8px;
     background-color: #181818;
 
     display: grid;
@@ -26,9 +26,7 @@
 }
 
 .submission-result-testcase {
-    display: flex;
-    flex-direction: column;
-    padding: 6px;
+    display: flex;   
 }
 
 .testcase-status {

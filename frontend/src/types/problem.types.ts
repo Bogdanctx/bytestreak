@@ -45,7 +45,6 @@ export interface ISubmissionResult {
     testCaseId: number;
     statusId: number;
     statusDescription: string;
-    executionTime: number;
 }
 
 export interface ISolution {
