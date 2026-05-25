@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.Quiz;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
 
@@ -18,14 +19,13 @@ public class DailyChallangesService {
     @Autowired
     private ProblemRepository problemRepository;
 
-    //@Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
-    @Scheduled(fixedRate = 10000) // for testing purposes, runs every 10 seconds
+    @Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
     public void generateDailyChallenges() {
-        // Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
+        Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
 
-        // if (currentDailyQuiz != null) {
-        //     quizRepository.delete(currentDailyQuiz);
-        // }
+        if (currentDailyQuiz != null) {
+            quizRepository.delete(currentDailyQuiz);
+        }
 
         Problem dailyProblem = problemRepository.findByIsProblemOfTheDayTrue();
         
