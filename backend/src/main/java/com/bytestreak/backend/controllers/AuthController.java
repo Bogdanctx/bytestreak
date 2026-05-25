@@ -28,7 +28,6 @@ import com.bytestreak.backend.repositories.MagicLinkRepository;
 import com.bytestreak.backend.services.AuthService;
 import com.bytestreak.backend.services.JWTService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -49,10 +48,6 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         Account account = authService.getCurrentUser(authentication);
 
         return ResponseEntity.ok(account);

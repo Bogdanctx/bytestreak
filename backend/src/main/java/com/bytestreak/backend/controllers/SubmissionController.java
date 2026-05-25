@@ -18,10 +18,6 @@ public class SubmissionController {
 
     @GetMapping("/problem/{problemId}")
     public ResponseEntity<?> getSubmissionsForProblem(@PathVariable Long problemId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         return ResponseEntity.ok(submissionRepository.findByProblemId(problemId));
     }
 
@@ -35,13 +31,7 @@ public class SubmissionController {
     }
 
     @GetMapping("/account/{accountId}/problem/{problemId}")
-    public ResponseEntity<?> getSubmissionsForAccountAndProblem(@PathVariable Long accountId,
-                                                                @PathVariable Long problemId,
-                                                                Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
+    public ResponseEntity<?> getSubmissionsForAccountAndProblem(@PathVariable Long accountId, @PathVariable Long problemId, Authentication authentication) {
         return ResponseEntity.ok(submissionRepository.findByAccountIdAndProblemId(accountId, problemId));
     }
 }

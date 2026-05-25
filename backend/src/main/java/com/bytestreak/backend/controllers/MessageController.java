@@ -39,10 +39,6 @@ public class MessageController {
 
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestParam Long receiverId, @RequestBody MessageDTO payload, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
         Account sender = accountRepository.findByEmail(authentication.getName());
         Account receiver = accountRepository.findById(receiverId).orElse(null);
 
@@ -71,10 +67,6 @@ public class MessageController {
 
     @GetMapping("/conversation")
     public ResponseEntity<?> getConversation(@RequestParam Long otherUserId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
         Account currentUser = accountRepository.findByEmail(authentication.getName());
         Account otherUser = accountRepository.findById(otherUserId).orElse(null);
 

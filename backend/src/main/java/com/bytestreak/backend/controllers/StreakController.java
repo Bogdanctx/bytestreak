@@ -41,10 +41,6 @@ public class StreakController {
 
     @GetMapping("/fetch-streaks")
     public ResponseEntity<?> getActiveStreaks(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to view active streaks.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
 
         if (me == null) {
@@ -57,11 +53,6 @@ public class StreakController {
 
     @PostMapping("/respond")
     public ResponseEntity<?> respondToStreakInvite(@RequestParam Long inviteId, @RequestParam Long notificationId, @RequestParam boolean accepted, Authentication authentication) {
-        // Validate authentication
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to respond to streak invites.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         if (me == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authenticated user not found.");
@@ -84,10 +75,6 @@ public class StreakController {
     
     @PostMapping("/invite")
     public ResponseEntity<?> inviteFriendToStreak(@RequestParam Long friendId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to invite friends to a streak.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
 
         if (me == null) {
@@ -106,10 +93,6 @@ public class StreakController {
 
     @GetMapping("/active-invites")
     public ResponseEntity<?> getActiveInvites(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to view sent streak invites.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
 
         if (me == null) {
@@ -122,10 +105,6 @@ public class StreakController {
 
     @DeleteMapping("/delete-streak")
     public ResponseEntity<?> removeStreak(@RequestParam Long streakId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to remove a streak.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         Streak streak = streakRepository.findById(streakId).orElse(null);
 
@@ -146,10 +125,6 @@ public class StreakController {
 
     @PostMapping("save-streak")
     public ResponseEntity<?> saveStreak(@RequestParam Long streakId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User must be authenticated to save a streak.");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
     
         try {

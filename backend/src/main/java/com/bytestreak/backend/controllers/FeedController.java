@@ -2,7 +2,6 @@ package com.bytestreak.backend.controllers;
 
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.PutExchange;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +43,6 @@ public class FeedController {
     // GET /social/feed/posts - Get the feed posts for the authenticated user
     @GetMapping("/posts")
     public ResponseEntity<?> getFeedPosts(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         if (me == null) {
             return ResponseEntity.status(404).body("Authenticated user not found");
@@ -65,10 +60,6 @@ public class FeedController {
     // POST /social/feed/posts - Create a new post in the feed for the authenticated user
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody PostCreateDTO postCreateDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         if (me == null) {
             return ResponseEntity.status(404).body("Authenticated user not found");
@@ -87,10 +78,6 @@ public class FeedController {
     // GET /social/feed/posts/{postId} - Get a specific post by ID (optional, for future use)
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable Long postId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
             return ResponseEntity.status(404).body("Post not found");
@@ -102,10 +89,6 @@ public class FeedController {
     // DELETE /social/feed/posts/{postId} - Delete a specific post (only if the authenticated user is the author)
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
             return ResponseEntity.status(404).body("Post not found");
@@ -123,10 +106,6 @@ public class FeedController {
 
     @PutMapping("/posts/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostCreateDTO postCreateDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
             return ResponseEntity.status(404).body("Post not found");
@@ -144,10 +123,6 @@ public class FeedController {
     // GET /social/feed/posts/{postId}/comments - Get comments for a specific post
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<?> getCommentsForPost(@PathVariable Long postId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-    
         List<PostComment> comments = postCommentRepository.findByPostId(postId);
         return ResponseEntity.ok(comments);
     }
@@ -155,10 +130,6 @@ public class FeedController {
     // POST /social/feed/posts/{postId}/comment - Add a comment to a specific post
     @PostMapping("/posts/{postId}/comment")
     public ResponseEntity<?> addCommentToPost(@PathVariable Long postId, @RequestBody PostCommentDTO postComment, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
 
         try {
@@ -173,10 +144,6 @@ public class FeedController {
     // DELETE /social/feed/posts/{postId}/comments/{commentId} - Delete a specific comment (only if the authenticated user is the author of the comment)
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long commentId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         PostComment comment = postCommentRepository.findById(commentId).orElse(null);
         if (comment == null) {
             return ResponseEntity.status(404).body("Comment not found");

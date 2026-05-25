@@ -37,10 +37,6 @@ public class FriendsController {
 
     @PostMapping("/send-request")
     public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         Account friend = accountRepository.findById(friendId).orElseThrow(() -> new IllegalArgumentException("Friend not found"));
         
@@ -51,10 +47,6 @@ public class FriendsController {
 
     @PostMapping("/respond")
     public ResponseEntity<?> respondToRequest(@RequestParam Long inviteId, @RequestParam Long notificationId, @RequestParam boolean accepted, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
 
         if (accepted) {
@@ -69,10 +61,6 @@ public class FriendsController {
 
     @PostMapping("/remove")
     public ResponseEntity<?> removeFriend(@RequestParam Long friendId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         friendService.removeFriend(me, friendId);
         return ResponseEntity.ok().build();
@@ -81,10 +69,6 @@ public class FriendsController {
     // This endpoint return the list of pending invites that the authenticated user has sent to other users.
     @GetMapping("/invites/pending-connections")
     public ResponseEntity<?> getPendingInvites(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         List<FriendInvite> friendInvites = friendInviteRepository.findPendingFriendInvitesOfAccount(me);
         return ResponseEntity.ok(friendInvites);
@@ -92,10 +76,6 @@ public class FriendsController {
 
     @GetMapping("/get-friends")
     public ResponseEntity<?> getFriendsList(@RequestParam Long accountId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account targetAccount = accountRepository.findById(accountId).orElse(null);
 
         if (targetAccount == null) {
@@ -119,10 +99,6 @@ public class FriendsController {
 
     @GetMapping("/get-friendship")
     public ResponseEntity<?> getFriendship(@RequestParam Long accountId1, @RequestParam Long accountId2, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account account1 = accountRepository.findById(accountId1).orElse(null);
         Account account2 = accountRepository.findById(accountId2).orElse(null);
 

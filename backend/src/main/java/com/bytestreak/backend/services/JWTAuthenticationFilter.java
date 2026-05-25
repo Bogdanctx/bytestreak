@@ -38,7 +38,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                         String email = jwtService.getEmailFromToken(token);
                         String role = jwtService.getRoleFromToken(token);
 
-                        // TREBUIE adăugat acest fallback:
                         if (role == null || role.trim().isEmpty()) {
                             role = "USER";
                         }

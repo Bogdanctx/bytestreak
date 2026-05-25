@@ -41,23 +41,11 @@ public class AccountController {
 
     @GetMapping("/get")
     public Account getAccount(@RequestParam Long accountId, Authentication authentication) {
-        if (authentication == null) {
-            return null;
-        }
-
         return accountRepository.findById(accountId).orElse(null);
     }
 
     @GetMapping("/fetch-accounts")
-    public ResponseEntity<?> getAllAccounts(
-        @RequestParam(required = false) String query, 
-        @RequestParam(required = false) Long cursor,
-        Authentication authentication
-    ) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) String query, @RequestParam(required = false) Long cursor, Authentication authentication) {
         Map<String, Object> response = accountService.fetchAccountsWithCursor(query, cursor, authentication.getName());
 
         return ResponseEntity.ok(response);
@@ -65,10 +53,6 @@ public class AccountController {
 
     @PatchMapping("/update")
     public ResponseEntity<?> updateAccount(@RequestBody AccountUpdateDTO updates, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         try {
             Account updatedAccount = accountService.updateAccount(updates, authentication);
             return ResponseEntity.ok(updatedAccount);
@@ -80,10 +64,6 @@ public class AccountController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         Account targetAccount = accountRepository.findById(id).orElse(null);
 
         if (targetAccount == null) {
@@ -97,10 +77,6 @@ public class AccountController {
 
     @PutMapping("/set-role")
     public ResponseEntity<?> setUserRole(@RequestBody AccountSetRoleDTO body, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         try {
             accountService.setUserRole(body.getAccountId(), body.getNewRole());
             return ResponseEntity.ok().build();
@@ -112,10 +88,6 @@ public class AccountController {
 
     @GetMapping("/profile/{username}")
     public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         UserProfileDTO userProfile = accountService.getUserProfile(username);
         
         return ResponseEntity.ok(userProfile);
@@ -128,11 +100,6 @@ public class AccountController {
             @RequestParam(required = false) String query,
             Authentication authentication) 
     {
-        
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         Account me = accountRepository.findByEmail(authentication.getName());
         
         Pageable pageable = PageRequest.of(page, size);

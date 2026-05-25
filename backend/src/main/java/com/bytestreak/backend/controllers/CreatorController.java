@@ -30,10 +30,6 @@ public class CreatorController {
 
     @GetMapping("/fetch-by-creator")
     public List<Problem> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         try {
             List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
             return problems;
@@ -45,10 +41,6 @@ public class CreatorController {
 
     @DeleteMapping("/delete-problem")
     public ResponseEntity<?> deleteProblem(@RequestParam Long problemId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         try {
             Problem problem = creatorService.deleteProblem(problemId);
             return ResponseEntity.ok(problem);
@@ -60,10 +52,6 @@ public class CreatorController {
 
     @PostMapping("/new-problem")
     public ResponseEntity<?> createNewCodingProblem(@RequestBody NewCodingProblemDTO newCodingProblemDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         try {
             Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, authentication);
             return ResponseEntity.ok(newCodingProblem);
@@ -75,15 +63,8 @@ public class CreatorController {
     
 
     @PutMapping("/edit-problem/{id}")
-    public ResponseEntity<?> editProblem(
-        @PathVariable Long id, 
-        @RequestBody EditCodingProblemDTO updatedProblem,
-        Authentication authentication) 
+    public ResponseEntity<?> editProblem(@PathVariable Long id, @RequestBody EditCodingProblemDTO updatedProblem, Authentication authentication) 
     {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
         try {
             Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, authentication);
             return ResponseEntity.ok(editedProblem);

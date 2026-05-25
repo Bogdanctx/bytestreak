@@ -66,10 +66,6 @@ public class ProblemController {
 
     @GetMapping("/public")
     public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         List<Problem> problems = problemService.getPublicProblems(difficulty);
 
         return ResponseEntity.ok(problems);
@@ -77,10 +73,6 @@ public class ProblemController {
 
     @PutMapping("/{id}/toggle-problem-visibility")
     public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
@@ -102,10 +94,6 @@ public class ProblemController {
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
@@ -137,10 +125,6 @@ public class ProblemController {
 
     @GetMapping("/problem-of-the-day")
     public ResponseEntity<Problem> getProblemOfTheDay(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         try {
             Problem problemOfTheDay = problemService.getProblemOfTheDay();
             return ResponseEntity.ok(problemOfTheDay);
@@ -152,10 +136,6 @@ public class ProblemController {
 
     @PostMapping("/{id}/feedback")
     public ResponseEntity<Problem> submitFeedback(@PathVariable Long id, @RequestBody Map<String, String> feedbackMap, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         Account account = accountRepository.findByEmail(authentication.getName());
 
         String feedback = feedbackMap.get("feedback");
@@ -171,10 +151,6 @@ public class ProblemController {
 
     @PostMapping("/submit")
     public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         if (solutionDTO.getCode() == null || solutionDTO.getProgrammingLanguage() == null || solutionDTO.getProblemId() == null) {
             return ResponseEntity.badRequest().body(null);
         }

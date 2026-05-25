@@ -46,10 +46,6 @@ public class ShopController {
 
     @PostMapping("/buy/{cssEffectStyle}")
     public ResponseEntity<?> purchaseEffect(@PathVariable String cssEffectStyle, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account account = accountRepository.findByEmail(authentication.getName());
         if (account == null) {
             return ResponseEntity.status(404).body("Account not found");
@@ -84,10 +80,6 @@ public class ShopController {
 
     @PutMapping("/activate/{cssEffectStyle}")
     public ResponseEntity<?> activateEffect(@PathVariable String cssEffectStyle, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account account = accountRepository.findByEmail(authentication.getName());
         if (account == null) {
             return ResponseEntity.status(404).body("Account not found");
