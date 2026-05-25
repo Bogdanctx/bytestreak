@@ -11,7 +11,7 @@ import { type IProblem, type ISubmissionResult } from '../../types/problem.types
 import ProblemSubmissions from './ProblemSubmissions/ProblemSubmissions';
 import './ProblemDataPanel.style.css';
 import AccountAvatar from '../../components/ui/AccountAvatar';
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 
