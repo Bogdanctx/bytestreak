@@ -15,18 +15,21 @@ import org.springframework.security.core.Authentication;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.repositories.ProblemVoteRepository;
 import com.bytestreak.backend.repositories.SubmissionRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.ProblemVote;
 import com.bytestreak.backend.entities.Submission;
 import com.bytestreak.backend.enums.Visibility;
 import com.bytestreak.backend.entities.Account;
@@ -37,7 +40,7 @@ import org.json.JSONObject;
 @RequestMapping("/problems")
 public class ProblemController {
     @Autowired
-    private ProblemRepository repository;
+    private ProblemRepository problemRepository;
 
     @Autowired
     private CodeExecution executionService;
@@ -57,8 +60,11 @@ public class ProblemController {
     @Autowired
     private SubmissionRepository submissionRepository;
 
+    @Autowired
+    private ProblemVoteRepository problemVoteRepository;
 
-    @GetMapping("")
+
+    @GetMapping("/public")
     public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body("Unauthorized");
@@ -75,7 +81,7 @@ public class ProblemController {
             return ResponseEntity.status(401).build();
         }
 
-        Problem problem = repository.findById(id).orElse(null);
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
@@ -88,7 +94,7 @@ public class ProblemController {
             problem.setVisibility(Visibility.PUBLIC);
         }
 
-        repository.save(problem);
+        problemRepository.save(problem);
 
         return ResponseEntity.ok(problem);
     }
@@ -100,10 +106,18 @@ public class ProblemController {
             return ResponseEntity.status(401).build();
         }
 
-        Problem problem = repository.findById(id).orElse(null);
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
+        }
+
+        Account account = accountRepository.findByEmail(authentication.getName());
+
+        ProblemVote vote = problemVoteRepository.findByProblemAndAccount(problem, account);
+
+        if (vote != null) {
+            problem.setUserVote(vote.isLike() ? "like" : "dislike");
         }
 
         return ResponseEntity.ok(problem);
@@ -111,7 +125,7 @@ public class ProblemController {
 
     @GetMapping("/testcases")
     public ResponseEntity<?> getProblemTestCases(@RequestParam Long problemId) {
-        Problem problem = repository.findById(problemId).orElse(null);
+        Problem problem = problemRepository.findById(problemId).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
@@ -136,6 +150,25 @@ public class ProblemController {
         }
     }
 
+    @PostMapping("/{id}/feedback")
+    public ResponseEntity<Problem> submitFeedback(@PathVariable Long id, @RequestBody Map<String, String> feedbackMap, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Account account = accountRepository.findByEmail(authentication.getName());
+
+        String feedback = feedbackMap.get("feedback");
+        try {
+            Problem updatedProblem = problemService.submitFeedback(id, feedback, account);
+            return ResponseEntity.ok(updatedProblem);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Error submitting feedback: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/submit")
     public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -147,7 +180,7 @@ public class ProblemController {
         }
 
         Long id = solutionDTO.getProblemId();
-        Problem problem = repository.findById(id).orElse(null);
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();

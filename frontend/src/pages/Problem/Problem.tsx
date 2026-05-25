@@ -94,14 +94,16 @@ function Problem() {
                 <Dialog 
                     open={solvedDailyChallenge} 
                     onClose={() => setSolvedDailyChallenge(false)}
-                    PaperProps={{
-                        sx: {
-                            backgroundColor: 'var(--bg-3)',
-                            color: 'var(--text-primary)',
-                            textAlign: 'center',
-                            padding: 3,
-                            borderRadius: 3,
-                            minWidth: '300px'
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                backgroundColor: 'var(--bg-3)',
+                                color: 'var(--text-primary)',
+                                textAlign: 'center',
+                                padding: 3,
+                                borderRadius: 3,
+                                minWidth: '300px'
+                            }
                         }
                     }}
                 >

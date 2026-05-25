@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
@@ -18,8 +19,12 @@ import lombok.Setter;
 import com.bytestreak.backend.TagStringListConverter;
 import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.enums.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+
+import org.hibernate.annotations.Formula;
+
 import java.util.ArrayList;
 
 @Entity
@@ -59,9 +64,17 @@ public class Problem {
     private String testCasesPath = null;
     private String validationScriptPath = null;
 
-    private int likes = 0;
-    private int dislikes = 0;
     private boolean isProblemOfTheDay = false;
+
+    @Formula("(SELECT COUNT(*) FROM problem_votes pv WHERE pv.problem_id = id AND pv.is_like = true)")
+    private int likes;
+
+    @Formula("(SELECT COUNT(*) FROM problem_votes pv WHERE pv.problem_id = id AND pv.is_like = false)")
+    private int dislikes;
+
+    @Transient
+    @JsonProperty("userVote")
+    private String userVote = null; // "like", "dislike", or null
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.HIDDEN;

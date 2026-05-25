@@ -22,6 +22,7 @@ export interface IProblem {
     visibility: "PUBLIC" | "HIDDEN";
     likes: number;
     dislikes: number;
+    userVote: "like" | "dislike" | null;
 }
 
 export interface IProblemCreateDTO {
