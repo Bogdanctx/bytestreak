@@ -123,6 +123,14 @@ function Creator() {
                                     <TableCell className="creator-table-cell">
                                         <Box display="flex" justifyContent={"flex-end"} gap={1}>
                                             <Button variant="outlined"
+                                                    className="creator-table-action-button"
+                                                    onClick={(event) => { event.stopPropagation(); navigate(`/problems/${problem.id}/description`); }}
+                                                    sx={{ color: "white" }}
+                                            >
+                                                Try it           
+                                            </Button>
+                                            
+                                            <Button variant="outlined"
                                                     startIcon={problem.visibility === "PUBLIC" ? <EyeOffIcon /> : <EyeIcon />}
                                                     className="creator-table-action-button"
                                                     onClick={(event) => { event.stopPropagation(); changeProblemVisibilityMutation.mutate(problem.id); }}

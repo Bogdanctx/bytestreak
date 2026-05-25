@@ -4,7 +4,7 @@ import Editor from '@monaco-editor/react';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
@@ -120,8 +120,7 @@ type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
-    const isEditMode = Boolean(id);
-
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("markdown");
     const [validationTabActive, setValidationTabActive] = useState(false);
 
@@ -135,6 +134,7 @@ function ProblemBuilder() {
     const [title, setTitle] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const isEditMode = Boolean(id);
 
     useEffect(() => {
         if (!isEditMode) {
@@ -195,13 +195,19 @@ function ProblemBuilder() {
             }
         },
         onSuccess: () => {
-            notify(isEditMode ? "Problem updated successfully!" : "Problem created successfully!", "success");
+            if (isEditMode) {
+                notify("Problem updated successfully!", "success");
+            }
+            else {
+                notify("Problem created successfully!", "success");
+                navigate("/creator");
+            }
         },
         onError: (error) => {
             console.error('Error saving problem:', error);
             notify("Failed to save problem. Please try again.", "error");
         }
-    })
+    });
 
     const handleSubmitProblem = async () => {
         if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
