@@ -9,6 +9,7 @@ import { type ISolution, type ISubmissionResult } from '../../types/problem.type
 import './CodeEditor.style.css';
 import { useMutation } from '@tanstack/react-query';
 import notify from '../../components/ui/ToastNotification';
+import { set } from 'react-hook-form';
 
 interface CodeEditorWindowProps {
     problemId: number;
@@ -22,17 +23,22 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, 
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
+    const [submissionInProgress, setSubmissionInProgress] = useState(false);
     
     const submitSolutionMutation = useMutation({
         mutationFn: async (submissionData: ISolution) => {
+            setSubmissionInProgress(true);
+            notify("Submitting your solution...", "info");
             return api.post(`/problems/submit`, submissionData);
         },
         onSuccess: (response) => {
             setResults(response.data);
-            notify("Submission successful!", "success");
+            setSubmissionInProgress(false);
+            notify("Submission successful! Check the results tab for details.", "success");
         },
         onError: (error) => {
             console.log(error);
+            setSubmissionInProgress(false);
             notify("Submission failed. Please try again.", "error");
         }
     });
@@ -117,6 +123,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, 
             <Box className="problem-editor-footer">
                 <Button variant="outlined" 
                         className='problem-submit-button'
+                        disabled={submissionInProgress}
                         onClick={() => handleSubmitSolution()}>
                     Submit
                 </Button>
