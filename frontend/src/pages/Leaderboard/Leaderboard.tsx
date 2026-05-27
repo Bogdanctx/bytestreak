@@ -8,7 +8,6 @@ import {
     TableHead,
     TableRow,
     Typography,
-    Avatar,
     CircularProgress,
     Paper,
     Button,
@@ -24,38 +23,35 @@ import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
 import { useNavigate } from 'react-router-dom';
 import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
-import type { IAccount } from '../../types/account.types';
 import Loading from '../../components/ui/Loading';
 import './Leaderboard.style.css';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 
-interface LeaderboardPage {
-    accounts: IAccount[];
-    totalPages: number;
-    myRank: number;
-    myAccount: IAccount;
-}
-
-export default function Leaderboard() {
+function Leaderboard() {
     const navigate = useNavigate();
     const { data: currentAccount, isSuccess: currentAccountQuerySuccess } = useAccount();
     const [daysLeft, setDaysLeft] = useState<number>(0);
     const [searchValue, setSearchValue] = useState('');
     const [debouncedSearchValue, setDebouncedSearchValue] = useState('');
-    const { data: leaderboardPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<LeaderboardPage>({
+    const { data: leaderboardPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
         queryKey: ['leaderboard', debouncedSearchValue],
         queryFn: async ({ pageParam = 0 }) => {
-            const response = await api.get(`/accounts/leaderboard?page=${pageParam}&size=20&query=${encodeURIComponent(debouncedSearchValue)}`);
+            const response = await api.get('/accounts/leaderboard', {
+                params: {
+                    query: debouncedSearchValue || undefined,
+                    page: pageParam,
+                },
+            });
+
             return response.data;
         },
-        getNextPageParam: (lastPage, pages) => {
-            if (!lastPage.accounts || lastPage.accounts.length < 20) {
-                return undefined;
+        getNextPageParam: (lastPage) => {
+            if (lastPage.hasNext) {
+                return lastPage.currentPage + 1;
             }
-            return pages.length;
+            return null;
         },
-        initialPageParam: 0,
-        staleTime: 1000 * 60 * 5,
+        initialPageParam: 0
     });
 
     useEffect(() => {
@@ -222,3 +218,5 @@ export default function Leaderboard() {
         </Box>
     );
 }
+
+export default Leaderboard;

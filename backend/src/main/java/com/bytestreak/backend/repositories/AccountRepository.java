@@ -1,10 +1,12 @@
 package com.bytestreak.backend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.Window;
-import org.springframework.data.domain.Page;
 
 import com.bytestreak.backend.entities.Account;
 
@@ -19,7 +21,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findByUsername(String username);
 
-    Page<Account> findAllByOrderByCurrentXPDesc(Pageable pageable);
-    Page<Account> findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDesc(String username, Pageable pageable);
-    Long countByCurrentXPGreaterThan(Integer currentXP);
+
+    // for leaderboard
+    Page<Account> findAllByOrderByCurrentXPDescIdAsc(Pageable pageable);
+    Page<Account> findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDescIdAsc(String username, Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Account a WHERE a.currentXP > :xp OR (a.currentXP = :xp AND a.id < :id)")
+    Long calculateGlobalRank(@Param("xp") Integer xp, @Param("id") Long id);
 }

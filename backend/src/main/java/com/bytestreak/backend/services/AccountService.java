@@ -2,7 +2,9 @@ package com.bytestreak.backend.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.Window;
 import org.springframework.security.core.Authentication;
@@ -69,6 +71,33 @@ public class AccountService {
         return response;    
     }
 
+    public Map<String, Object> fetchLeaderboard(String query, int page) {
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<Account> leaderboardPage;
+
+        if (query != null && !query.isBlank()) {
+            leaderboardPage = accountRepository.findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDescIdAsc(query, pageable);
+        }
+        else {
+            leaderboardPage = accountRepository.findAllByOrderByCurrentXPDescIdAsc(pageable);
+        }
+
+        for(int i = 0; i < leaderboardPage.getContent().size(); i++) {
+            Account account = leaderboardPage.getContent().get(i);
+            Long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
+            account.setGlobalRank(globalRank);
+        }
+
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accounts", leaderboardPage.getContent());
+        response.put("totalPages", leaderboardPage.getTotalPages());
+        response.put("currentPage", page);
+        response.put("hasNext", leaderboardPage.hasNext());
+
+        return response;    
+    }
+
     public Account updateAccount(Account account, AccountUpdateDTO updates) {
         if (!updates.getUsername().isBlank()) {
             account.setUsername(updates.getUsername());
@@ -98,7 +127,7 @@ public class AccountService {
             throw new RuntimeException("User not found");
         }
 
-        Long globalRank = accountRepository.countByCurrentXPGreaterThan(target.getCurrentXP()) + 1;
+        Long globalRank = accountRepository.calculateGlobalRank(target.getCurrentXP(), target.getId()) + 1;
         target.setGlobalRank(globalRank);
 
         List<Integer> activityGraph = activityTrackerService.getYearlyActivityGraph(target.getId());

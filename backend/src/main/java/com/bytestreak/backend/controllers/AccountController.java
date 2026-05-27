@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Window;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -98,49 +99,28 @@ public class AccountController {
     }
 
     @GetMapping("/profile/{username}")
-    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username) {
-        UserProfileDTO userProfile = accountService.getUserProfile(username);
-        
-        return ResponseEntity.ok(userProfile);
+    public ResponseEntity<?> getUserProfile(@PathVariable String username) {
+
+        try {
+            Account target = accountRepository.findByUsername(username);
+
+            if (target == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            UserProfileDTO userProfile = accountService.getUserProfile(username);
+            return ResponseEntity.ok(userProfile);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
+
     @GetMapping("/leaderboard")
-    public ResponseEntity<?> getLeaderboard(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) String query,
-            Authentication authentication) 
+    public ResponseEntity<?> getLeaderboard(@RequestParam(required = false) int page, @RequestParam(required = false) String query) 
     {
-        Account me = accountRepository.findByEmail(authentication.getName());
-        
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Account> topAccounts;
-
-        if (query == null || query.isBlank()) {
-            topAccounts = accountRepository.findAllByOrderByCurrentXPDesc(pageable);
-
-            for (int i = 0; i < topAccounts.getContent().size(); i++) {
-                long globalRank = page * size + i + 1;
-                topAccounts.getContent().get(i).setGlobalRank(globalRank);
-            }
-        } 
-        else {
-            topAccounts = accountRepository.findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDesc(query.trim(), pageable);
-        
-            for (Account acc : topAccounts.getContent()) {
-                long realRank = accountRepository.countByCurrentXPGreaterThan(acc.getCurrentXP()) + 1;
-                acc.setGlobalRank(realRank);
-            }
-        }
-
-        Long myRank = accountRepository.countByCurrentXPGreaterThan(me.getCurrentXP()) + 1;
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("accounts", topAccounts.getContent());
-        response.put("totalPages", topAccounts.getTotalPages());
-        response.put("myRank", myRank);
-        response.put("myAccount", me);
-
+        Map<String, Object> response = accountService.fetchLeaderboard(query, page);
         return ResponseEntity.ok(response);
     }
 }
