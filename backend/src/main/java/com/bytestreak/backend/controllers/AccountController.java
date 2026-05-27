@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bytestreak.backend.dto.AccountSetRoleDTO;
 import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
@@ -39,22 +38,28 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/get")
-    public Account getAccount(@RequestParam Long accountId, Authentication authentication) {
-        return accountRepository.findById(accountId).orElse(null);
-    }
-
-    @GetMapping("/fetch-accounts")
-    public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) String query, @RequestParam(required = false) Long cursor, Authentication authentication) {
-        Map<String, Object> response = accountService.fetchAccountsWithCursor(query, cursor, authentication.getName());
+    @GetMapping("/")
+    public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) String query, @RequestParam(required = false) Long cursor) {
+        Map<String, Object> response = accountService.fetchAccounts(query, cursor);
 
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateAccount(@RequestBody AccountUpdateDTO updates, Authentication authentication) {
+    @GetMapping("/{accountId}")
+    public Account getAccount(@PathVariable Long accountId) {
+        return accountRepository.findById(accountId).orElse(null);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateAccount(@PathVariable Long id, @RequestBody AccountUpdateDTO updates) {
         try {
-            Account updatedAccount = accountService.updateAccount(updates, authentication);
+            Account targetAccount = accountRepository.findById(id).orElse(null);
+
+            if (targetAccount == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Account updatedAccount = accountService.updateAccount(targetAccount, updates);
             return ResponseEntity.ok(updatedAccount);
         }
         catch (RuntimeException e) {
@@ -62,8 +67,8 @@ public class AccountController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long id, Authentication authentication) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
         Account targetAccount = accountRepository.findById(id).orElse(null);
 
         if (targetAccount == null) {
@@ -75,10 +80,16 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/set-role")
-    public ResponseEntity<?> setUserRole(@RequestBody AccountSetRoleDTO body, Authentication authentication) {
+    @PatchMapping("/{id}/set-role")
+    public ResponseEntity<?> setUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
         try {
-            accountService.setUserRole(body.getAccountId(), body.getNewRole());
+            Account target = accountRepository.findById(id).orElse(null);
+
+            if (target == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            accountService.setUserRole(target, body.get("newRole"));
             return ResponseEntity.ok().build();
         }
         catch (RuntimeException e) {
@@ -87,7 +98,7 @@ public class AccountController {
     }
 
     @GetMapping("/profile/{username}")
-    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username, Authentication authentication) {
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable String username) {
         UserProfileDTO userProfile = accountService.getUserProfile(username);
         
         return ResponseEntity.ok(userProfile);

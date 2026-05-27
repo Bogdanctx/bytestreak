@@ -25,12 +25,18 @@ function Discover({ account }: { account: IAccount }) {
     const navigate = useNavigate();
     const { data: discoverableAccounts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
-        queryFn: async ({ pageParam = "" }) => {
-            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+        queryFn: async ({ pageParam = null }) => {
+            const response = await api.get('/accounts/', {
+                params: {
+                    query: debounceSearchQuery || undefined,
+                    cursor: pageParam || undefined
+                }
+            });
+
             return response.data;
         },
         getNextPageParam: (lastPage) => lastPage.nextCursor || null,
-        initialPageParam: ""
+        initialPageParam: null
     });
 
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
