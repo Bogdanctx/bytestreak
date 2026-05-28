@@ -12,20 +12,23 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-
+import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
 
 import com.bytestreak.backend.TagStringListConverter;
 import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.enums.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "Problems")
@@ -84,5 +87,6 @@ public class Problem {
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
+    @JsonIgnoreProperties("solvedProblems") // to prevent infinite recursion during JSON serialization
     private Account creator;
 }

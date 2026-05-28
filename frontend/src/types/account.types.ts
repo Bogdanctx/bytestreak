@@ -1,3 +1,5 @@
+import { type IProblem } from "./problem.types";
+
 export interface IAccount {
     id: number;
     username: string;
@@ -16,6 +18,7 @@ export interface IAccount {
     globalRank?: number;
     cssEffectStyle: string;
     purchasedEffects: string[];
+    solvedProblems: IProblem[];
 }
 
 export type AccountRole = 'USER' | 'CREATOR' | 'MODERATOR' | 'ADMIN';

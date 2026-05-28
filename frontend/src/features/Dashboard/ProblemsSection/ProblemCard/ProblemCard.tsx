@@ -1,15 +1,11 @@
 import { Box, Typography, Chip, Stack } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import "./ProblemCard.style.css"
+import { useAccount } from '../../../../hooks/useAccount';
+import type { IProblem } from '../../../../types/problem.types';
 
 export type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
-
-interface ProblemCardProps {
-    title: string;
-    difficulty: Difficulty;
-    tags: string[];
-    showTags: boolean;
-}
 
 const getDifficultyColor = (difficulty: Difficulty): string => {
     switch (difficulty) {
@@ -24,8 +20,11 @@ const getDifficultyColor = (difficulty: Difficulty): string => {
     }
 }
 
-function ProblemCard(props: ProblemCardProps) {
-    const difficultyColor = getDifficultyColor(props.difficulty);
+function ProblemCard({ problem, showTags }: { problem: IProblem, showTags: boolean }) {
+    const { data: account } = useAccount();
+
+    const hasSolved = account?.solvedProblems.some((solvedProblem) => problem.id === solvedProblem.id);
+    const difficultyColor = getDifficultyColor(problem.difficulty);
 
     return (
         <Box className="problem-card">
@@ -37,12 +36,12 @@ function ProblemCard(props: ProblemCardProps) {
 
                 <Box className="problem-card-info">
                     <Typography className="problem-card-title" component="span">
-                        {props.title}
+                        {problem.title}
                     </Typography>
 
-                    {props.showTags && props.tags.length > 0 && (
+                    {showTags && problem.tags.length > 0 && (
                         <Stack direction="row" spacing={0.5} alignItems="center">
-                            {props.tags.map((tag, index) => (
+                            {problem.tags.map((tag, index) => (
                                 <Chip
                                     key={`${tag}-${index}`}
                                     label={tag}
@@ -62,8 +61,12 @@ function ProblemCard(props: ProblemCardProps) {
             </Box>
 
             <Box className="problem-card-content-right">
+                {hasSolved && (
+                    <CheckBoxIcon className="solved-icon" fontSize="small" />
+                )}
+                
                 <Chip
-                    label={props.difficulty}
+                    label={problem.difficulty}
                     size="small"
                     variant="outlined"
                     className="difficulty-chip"

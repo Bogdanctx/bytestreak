@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Box, ButtonBase, FormControlLabel, Switch, Typography } from '@mui/material';
+import { Box, ButtonBase, FormControlLabel, Switch, ToggleButton, Typography } from '@mui/material';
 import { api } from '../../../api';
 import { type IProblem } from '../../../types/problem.types';
 import ProblemCard from './ProblemCard/ProblemCard';
@@ -21,7 +21,15 @@ function ProblemsSection() {
             }
 
             const response = await api.get(url);
+
+            // multiply the problems to create a larger dataset for testing
+            const multipliedProblems = [];
+            for (let i = 0; i < 50; i++) {
+                multipliedProblems.push(...response.data);
+            }
+
             return response.data;        
+            // return multipliedProblems;
         }
     });
 
@@ -72,12 +80,7 @@ function ProblemsSection() {
 
                 {codingProblems.map((problem) => (
                     <ButtonBase key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)}>
-                        <ProblemCard
-                            key={problem.id}
-                            title={problem.title}
-                            difficulty={problem.difficulty}
-                            showTags={showTags}
-                            tags={problem.tags}
+                        <ProblemCard key={problem.id} problem={problem} showTags={showTags}
                         />
                     </ButtonBase>
                 ))}

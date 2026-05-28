@@ -1,3 +1,9 @@
+.solved-icon {
+    top: 8px;
+    left: 8px;
+    color: var(--accent-main);
+}
+
 .problem-card {
     position: relative;
     display: flex;
@@ -56,7 +62,7 @@
 
 .problem-card-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     gap: 4px;
     padding-left: 16px;

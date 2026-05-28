@@ -7,6 +7,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
@@ -21,7 +24,9 @@ import org.hibernate.type.SqlTypes;
 import com.bytestreak.backend.enums.Role;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,4 +93,12 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @ManyToMany
+    @JoinTable(
+        name = "account_solved_problems",
+        joinColumns = @JoinColumn(name = "account_id"),
+        inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    private Set<Problem> solvedProblems = new HashSet<>();
 }

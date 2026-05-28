@@ -198,6 +198,9 @@ public class ProblemController {
                 }
             }
 
+            // if we reached this point, it means all test cases passed and the solution is correct
+            account.getSolvedProblems().add(problem);
+
             // if the solution is correct and solved the problem of the day, update the user's streak
             if (problem.isDailyChallange()) {
                 LocalDate today = LocalDate.now(ZoneOffset.UTC);
