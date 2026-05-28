@@ -59,7 +59,7 @@ public class ReportController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllReports(Authentication authentication) {        
+    public ResponseEntity<?> getAllReports() {        
         return ResponseEntity.ok(reportRepository.findAll());
     }
 
@@ -122,7 +122,7 @@ public class ReportController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteReport(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<?> deleteReport(@PathVariable Long id) {
         Report report = reportRepository.findById(id).orElse(null);
         if (report == null) {
             return ResponseEntity.status(404).body("Report not found");
