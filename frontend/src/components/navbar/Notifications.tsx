@@ -8,6 +8,7 @@ import { api } from '../../api';
 import FriendRequestNotification from '../../features/Notifications/FriendRequestNotification';
 import StreakInviteNotification from '../../features/Notifications/StreakInviteNotification';
 import RoleUpdateNotification from '../../features/Notifications/RoleUpdateNotification';
+import SeasonEndNotification from '../../features/Notifications/SeasonEndNotification';
 import { type INotification } from '../../types/notification.types';
 import './Navbar.style.css';
 import './Notifications.style.css';
@@ -89,6 +90,8 @@ function Notifications() {
                                     return <StreakInviteNotification key={notification.id} notification={notification} />;
                                 case 'ROLE_UPDATE':
                                     return <RoleUpdateNotification key={notification.id} notification={notification} />;
+                                case 'SEASON_END':
+                                    return <SeasonEndNotification key={notification.id} notification={notification} />;
                                 default:
                                     return null;
                             }

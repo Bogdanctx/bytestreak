@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -19,6 +20,7 @@ import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
+import com.bytestreak.backend.services.DailyChallangesService;
 
 import java.util.Map;
 
@@ -110,5 +112,14 @@ public class AccountController {
     public ResponseEntity<?> getLeaderboard(@RequestParam(required = false) int page, @RequestParam(required = false) String query) {
         Map<String, Object> response = accountService.fetchLeaderboard(query, page);
         return ResponseEntity.ok(response);
+    }
+
+    @Autowired
+    private DailyChallangesService dailyChallangesService;
+
+    @GetMapping("/reset-season")
+    public ResponseEntity<?> resetSeason() {
+        dailyChallangesService.resetSeason();
+        return ResponseEntity.ok().build();
     }
 }

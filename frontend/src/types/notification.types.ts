@@ -26,13 +26,17 @@ export interface IRoleUpdateNotificationPayload {
     message: string;
 }
 
+export interface ISeasonEndNotificationPayload {
+    message: string;
+}
+
 export interface INotification {
     id: number;
     receiver: IAccount;
     type: NotificationType;
     read: boolean;
     timestamp: string;
-    payload: IFriendRequestNotificationPayload | IStreakInviteNotificationPayload;
+    payload: IFriendRequestNotificationPayload | IStreakInviteNotificationPayload | IRoleUpdateNotificationPayload | ISeasonEndNotificationPayload;
 };
 
-export type NotificationType = 'FRIEND_REQUEST' | 'STREAK_INVITE' | 'ROLE_UPDATE';
+export type NotificationType = 'FRIEND_REQUEST' | 'STREAK_INVITE' | 'ROLE_UPDATE' | 'SEASON_END';

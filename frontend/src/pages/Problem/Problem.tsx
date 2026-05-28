@@ -11,7 +11,6 @@ import './Problem.style.css';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAccount } from '../../hooks/useAccount';
 import Loading from '../../components/ui/Loading';
-import notify from '../../components/ui/ToastNotification';
 
 const todayUTCString = new Date().toISOString().split('T')[0];
 
@@ -25,6 +24,7 @@ function Problem() {
     const [solvedDailyChallenge, setSolvedDailyChallenge] = useState(false);
     const [problemPanelWidth, setProblemPanelWidth] = useState(440);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
+
     const { data: codingProblem, isLoading } = useQuery<IProblem>({
         queryKey: ['codingProblem'],
         queryFn: async () => {

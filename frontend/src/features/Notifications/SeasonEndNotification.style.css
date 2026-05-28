@@ -1,0 +1,33 @@
+.season-end-notification {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bg-3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.season-end-notification:hover {
+    background-color: var(--bg-2);
+}
+
+.season-end-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.season-end-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.season-end-text {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.season-end-timestamp {
+    color: var(--text-secondary);
+    margin-top: 6px;
+}
