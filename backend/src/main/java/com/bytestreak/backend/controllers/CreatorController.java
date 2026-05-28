@@ -16,6 +16,7 @@ import com.bytestreak.backend.services.CreatorService;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,8 +35,21 @@ public class CreatorController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private ProblemRepository problemRepository;
+
+    // This endpoint is used by the frontend to fetch all problems created by a specific creator. 
+    // The creatorId is passed as a query parameter, and the service layer handles the logic to retrieve the corresponding problems from the database.
+    // If the user is a moderator or admin, all the problems will be returned, otherwise only the problems created by the user will be returned.
     @GetMapping("/problems")
-    public ResponseEntity<?> getProblemsByCreatorId(@RequestParam Long creatorId) {
+    public ResponseEntity<?> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
+        Account account = accountRepository.findByEmail(authentication.getName());
+
+        if (account.getRole().name().equals("MODERATOR") || account.getRole().name().equals("ADMIN")) {
+            List<Problem> problems = problemRepository.findAll();
+            return ResponseEntity.ok(problems);
+        }
+        
         List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
         return ResponseEntity.ok(problems);
     }
