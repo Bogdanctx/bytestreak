@@ -131,7 +131,6 @@ public class AccountService {
             activityGraph
         );
 
-
         return userProfile;
     }
 

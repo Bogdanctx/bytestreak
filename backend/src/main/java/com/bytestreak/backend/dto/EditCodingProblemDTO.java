@@ -23,4 +23,5 @@ public class EditCodingProblemDTO {
     private List<String> tags;
 
     private String visibility;
+    private String validationScript;
 }

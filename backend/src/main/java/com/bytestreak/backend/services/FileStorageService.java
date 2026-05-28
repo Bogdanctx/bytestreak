@@ -2,15 +2,16 @@ package com.bytestreak.backend.services;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
-import org.json.JSONObject;
-
 import com.bytestreak.backend.dto.TestCaseDTO;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -26,36 +27,27 @@ public class FileStorageService {
         }
     }
 
-    public String saveTestCases(String slug, List<TestCaseDTO> testCases) throws RuntimeException {
+    public String saveTestCases(String slug, List<TestCaseDTO> testCases) {
         Path problemDirectory = root.resolve(slug);
 
         try {
             Files.createDirectories(problemDirectory);    
         }
-        catch (Exception e) {
-            throw new RuntimeException("Failed to create problem directory: " + e.getMessage());
+        catch (IOException e) {
+            throw new RuntimeException("Failed to create problem directory for slug: " + slug, e);
         }
-        
-        JSONObject testcasesJson = new JSONObject();
-        testcasesJson.put("testCases", testCases);
             
         try {
-            for(int i = 0; i < testCases.size(); i++) {
-                TestCaseDTO test = testCases.get(i);
+            for (TestCaseDTO test : testCases) {
+                Path inputPath = problemDirectory.resolve(test.getFileName() + ".in");
+                Path outputPath = problemDirectory.resolve(test.getFileName() + ".out");
 
-                String fileName = test.getFileName();
-                String input = test.getInput();
-                String output = test.getOutput();
-
-                Path inputPath = problemDirectory.resolve(fileName + ".in");
-                Path outputPath = problemDirectory.resolve(fileName + ".out");
-
-                Files.writeString(inputPath, input);
-                Files.writeString(outputPath, output);
+                Files.writeString(inputPath, test.getInput());
+                Files.writeString(outputPath, test.getOutput());
             }
         }
-        catch (Exception e) {
-            throw new RuntimeException("Error parsing JSON: " + e.getMessage());
+        catch (IOException e) {
+            throw new RuntimeException("Failed to write test case files to disk for slug: " + slug, e);
         }
 
         return problemDirectory.toString();
@@ -114,7 +106,7 @@ public class FileStorageService {
         return testCases;
     }
 
-    public void deleteTestCasesDirectory(String slug) throws RuntimeException {
+    public void deleteTestCasesDirectory(String slug) throws ResourceNotFoundException {
         Path problemDirectory = root.resolve(slug);
 
         if (Files.exists(problemDirectory)) {
@@ -125,17 +117,23 @@ public class FileStorageService {
                         try {
                             Files.delete(path);
                         }
+                        catch (NoSuchFileException e) {
+                            throw new ResourceNotFoundException("File not found during deletion: " + e.getMessage());
+                        }
                         catch (IOException e) {
-                            throw new RuntimeException("Failed to delete file: " + path.toString() + " - " + e.getMessage());
+                            throw new RuntimeException("Error deleting file: " + e.getMessage());
+                        }
+                        catch (SecurityException e) {
+                            throw new RuntimeException("Permission denied during file deletion: " + e.getMessage());
                         }
                     });
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
             }
         }
         else {
-            throw new RuntimeException("Test cases directory not found for slug: " + slug);
+            throw new ResourceNotFoundException("Test cases directory not found for slug: " + slug);
         }
 
     }

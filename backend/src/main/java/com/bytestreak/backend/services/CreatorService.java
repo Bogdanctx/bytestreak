@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
@@ -12,6 +13,9 @@ import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.enums.Visibility;
+import com.bytestreak.backend.exceptions.ResourceAlreadyExistsException;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
+import com.bytestreak.backend.exceptions.UnauthorizedActionException;
 
 import java.util.List;
 
@@ -26,28 +30,31 @@ public class CreatorService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public List<Problem> getProblemsByCreatorId(Long creatorId) {
+    public List<Problem> getProblemsByCreatorId(Long creatorId) throws ResourceNotFoundException {
         Account creator = accountRepository.findById(creatorId).orElse(null);
 
         if (creator == null) {
-            throw new RuntimeException("Creator not found");
+            throw new ResourceNotFoundException("Creator not found");
         }
 
         return problemRepository.findByCreatorId(creatorId);
     }
 
-    public Problem deleteProblem(Long problemId) {
+    public Problem deleteProblem(Long problemId) throws ResourceNotFoundException {
         Problem problem = problemRepository.findById(problemId).orElse(null);
 
         if (problem == null) {
-            throw new RuntimeException("Problem not found");
+            throw new ResourceNotFoundException("Problem not found");
         }
 
         try {
             fileStorageService.deleteTestCasesDirectory(problem.getSlug());
         }
+        catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Test cases directory not found during deletion: " + e.getMessage());
+        }
         catch (Exception e) {
-            throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
+            throw new RuntimeException("Error deleting test cases directory: " + e.getMessage());
         }
 
         problemRepository.delete(problem);
@@ -56,6 +63,11 @@ public class CreatorService {
 
     public Problem createNewCodingProblem(NewCodingProblemDTO newCodingProblemDTO, Account creator) {
         String slug = newCodingProblemDTO.getTitle().toLowerCase().replace(" ", "-");
+
+        if (problemRepository.findBySlug(slug) != null) {
+            throw new ResourceAlreadyExistsException("A problem with the same title already exists");
+        }
+
         List<TestCaseDTO> testsJSON = newCodingProblemDTO.getTestCases();
         String testCasesPath = null;
         String validationScriptPath = null;
@@ -68,13 +80,10 @@ public class CreatorService {
             }
         } 
         catch (Exception e) {
-            throw new RuntimeException("Failed to store test cases: " + e.getMessage());
+            throw new RuntimeException("Failed to store problem data: " + e.getMessage(), e);
         }
 
-        if (problemRepository.findBySlug(slug) != null) {
-            throw new RuntimeException("A problem with the same title already exists");
-        }
-
+        // 3. SALVEAZĂ ÎN BAZA DE DATE
         Problem problem = new Problem(
             newCodingProblemDTO.getTitle(),
             newCodingProblemDTO.getDescription(),
@@ -86,35 +95,45 @@ public class CreatorService {
             creator
         );
 
-        Problem savedProblem = problemRepository.save(problem);
-
-        return savedProblem;
+        return problemRepository.save(problem);
     }
 
     public Problem editCodingProblem(Long problemId, EditCodingProblemDTO updatedProblem, Account me) {
-        Problem existingProblem = problemRepository.findById(problemId).orElse(null);
-
-        if (existingProblem == null) {
-            throw new RuntimeException("Problem not found");
-        }
+        Problem existingProblem = problemRepository.findById(problemId)
+            .orElseThrow(() -> new ResourceNotFoundException("Problem not found"));
 
         if (!existingProblem.getCreator().getId().equals(me.getId())) {
-            throw new RuntimeException("You are not the creator of this problem");
+            throw new UnauthorizedActionException("You are not the creator of this problem"); 
         }
 
         String oldSlug = existingProblem.getSlug();
         String newSlug = updatedProblem.getTitle().toLowerCase().replace(" ", "-");
 
         if (!oldSlug.equals(newSlug) && problemRepository.findBySlug(newSlug) != null) {
-            throw new RuntimeException("A problem with the same title already exists");
+            throw new ResourceAlreadyExistsException("A problem with the same title already exists");
         }
 
-        // delete old test cases directory and create a new one later (easier than trying to rename it and handle potential errors)
         try {
             fileStorageService.deleteTestCasesDirectory(oldSlug);
-        }
+        } 
         catch (Exception e) {
-            throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage());
+            throw new RuntimeException("Failed to delete test cases directory: " + e.getMessage(), e);
+        }
+
+        try {
+            String testCasesPath = fileStorageService.saveTestCases(newSlug, updatedProblem.getTestCases());
+            existingProblem.setTestCasesPath(testCasesPath);
+            
+            if (updatedProblem.getValidationScript() != null && !updatedProblem.getValidationScript().isBlank()) {
+                String validationScriptPath = fileStorageService.saveValidationScript(newSlug, updatedProblem.getValidationScript());
+                existingProblem.setValidationScriptPath(validationScriptPath);
+            } 
+            else {
+                existingProblem.setValidationScriptPath(null);
+            }
+        } 
+        catch (Exception e) {
+            throw new RuntimeException("Failed to store updated test cases: " + e.getMessage(), e);
         }
 
         existingProblem.setTitle(updatedProblem.getTitle());
@@ -124,21 +143,8 @@ public class CreatorService {
         existingProblem.setCodeTemplates(updatedProblem.getCodeTemplates());
         existingProblem.setTags(updatedProblem.getTags());
 
-        List<TestCaseDTO> tests = updatedProblem.getTestCases();
-        String testCasesPath = null;
-
-        try {
-            testCasesPath = fileStorageService.saveTestCases(newSlug, tests);
-        } 
-        catch (Exception e) {
-            throw new RuntimeException("Failed to store test cases: " + e.getMessage());
-        }
-
-        existingProblem.setTestCasesPath(testCasesPath);
-
         if (updatedProblem.getVisibility() != null) {
-            Visibility visibility = Visibility.valueOf(updatedProblem.getVisibility().toString().toUpperCase());
-            existingProblem.setVisibility(visibility);
+            existingProblem.setVisibility(Visibility.valueOf(updatedProblem.getVisibility().toString().toUpperCase()));
         }
 
         return problemRepository.save(existingProblem);

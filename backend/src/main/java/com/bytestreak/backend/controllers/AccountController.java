@@ -39,8 +39,13 @@ public class AccountController {
     }
 
     @GetMapping("/{accountId}")
-    public Account getAccount(@PathVariable Long accountId) {
-        return accountRepository.findById(accountId).orElse(null);
+    public ResponseEntity<?> getAccount(@PathVariable Long accountId) {
+        Account account = accountRepository.findById(accountId).orElse(null);
+
+        if (account == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(account);
     }
 
     @PatchMapping("/{id}")
@@ -67,8 +72,8 @@ public class AccountController {
             accountRepository.delete(targetAccount);
             return ResponseEntity.noContent().build();
         }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete account");
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting account: " + e.getMessage());
         }
     }
 
