@@ -30,18 +30,21 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
         AND (
             :excludeSolved = false OR 
             NOT EXISTS (
-                SELECT solvedProblems
+                SELECT 1 
                 FROM Account a
-                JOIN a.solvedProblems solvedProblems
-                WHERE a.email = :accountEmail AND solvedProblems.id = p.id
+                JOIN a.solvedProblems sp
+                WHERE a.email = :accountEmail AND sp.id = p.id
             )
         )
+        AND (:cursor IS NULL OR p.id > :cursor)
+        ORDER BY p.id ASC
     """)
-    Page<Problem> findPublicProblems(
+    List<Problem> findPublicProblems(
         @Param("difficulty") Difficulty difficulty, 
         @Param("query") String query, 
         @Param("excludeSolved") boolean excludeSolved, 
         @Param("accountEmail") String accountEmail, 
+        @Param("cursor") Long cursor,
         Pageable pageable
     );
 }

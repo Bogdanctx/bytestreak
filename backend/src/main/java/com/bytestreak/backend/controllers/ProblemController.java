@@ -73,6 +73,12 @@ public class ProblemController {
         return ResponseEntity.ok(problems);
     }
 
+    @GetMapping("/total-count")
+    public ResponseEntity<?> getTotalPublicProblemsCount() {
+        long count = problemRepository.findByVisibility(Visibility.PUBLIC).size();
+        return ResponseEntity.ok(count);
+    }
+
     @PutMapping("/{id}/toggle-problem-visibility")
     public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id) {
         Problem problem = problemRepository.findById(id).orElse(null);

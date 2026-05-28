@@ -36,14 +36,11 @@ public class ProblemService {
 
         String accountEmail = authentication.getName();
         
-        int pageNumber = cursor != null ? cursor.intValue() : 0;
-        PageRequest pageRequest = PageRequest.of(pageNumber, 20);
-
         if (query != null && !query.isEmpty()) {
             query = "%" + query.toLowerCase() + "%";
         }
 
-        return problemRepository.findPublicProblems(diff, query, excludeSolved, accountEmail, pageRequest).getContent();
+        return problemRepository.findPublicProblems(diff, query, excludeSolved, accountEmail, cursor, PageRequest.of(0, 21));
     }
 
     public Problem getProblemOfTheDay() {

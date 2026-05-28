@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Box, ButtonBase, FormControlLabel, Switch, Typography, TextField } from '@mui/material';
+import { Box, Button, ButtonBase, FormControlLabel, Switch, Typography, TextField } from '@mui/material';
 import { api } from '../../../api';
 import { type IProblem } from '../../../types/problem.types';
 import ProblemCard from './ProblemCard/ProblemCard';
@@ -14,7 +14,7 @@ function ProblemsSection() {
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
     const [searchInput, setSearchInput] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
-    
+
     // Debounce search input
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -23,41 +23,40 @@ function ProblemsSection() {
         
         return () => clearTimeout(timer);
     }, [searchInput]);
-    
-    const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
-        queryKey: ['codingProblems', selectedDifficulty, debouncedQuery, hideSolved],
+
+    const { data: totalProblemsCount } = useQuery({
+        queryKey: ['totalProblemsCount'],
         queryFn: async () => {
-            let url = `/problems/public`;
+            const response = await api.get('/problems/total-count');
+            return response.data;
+        }
+    });
+
+    const { data: codingProblemsPage, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery<IProblem[]>({
+        queryKey: ['problems', 'public', selectedDifficulty, debouncedQuery, hideSolved],
+        initialPageParam: 0,
+        queryFn: async ({ pageParam }) => {
             const params = new URLSearchParams();
-            
-            if (selectedDifficulty !== "ALL") {
+            if (selectedDifficulty !== 'ALL') {
                 params.append('difficulty', selectedDifficulty);
             }
-            
-            if (debouncedQuery && debouncedQuery.trim()) {
-                params.append('query', debouncedQuery.trim());
+            if (debouncedQuery) {
+                params.append('query', debouncedQuery);
             }
-            
             if (hideSolved) {
                 params.append('hideSolved', 'true');
             }
-            
-            if (params.toString()) {
-                url += `?${params.toString()}`;
+            if (pageParam) {
+                params.append('cursor', pageParam.toString());
             }
 
-            const response = await api.get(url);
-
-            // multiply the problems to create a larger dataset for testing
-            const multipliedProblems = [];
-            for (let i = 0; i < 50; i++) {
-                multipliedProblems.push(...response.data);
-            }
-
-            return response.data;        
-            // return multipliedProblems;
-        }
+            const response = await api.get(`/problems/public?${params.toString()}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => lastPage.length === 20 ? lastPage[lastPage.length - 1].id : undefined
     });
+
+    const codingProblems = codingProblemsPage?.pages.flatMap(page => page.length === 21 ? page.slice(0, 20) : page) || [];
 
     return (
         <Box id="problems-section-container">
@@ -124,6 +123,24 @@ function ProblemsSection() {
                         />
                     </ButtonBase>
                 ))}
+
+                {hasNextPage && !isFetchingNextPage && (
+                    <Box padding={2} display="flex" justifyContent="center">
+                        <Button className="problems-sections-load-more-button" variant="outlined" onClick={() => fetchNextPage()}>
+                            Load More
+                        </Button>
+                    </Box>
+                )}
+
+                {isFetchingNextPage && (
+                    <Typography className="problems-section-status">Loading more problems...</Typography>
+                )}
+            </Box>
+
+            <Box id="problems-section-footer">
+                <Typography className="problems-section-footer-text">
+                    There are currently <strong>{totalProblemsCount}</strong> coding problems available for you to solve. Keep practicing and improving your coding skills!
+                </Typography>
             </Box>
         </Box>
     )
