@@ -53,7 +53,7 @@ function ProblemsSection() {
             const response = await api.get(`/problems/public?${params.toString()}`);
             return response.data;
         },
-        getNextPageParam: (lastPage) => lastPage.length === 20 ? lastPage[lastPage.length - 1].id : undefined
+        getNextPageParam: (lastPage) => lastPage.length === 21 ? lastPage[19].id : undefined
     });
 
     const codingProblems = codingProblemsPage?.pages.flatMap(page => page.length === 21 ? page.slice(0, 20) : page) || [];
