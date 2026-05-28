@@ -82,7 +82,7 @@ function ActivitySection() {
                     <ButtonBase className="daily-item" 
                                 onClick={() => navigate(`/problems/${problemOfTheDay?.id}/description`)}>
                         <Box className="daily-item-content">
-                            <Box>
+                            <Box textAlign={"left"}>
                                 <Typography className="daily-item-label">Problem of the Day</Typography>
                                 <Typography className="daily-item-title">{problemOfTheDay?.title}</Typography>    
                             </Box>
