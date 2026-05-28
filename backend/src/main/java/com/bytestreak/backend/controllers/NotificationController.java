@@ -35,5 +35,12 @@ public class NotificationController {
         notificationService.markNotificationsAsRead(account);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/delete-all")
+    public ResponseEntity<?> deleteAllNotifications(Authentication authentication) {
+        Account account = accountRepository.findByEmail(authentication.getName());
+        notificationService.deleteNotifications(account);
+        return ResponseEntity.ok().build();
+    }
     
 }

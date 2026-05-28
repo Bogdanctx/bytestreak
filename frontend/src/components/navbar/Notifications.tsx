@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Popover } from '@mui/material';
 
 import { api } from '../../api';
@@ -45,6 +46,18 @@ function Notifications() {
         }
     });
 
+    const deleteAllNotificationsMutation = useMutation({
+        mutationFn: async () => {
+            return api.post('/notifications/delete-all');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+        onError: (error) => {
+            console.error('Error deleting all notifications:', error);
+        }
+    });
+
     const hasUnreadNotifications = notifications.some(notification => !notification.read);
 
     if (!notificationsQueryIsSuccess) {
@@ -77,27 +90,42 @@ function Notifications() {
                     }
                 }}
             >
-                {notifications.length === 0 ? (
-                    <Box className='notifications-empty-state'>No new notifications</Box>
-                ) : (
-                    <Box className='notifications-list'>
-                        {notifications.map(notification => {
-                            
-                            switch (notification.type) {
-                                case 'FRIEND_REQUEST':
-                                    return <FriendRequestNotification key={notification.id} notification={notification} />;
-                                case 'STREAK_INVITE':
-                                    return <StreakInviteNotification key={notification.id} notification={notification} />;
-                                case 'ROLE_UPDATE':
-                                    return <RoleUpdateNotification key={notification.id} notification={notification} />;
-                                case 'SEASON_END':
-                                    return <SeasonEndNotification key={notification.id} notification={notification} />;
-                                default:
-                                    return null;
-                            }
-                        })}
-                    </Box>
-                )}
+                <Box className='notifications-popover-content'>
+                    {notifications.length > 0 && (
+                        <Box className='notifications-actions'>
+                            <Button
+                                className='notifications-clear-all-button'
+                                onClick={() => deleteAllNotificationsMutation.mutate()}
+                                disabled={deleteAllNotificationsMutation.isPending}
+                                startIcon={<DeleteIcon className='notifications-clear-all-icons' />}
+                                disableRipple
+                            >
+                                Delete all notifications
+                            </Button>
+                        </Box>
+                    )}
+
+                    {notifications.length === 0 ? (
+                        <Box className='notifications-empty-state'>No new notifications</Box>
+                    ) : (
+                        <Box className='notifications-list'>
+                            {notifications.map(notification => {
+                                switch (notification.type) {
+                                    case 'FRIEND_REQUEST':
+                                        return <FriendRequestNotification key={notification.id} notification={notification} />;
+                                    case 'STREAK_INVITE':
+                                        return <StreakInviteNotification key={notification.id} notification={notification} />;
+                                    case 'ROLE_UPDATE':
+                                        return <RoleUpdateNotification key={notification.id} notification={notification} />;
+                                    case 'SEASON_END':
+                                        return <SeasonEndNotification key={notification.id} notification={notification} />;
+                                    default:
+                                        return null;
+                                }
+                            })}
+                        </Box>
+                    )}
+                </Box>
             </Popover>
         </>
     );

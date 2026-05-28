@@ -16,8 +16,38 @@
 	color: var(--text-secondary);
 }
 
+.notifications-popover-content {
+	display: flex;
+	flex-direction: column-reverse;
+	max-height: 420px;
+	overflow: hidden;
+}
+
+.notifications-actions {
+	background-color: var(--bg-1);
+	border-top: 1px solid var(--bg-3);
+	padding: 8px 16px;
+}
+
+.notifications-clear-all-icon {
+	color: var(--danger, #ff6b6b);
+}
+
+.notifications-clear-all-button {
+	justify-content: flex-start !important;
+	color: var(--danger, #ff6b6b) !important;
+	text-transform: none !important;
+	font-weight: 600 !important;
+}
+
+.notifications-clear-all-button:hover {
+	background-color: rgba(255, 107, 107, 0.08) !important;
+}
+
 .notifications-list {
 	display: flex;
 	flex-direction: column;
-    max-height: 420px;
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
 }
