@@ -3,7 +3,6 @@ package com.bytestreak.backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,12 +13,8 @@ import java.util.List;
 
 import com.bytestreak.backend.services.CreatorService;
 
-import jakarta.mail.Quota.Resource;
-
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
-import com.bytestreak.backend.exceptions.ResourceAlreadyExistsException;
-import com.bytestreak.backend.exceptions.ResourceNotFoundException;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;

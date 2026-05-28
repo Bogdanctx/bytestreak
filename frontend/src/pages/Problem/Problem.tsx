@@ -22,6 +22,7 @@ function Problem() {
     const [activeTab, setActiveTab] = useState("description");
     const [results, setResults] = useState<ISubmissionResult[]>([]);
     const [solvedDailyChallenge, setSolvedDailyChallenge] = useState(false);
+    const [solvedCodingProblem, setSolvedCodingProblem] = useState(false);
     const [problemPanelWidth, setProblemPanelWidth] = useState(440);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
 
@@ -37,15 +38,22 @@ function Problem() {
         },
     });
 
-    const isCodingProblemDoneToday = account?.lastDailyProblemDate === todayUTCString;
+    const isDailyCodingProblemDoneToday = account?.lastDailyProblemDate === todayUTCString;
 
     useEffect(() => {
         // check for each result if the status is 3
         let allTestsPassed = results.every(result => result.statusId === 3);
 
-        if (results.length > 0 && allTestsPassed && !isCodingProblemDoneToday) {
-            setSolvedDailyChallenge(true);
-            queryClient.invalidateQueries({ queryKey: ['account'] });
+        if (allTestsPassed) {
+            if (isDailyCodingProblemDoneToday) {
+                setSolvedCodingProblem(true);
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+            }
+            else {
+                setSolvedDailyChallenge(true);
+                setSolvedCodingProblem(true);
+                queryClient.invalidateQueries({ queryKey: ['account'] });
+            }
         }
 
     }, [results]);
@@ -92,10 +100,10 @@ function Problem() {
 
     return (
         <Box className={`problem-page-container ${isResizingPanels ? 'is-resizing' : ''}`} ref={problemPageRef}>
-            {solvedDailyChallenge && (
+            {solvedCodingProblem && (
                 <Dialog 
-                    open={solvedDailyChallenge} 
-                    onClose={() => setSolvedDailyChallenge(false)}
+                    open={solvedCodingProblem} 
+                    onClose={() => setSolvedCodingProblem(false)}
                     slotProps={{
                         paper: {
                             sx: {
@@ -116,22 +124,39 @@ function Problem() {
                         </Typography>
                     </DialogTitle>
                     
-                    <DialogContent>
-                        <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
-                            You successfully solved the Problem of the Day.
-                        </Typography>
-                        
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-                            <Box>
-                                <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>
-                                <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
+                    {solvedDailyChallenge && (
+                        <DialogContent>
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
+                                You successfully solved the Problem of the Day.
+                            </Typography>
+                            
+                            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                                <Box>
+                                    <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>
+                                    <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
+                                </Box>
+                                <Box>
+                                    <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+10</Typography>
+                                    <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>Coins</Typography>
+                                </Box>
                             </Box>
-                            <Box>
-                                <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+10</Typography>
-                                <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>Coins</Typography>
+                        </DialogContent>
+                    )}
+
+                    {!solvedDailyChallenge && (
+                        <DialogContent>
+                            <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
+                                You successfully solved the coding problem!
+                            </Typography>
+                            
+                            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                                <Box>
+                                    <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>
+                                    <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </DialogContent>
+                        </DialogContent>
+                    )}
 
                     <DialogActions sx={{ justifyContent: 'center', mt: 2 }}>
                         <Button 

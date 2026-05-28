@@ -30,7 +30,7 @@ public class CreatorService {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public List<Problem> getProblemsByCreatorId(Long creatorId) throws ResourceNotFoundException {
+    public List<Problem> getProblemsByCreatorId(Long creatorId) {
         Account creator = accountRepository.findById(creatorId).orElse(null);
 
         if (creator == null) {

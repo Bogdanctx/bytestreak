@@ -211,6 +211,10 @@ public class ProblemController {
                     accountRepository.save(account);
                 }
             }
+            else { // if it's not the problem of the day, just give them some XP for solving it
+                account.setCurrentXP(account.getCurrentXP() + 20);
+                accountRepository.save(account);
+            }
 
             return ResponseEntity.ok(results);
 
