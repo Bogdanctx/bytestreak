@@ -21,7 +21,6 @@ function Problem() {
     const { id } = useParams<{ id: string }>();
     const [activeTab, setActiveTab] = useState("description");
     const [results, setResults] = useState<ISubmissionResult[]>([]);
-    const [solvedDailyChallenge, setSolvedDailyChallenge] = useState(false);
     const [solvedCodingProblem, setSolvedCodingProblem] = useState(false);
     const [problemPanelWidth, setProblemPanelWidth] = useState(440);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
@@ -41,22 +40,17 @@ function Problem() {
     const isDailyCodingProblemDoneToday = account?.lastDailyProblemDate === todayUTCString;
 
     useEffect(() => {
-        // check for each result if the status is 3
-        let allTestsPassed = results.every(result => result.statusId === 3);
-
-        if (allTestsPassed) {
-            if (isDailyCodingProblemDoneToday) {
-                setSolvedCodingProblem(true);
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-            }
-            else {
-                setSolvedDailyChallenge(true);
-                setSolvedCodingProblem(true);
-                queryClient.invalidateQueries({ queryKey: ['account'] });
-            }
+        if (!results || results.length === 0) {
+            return;
         }
 
-    }, [results]);
+        const allTestsPassed = results.every(result => result.statusId === 3);
+
+        if (allTestsPassed) {
+            setSolvedCodingProblem(true);
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+        }
+    }, [results, codingProblem, isDailyCodingProblemDoneToday, queryClient]);
 
     useEffect(() => {
         const handlePointerMove = (event: PointerEvent) => {
@@ -124,7 +118,7 @@ function Problem() {
                         </Typography>
                     </DialogTitle>
                     
-                    {solvedDailyChallenge && (
+                    {(codingProblem.dailyChallange && !isDailyCodingProblemDoneToday) ? (
                         <DialogContent>
                             <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
                                 You successfully solved the Problem of the Day.
@@ -141,9 +135,7 @@ function Problem() {
                                 </Box>
                             </Box>
                         </DialogContent>
-                    )}
-
-                    {!solvedDailyChallenge && (
+                    ) : (
                         <DialogContent>
                             <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
                                 You successfully solved the coding problem!
@@ -161,7 +153,7 @@ function Problem() {
                     <DialogActions sx={{ justifyContent: 'center', mt: 2 }}>
                         <Button 
                             variant="contained" 
-                            onClick={() => setSolvedDailyChallenge(false)}
+                            onClick={() => setSolvedCodingProblem(false)}
                             sx={{ 
                                 backgroundColor: '#6b5aff', 
                                 borderRadius: '20px', 

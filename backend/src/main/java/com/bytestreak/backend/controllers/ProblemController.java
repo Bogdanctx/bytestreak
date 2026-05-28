@@ -199,7 +199,7 @@ public class ProblemController {
             }
 
             // if the solution is correct and solved the problem of the day, update the user's streak
-            if (problem.isProblemOfTheDay()) {
+            if (problem.isDailyChallange()) {
                 LocalDate today = LocalDate.now(ZoneOffset.UTC);
 
                 if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -22,6 +21,7 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
 import com.bytestreak.backend.services.DailyChallangesService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -120,6 +120,16 @@ public class AccountController {
     @GetMapping("/reset-season")
     public ResponseEntity<?> resetSeason() {
         dailyChallangesService.resetSeason();
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/reset-daily")
+    public ResponseEntity<?> resetDaily() {
+        dailyChallangesService.generateDailyChallenges();
+        List<Account> allAccounts = accountRepository.findAll();
+        for(Account account : allAccounts) {
+            account.setLastDailyProblemDate(null);
+            accountRepository.save(account);
+        }
         return ResponseEntity.ok().build();
     }
 }

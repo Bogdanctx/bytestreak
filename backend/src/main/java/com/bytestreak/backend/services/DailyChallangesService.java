@@ -39,18 +39,19 @@ public class DailyChallangesService {
             quizRepository.delete(currentDailyQuiz);
         }
 
-        Problem dailyProblem = problemRepository.findByIsProblemOfTheDayTrue();
+        Problem dailyProblem = problemRepository.findByIsDailyChallangeTrue();
         
         if (dailyProblem != null) {
-            dailyProblem.setProblemOfTheDay(false);
+            dailyProblem.setDailyChallange(false);
             problemRepository.save(dailyProblem);
         }
 
         List<Problem> allProblems = problemRepository.findAll();
         Problem newDailyProblem = allProblems.get((int) (Math.random() * allProblems.size()));
-        newDailyProblem.setProblemOfTheDay(true);
+        newDailyProblem.setDailyChallange(true);
         problemRepository.save(newDailyProblem);
     }
+
 
     // This method can be called at the end of each season to reset any season-specific data
     // automatically called at the end of each month

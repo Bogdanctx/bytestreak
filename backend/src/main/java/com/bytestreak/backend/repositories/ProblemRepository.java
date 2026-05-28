@@ -15,5 +15,5 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     List<Problem> findByVisibilityAndDifficulty(Visibility visibility, Difficulty difficulty);
     List<Problem> findByVisibility(Visibility visibility);
     Problem findBySlug(String slug);
-    Problem findByIsProblemOfTheDayTrue();
+    Problem findByIsDailyChallangeTrue();
 }

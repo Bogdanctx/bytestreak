@@ -34,7 +34,7 @@ public class CreatorController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/problems?creatorId={creatorId}")
+    @GetMapping("/problems")
     public ResponseEntity<?> getProblemsByCreatorId(@RequestParam Long creatorId) {
         List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
         return ResponseEntity.ok(problems);

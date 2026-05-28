@@ -64,8 +64,6 @@ public class Problem {
     private String testCasesPath = null;
     private String validationScriptPath = null;
 
-    private boolean isProblemOfTheDay = false;
-
     @Formula("(SELECT COUNT(*) FROM problem_votes pv WHERE pv.problem_id = id AND pv.is_like = true)")
     private int likes;
 
@@ -75,6 +73,8 @@ public class Problem {
     @Transient
     @JsonProperty("userVote")
     private String userVote = null; // "like", "dislike", or null
+
+    private boolean isDailyChallange = false;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.HIDDEN;

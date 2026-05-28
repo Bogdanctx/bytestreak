@@ -38,7 +38,7 @@ public class ProblemService {
     }
 
     public Problem getProblemOfTheDay() {
-        Problem problemOfTheDay = problemRepository.findByIsProblemOfTheDayTrue();
+        Problem problemOfTheDay = problemRepository.findByIsDailyChallangeTrue();
         if (problemOfTheDay == null) {
             throw new RuntimeException("No problem of the day found");
         }

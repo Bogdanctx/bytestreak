@@ -23,6 +23,7 @@ export interface IProblem {
     likes: number;
     dislikes: number;
     userVote: "like" | "dislike" | null;
+    dailyChallange: boolean;
 }
 
 export interface IProblemCreateDTO {

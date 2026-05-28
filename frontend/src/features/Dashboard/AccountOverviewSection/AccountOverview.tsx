@@ -80,11 +80,11 @@ function AccountOverview() {
                         
                         <Box>
                             <Box className="account-overview-actions">
-                                <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: '#4A4A4A', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
                                     <SettingsIcon fontSize="small" />
                                 </IconButton>
 
-                                <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: '#4A4A4A', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
                                     <LogoutIcon fontSize="small" />
                                 </IconButton>
                             </Box>
