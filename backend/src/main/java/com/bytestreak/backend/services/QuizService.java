@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bytestreak.backend.entities.Quiz;
+import com.bytestreak.backend.exceptions.OllamaGenerationException;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.repositories.AccountRepository;
@@ -39,7 +40,7 @@ public class QuizService {
 
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
 
-    public Quiz generateQuiz(String programmingLanguage, String customTopic) throws Exception {
+    public Quiz generateQuiz(String programmingLanguage, String customTopic) {
         if (programmingLanguage == null || programmingLanguage.isEmpty()) {
             programmingLanguage = "Any";
         }
@@ -50,50 +51,20 @@ public class QuizService {
 
         int judge0LangId = programmingLanguage.equals("Python") ? 71 : 54;
 
-        List<String> pythonTopics = List.of(
-            "list comprehensions",
-            "generators",
-            "decorators",
-            "regular expressions",
-            "recursion",
-            "binary search",
-            "dynamic programming",
-            "exceptions handling",
-            "classes and objects",
-            "inheritance",
-            "polymorphism",
-            "abstract base classes",
-            "loops and conditionals",
-            "global vs local variables",
-            "graph algorithms",
-            "string manipulation",
-            "stack",
-            "queue",
-            "sort algorithms",
-            "greedy algorithms",
-            "bit manipulation"
+        List<String> pythonTopics = List.of("list comprehensions", "generators", "decorators", "regular expressions",
+            "recursion", "binary search", "dynamic programming", "exceptions handling", "classes and objects",
+            "inheritance", "polymorphism", "abstract base classes", "loops and conditionals",
+            "global vs local variables", "graph algorithms", "string manipulation", "stack",
+            "queue", "sort algorithms", "greedy algorithms", "bit manipulation"
         );
-        List<String> cppTopics = List.of(
-            "pointers and references",
-            "recursion",
-            "binary search",
-            "dynamic programming",
-            "exceptions handling",
-            "classes and objects",
-            "inheritance",
-            "polymorphism",
-            "abstract classes and interfaces",
-            "loops and conditionals",
-            "graph algorithms",
-            "string manipulation",
-            "stack",
-            "queue",
-            "sort algorithms",
-            "greedy algorithms",
-            "bit manipulation",
-            "memory management"
+        List<String> cppTopics = List.of("pointers and references", "recursion", "binary search", "dynamic programming",
+            "exceptions handling", "classes and objects", "inheritance", "polymorphism",
+            "abstract classes and interfaces", "loops and conditionals", "graph algorithms", "string manipulation",
+            "stack", "queue", "sort algorithms", "greedy algorithms",
+            "bit manipulation", "memory management"
         );
 
+        boolean quizGenerated = false;
         // quiz generation pipeline with retries
         for(int i = 0; i < 3; i++) {
             String randomTopic = null;
@@ -159,13 +130,20 @@ public class QuizService {
 
 
                 // create the quiz
+                quizGenerated = true;
                 Quiz quiz = new Quiz(snippet, programmingLanguage, distractors, correctAnswer, 0);
                 return quiz;
-            } catch (Exception e) {
-                throw new RuntimeException("Pipeline failed: " + e.getMessage());
+            } 
+            catch (Exception e) {
+                throw new OllamaGenerationException("Error during quiz generation: " + e.getMessage());
             }
         }
-        throw new RuntimeException("Failed to generate a valid quiz after multiple attempts.");
+
+        if (!quizGenerated) {
+            throw new OllamaGenerationException("Failed to generate a valid quiz after multiple attempts");
+        }
+
+        return null;
     }
 
     public List<Quiz> generateBulkQuizzes(int count) {
@@ -175,7 +153,8 @@ public class QuizService {
             try {
                 Quiz quiz = generateQuiz(null, null);
                 quizzes.add(quiz);
-            } catch (Exception e) {
+            } 
+            catch (Exception e) {
                 System.out.println("Error generating quiz " + (i+1) + ": " + e.getMessage());
                 return quizzes; // return the quizzes generated so far
             }
@@ -212,7 +191,7 @@ public class QuizService {
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
 
         if (today.equals(solver.getLastDailyQuizDate())) {
-            throw new RuntimeException("Daily quiz already solved today");
+            return false;
         }
 
         if (isCorrect) {

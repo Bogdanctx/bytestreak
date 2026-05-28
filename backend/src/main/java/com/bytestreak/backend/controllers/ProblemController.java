@@ -214,7 +214,8 @@ public class ProblemController {
 
             return ResponseEntity.ok(results);
 
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             System.out.println("Error parsing code templates JSON: " + e.getMessage());
         }
 
