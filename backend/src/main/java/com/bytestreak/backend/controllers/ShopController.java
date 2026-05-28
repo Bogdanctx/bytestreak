@@ -47,9 +47,6 @@ public class ShopController {
     @PostMapping("/buy/{cssEffectStyle}")
     public ResponseEntity<?> purchaseEffect(@PathVariable String cssEffectStyle, Authentication authentication) {
         Account account = accountRepository.findByEmail(authentication.getName());
-        if (account == null) {
-            return ResponseEntity.status(404).body("Account not found");
-        }
 
         if (account.getPurchasedEffects() != null && account.getPurchasedEffects().contains(cssEffectStyle)) {
             return ResponseEntity.badRequest().body("Effect already purchased");
@@ -81,9 +78,6 @@ public class ShopController {
     @PutMapping("/activate/{cssEffectStyle}")
     public ResponseEntity<?> activateEffect(@PathVariable String cssEffectStyle, Authentication authentication) {
         Account account = accountRepository.findByEmail(authentication.getName());
-        if (account == null) {
-            return ResponseEntity.status(404).body("Account not found");
-        }
 
         if (account.getPurchasedEffects() == null || !account.getPurchasedEffects().contains(cssEffectStyle)) {
             return ResponseEntity.badRequest().body("Effect not purchased");

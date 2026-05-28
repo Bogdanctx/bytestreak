@@ -13,6 +13,8 @@ import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
 
+import jakarta.validation.ValidationException;
+
 import java.util.List;
 
 @Service
@@ -138,7 +140,7 @@ public class StreakService {
         }
 
         if (solver.getCoins() < 15) {
-            throw new IllegalArgumentException("Not enough coins to save the streak");
+            throw new ValidationException("Not enough coins to save the streak. You need at least 15 coins.");
         }
 
         for (Streak streak: activeStreaks) {
