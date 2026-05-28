@@ -65,14 +65,14 @@ public class ProblemController {
 
 
     @GetMapping("/public")
-    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
+    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty) {
         List<Problem> problems = problemService.getPublicProblems(difficulty);
 
         return ResponseEntity.ok(problems);
     }
 
     @PutMapping("/{id}/toggle-problem-visibility")
-    public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id) {
         Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
@@ -124,7 +124,7 @@ public class ProblemController {
     }
 
     @GetMapping("/problem-of-the-day")
-    public ResponseEntity<Problem> getProblemOfTheDay(Authentication authentication) {
+    public ResponseEntity<Problem> getProblemOfTheDay() {
         try {
             Problem problemOfTheDay = problemService.getProblemOfTheDay();
             return ResponseEntity.ok(problemOfTheDay);
