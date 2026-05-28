@@ -44,9 +44,6 @@ public class FeedController {
     @GetMapping("/posts")
     public ResponseEntity<?> getFeedPosts(Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
-        if (me == null) {
-            return ResponseEntity.status(404).body("Authenticated user not found");
-        }
 
         try {
             List<Post> feedPosts = feedService.getFeedPosts(me);
@@ -61,9 +58,6 @@ public class FeedController {
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody PostCreateDTO postCreateDTO, Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
-        if (me == null) {
-            return ResponseEntity.status(404).body("Authenticated user not found");
-        }
 
         try {
             Post newPost = feedService.createPost(me, postCreateDTO);
@@ -77,8 +71,9 @@ public class FeedController {
 
     // GET /social/feed/posts/{postId} - Get a specific post by ID (optional, for future use)
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<?> getPostById(@PathVariable Long postId, Authentication authentication) {
+    public ResponseEntity<?> getPostById(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElse(null);
+
         if (post == null) {
             return ResponseEntity.status(404).body("Post not found");
         }
@@ -122,8 +117,9 @@ public class FeedController {
 
     // GET /social/feed/posts/{postId}/comments - Get comments for a specific post
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<?> getCommentsForPost(@PathVariable Long postId, Authentication authentication) {
+    public ResponseEntity<?> getCommentsForPost(@PathVariable Long postId) {
         List<PostComment> comments = postCommentRepository.findByPostId(postId);
+        
         return ResponseEntity.ok(comments);
     }
 

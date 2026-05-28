@@ -45,7 +45,7 @@ function UserProfile() {
     });
 
     const removeFriendMutation = useMutation({
-        mutationFn: async (friendId: number) => api.post(`/friends/remove?friendId=${friendId}`),
+        mutationFn: async (friendId: number) => api.delete(`/friends?friendId=${friendId}`),
         onSuccess: () => {
             setFriendToRemove(null);
     

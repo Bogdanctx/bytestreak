@@ -55,7 +55,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
 
     const deleteFriendMutation = useMutation({
         mutationFn: async (friendId: number) => {
-            const response = await api.post(`/friends/remove?friendId=${friendId}`);
+            const response = await api.delete(`/friends?friendId=${friendId}`);
             return response.data;
         },
         onSuccess: () => {

@@ -3,7 +3,9 @@ package com.bytestreak.backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,11 @@ public class FriendsController {
     @PostMapping("/send-request")
     public ResponseEntity<?> addFriend(@RequestParam Long friendId, Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
-        Account friend = accountRepository.findById(friendId).orElseThrow(() -> new IllegalArgumentException("Friend not found"));
+        Account friend = accountRepository.findById(friendId).orElse(null);
+
+        if (friend == null) {
+            return ResponseEntity.status(404).body("Friend account not found");
+        }
         
         FriendInvite invite = friendService.sendConnectionRequest(me, friend);
 
@@ -59,8 +65,8 @@ public class FriendsController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/remove")
-    public ResponseEntity<?> removeFriend(@RequestParam Long friendId, Authentication authentication) {
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<?> removeFriend(@PathVariable Long friendId, Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
         friendService.removeFriend(me, friendId);
         return ResponseEntity.ok().build();
@@ -75,7 +81,7 @@ public class FriendsController {
     }   
 
     @GetMapping("/get-friends")
-    public ResponseEntity<?> getFriendsList(@RequestParam Long accountId, Authentication authentication) {
+    public ResponseEntity<?> getFriendsList(@RequestParam Long accountId) {
         Account targetAccount = accountRepository.findById(accountId).orElse(null);
 
         if (targetAccount == null) {
@@ -98,7 +104,7 @@ public class FriendsController {
     }
 
     @GetMapping("/get-friendship")
-    public ResponseEntity<?> getFriendship(@RequestParam Long accountId1, @RequestParam Long accountId2, Authentication authentication) {
+    public ResponseEntity<?> getFriendship(@RequestParam Long accountId1, @RequestParam Long accountId2) {
         Account account1 = accountRepository.findById(accountId1).orElse(null);
         Account account2 = accountRepository.findById(accountId2).orElse(null);
 
