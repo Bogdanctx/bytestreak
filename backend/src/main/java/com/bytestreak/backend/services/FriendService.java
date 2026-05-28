@@ -16,8 +16,6 @@ import com.bytestreak.backend.enums.InviteStatus;
 import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.repositories.FriendshipRepository;
 
-import java.util.List;
-
 @Service
 public class FriendService {
     @Autowired

@@ -1,7 +1,6 @@
 package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.repositories.AccountRepository;
