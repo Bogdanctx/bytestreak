@@ -1,21 +1,18 @@
 package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.repositories.ProblemVoteRepository;
-import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.ProblemVote;
 import com.bytestreak.backend.enums.Difficulty;
-import com.bytestreak.backend.enums.Visibility;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -26,72 +23,27 @@ public class ProblemService {
     @Autowired
     private ProblemVoteRepository problemVoteRepository;
     
-    @Autowired
-    private AccountRepository accountRepository;
-    
     public List<Problem> getPublicProblems(String difficulty, String query, Long cursor, boolean excludeSolved, Authentication authentication) {
-        final int LIMIT = 20;
-        
-        // If query is provided, search by title
-        if (query != null && !query.isBlank()) {
-            List<Problem> results;
-            
-            if (difficulty == null || difficulty.isBlank()) {
-                results = problemRepository.findPublicProblemsByTitleWithCursor(Visibility.PUBLIC, query, cursor);
-            } else {
-                try {
-                    Difficulty difficultyEnum = Difficulty.valueOf(difficulty.toUpperCase());
-                    results = problemRepository.findPublicProblemsByTitleAndDifficultyWithCursor(Visibility.PUBLIC, difficultyEnum, query, cursor);
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
-                }
+        Difficulty diff = null;
+        if (difficulty != null) {
+            try {
+                diff = Difficulty.valueOf(difficulty.toUpperCase());
+            } 
+            catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
             }
-            
-            // Filter out solved problems if requested
-            if (excludeSolved && authentication != null) {
-                Account account = accountRepository.findByEmail(authentication.getName());
-                if (account != null) {
-                    Set<Problem> solvedProblems = account.getSolvedProblems();
-                    results = results.stream().filter(p -> !solvedProblems.contains(p)).collect(Collectors.toList());
-                }
-            }
-            
-            // Return only LIMIT + 1 results (the extra one indicates if there are more results)
-            return results.stream().limit(LIMIT + 1).collect(Collectors.toList());
-        }
-        
-        // Original behavior for difficulty filter without search
-        if (difficulty == null || difficulty.isBlank()) {
-            List<Problem> problems = problemRepository.findByVisibility(Visibility.PUBLIC);
-            
-            if (excludeSolved && authentication != null) {
-                Account account = accountRepository.findByEmail(authentication.getName());
-                if (account != null) {
-                    Set<Problem> solvedProblems = account.getSolvedProblems();
-                    problems = problems.stream().filter(p -> !solvedProblems.contains(p)).collect(Collectors.toList());
-                }
-            }
-            
-            return problems;
         }
 
-        try {
-            Difficulty difficultyEnum = Difficulty.valueOf(difficulty.toUpperCase());
-            List<Problem> problems = problemRepository.findByVisibilityAndDifficulty(Visibility.PUBLIC, difficultyEnum);
-            
-            if (excludeSolved && authentication != null) {
-                Account account = accountRepository.findByEmail(authentication.getName());
-                if (account != null) {
-                    Set<Problem> solvedProblems = account.getSolvedProblems();
-                    problems = problems.stream().filter(p -> !solvedProblems.contains(p)).collect(Collectors.toList());
-                }
-            }
-            
-            return problems;
-        } 
-        catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
+        String accountEmail = authentication.getName();
+        
+        int pageNumber = cursor != null ? cursor.intValue() : 0;
+        PageRequest pageRequest = PageRequest.of(pageNumber, 20);
+
+        if (query != null && !query.isEmpty()) {
+            query = "%" + query.toLowerCase() + "%";
         }
+
+        return problemRepository.findPublicProblems(diff, query, excludeSolved, accountEmail, pageRequest).getContent();
     }
 
     public Problem getProblemOfTheDay() {

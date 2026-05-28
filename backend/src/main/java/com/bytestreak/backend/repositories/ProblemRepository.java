@@ -3,6 +3,9 @@ package com.bytestreak.backend.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Window;
 
 import java.util.List;
 
@@ -19,9 +22,26 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     Problem findBySlug(String slug);
     Problem findByIsDailyChallangeTrue();
     
-    @Query("SELECT p FROM Problem p WHERE p.visibility = :visibility AND LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) AND (:cursor IS NULL OR p.id > :cursor) ORDER BY p.id ASC LIMIT 21")
-    List<Problem> findPublicProblemsByTitleWithCursor(@Param("visibility") Visibility visibility, @Param("query") String query, @Param("cursor") Long cursor);
-    
-    @Query("SELECT p FROM Problem p WHERE p.visibility = :visibility AND p.difficulty = :difficulty AND LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) AND (:cursor IS NULL OR p.id > :cursor) ORDER BY p.id ASC LIMIT 21")
-    List<Problem> findPublicProblemsByTitleAndDifficultyWithCursor(@Param("visibility") Visibility visibility, @Param("difficulty") Difficulty difficulty, @Param("query") String query, @Param("cursor") Long cursor);
+    @Query("""
+        SELECT p FROM Problem p
+        WHERE p.visibility = 'PUBLIC'
+        AND (:difficulty IS NULL OR p.difficulty = :difficulty)
+        AND (:query IS NULL OR LOWER(p.title) LIKE :query)
+        AND (
+            :excludeSolved = false OR 
+            NOT EXISTS (
+                SELECT solvedProblems
+                FROM Account a
+                JOIN a.solvedProblems solvedProblems
+                WHERE a.email = :accountEmail AND solvedProblems.id = p.id
+            )
+        )
+    """)
+    Page<Problem> findPublicProblems(
+        @Param("difficulty") Difficulty difficulty, 
+        @Param("query") String query, 
+        @Param("excludeSolved") boolean excludeSolved, 
+        @Param("accountEmail") String accountEmail, 
+        Pageable pageable
+    );
 }
