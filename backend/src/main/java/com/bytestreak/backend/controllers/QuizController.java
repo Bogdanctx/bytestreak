@@ -34,7 +34,7 @@ public class QuizController {
 
     
     @PostMapping("/generate-quiz")
-    public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request, Authentication authentication) {
+    public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request) {
         try {
             Quiz quiz = quizService.generateQuiz(request.getProgrammingLanguage(), request.getCustomTopic());
             return ResponseEntity.ok(quiz);
@@ -45,7 +45,7 @@ public class QuizController {
     }
 
     @PostMapping("/generate-bulk")
-    public ResponseEntity<?> generateBulkQuizzes(@RequestParam(required = false) Integer numberOfQuizzes, Authentication authentication) {
+    public ResponseEntity<?> generateBulkQuizzes(@RequestParam(required = false) Integer numberOfQuizzes) {
         try {
             if (numberOfQuizzes == null || numberOfQuizzes <= 0) {
                 numberOfQuizzes = 5;
@@ -61,13 +61,13 @@ public class QuizController {
     
     
     @GetMapping("/queue")
-    public ResponseEntity<?> getDrafts(Authentication authentication) {
+    public ResponseEntity<?> getDrafts() {
         List<Quiz> drafts = quizRepository.findAllByOrderByQueuePriorityAsc();
         return ResponseEntity.ok(drafts);
     }
 
     @PutMapping("/save")
-    public ResponseEntity<?> saveQuizzes(@RequestBody List<Quiz> quizzes, Authentication authentication) {
+    public ResponseEntity<?> saveQuizzes(@RequestBody List<Quiz> quizzes) {
         try {
             for(int i = 0; i < quizzes.size(); i++) {
                 quizzes.get(i).setQueuePriority(i + 1);
@@ -82,7 +82,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteQuiz(@RequestParam Long id, Authentication authentication) {
+    public ResponseEntity<?> deleteQuiz(@RequestParam Long id) {
         try {
             quizRepository.deleteById(id);
             return ResponseEntity.ok("Quiz deleted successfully");
@@ -92,7 +92,7 @@ public class QuizController {
     }
 
     @GetMapping("/daily")
-    public ResponseEntity<?> getDailyQuiz(Authentication authentication) {
+    public ResponseEntity<?> getDailyQuiz() {
         try {
             Quiz dailyQuiz = quizRepository.findTopByOrderByQueuePriority();
 
