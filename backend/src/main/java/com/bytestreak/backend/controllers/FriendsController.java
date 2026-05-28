@@ -43,7 +43,7 @@ public class FriendsController {
         Account friend = accountRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
-            return ResponseEntity.status(404).body("Friend account not found");
+            return ResponseEntity.notFound().build();
         }
         
         FriendInvite invite = friendService.sendConnectionRequest(me, friend);
@@ -85,7 +85,7 @@ public class FriendsController {
         Account targetAccount = accountRepository.findById(accountId).orElse(null);
 
         if (targetAccount == null) {
-            return ResponseEntity.status(404).body("Account not found");
+            return ResponseEntity.notFound().build();
         }
 
         List<Friendship> friendships = friendshipRepository.findFriendshipsOfAccount(targetAccount);
@@ -94,7 +94,8 @@ public class FriendsController {
             .map(friendship -> {
                 if (friendship.getAccount1().getId().equals(targetAccount.getId())) {
                     return friendship.getAccount2();
-                } else {
+                } 
+                else {
                     return friendship.getAccount1();
                 }
             })
@@ -109,13 +110,13 @@ public class FriendsController {
         Account account2 = accountRepository.findById(accountId2).orElse(null);
 
         if (account1 == null || account2 == null) {
-            return ResponseEntity.status(404).body("Account not found");
+            return ResponseEntity.notFound().build();
         }
 
         Friendship friendship = friendshipRepository.findByAccount1AndAccount2(account1, account2);
 
         if (friendship == null) {
-            return ResponseEntity.status(404).body("Friendship not found");
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(friendship);
