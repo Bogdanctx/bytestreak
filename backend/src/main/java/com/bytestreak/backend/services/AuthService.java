@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.bytestreak.backend.dto.LoginFormDTO;
 import com.bytestreak.backend.dto.RegisterAccountDTO;
 import com.bytestreak.backend.entities.Account;
+import com.bytestreak.backend.exceptions.ResourceAlreadyExistsException;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
+import com.bytestreak.backend.exceptions.ValidationException;
 import com.bytestreak.backend.repositories.AccountRepository;
 
 import org.springframework.http.HttpHeaders;
@@ -54,11 +57,11 @@ public class AuthService {
         Account account = accountRepository.findByEmail(email);
 
         if (account == null) {
-            throw new RuntimeException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         if (!passwordEncoder.matches(password, account.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new ValidationException("Invalid email or password");
         }
 
         String token = jwtService.generateToken(account);
@@ -87,7 +90,11 @@ public class AuthService {
         String username = registerRequest.getUsername();
 
         if(accountRepository.findByEmail(email) != null) {
-            throw new RuntimeException("Email already in use");
+            throw new ResourceAlreadyExistsException("Email already in use");
+        }
+
+        if (accountRepository.findByUsername(username) != null) {
+            throw new ResourceAlreadyExistsException("Username already in use");
         }
 
         Account newAccount = new Account(username, email, encodedPassword);

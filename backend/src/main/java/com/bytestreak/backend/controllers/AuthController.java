@@ -70,16 +70,7 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDTO loginRequest, HttpServletResponse response) {
-        Map<String, Object> responseBody;
-
-        try {
-            responseBody = authService.loginUser(loginRequest, response);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        
-        
+        Map<String, Object> responseBody = authService.loginUser(loginRequest, response);
         response = (HttpServletResponse) responseBody.get("response");
         Account account = (Account) responseBody.get("account");
 
@@ -89,14 +80,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterAccountDTO registerRequest) {
-        Account newAccount;
-
-        try {
-            newAccount = authService.registerUser(registerRequest);
-        } 
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        Account newAccount = authService.registerUser(registerRequest);
 
         return ResponseEntity.ok(newAccount);
     }
