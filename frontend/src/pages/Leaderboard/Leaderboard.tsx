@@ -1,31 +1,23 @@
 import { useState, useEffect } from 'react';
 import {
     Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
     CircularProgress,
-    Paper,
     Button,
-    Divider,
     TextField,
-    InputAdornment
+    InputAdornment,
 } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import SearchIcon from '@mui/icons-material/Search';
-
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
 import { useNavigate } from 'react-router-dom';
-import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
 import Loading from '../../components/ui/Loading';
+import LeaderboardPodium from './LeaderboardPodium';
+import LeaderboardList from './LeaderboardList';
 import './Leaderboard.style.css';
-import AccountAvatar from '../../components/ui/AccountAvatar';
 
 function Leaderboard() {
     const navigate = useNavigate();
@@ -33,6 +25,7 @@ function Leaderboard() {
     const [daysLeft, setDaysLeft] = useState<number>(0);
     const [searchValue, setSearchValue] = useState('');
     const [debouncedSearchValue, setDebouncedSearchValue] = useState('');
+    
     const { data: leaderboardPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
         queryKey: ['leaderboard', debouncedSearchValue],
         queryFn: async ({ pageParam = 0 }) => {
@@ -42,15 +35,9 @@ function Leaderboard() {
                     page: pageParam,
                 },
             });
-
             return response.data;
         },
-        getNextPageParam: (lastPage) => {
-            if (lastPage.hasNext) {
-                return lastPage.currentPage + 1;
-            }
-            return null;
-        },
+        getNextPageParam: (lastPage) => lastPage.hasNext ? lastPage.currentPage + 1 : null,
         initialPageParam: 0
     });
 
@@ -58,7 +45,6 @@ function Leaderboard() {
         const timeout = window.setTimeout(() => {
             setDebouncedSearchValue(searchValue.trim());
         }, 350);
-
         return () => window.clearTimeout(timeout);
     }, [searchValue]);
 
@@ -69,50 +55,44 @@ function Leaderboard() {
         setDaysLeft(Math.max(0, remaining));
     }, []);
 
-    if (!currentAccountQuerySuccess) {
-        return <Loading />;
-    }
+    if (!currentAccountQuerySuccess) return <Loading />;
 
     const loadedAccounts = leaderboardPages?.pages.flatMap((page) => page.accounts) || [];
+    const isSearchMode = !!debouncedSearchValue;
+    const topThree = loadedAccounts.slice(0, 3);
+    const tableAccounts = isSearchMode ? loadedAccounts : loadedAccounts.slice(3);
 
     return (
         <Box className="leaderboard-container">
-            <Box className="leaderboard-header">
-                <Box>
-                    <Typography variant="h4" className="leaderboard-title">
-                        Leaderboard
-                    </Typography>
-                    <Typography variant="body2" className="leaderboard-subtitle">
-                        Compete and climb the ranks
-                    </Typography>
-                </Box>
-
-                <Box className="leaderboard-countdown">
-                    <LocalFireDepartmentIcon className="countdown-icon" />
-                    <Box className="countdown-content">
-                        <Typography variant="body2" className="countdown-label">
-                            Days Left in Month
-                        </Typography>
-                        <Typography variant="h5" className="countdown-value">
-                            {daysLeft}
+            <Box className="leaderboard-header-section">
+                <Box className="leaderboard-header-content">
+                    <Box className="leaderboard-header-text">
+                        <Typography variant="h3" className="leaderboard-title">Leaderboard</Typography>
+                        <Typography variant="body2" className="leaderboard-subtitle">
+                            Compete globally and claim your place at the top
                         </Typography>
                     </Box>
-                </Box>
-            </Box>
 
-            <Box className="leaderboard-toolbar">
+                    <Box className="leaderboard-countdown">
+                        <LocalFireDepartmentIcon className="countdown-icon" />
+                        <Box className="countdown-content">
+                            <Typography variant="body2" className="countdown-label">Days Left</Typography>
+                            <Typography variant="h4" className="countdown-value">{daysLeft}</Typography>
+                        </Box>
+                    </Box>
+                </Box>
+
                 <TextField
                     value={searchValue}
                     onChange={(event) => setSearchValue(event.target.value)}
-                    placeholder="Search accounts by username"
-                    fullWidth
+                    placeholder="Search accounts..."
                     size="small"
                     className="leaderboard-search-field"
                     slotProps={{
                         input: {
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" sx={{ color: "white" }} />
+                                    <SearchIcon fontSize="small" sx={{ color: "var(--text-primary)" }} />
                                 </InputAdornment>
                             )
                         }
@@ -120,101 +100,48 @@ function Leaderboard() {
                 />
             </Box>
 
-            <Divider sx={{ borderColor: 'var(--bg-3)', margin: '16px 0' }} />
+            {/* Content State */}
+            {isLoading && loadedAccounts.length === 0 ? (
+                <Loading />
+            ) : loadedAccounts.length === 0 ? (
+                <Box className="leaderboard-empty-state">
+                    <EmojiEventsIcon className="empty-state-icon" />
+                    <Typography className="empty-state-text">No accounts found. Try a different search.</Typography>
+                </Box>
+            ) : (
+                <>
+                    {!isSearchMode && topThree.length > 0 && (
+                        <LeaderboardPodium 
+                            topThree={topThree} 
+                            currentAccount={currentAccount} 
+                            navigate={navigate} 
+                        />
+                    )}
 
-            <Box className="leaderboard-content">
-                {isLoading && loadedAccounts.length === 0 ? (
-                    <Loading />
-                ) : (
-                    <TableContainer component={Paper} className="leaderboard-table-container">
-                        <Table stickyHeader>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell className="leaderboard-cell-rank">#</TableCell>
-                                    <TableCell className="leaderboard-cell-user">User</TableCell>
-                                    <TableCell className="leaderboard-cell-rank-badge">Level</TableCell>
-                                    <TableCell className="leaderboard-cell-xp" align="right">
-                                        XP
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {isLoading && loadedAccounts.length > 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={4} align="center" sx={{ py: 1 }}>
-                                            <CircularProgress size={24} />
-                                        </TableCell>
-                                    </TableRow>
-                                )}
+                    <Box className="leaderboard-list-section">
+                        <LeaderboardList 
+                            accounts={tableAccounts} 
+                            currentAccount={currentAccount} 
+                            navigate={navigate} 
+                            isLoading={isLoading}
+                            isSearchMode={isSearchMode}
+                        />
 
-                                {loadedAccounts.length === 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={4} align="center" className="leaderboard-empty-cell">
-                                            <Typography className="leaderboard-empty-text">
-                                                No accounts found.
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-
-                                {loadedAccounts.map((account) => {
-                                    const level = getLevel(account.currentXP);
-                                    const rank = getRank(level);
-                                    const rankColor = getRankColor(rank);
-
-                                    return (
-                                        <TableRow
-                                            key={account.id}
-                                            className={`leaderboard-row ${currentAccount.id === account.id ? 'current-user' : ''}`}
-                                        >
-                                            <TableCell className="leaderboard-cell-rank">
-                                                <Typography className="rank-number">
-                                                    {account.globalRank}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-user">
-                                                <Box className="user-info">
-                                                    <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={28} height={28} />
-                                                
-                                                    <Typography className="leaderboard-username"
-                                                                onClick={() => navigate(`/accounts/profile/${account.username}`)}
-                                                    >
-                                                        {account.username}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-rank-badge">
-                                                <Typography className="rank-name" sx={{ color: rankColor }}>
-                                                    Level {level} • {rank}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-xp" align="right">
-                                                <Typography className="xp-value">
-                                                    {account.currentXP.toLocaleString()}
-                                                </Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                )}
-
-                {hasNextPage && (
-                    <Box className="load-more-container">
-                        <Button
-                            onClick={() => fetchNextPage()}
-                            disabled={isFetchingNextPage}
-                            variant="outlined"
-                            className="load-more-button"
-                        >
-                            {isFetchingNextPage ? <CircularProgress size={20} /> : 'Load More'}
-                        </Button>
+                        {hasNextPage && (
+                            <Box className="load-more-rankings-box" sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <Button
+                                    onClick={() => fetchNextPage()}
+                                    disabled={isFetchingNextPage}
+                                    variant="outlined"
+                                    className="load-more-button"
+                                >
+                                    {isFetchingNextPage ? <CircularProgress size={20} /> : 'Load More Rankings'}
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
-                )}
-            </Box>
+                </>
+            )}
         </Box>
     );
 }
