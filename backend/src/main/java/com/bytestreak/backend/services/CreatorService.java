@@ -55,13 +55,7 @@ public class CreatorService {
         return problem;
     }
 
-    public Problem createNewCodingProblem(NewCodingProblemDTO newCodingProblemDTO, Authentication authentication) {
-        Account creator = accountRepository.findByEmail(authentication.getName());
-
-        if (creator == null) {
-            throw new RuntimeException("Creator not found");
-        }
-
+    public Problem createNewCodingProblem(NewCodingProblemDTO newCodingProblemDTO, Account creator) {
         String slug = newCodingProblemDTO.getTitle().toLowerCase().replace(" ", "-");
         List<TestCaseDTO> testsJSON = newCodingProblemDTO.getTestCases();
         String testCasesPath = null;
@@ -98,14 +92,13 @@ public class CreatorService {
         return savedProblem;
     }
 
-    public Problem editCodingProblem(Long problemId, EditCodingProblemDTO updatedProblem, Authentication authentication) {
+    public Problem editCodingProblem(Long problemId, EditCodingProblemDTO updatedProblem, Account me) {
         Problem existingProblem = problemRepository.findById(problemId).orElse(null);
 
         if (existingProblem == null) {
             throw new RuntimeException("Problem not found");
         }
 
-        Account me = accountRepository.findByEmail(authentication.getName());
         if (!existingProblem.getCreator().getId().equals(me.getId())) {
             throw new RuntimeException("You are not the creator of this problem");
         }

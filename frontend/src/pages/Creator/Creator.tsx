@@ -27,13 +27,13 @@ function Creator() {
                 return [];
             }
 
-            const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
+            const response = await api.get(`/creator/problems?creatorId=${account.id}`);
             return response.data;
         }
     });
     const deleteCodingProblemMutation = useMutation({
         mutationFn: async (problemId: number) => {
-            return api.delete(`/creator/delete-problem?problemId=${problemId}`);
+            return api.delete(`/creator/delete-coding-problem/${problemId}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['createdProblems'] });

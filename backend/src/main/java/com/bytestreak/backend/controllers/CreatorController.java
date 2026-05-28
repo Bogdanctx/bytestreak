@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 import com.bytestreak.backend.services.CreatorService;
+import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,8 +30,11 @@ public class CreatorController {
     @Autowired
     private CreatorService creatorService;
 
-    @GetMapping("/fetch-by-creator")
-    public List<Problem> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @GetMapping("/problems?creatorId={creatorId}")
+    public List<Problem> getProblemsByCreatorId(@RequestParam Long creatorId) {
         try {
             List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
             return problems;
@@ -39,8 +44,8 @@ public class CreatorController {
         }
     }
 
-    @DeleteMapping("/delete-problem")
-    public ResponseEntity<?> deleteProblem(@RequestParam Long problemId, Authentication authentication) {
+    @DeleteMapping("/delete-coding-problem/{problemId}")
+    public ResponseEntity<?> deleteProblem(@PathVariable Long problemId) {
         try {
             Problem problem = creatorService.deleteProblem(problemId);
             return ResponseEntity.ok(problem);
@@ -53,7 +58,9 @@ public class CreatorController {
     @PostMapping("/new-problem")
     public ResponseEntity<?> createNewCodingProblem(@RequestBody NewCodingProblemDTO newCodingProblemDTO, Authentication authentication) {
         try {
-            Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, authentication);
+            Account account = accountRepository.findByEmail(authentication.getName());
+            Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, account);
+
             return ResponseEntity.ok(newCodingProblem);
         }
         catch (Exception e) {
@@ -63,10 +70,11 @@ public class CreatorController {
     
 
     @PutMapping("/edit-problem/{id}")
-    public ResponseEntity<?> editProblem(@PathVariable Long id, @RequestBody EditCodingProblemDTO updatedProblem, Authentication authentication) 
-    {
+    public ResponseEntity<?> editProblem(@PathVariable Long id, @RequestBody EditCodingProblemDTO updatedProblem, Authentication authentication) {
         try {
-            Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, authentication);
+            Account account = accountRepository.findByEmail(authentication.getName());
+
+            Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, account);
             return ResponseEntity.ok(editedProblem);
         }
         catch (RuntimeException e) {
