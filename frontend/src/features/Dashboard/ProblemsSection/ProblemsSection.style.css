@@ -18,6 +18,41 @@
     padding: 12px 32px;
 }
 
+.problems-search-input {
+    width: 250px;
+}
+
+.problems-search-input .MuiOutlinedInput-root {
+    background-color: var(--bg-2);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display", sans-serif;
+    transition: all 0.2s ease;
+}
+
+.problems-search-input .MuiOutlinedInput-notchedOutline {
+    border: 1px solid var(--bg-3);
+}
+
+.problems-search-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--text-secondary);
+}
+
+.problems-search-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--accent-main); /* Matches the switch accent */
+    border-width: 1px;
+}
+
+.problems-search-input .MuiInputBase-input {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
+.problems-search-input .MuiInputBase-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
 @media screen and (max-width: 1200px) {
     #problems-section-header {
         flex-direction: column;
@@ -107,19 +142,19 @@
     font-weight: 700;
 }
 
-.show-tags-switch .MuiSwitch-track {
+.problems-section-switch-filter .MuiSwitch-track {
     background-color: var(--bg-9) !important;
 }
 
-.show-tags-switch .MuiSwitch-switchBase.Mui-checked {
+.problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked {
     color: var(--accent-main) !important;
 }
 
-.show-tags-switch .MuiSwitch-switchBase.Mui-checked:hover {
+.problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked:hover {
     background-color: rgba(35, 206, 107, 0.08) !important;
 }
 
-.show-tags-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+.problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
     background-color: var(--bg-4) !important;
     opacity: 1 !important;
 }

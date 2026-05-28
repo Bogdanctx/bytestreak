@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Box, ButtonBase, FormControlLabel, Switch, ToggleButton, Typography } from '@mui/material';
+import { Box, ButtonBase, FormControlLabel, Switch, Typography, TextField } from '@mui/material';
 import { api } from '../../../api';
 import { type IProblem } from '../../../types/problem.types';
 import ProblemCard from './ProblemCard/ProblemCard';
@@ -10,14 +10,40 @@ import './ProblemsSection.style.css';
 function ProblemsSection() {
     const navigate = useNavigate();
     const [showTags, setShowTags] = useState(false);    
+    const [hideSolved, setHideSolved] = useState(false);
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
+    const [searchInput, setSearchInput] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
+    
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(searchInput);
+        }, 500);
+        
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+    
     const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
-        queryKey: ['codingProblems', selectedDifficulty],
+        queryKey: ['codingProblems', selectedDifficulty, debouncedQuery, hideSolved],
         queryFn: async () => {
             let url = `/problems/public`;
+            const params = new URLSearchParams();
             
             if (selectedDifficulty !== "ALL") {
-                url += `?difficulty=${selectedDifficulty}`;
+                params.append('difficulty', selectedDifficulty);
+            }
+            
+            if (debouncedQuery && debouncedQuery.trim()) {
+                params.append('query', debouncedQuery.trim());
+            }
+            
+            if (hideSolved) {
+                params.append('hideSolved', 'true');
+            }
+            
+            if (params.toString()) {
+                url += `?${params.toString()}`;
             }
 
             const response = await api.get(url);
@@ -46,10 +72,24 @@ function ProblemsSection() {
                 </Box>
 
                 <Box className="problems-section-controls">
+                    <TextField
+                        placeholder="Search problems by title..."
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        variant="outlined"
+                        className="problems-search-input"
+                    />
+                    
                     <FormControlLabel
                         className="problems-section-switch"
-                        control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)} />}
+                        control={<Switch className="problems-section-switch-filter" checked={showTags} onChange={() => setShowTags(!showTags)} />}
                         label="Show Tags"
+                    />
+
+                    <FormControlLabel
+                        className="problems-section-switch"
+                        control={<Switch className="problems-section-switch-filter" checked={hideSolved} onChange={() => setHideSolved(!hideSolved)} />}
+                        label="Hide Solved"
                     />
 
                     <Box className="problems-section-filter-block">

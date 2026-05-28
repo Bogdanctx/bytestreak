@@ -65,8 +65,13 @@ public class ProblemController {
 
 
     @GetMapping("/public")
-    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty) {
-        List<Problem> problems = problemService.getPublicProblems(difficulty);
+    public ResponseEntity<?> getPublicProblems(
+            @RequestParam(required = false) String difficulty, 
+            @RequestParam(required = false) String query, 
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(required = false, defaultValue = "false") boolean hideSolved,
+            Authentication authentication) {
+        List<Problem> problems = problemService.getPublicProblems(difficulty, query, cursor, hideSolved, authentication);
 
         return ResponseEntity.ok(problems);
     }

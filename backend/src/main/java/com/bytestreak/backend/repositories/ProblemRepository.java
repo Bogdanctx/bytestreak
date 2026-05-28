@@ -1,6 +1,8 @@
 package com.bytestreak.backend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,4 +18,10 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     List<Problem> findByVisibility(Visibility visibility);
     Problem findBySlug(String slug);
     Problem findByIsDailyChallangeTrue();
+    
+    @Query("SELECT p FROM Problem p WHERE p.visibility = :visibility AND LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) AND (:cursor IS NULL OR p.id > :cursor) ORDER BY p.id ASC LIMIT 21")
+    List<Problem> findPublicProblemsByTitleWithCursor(@Param("visibility") Visibility visibility, @Param("query") String query, @Param("cursor") Long cursor);
+    
+    @Query("SELECT p FROM Problem p WHERE p.visibility = :visibility AND p.difficulty = :difficulty AND LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) AND (:cursor IS NULL OR p.id > :cursor) ORDER BY p.id ASC LIMIT 21")
+    List<Problem> findPublicProblemsByTitleAndDifficultyWithCursor(@Param("visibility") Visibility visibility, @Param("difficulty") Difficulty difficulty, @Param("query") String query, @Param("cursor") Long cursor);
 }
