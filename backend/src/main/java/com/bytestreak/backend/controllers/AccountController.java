@@ -45,19 +45,14 @@ public class AccountController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateAccount(@PathVariable Long id, @RequestBody AccountUpdateDTO updates) {
-        try {
-            Account targetAccount = accountRepository.findById(id).orElse(null);
+        Account targetAccount = accountRepository.findById(id).orElse(null);
 
-            if (targetAccount == null) {
-                return ResponseEntity.notFound().build();
-            }
+        if (targetAccount == null) {
+            return ResponseEntity.notFound().build();
+        }
 
-            Account updatedAccount = accountService.updateAccount(targetAccount, updates);
-            return ResponseEntity.ok(updatedAccount);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        Account updatedAccount = accountService.updateAccount(targetAccount, updates);
+        return ResponseEntity.ok(updatedAccount);
     }
 
     @DeleteMapping("/{id}")
@@ -68,50 +63,46 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
 
-        accountRepository.delete(targetAccount);
-
-        return ResponseEntity.noContent().build();
+        try {
+            accountRepository.delete(targetAccount);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete account");
+        }
     }
 
     @PatchMapping("/{id}/set-role")
     public ResponseEntity<?> setUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        try {
-            Account target = accountRepository.findById(id).orElse(null);
+        Account target = accountRepository.findById(id).orElse(null);
 
-            if (target == null) {
-                return ResponseEntity.notFound().build();
-            }
+        if (target == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!body.containsKey("newRole")) {
+            return ResponseEntity.badRequest().body("Missing 'newRole' in request body");
+        }
 
-            accountService.setUserRole(target, body.get("newRole"));
-            return ResponseEntity.ok().build();
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        accountService.setUserRole(target, body.get("newRole"));
+        return ResponseEntity.ok().build();
+
     }
 
     @GetMapping("/profile/{username}")
     public ResponseEntity<?> getUserProfile(@PathVariable String username) {
+        Account target = accountRepository.findByUsername(username);
 
-        try {
-            Account target = accountRepository.findByUsername(username);
-
-            if (target == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            UserProfileDTO userProfile = accountService.getUserProfile(username);
-            return ResponseEntity.ok(userProfile);
+        if (target == null) {
+            return ResponseEntity.notFound().build();
         }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
+        UserProfileDTO userProfile = accountService.getUserProfile(target);
+        return ResponseEntity.ok(userProfile);
     }
 
 
     @GetMapping("/leaderboard")
-    public ResponseEntity<?> getLeaderboard(@RequestParam(required = false) int page, @RequestParam(required = false) String query) 
-    {
+    public ResponseEntity<?> getLeaderboard(@RequestParam(required = false) int page, @RequestParam(required = false) String query) {
         Map<String, Object> response = accountService.fetchLeaderboard(query, page);
         return ResponseEntity.ok(response);
     }

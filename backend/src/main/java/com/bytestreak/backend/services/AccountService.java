@@ -20,6 +20,7 @@ import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.enums.Role;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
 
@@ -114,18 +115,11 @@ public class AccountService {
             account.setBio(updates.getBio());
         }
         
-        accountRepository.save(account);
-
-        return account;
+        Account updated = accountRepository.save(account);
+        return updated;
     }
 
-    public UserProfileDTO getUserProfile(String username) {
-        Account target = accountRepository.findByUsername(username);
-
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
+    public UserProfileDTO getUserProfile(Account target) {
         Long globalRank = accountRepository.calculateGlobalRank(target.getCurrentXP(), target.getId()) + 1;
         target.setGlobalRank(globalRank);
 
