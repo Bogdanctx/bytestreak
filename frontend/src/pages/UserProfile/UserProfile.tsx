@@ -179,7 +179,7 @@ function UserProfile() {
                 {activeTab === 2 && (
                     <Box className="profile-tab-content">
                         <Paper className="activity-section" elevation={0}>
-                            <Typography variant="h6" sx={{ mb: 3 }}>Activity Overview</Typography>
+                            <Typography className='activity-section-title' variant="h6">Activity overview</Typography>
                             <Box className="activity-stats">
                                 <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.codingProblemsSolved}</Typography></Box>
                                 <Box className="activity-stat"><Typography className="activity-stat-label">Quizzes Solved</Typography><Typography className="activity-stat-value">{userData.account.quizzesSolved}</Typography></Box>

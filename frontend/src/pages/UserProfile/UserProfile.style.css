@@ -191,6 +191,12 @@
     margin-bottom: 24px;
 }
 
+.activity-section-title {
+    color: var(--text-primary) !important;
+    font-family: "Momo Trust Display", sans-serif !important;
+    font-weight: 700 !important;
+}
+
 .activity-stat {
     background-color: var(--bg-3);
     border: 1px solid var(--bg-4);
