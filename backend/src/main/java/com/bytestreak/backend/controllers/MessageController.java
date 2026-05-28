@@ -43,7 +43,7 @@ public class MessageController {
         Account receiver = accountRepository.findById(receiverId).orElse(null);
 
         if (sender == null || receiver == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         // Check if sender and receiver are friends
@@ -57,7 +57,7 @@ public class MessageController {
         }
 
         if (!isFriendWithReceiver) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only message your friends");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only send messages to friends.");
         }
 
         Message sentMessage = messageService.sendMessage(sender, receiver, payload);
@@ -71,9 +71,11 @@ public class MessageController {
         Account otherUser = accountRepository.findById(otherUserId).orElse(null);
 
         if (currentUser == null || otherUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(messageService.getConversation(currentUser, otherUser));
+        List<Message> conversation = messageService.getConversation(currentUser, otherUser);
+
+        return ResponseEntity.ok(conversation);
     }
 }
