@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -108,7 +108,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                     <Typography className="profile-meta-item">
                         Joined on {new Date(target.account.joinedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                     </Typography>
-                    {isFriend && (
+                    {(isFriend && friendship)  && (
                         <Typography className="profile-meta-item">
                             Friends since {new Date(friendship.friendsSince).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>

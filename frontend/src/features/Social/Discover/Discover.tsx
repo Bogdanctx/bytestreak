@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { 
     Box, 
     Typography, 
-    Avatar, 
     Button, 
     TextField, 
     InputAdornment 

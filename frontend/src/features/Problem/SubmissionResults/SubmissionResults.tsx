@@ -1,6 +1,6 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, LinearProgress, Tooltip, Typography, Zoom } from '@mui/material';
+import { Box, LinearProgress, Typography } from '@mui/material';
 
 import { type ISubmissionResult } from '../../../types/problem.types';
 import './SubmissionResults.style.css';

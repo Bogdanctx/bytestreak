@@ -201,6 +201,9 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                                         size="small"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            if (comment.id == null) {
+                                                return;
+                                            }
                                             reportCommentMutation.mutate(comment.id);
                                         }}
                                         disabled={reportCommentMutation.isPending}

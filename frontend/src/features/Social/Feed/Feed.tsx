@@ -32,7 +32,7 @@ function Feed() {
                 return [newPost, ...(oldPosts || [])];
             });
         },
-        onError: (error) => {
+        onError: () => {
             notify('Failed to create post. Please try again.', 'error');
         }
     });

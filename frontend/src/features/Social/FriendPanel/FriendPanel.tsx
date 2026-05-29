@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Box, Typography, Avatar, IconButton, TextField, Paper } from '@mui/material';
+import { Box, Typography, IconButton, TextField, Paper } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -251,7 +251,12 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                                 >
                                 <IconButton
                                     size="small"
-                                    onClick={() => reportMessageMutation.mutate(message.id)}
+                                    onClick={() => {
+                                        if (message.id == null) {
+                                            return;
+                                        }
+                                        reportMessageMutation.mutate(message.id)
+                                    }}
                                     disabled={reportMessageMutation.isPending}
                                     aria-label="Report message"
                                 >

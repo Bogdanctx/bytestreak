@@ -26,7 +26,7 @@ function AccountOverview() {
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
         queryKey: ['accountFriends'],
         queryFn: async () => {
-            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            const response = await api.get(`/friends/get-friends?accountId=${account?.id}`);
             return response.data;
         },
         enabled: !!account

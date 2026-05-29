@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-    Box, Avatar, Typography, List, ListItem, ListItemButton, 
+    Box, Typography, List, ListItem, ListItemButton, 
     ListItemAvatar, ListItemText, IconButton,
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';

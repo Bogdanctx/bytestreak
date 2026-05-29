@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Avatar, Divider, Button, Tooltip, IconButton, Dialog, Paper } from '@mui/material';
+import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Divider, Button, Tooltip, IconButton, Dialog, Paper } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -38,6 +38,10 @@ function UserProfile() {
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
         queryKey: ['accountFriends', userData?.account.id],
         queryFn: async () => {
+            if (!userData) {
+                return [];
+            }
+
             const response = await api.get(`/friends/get-friends?accountId=${userData.account.id}`);
             return response.data;
         },

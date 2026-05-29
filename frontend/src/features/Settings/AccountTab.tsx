@@ -47,7 +47,7 @@ function AccountTab() {
 
     const saveChangesMutation = useMutation({
         mutationFn: async () => {
-            const response = await api.patch(`/accounts/${account.id}`, formData);
+            const response = await api.patch(`/accounts/${account?.id}`, formData);
             return response.data;
         },
         onSuccess: () => {

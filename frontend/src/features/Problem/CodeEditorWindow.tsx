@@ -9,7 +9,6 @@ import { type ISolution, type ISubmissionResult } from '../../types/problem.type
 import './CodeEditor.style.css';
 import { useMutation } from '@tanstack/react-query';
 import notify from '../../components/ui/ToastNotification';
-import { set } from 'react-hook-form';
 
 interface CodeEditorWindowProps {
     problemId: number;

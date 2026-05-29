@@ -21,6 +21,28 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function seedAccounts() {
+    let firstAccount = null;
+    for (let i = 0; i < 50; i++) { // Redus la 10 pentru test, ajustează la 100 cum aveai dacă e necesar
+        const account = {
+            username: faker.internet.username(),
+            email: faker.internet.email(),
+            password: '123123',
+            profilePictureUrl: faker.image.avatar()
+        };
+
+        try {
+            await axios.post(`${API_BASE}/auth/register`, account);
+            console.log(`✅ Created user: ${account.username}`);
+            if (!firstAccount) firstAccount = account;
+        } catch (error) {
+            console.error(`❌ Failed to create ${account.username}`);
+        }
+        await delay(100);
+    }
+    return firstAccount;
+}
+
 async function seedProblems() {
     const difficulties = ["EASY", "MEDIUM", "HARD"];
     const possibleTags = ["Dynamic Programming", "Sliding Window", "Two pointers", "Graph", "Tree", "Array", "String", "Hash Table", "Math"];

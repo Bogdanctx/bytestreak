@@ -8,7 +8,7 @@ import CodeEditorWindow from '../../features/Problem/CodeEditorWindow';
 import ProblemDataPanel from '../../features/Problem/ProblemDataPanel';
 import { type IProblem, type ISubmissionResult } from '../../types/problem.types';
 import './Problem.style.css';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAccount } from '../../hooks/useAccount';
 import Loading from '../../components/ui/Loading';
 

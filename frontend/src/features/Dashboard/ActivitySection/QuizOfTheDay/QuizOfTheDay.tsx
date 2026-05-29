@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Button, Modal, CircularProgress, Avatar, ButtonBase } from '@mui/material';
+import { Box, Typography, Button, Modal, CircularProgress, ButtonBase } from '@mui/material';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
