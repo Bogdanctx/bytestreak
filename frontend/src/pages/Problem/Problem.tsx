@@ -148,6 +148,12 @@ function Problem() {
                                     {codingProblem.difficulty === 'HARD' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+40</Typography>}
                                     <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
                                 </Box>
+                                <Box>
+                                    {codingProblem.difficulty === 'EASY' && <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+5</Typography>}
+                                    {codingProblem.difficulty === 'MEDIUM' && <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+10</Typography>}
+                                    {codingProblem.difficulty === 'HARD' && <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+15</Typography>}
+                                    <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>Coins</Typography>
+                                </Box>
                             </Box>
                         </DialogContent>
                     )}

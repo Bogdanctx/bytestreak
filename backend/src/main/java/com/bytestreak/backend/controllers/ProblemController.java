@@ -231,14 +231,20 @@ public class ProblemController {
                     if(problem.getDifficulty().name().equals("EASY")) {
                         account.setCurrentXP(currentXP + 10);
                         account.setXpAchievedToday(xpGained + 10);
+
+                        account.setCoins(account.getCoins() + 5);
                     }
                     else if(problem.getDifficulty().name().equals("MEDIUM")) {
                         account.setCurrentXP(currentXP + 20);
                         account.setXpAchievedToday(xpGained + 20);
+
+                        account.setCoins(account.getCoins() + 10);
                     }
                     else if(problem.getDifficulty().name().equals("HARD")) {
                         account.setCurrentXP(currentXP + 40);
                         account.setXpAchievedToday(xpGained + 40);
+
+                        account.setCoins(account.getCoins() + 15);
                     }
                 }
 
