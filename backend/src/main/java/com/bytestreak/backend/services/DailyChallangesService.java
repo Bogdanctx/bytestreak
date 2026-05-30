@@ -62,30 +62,26 @@ public class DailyChallangesService {
         
         for(Account account : allAccounts) {
             long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
-            int bonusXP = 0;
 
             SeasonEndNotificationPayload payload = new SeasonEndNotificationPayload();
 
             if (globalRank == 1) {
-                bonusXP = (int)(0.15 * account.getCurrentXP()); // 15% bonus for the top player
-                account.setCoins(account.getCoins() + 200);
-                payload.setMessage("Congratulations! You finished the season as the top player with a global rank of 1! You receive a 15% bonus on your current XP: " + bonusXP + " XP and 200 coins!");            
+                account.setCoins(account.getCoins() + 500);
+                payload.setMessage("Congratulations! You finished the season as the top player with a global rank of 1! You receive 500 coins!");
             }
-            else if (globalRank == 2) {
-                bonusXP = (int)(0.1 * account.getCurrentXP()); // 10% bonus for the second player
+            else if (globalRank == 2 || globalRank == 3) {
+                account.setCoins(account.getCoins() + 250);
+                payload.setMessage("Great job! You finished the season as one of the top players with a global rank of " + globalRank + "! You receive 250 coins!");
+            }
+            else if (4 <= globalRank && globalRank <= 10) {
                 account.setCoins(account.getCoins() + 100);
-                payload.setMessage("Great job! You finished the season as the second player with a global rank of 2! You receive a 10% bonus on your current XP: " + bonusXP + " XP and 100 coins!");
-            }
-            else if (globalRank == 3) {
-                bonusXP = (int)(0.05 * account.getCurrentXP()); // 5% bonus for the third player
-                account.setCoins(account.getCoins() + 50);
-                payload.setMessage("Well done! You finished the season as the third player with a global rank of 3! You receive a 5% bonus on your current XP: " + bonusXP + " XP and 50 coins!");
+                payload.setMessage("Well done! You finished the season with a global rank of " + globalRank + "! You receive 100 coins!");
             }
             else {
                 payload.setMessage("The season has ended! Your global rank was: " + account.getGlobalRank() + ".");
             }
             
-            account.setCurrentXP(bonusXP);
+            account.setCurrentXP(0);
             notificationService.sendNotification(account, NotificationTypes.SEASON_END, payload);
         }
 

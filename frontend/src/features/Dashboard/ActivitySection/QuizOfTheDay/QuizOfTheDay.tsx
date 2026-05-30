@@ -149,7 +149,8 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                         <Typography variant="h4" className="qotd-title">Quiz Completed!</Typography>
                         
                         <Box className="qotd-coins-reward">
-                            <Typography className="qotd-coins-text">+5 Coins</Typography>
+                            <Typography className="qotd-coins-text">+10 🪙</Typography>
+                            <Typography className="qotd-xp-text">+30 XP</Typography>
                         </Box>
 
                         <Box className="qotd-streaks-list">
@@ -265,7 +266,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                             <Button 
                                 variant="contained"
                                 onClick={() => saveStreakMutation.mutate()}
-                                disabled={account.coins < 15 || saveStreakMutation.isPending}
+                                disabled={account.coins < 200 || saveStreakMutation.isPending}
                                 sx={{ 
                                     backgroundColor: '#E7BB41', // Gold coin color
                                     color: '#000',
@@ -284,7 +285,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                 {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (15 Coins)'}
                             </Button>
                         </Box>
-                        {account.coins < 15 && (
+                        {account.coins < 200 && (
                             <Typography variant="caption" sx={{ color: 'var(--difficulty-hard)', mt: 1 }}>
                                 Not enough coins. You have {account.coins}.
                             </Typography>

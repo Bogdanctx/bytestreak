@@ -5,6 +5,7 @@ export interface IAccount {
     username: string;
     email: string;
     currentXP: number;
+    xpAchievedToday: number;
     codingProblemsSolved: number;
     quizzesSolved: number;
     streakLength: number;

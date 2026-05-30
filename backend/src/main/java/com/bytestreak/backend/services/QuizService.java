@@ -195,8 +195,8 @@ public class QuizService {
         }
 
         if (isCorrect) {
-            solver.setCurrentXP(solver.getCurrentXP() + 10);
-            solver.setCoins(solver.getCoins() + 5);
+            solver.setCurrentXP(solver.getCurrentXP() + 30);
+            solver.setCoins(solver.getCoins() + 10);
         }
 
         solver.setLastDailyQuizDate(today);

@@ -139,7 +139,7 @@ function ProblemsSection() {
 
             <Box id="problems-section-footer">
                 <Typography className="problems-section-footer-text">
-                    There are currently <strong>{totalProblemsCount}</strong> coding problems available for you to solve. Keep practicing and improving your coding skills!
+                    There are currently <strong>{totalProblemsCount}</strong> coding problems available for you to solve. Keep practicing to earn XP and climb the leaderboard!
                 </Typography>
             </Box>
         </Box>

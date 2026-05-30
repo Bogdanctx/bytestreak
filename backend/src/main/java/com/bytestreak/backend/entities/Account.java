@@ -63,6 +63,7 @@ public class Account {
     private String password;
 
     private int currentXP = 0;
+    private int xpAchievedToday = 0;
 
     private int codingProblemsSolved = 0;
     private int quizzesSolved = 0;
@@ -79,7 +80,6 @@ public class Account {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<String> purchasedEffects = new ArrayList<>();
- 
     
     @Transient
     private Long globalRank;

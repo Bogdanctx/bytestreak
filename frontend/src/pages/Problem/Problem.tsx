@@ -126,11 +126,11 @@ function Problem() {
                             
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
                                 <Box>
-                                    <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>
+                                    <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+50</Typography>
                                     <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
                                 </Box>
                                 <Box>
-                                    <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+10</Typography>
+                                    <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+20</Typography>
                                     <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>Coins</Typography>
                                 </Box>
                             </Box>
@@ -143,7 +143,9 @@ function Problem() {
                             
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
                                 <Box>
-                                    <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>
+                                    {codingProblem.difficulty === 'EASY' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+10</Typography>}
+                                    {codingProblem.difficulty === 'MEDIUM' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>}
+                                    {codingProblem.difficulty === 'HARD' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+40</Typography>}
                                     <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
                                 </Box>
                             </Box>
@@ -151,16 +153,7 @@ function Problem() {
                     )}
 
                     <DialogActions sx={{ justifyContent: 'center', mt: 2 }}>
-                        <Button 
-                            variant="contained" 
-                            onClick={() => setSolvedCodingProblem(false)}
-                            sx={{ 
-                                backgroundColor: '#6b5aff', 
-                                borderRadius: '20px', 
-                                px: 4,
-                                '&:hover': { backgroundColor: '#5a48ff' }
-                            }}
-                        >
+                        <Button className="problem-solved-close-btn" variant="contained" onClick={() => setSolvedCodingProblem(false)}>
                             Awesome
                         </Button>
                     </DialogActions>

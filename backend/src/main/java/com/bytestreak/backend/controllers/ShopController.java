@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 enum Effect {
     NONE("cssEffectNone", 0),
-    FIRE("cssEffectFire", 100),
-    ICE("cssEffectIce", 200),
-    LIGHTNING("cssEffectLightning", 300),
-    QUANTUM_PULSE("cssEffectQuantumPulse", 500);
+    FIRE("cssEffectFire", 1000),
+    ICE("cssEffectIce", 1500),
+    LIGHTNING("cssEffectLightning", 2000),
+    QUANTUM_PULSE("cssEffectQuantumPulse", 3000);
 
     private final String name;
     private final int price;

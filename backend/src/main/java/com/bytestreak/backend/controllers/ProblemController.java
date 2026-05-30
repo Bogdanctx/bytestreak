@@ -216,14 +216,32 @@ public class ProblemController {
                 if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {
                     account.setStreakLength(account.getStreakLength() + 1);
                     account.setLastDailyProblemDate(today);
-                    account.setCurrentXP(account.getCurrentXP() + 20);
-                    account.setCoins(account.getCoins() + 10);
+                    
+                    account.setCurrentXP(account.getCurrentXP() + 50);
+                    account.setCoins(account.getCoins() + 20);
                     
                     accountRepository.save(account);
                 }
             }
             else { // if it's not the problem of the day, just give them some XP for solving it
-                account.setCurrentXP(account.getCurrentXP() + 20);
+                int currentXP = account.getCurrentXP();
+                int xpGained = account.getXpAchievedToday();
+
+                if (xpGained <= 200) {
+                    if(problem.getDifficulty().name().equals("EASY")) {
+                        account.setCurrentXP(currentXP + 10);
+                        account.setXpAchievedToday(xpGained + 10);
+                    }
+                    else if(problem.getDifficulty().name().equals("MEDIUM")) {
+                        account.setCurrentXP(currentXP + 20);
+                        account.setXpAchievedToday(xpGained + 20);
+                    }
+                    else if(problem.getDifficulty().name().equals("HARD")) {
+                        account.setCurrentXP(currentXP + 40);
+                        account.setXpAchievedToday(xpGained + 40);
+                    }
+                }
+
                 accountRepository.save(account);
             }
 

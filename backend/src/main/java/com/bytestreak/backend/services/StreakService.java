@@ -9,6 +9,7 @@ import com.bytestreak.backend.entities.StreakInvite;
 import com.bytestreak.backend.entities.Streak;
 import com.bytestreak.backend.enums.InviteStatus;
 import com.bytestreak.backend.enums.NotificationTypes;
+import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.NotificationRepository;
 import com.bytestreak.backend.repositories.StreakInviteRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
@@ -30,6 +31,9 @@ public class StreakService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     public StreakInvite inviteFriendToStreak(Account me, Account friend) {
         StreakInvite invite = new StreakInvite();
@@ -139,14 +143,19 @@ public class StreakService {
             return;
         }
 
-        if (solver.getCoins() < 15) {
-            throw new ValidationException("Not enough coins to save the streak. You need at least 15 coins.");
+        if (solver.getCoins() < 200) {
+            throw new ValidationException("Not enough coins to save the streak. You need at least 200 coins.");
         }
+
+        // update the user's coins
+        solver.setCoins(solver.getCoins() - 200);
 
         for (Streak streak: activeStreaks) {
             streak.setLength(streak.getOldLength());
             streakRepository.save(streak);
         }
+
+        accountRepository.save(solver);
     }
 
 }
