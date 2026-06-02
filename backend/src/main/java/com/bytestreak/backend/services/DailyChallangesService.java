@@ -10,10 +10,12 @@ import com.bytestreak.backend.SeasonEndNotificationPayload;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.entities.Quiz;
+import com.bytestreak.backend.entities.Streak;
 import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.repositories.QuizRepository;
+import com.bytestreak.backend.repositories.StreakRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -31,14 +33,28 @@ public class DailyChallangesService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private StreakRepository streakRepository;
+
     @Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
     public void generateDailyChallenges() {
+        // Reset the daily quiz
         Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
-
         if (currentDailyQuiz != null) {
             quizRepository.delete(currentDailyQuiz);
         }
+        List<Streak> activeStreaks = streakRepository.findAll();
 
+        for(Streak streak: activeStreaks) {
+            streak.setParticipant1SolvedToday(false);
+            streak.setParticipant2SolvedToday(false);
+        }
+        streakRepository.saveAll(activeStreaks);
+
+
+
+
+        // Reset the daily coding problem
         Problem dailyProblem = problemRepository.findByIsDailyChallangeTrue();
         
         if (dailyProblem != null) {

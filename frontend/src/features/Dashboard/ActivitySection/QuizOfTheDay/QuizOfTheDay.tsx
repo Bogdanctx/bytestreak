@@ -282,7 +282,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                     }
                                 }}
                             >
-                                {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (15 Coins)'}
+                                {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (200 Coins)'}
                             </Button>
                         </Box>
                         {account.coins < 200 && (
