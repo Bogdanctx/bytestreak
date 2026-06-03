@@ -76,7 +76,7 @@ public class AccountService {
 
         leaderboardAccounts = accountRepository.findAllByOrderByCurrentXPDescIdAsc();
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < leaderboardAccounts.size(); i++) {
             Account account = leaderboardAccounts.get(i);
             Long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
             account.setGlobalRank(globalRank);
