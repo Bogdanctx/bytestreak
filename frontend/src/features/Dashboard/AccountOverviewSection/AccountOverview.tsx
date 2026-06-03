@@ -53,7 +53,7 @@ function AccountOverview() {
     }
 
     const level = getLevel(account.currentXP);
-    const rank = getRank(level);
+    const rank = getRank(account.currentXP);
     const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
     const color = getRankColor(rank);
 
