@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.bytestreak.backend.SeasonEndNotificationPayload;
 import com.bytestreak.backend.entities.Account;
@@ -19,7 +19,7 @@ import com.bytestreak.backend.repositories.StreakRepository;
 
 import jakarta.transaction.Transactional;
 
-@Service
+@Component
 public class TimedMethodsService {
     @Autowired
     private QuizRepository quizRepository;
@@ -85,6 +85,7 @@ public class TimedMethodsService {
         accountRepository.saveAll(accounts);
     }
 
+    @Transactional
     @Scheduled(cron = "0 0 0 * * ?") // every day at midnight
     public void generateDailyChallenges() {
         resetDailyQuiz();
@@ -94,7 +95,8 @@ public class TimedMethodsService {
 
     // This method can be called at the end of each season to reset any season-specific data
     // automatically called at the end of each month
-    @Scheduled(cron = "0 0 0 1 * ?") // every month on the 1st at midnight
+    @Transactional
+    @Scheduled(cron = "0 1 0 1 * ?") // every month on the 1st day at 00:01
     public void resetSeason() {
         List<Account> allAccounts = accountRepository.findAll();
         
