@@ -21,7 +21,7 @@ const DEFAULT_STARTER_CODE = {
 // >> Define the function signature that the user is expected to implement <<
 // >> Any libraries that the user needs to import must be included in this starter code <<
 // >> Make sure to match the function signature exactly, as the driver code relies on it << 
-// >> The code below is just a placeholder and should be replaced with the actual function signature <<
+// >> The code below is just an example and should be replaced with the actual function signature <<
 // ===============================
 
 int solve(vector<int>& nums) {
@@ -36,7 +36,7 @@ int solve(vector<int>& nums) {
 # >> Define the function signature that the user is expected to implement <<
 # >> Any libraries that the user needs to import must be included in this starter code <<
 # >> Make sure to match the function signature exactly, as the driver code relies on it << 
-# >> The code below is just a placeholder and should be replaced with the actual function signature <<
+# >> The code below is just an example and should be replaced with the actual function signature <<
 # ===============================
 
 def solve(nums):
@@ -243,6 +243,11 @@ function ProblemBuilder() {
             cpp: { starter_code: starterCode.cpp, driver_code: driverCode.cpp },
             python: { starter_code: starterCode.python, driver_code: driverCode.python }
         };
+
+        if (!driverCode.cpp.includes("{{CODE}}") || !driverCode.python.includes("{{CODE}}")) {
+            notify("Driver code must include the marker '{{CODE}}' to indicate where the user's code will be injected.", "error");
+            return;
+        }
 
         const problemData: IProblemCreateDTO = {
             title,
