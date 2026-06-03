@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 const API_BASE = 'http://localhost:8080';
 
 // Token-ul hardcodat
-const AUTH_COOKIE = 'bytestreak_jwt=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhQGEuY29tIiwicm9sZSI6IkNSRUFUT1IiLCJpYXQiOjE3Nzk5OTUxNTMsImV4cCI6MTc4MDA4MTU1M30.24ATAuII3D96T2n2lV--K9eYy6ZdXZhIrKPehHIQHJI68o9PKW9QcAxb1GB_mfhpjF6S3GIK0RuZaEByt_9ZkQ';
+const AUTH_COOKIE = 'bytestreak_jwt=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJib2JvdHJpZmFuMDlAZ21haWwuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzgwMDk0MDQyLCJleHAiOjE3ODAxODA0NDJ9.e-ykUmgJ3_iYmQeEtkdZJzvUxdzAkUu_3PXG70KmeyFExaE3YmnyMQsixVZGVFdyEbL03CAG1os8kOL_cyoE6Q';
 
 const codeTemplates = {
     cpp: {
@@ -88,3 +88,4 @@ async function seedProblems() {
 
 // Rulăm direct funcția
 seedProblems();
+seedAccounts();

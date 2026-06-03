@@ -128,6 +128,37 @@ public class StreakService {
                 if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
                     if (streak.isParticipant1SolvedCorrectly() && streak.isParticipant2SolvedCorrectly()) {
                         streak.setLength(streak.getLength() + 1);
+
+                        if (streak.getLength() == 7) {
+                            streak.getParticipant1().setCoins(streak.getParticipant1().getCoins() + 20);
+                            streak.getParticipant2().setCoins(streak.getParticipant2().getCoins() + 20);
+                        }
+                        else if (streak.getLength() == 14) {
+                            streak.getParticipant1().setCoins(streak.getParticipant1().getCoins() + 50);
+                            streak.getParticipant2().setCoins(streak.getParticipant2().getCoins() + 50);
+                        }
+                        else if(streak.getLength() == 30) {
+                            streak.getParticipant1().setCoins(streak.getParticipant1().getCoins() + 150);
+                            streak.getParticipant2().setCoins(streak.getParticipant2().getCoins() + 150);
+                        }
+                        else if (streak.getLength() == 100) {
+                            streak.getParticipant1().setCoins(streak.getParticipant1().getCoins() + 500);
+                            streak.getParticipant2().setCoins(streak.getParticipant2().getCoins() + 500);
+                        }
+                        else if(streak.getLength() > 100) {
+
+                            // For every 30 days after 100, give 550 coins to each participant
+                            int length = streak.getLength();
+                            while (length >= 100) {
+                                length -= 100;
+                            }
+
+                            if (length % 30 == 0) {
+                                streak.getParticipant1().setCoins(streak.getParticipant1().getCoins() + 550);
+                                streak.getParticipant2().setCoins(streak.getParticipant2().getCoins() + 550);
+                            }
+                            
+                        }
                     }
                 }
             }
