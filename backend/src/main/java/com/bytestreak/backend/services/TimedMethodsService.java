@@ -20,7 +20,7 @@ import com.bytestreak.backend.repositories.StreakRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class DailyChallangesService {
+public class TimedMethodsService {
     @Autowired
     private QuizRepository quizRepository;
 
@@ -36,12 +36,11 @@ public class DailyChallangesService {
     @Autowired
     private StreakRepository streakRepository;
 
-    @Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
-    public void generateDailyChallenges() {
-        // Reset the daily quiz
+
+    private void resetDailyQuiz() {
         Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
         if (currentDailyQuiz != null) {
-            //quizRepository.delete(currentDailyQuiz);
+            // quizRepository.delete(currentDailyQuiz);
         }
 
         List<Streak> activeStreaks = streakRepository.findAll();
@@ -58,7 +57,14 @@ public class DailyChallangesService {
         }
         streakRepository.saveAll(activeStreaks);
 
-        // Reset the daily coding problem
+        List<Account> accounts = accountRepository.findAll();
+        for (Account account : accounts) {
+            account.setSolvedDailyQuizToday(false);
+        }
+        accountRepository.saveAll(accounts);
+    }
+
+    private void resetDailyCodingProblem() {
         Problem dailyProblem = problemRepository.findByIsDailyChallangeTrue();
         
         if (dailyProblem != null) {
@@ -73,10 +79,16 @@ public class DailyChallangesService {
 
         List<Account> accounts = accountRepository.findAll();
         for (Account account : accounts) {
-            account.setLastDailyProblemDate(null);
+            account.setSolvedDailyCodingProblemToday(false);
             account.setXpAchievedToday(0);
         }
         accountRepository.saveAll(accounts);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
+    public void generateDailyChallenges() {
+        resetDailyQuiz();
+        resetDailyCodingProblem();
     }
 
 

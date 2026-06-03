@@ -72,8 +72,8 @@ public class Account {
 
     private int coins = 0;
     private String bio = "";
-    private LocalDate lastDailyQuizDate;
-    private LocalDate lastDailyProblemDate;
+    private boolean solvedDailyQuizToday = false;
+    private boolean solvedDailyCodingProblemToday = false;
 
     private String cssEffectStyle; // default effect
 

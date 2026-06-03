@@ -19,7 +19,7 @@ import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
-import com.bytestreak.backend.services.DailyChallangesService;
+import com.bytestreak.backend.services.TimedMethodsService;
 
 import java.util.List;
 import java.util.Map;
@@ -114,22 +114,19 @@ public class AccountController {
         return ResponseEntity.ok(leaderboardAccounts);
     }
 
+
+    
     @Autowired
-    private DailyChallangesService dailyChallangesService;
+    private TimedMethodsService timedMethodsService;
 
     @GetMapping("/reset-season")
     public ResponseEntity<?> resetSeason() {
-        dailyChallangesService.resetSeason();
+        timedMethodsService.resetSeason();
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/reset-daily")
-    public ResponseEntity<?> resetDaily() {
-        dailyChallangesService.generateDailyChallenges();
-        List<Account> allAccounts = accountRepository.findAll();
-        for(Account account : allAccounts) {
-            account.setLastDailyProblemDate(null);
-            accountRepository.save(account);
-        }
+    @GetMapping("/reset-dailies")
+    public ResponseEntity<?> resetDailies() {
+        timedMethodsService.generateDailyChallenges();
         return ResponseEntity.ok().build();
     }
 }

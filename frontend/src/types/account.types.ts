@@ -1,4 +1,4 @@
-import { type IProblem } from "./problem.types";
+import type { IProblem } from "./problem.types";
 
 export interface IAccount {
     id: number;
@@ -11,8 +11,8 @@ export interface IAccount {
     streakLength: number;
     coins: number;
     bio: string;
-    lastDailyQuizDate: string;
-    lastDailyProblemDate: string;
+    solvedDailyQuizToday: boolean;
+    solvedDailyCodingProblemToday: boolean;
     profilePictureUrl: string;
     joinedDate: string;
     role: AccountRole;

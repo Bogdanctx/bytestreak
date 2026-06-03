@@ -15,8 +15,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -188,9 +186,7 @@ public class QuizService {
         boolean isCorrect = quiz.getCorrectAnswer().trim().equals(submittedAnswer.trim());
         Account solver = accountRepository.findByEmail(accountEmail);
 
-        LocalDate today = LocalDate.now(ZoneOffset.UTC);
-
-        if (today.equals(solver.getLastDailyQuizDate())) {
+        if (solver.isSolvedDailyQuizToday()) {
             return false;
         }
 
@@ -199,7 +195,7 @@ public class QuizService {
             solver.setCoins(solver.getCoins() + 10);
         }
 
-        solver.setLastDailyQuizDate(today);
+        solver.setSolvedDailyQuizToday(true);
         accountRepository.save(solver);
         activityTrackerService.recordActivity(solver);
 

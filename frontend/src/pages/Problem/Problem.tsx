@@ -12,8 +12,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAccount } from '../../hooks/useAccount';
 import Loading from '../../components/ui/Loading';
 
-const todayUTCString = new Date().toISOString().split('T')[0];
-
 function Problem() {
     const queryClient = useQueryClient();
     const problemPageRef = useRef<HTMLDivElement | null>(null);
@@ -49,7 +47,7 @@ function Problem() {
         if (allTestsPassed) {
             lastTriggeredResultsRef.current = results;
 
-            if (codingProblem?.dailyChallange && account?.lastDailyProblemDate !== todayUTCString) {
+            if (codingProblem?.dailyChallange && account?.solvedDailyCodingProblemToday) {
                 setEarnedDailyChallengeReward(true);
             }
             else {

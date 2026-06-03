@@ -28,8 +28,6 @@ import { useNavigate } from "react-router-dom";
 import { type IProblem } from "../../../types/problem.types";
 import AccountAvatar from "../../../components/ui/AccountAvatar";
 
-const todayUTCString = new Date().toISOString().split('T')[0];
-
 function ActivitySection() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -68,9 +66,6 @@ function ActivitySection() {
         return <Loading />;
     }
 
-    const isQuizDoneToday = account.lastDailyQuizDate === todayUTCString;
-    const isCodingProblemDoneToday = account.lastDailyProblemDate === todayUTCString;
-
     return (
         <Box id="activity-section-container">
             <Box className="daily-items-container">
@@ -85,7 +80,7 @@ function ActivitySection() {
                                 <Typography className="daily-item-label">Problem of the Day</Typography>
                                 <Typography className="daily-item-title">{problemOfTheDay?.title}</Typography>    
                             </Box>
-                            {isCodingProblemDoneToday ? (
+                            {account.solvedDailyCodingProblemToday ? (
                                 <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
                             ) : (
                                 <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />
@@ -96,13 +91,13 @@ function ActivitySection() {
                     <ButtonBase 
                         className="daily-item" 
                         onClick={() => setIsQuizModalOpen(true) }
-                        disabled={isQuizDoneToday}
+                        disabled={account.solvedDailyQuizToday}
                         sx={{ display: 'flex', justifyContent: 'space-between' }}
                     >
                         <Box className="daily-item-content">
                             <Typography className="daily-item-title" color="#E7BB41">Quiz of the Day</Typography>
                         
-                            {isQuizDoneToday ? (
+                            {account.solvedDailyQuizToday ? (
                                 <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />
                             ) : (
                                 <ClearIcon sx={{ color: 'var(--difficulty-hard)' }} />

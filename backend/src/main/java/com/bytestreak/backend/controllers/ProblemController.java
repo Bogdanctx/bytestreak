@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
@@ -210,12 +208,10 @@ public class ProblemController {
             // if we reached this point, it means all test cases passed and the solution is correct
             account.getSolvedProblems().add(problem);
 
-            LocalDate today = LocalDate.now(ZoneOffset.UTC);
-
             // if the solution is correct and solved the problem of the day, update the user's streak
-            if (problem.isDailyChallange() && (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate()))) {
+            if (problem.isDailyChallange() && !account.isSolvedDailyCodingProblemToday()) {
                 account.setStreakLength(account.getStreakLength() + 1);
-                account.setLastDailyProblemDate(today);
+                account.setSolvedDailyCodingProblemToday(true);
                     
                 account.setCurrentXP(account.getCurrentXP() + 50);
                 account.setCoins(account.getCoins() + 20);
