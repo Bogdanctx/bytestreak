@@ -226,7 +226,7 @@ public class ProblemController {
                 int currentXP = account.getCurrentXP();
                 int xpGained = account.getXpAchievedToday();
 
-                if (xpGained <= 200) {
+                if (xpGained <= 280) {
                     if(problem.getDifficulty() == Difficulty.EASY) {
                         account.setCurrentXP(currentXP + 10);
                         account.setXpAchievedToday(xpGained + 10);

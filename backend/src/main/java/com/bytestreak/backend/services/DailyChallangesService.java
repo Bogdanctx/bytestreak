@@ -74,6 +74,7 @@ public class DailyChallangesService {
         List<Account> accounts = accountRepository.findAll();
         for (Account account : accounts) {
             account.setLastDailyProblemDate(null);
+            account.setXpAchievedToday(0);
         }
         accountRepository.saveAll(accounts);
     }

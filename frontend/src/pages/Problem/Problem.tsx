@@ -151,12 +151,18 @@ function Problem() {
                             </Typography>
                             
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-                                <Box>
-                                    {codingProblem.difficulty === 'EASY' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+10</Typography>}
-                                    {codingProblem.difficulty === 'MEDIUM' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>}
-                                    {codingProblem.difficulty === 'HARD' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+40</Typography>}
-                                    <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
-                                </Box>
+                                {account.xpAchievedToday <= 280 ? (
+                                    <Box>
+                                        {codingProblem.difficulty === 'EASY' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+10</Typography>}
+                                        {codingProblem.difficulty === 'MEDIUM' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+20</Typography>}
+                                        {codingProblem.difficulty === 'HARD' && <Typography variant="h5" sx={{ color: '#00E676', fontWeight: 'bold' }}>+40</Typography>}
+                                        <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>EXP</Typography>
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <Typography variant="caption" sx={{ color: '#b0b0b0', textTransform: 'uppercase' }}>Daily limit of XP reached</Typography>
+                                    </Box>
+                                )}
                                 <Box>
                                     {codingProblem.difficulty === 'EASY' && <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+5</Typography>}
                                     {codingProblem.difficulty === 'MEDIUM' && <Typography variant="h5" sx={{ color: '#FFB300', fontWeight: 'bold' }}>+10</Typography>}
