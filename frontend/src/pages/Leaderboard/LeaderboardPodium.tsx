@@ -1,6 +1,5 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 import './Leaderboard.style.css';
 import type { IAccount } from '../../types/account.types';
