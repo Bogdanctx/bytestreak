@@ -87,11 +87,11 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                         {target.account.username}
                     </Typography>
                     <Box className="profile-rank-container">
-                        <Typography className="profile-rank" variant="body2" sx={{ color: rankColor }}>
+                        <Typography className="profile-rank" variant="caption" sx={{ color: rankColor }}>
                             {rank.toUpperCase()}
                         </Typography>
                         •
-                        <Typography className="profile-level" variant="body2">
+                        <Typography className="profile-level" variant="caption">
                             Level {level}
                         </Typography>
                     </Box>
