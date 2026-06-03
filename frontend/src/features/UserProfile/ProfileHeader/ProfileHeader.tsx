@@ -25,7 +25,7 @@ interface IProfileHeaderProps {
 
 function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemove, friendList }: IProfileHeaderProps) {
     const level = getLevel(target.account.currentXP);
-    const rank = getRank(level);
+    const rank = getRank(target.account.currentXP);
     const rankColor = getRankColor(rank);
     const isMyProfile = myAccount?.id === target.account.id;
     const isFriend = friendList.some(friend => friend.id === myAccount?.id);
@@ -90,6 +90,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                         <Typography className="profile-rank" variant="body2" sx={{ color: rankColor }}>
                             {rank.toUpperCase()}
                         </Typography>
+                        •
                         <Typography className="profile-level" variant="body2">
                             Level {level}
                         </Typography>
