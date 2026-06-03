@@ -9,6 +9,6 @@ export const useAccount = () => {
             const response = await api.get('/auth/me');
             return response.data;
         },
-        refetchInterval: 1000 * 60 * 5
+        refetchInterval: 5 * 60 * 1000 // Refetch every 5 minutes to keep the account data up-to-date
     });
 };
