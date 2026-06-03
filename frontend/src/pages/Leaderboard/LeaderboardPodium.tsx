@@ -28,8 +28,6 @@ function LeaderboardPodium({ topThree, currentAccount }: ILeaderboardPodiumProps
             </Typography>
             <Box className="podium-container">
                 {topThree.map((account: IAccount, index: number) => {
-                    const level = getLevel(account.currentXP);
-                    const rank = getRank(level);
                     const position = index + 1;
                     const medal = getMedalIcon(position);
 
@@ -44,29 +42,13 @@ function LeaderboardPodium({ topThree, currentAccount }: ILeaderboardPodiumProps
                             } as any}
                         >
                             <Box className="podium-medal">{medal}</Box>
-                            <Box
-                                className="podium-avatar"
-                                onClick={() => navigate(`/accounts/profile/${account.username}`)}
-                            >
-                                <AccountAvatar
-                                    avatarUrl={account.profilePictureUrl}
-                                    cssEffectStyle={account.cssEffectStyle}
-                                    width={56}
-                                    height={56}
-                                />
-                            </Box>
+                            <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={56} height={56} />
                             <Typography
                                 className="podium-username"
                                 onClick={() => navigate(`/accounts/profile/${account.username}`)}
                             >
                                 {account.username}
                             </Typography>
-                            <Chip
-                                label={`Lvl ${level}`}
-                                size="small"
-                                className="podium-level-badge"
-                                sx={{ color: getRankColor(rank) }}
-                            />
                             <Typography className="podium-xp">
                                 {account.currentXP.toLocaleString()}
                                 <span className="xp-label">XP</span>
