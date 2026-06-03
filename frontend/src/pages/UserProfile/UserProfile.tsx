@@ -76,9 +76,9 @@ function UserProfile() {
 
     const getActivityClass = (count: number) => {
         if (count === 0) return 'activity-day';
-        if (count < 3) return 'activity-day activity-level-1';
-        if (count < 6) return 'activity-day activity-level-2';
-        if (count < 10) return 'activity-day activity-level-3';
+        if (count < 7) return 'activity-day activity-level-1';
+        if (count < 14) return 'activity-day activity-level-2';
+        if (count < 30) return 'activity-day activity-level-3';
         return 'activity-day activity-level-4';
     };
 
@@ -113,7 +113,7 @@ function UserProfile() {
                                                 </Box>
                                                 <Box sx={{ flex: 1 }}>
                                                     <Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{friend.username}</Typography>
-                                                    <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.codingProblemsSolved} problems solved</Typography>
+                                                    <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.solvedProblems.length} problems solved</Typography>
                                                 </Box>
                                                 {currentAccount.id !== friend.id && (
                                                     <Button size="small" 
@@ -185,9 +185,9 @@ function UserProfile() {
                         <Paper className="activity-section" elevation={0}>
                             <Typography className='activity-section-title' variant="h6">Activity overview</Typography>
                             <Box className="activity-stats">
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.codingProblemsSolved}</Typography></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.solvedProblems.length}</Typography></Box>
                                 <Box className="activity-stat"><Typography className="activity-stat-label">Quizzes Solved</Typography><Typography className="activity-stat-value">{userData.account.quizzesSolved}</Typography></Box>
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{userData.account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Coding Problems Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{userData.account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
                             </Box>
                             <Box className="activity-graph-container">
                                 <Box className="activity-grid">

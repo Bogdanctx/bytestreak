@@ -47,7 +47,7 @@ function Problem() {
         if (allTestsPassed) {
             lastTriggeredResultsRef.current = results;
 
-            if (codingProblem?.dailyChallange && account?.solvedDailyCodingProblemToday) {
+            if (codingProblem?.dailyChallange && !account?.solvedDailyCodingProblemToday) {
                 setEarnedDailyChallengeReward(true);
             }
             else {

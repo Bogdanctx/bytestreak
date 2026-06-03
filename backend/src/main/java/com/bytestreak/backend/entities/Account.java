@@ -31,8 +31,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "Accounts")
 @Getter @Setter
@@ -64,8 +62,6 @@ public class Account {
 
     private int currentXP = 0;
     private int xpAchievedToday = 0;
-
-    private int codingProblemsSolved = 0;
     private int quizzesSolved = 0;
 
     private int streakLength = 0;

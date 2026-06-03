@@ -196,6 +196,7 @@ public class QuizService {
         }
 
         solver.setSolvedDailyQuizToday(true);
+        solver.setQuizzesSolved(solver.getQuizzesSolved() + 1);
         accountRepository.save(solver);
         activityTrackerService.recordActivity(solver);
 

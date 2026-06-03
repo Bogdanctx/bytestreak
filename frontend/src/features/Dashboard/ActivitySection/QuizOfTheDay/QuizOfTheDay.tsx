@@ -159,7 +159,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                 const isMeP1 = streak.participant1.id === account.id;
                                 const friend = isMeP1 ? streak.participant2 : streak.participant1;
                                 
-                                const friendSolved = isMeP1 ? streak.participant2SolvedToday : streak.participant1SolvedToday;
+                                const friendSolvedInStreak = isMeP1 ? streak.participant2SolvedToday : streak.participant1SolvedToday;
                                 const friendSolvedCorrectly = isMeP1 ? streak.participant2SolvedCorrectly : streak.participant1SolvedCorrectly;
 
                                 return (
@@ -170,28 +170,36 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                             <Typography color="var(--text-primary)">{friend.username}</Typography>
                                         </Box>
                                         
-                                        {!friendSolved && (
+                                        {(friend.solvedDailyQuizToday && !friendSolvedInStreak) ? (
                                             <Typography color="var(--text-secondary)" fontSize="0.8rem">
-                                                Waiting for friend...
+                                                Already solved today
                                             </Typography>
-                                        )}
+                                        ) : (
+                                            <>
+                                                {!friendSolvedInStreak && (
+                                                    <Typography color="var(--text-secondary)" fontSize="0.8rem">
+                                                        Waiting for friend...
+                                                    </Typography>
+                                                )}
 
-                                        {friendSolved && !friendSolvedCorrectly && (
-                                            <Typography sx={{ color: 'var(--difficulty-hard)' }} fontSize="0.8rem">
-                                                Friend missed it 😢
-                                            </Typography>
-                                        )}
+                                                {friendSolvedInStreak && !friendSolvedCorrectly && (
+                                                    <Typography sx={{ color: 'var(--difficulty-hard)' }} fontSize="0.8rem">
+                                                        Friend missed it 😢
+                                                    </Typography>
+                                                )}
 
-                                        {friendSolved && friendSolvedCorrectly && (
-                                            <Box className="qotd-streak-increase-anim">
-                                                <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
-                                                    {streak.length - 1}
-                                                </Typography>
-                                                <Typography color="var(--accent-main)" fontWeight="bold">
-                                                    {streak.length}
-                                                </Typography>
-                                                <LocalFireDepartmentIcon sx={{ color: '#ff9800', ml: 0.5 }} />
-                                            </Box>
+                                                {friendSolvedInStreak && friendSolvedCorrectly && (
+                                                    <Box className="qotd-streak-increase-anim">
+                                                        <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
+                                                            {streak.length - 1}
+                                                        </Typography>
+                                                        <Typography color="var(--accent-main)" fontWeight="bold">
+                                                            {streak.length}
+                                                        </Typography>
+                                                        <LocalFireDepartmentIcon sx={{ color: '#ff9800', ml: 0.5 }} />
+                                                    </Box>
+                                                )}
+                                            </>
                                         )}
                                     </Box>
                                 );

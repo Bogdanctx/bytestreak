@@ -130,7 +130,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.codingProblemsSolved}
+                        {account.solvedProblems.length}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems
