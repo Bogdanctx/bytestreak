@@ -1,27 +1,20 @@
-import { Box, CircularProgress, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Box, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 import './Leaderboard.style.css';
+import type { IAccount } from '../../types/account.types';
 
 interface ILeaderboardListProps {
-    accounts: any[];
-    isLoading: boolean;
-    isSearchMode: boolean;
-    currentAccount: any;
-    navigate: any;
+    accounts: IAccount[];
+    currentAccount: IAccount;
 }
 
-function LeaderboardList({ accounts, currentAccount, navigate, isLoading, isSearchMode }: ILeaderboardListProps) {
+function LeaderboardList({ accounts, currentAccount }: ILeaderboardListProps) {
+    const navigate = useNavigate();
+
     return (
         <Box className="leaderboard-content">
-            {!isSearchMode && (
-                <Typography variant="subtitle2" className="leaderboard-section-label">
-                    <TrendingUpIcon sx={{ mr: 0.8, fontSize: '1rem' }} />
-                    Rankings (4+)
-                </Typography>
-            )}
-
             <TableContainer component={Paper} className="leaderboard-table-container">
                 <Table stickyHeader>
                     <TableHead>
@@ -33,14 +26,6 @@ function LeaderboardList({ accounts, currentAccount, navigate, isLoading, isSear
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {isLoading && accounts.length > 0 && (
-                            <TableRow>
-                                <TableCell colSpan={4} align="center" sx={{ py: 2 }}>
-                                    <CircularProgress size={24} />
-                                </TableCell>
-                            </TableRow>
-                        )}
-
                         {accounts.map((account: any, index: number) => {
                             const level = getLevel(account.currentXP);
                             const rank = getRank(level);

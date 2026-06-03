@@ -3,19 +3,22 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 import './Leaderboard.style.css';
+import type { IAccount } from '../../types/account.types';
+import { useNavigate } from 'react-router-dom';
 
 interface ILeaderboardPodiumProps {
-    topThree: any[];
-    currentAccount: any;
-    navigate: any;
+    topThree: IAccount[];
+    currentAccount: IAccount;
 }
 
-function LeaderboardPodium({ topThree, currentAccount, navigate }: ILeaderboardPodiumProps) {
+function LeaderboardPodium({ topThree, currentAccount }: ILeaderboardPodiumProps) {
+    const navigate = useNavigate();
     const getMedalIcon = (rank: number) => {
         const medals = ['🥇', '🥈', '🥉'];
         return medals[rank - 1] || null;
     };
 
+    console.log('Rendering LeaderboardPodium with topThree:', topThree);
     
     return (
         <Box className="podium-section">
@@ -24,7 +27,7 @@ function LeaderboardPodium({ topThree, currentAccount, navigate }: ILeaderboardP
                 Top Competitors
             </Typography>
             <Box className="podium-container">
-                {topThree.map((account: any, index: number) => {
+                {topThree.map((account: IAccount, index: number) => {
                     const level = getLevel(account.currentXP);
                     const rank = getRank(level);
                     const position = index + 1;

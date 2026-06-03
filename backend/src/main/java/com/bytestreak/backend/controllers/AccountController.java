@@ -109,9 +109,9 @@ public class AccountController {
 
 
     @GetMapping("/leaderboard")
-    public ResponseEntity<?> getLeaderboard(@RequestParam(required = false) int page, @RequestParam(required = false) String query) {
-        Map<String, Object> response = accountService.fetchLeaderboard(query, page);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> getLeaderboard() {
+        List<Account> leaderboardAccounts = accountService.fetchLeaderboard();
+        return ResponseEntity.ok(leaderboardAccounts);
     }
 
     @Autowired

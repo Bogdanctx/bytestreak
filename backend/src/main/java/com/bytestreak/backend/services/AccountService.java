@@ -71,31 +71,18 @@ public class AccountService {
         return response;    
     }
 
-    public Map<String, Object> fetchLeaderboard(String query, int page) {
-        Pageable pageable = PageRequest.of(page, 20);
-        Page<Account> leaderboardPage;
+    public List<Account> fetchLeaderboard() {
+        List<Account> leaderboardAccounts;
 
-        if (query != null && !query.isBlank()) {
-            leaderboardPage = accountRepository.findByUsernameStartingWithIgnoreCaseOrderByCurrentXPDescIdAsc(query, pageable);
-        }
-        else {
-            leaderboardPage = accountRepository.findAllByOrderByCurrentXPDescIdAsc(pageable);
-        }
+        leaderboardAccounts = accountRepository.findAllByOrderByCurrentXPDescIdAsc();
 
-        for(int i = 0; i < leaderboardPage.getContent().size(); i++) {
-            Account account = leaderboardPage.getContent().get(i);
+        for(int i = 0; i < 10; i++) {
+            Account account = leaderboardAccounts.get(i);
             Long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
             account.setGlobalRank(globalRank);
         }
 
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("accounts", leaderboardPage.getContent());
-        response.put("totalPages", leaderboardPage.getTotalPages());
-        response.put("currentPage", page);
-        response.put("hasNext", leaderboardPage.hasNext());
-
-        return response;    
+        return leaderboardAccounts;
     }
 
     public Account updateAccount(Account account, AccountUpdateDTO updates) {
