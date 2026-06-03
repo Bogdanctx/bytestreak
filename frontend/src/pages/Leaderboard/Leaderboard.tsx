@@ -12,11 +12,11 @@ import LeaderboardPodium from './LeaderboardPodium';
 import LeaderboardList from './LeaderboardList';
 import './Leaderboard.style.css';
 import type { IAccount } from '../../types/account.types';
+import { getRank } from '../../utils/rankUtils';
 
 function Leaderboard() {
     const { data: currentAccount, isSuccess: currentAccountQuerySuccess } = useAccount();
     const [daysLeft, setDaysLeft] = useState<number>(0);
-    
     const { data: leaderboardAccounts, isSuccess: leaderBoardAccountsSuccess } = useQuery<IAccount[]>({
         queryKey: ['leaderboard'],
         queryFn: async () => {
@@ -40,24 +40,27 @@ function Leaderboard() {
     
     return (
         <Box className="leaderboard-container">
-            <Box className="leaderboard-header-section">
-                <Box className="leaderboard-header-content">
-                    <Box className="leaderboard-header-text">
-                        <Typography variant="h3" className="leaderboard-title">Leaderboard</Typography>
-                        <Typography variant="body2" className="leaderboard-subtitle">
-                            Compete globally and claim your place at the top
-                        </Typography>
-                    </Box>
+            <Box className="leaderboard-header-content">
 
-                    <Box className="leaderboard-countdown">
-                        <LocalFireDepartmentIcon className="countdown-icon" />
-                        <Box className="countdown-content">
-                            <Typography variant="body2" className="countdown-label">Days Left</Typography>
-                            <Typography variant="h4" className="countdown-value">{daysLeft}</Typography>
-                        </Box>
+                <Box>
+                    <Typography variant="h3" className="leaderboard-title">Leaderboard</Typography>
+                    <Typography variant="body2" className="leaderboard-subtitle">
+                        Compete globally and claim your place at the top
+                    </Typography>
+                </Box>
+
+                <Box className="leaderboard-countdown">
+                    <LocalFireDepartmentIcon className="countdown-icon" />
+                    <Box className="countdown-content">
+                        <Typography variant="body2" className="countdown-label">Days Left</Typography>
+                        <Typography variant="h4" className="countdown-value">{daysLeft}</Typography>
                     </Box>
                 </Box>
             </Box>
+
+            <Typography className="current-rank-label" align="center">
+                {currentAccount.username}, you are #{currentAccount.globalRank} globally
+            </Typography>
             
             <LeaderboardPodium topThree={topThree} currentAccount={currentAccount} />
 

@@ -15,32 +15,18 @@
 }
 
 /* Header Section */
-.leaderboard-header-section {
-    display: flex;
-    flex-direction: column;
-}
 
 .leaderboard-header-content {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 32px;
-}
-
-.leaderboard-header-text {
-    flex: 1;
 }
 
 .leaderboard-title {
     color: var(--text-primary) !important;
     font-weight: 700 !important;
     font-size: 2.2rem !important;
-    background: linear-gradient(135deg, var(--text-primary), rgba(35, 206, 107, 0.8));
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
     margin-bottom: 8px !important;
-    letter-spacing: -0.5px;
 }
 
 .leaderboard-subtitle {
@@ -48,6 +34,13 @@
     font-size: 0.9rem !important;
     font-weight: 400 !important;
     letter-spacing: 0.3px;
+}
+
+.current-rank-label {
+    color: var(--text-secondary) !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 1px;
+    font-weight: 600 !important;
 }
 
 /* Countdown Box */

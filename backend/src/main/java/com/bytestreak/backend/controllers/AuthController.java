@@ -49,6 +49,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         Account account = authService.getCurrentUser(authentication);
+        account.setGlobalRank(accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1);
 
         return ResponseEntity.ok(account);
     }
