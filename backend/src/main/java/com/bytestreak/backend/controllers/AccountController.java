@@ -113,20 +113,4 @@ public class AccountController {
         List<Account> leaderboardAccounts = accountService.fetchLeaderboard();
         return ResponseEntity.ok(leaderboardAccounts);
     }
-
-
-    
-    @Autowired
-    private TimedMethodsService timedMethodsService;
-
-    @GetMapping("/reset-season")
-    public ResponseEntity<?> resetSeason() {
-        timedMethodsService.resetSeason();
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/reset-dailies")
-    public ResponseEntity<?> resetDailies() {
-        timedMethodsService.generateDailyChallenges();
-        return ResponseEntity.ok().build();
-    }
 }
