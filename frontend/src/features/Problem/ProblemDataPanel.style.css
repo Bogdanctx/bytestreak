@@ -8,7 +8,7 @@
     overflow: hidden;
 
     flex: 0 0 auto;
-    min-width: 600px;
+    min-width: 10%;
 }
 
 .problem-header-tabs {

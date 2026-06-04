@@ -51,9 +51,9 @@ function ProblemDescription({ problem }: { problem: IProblem }) {
             </Box>
 
             <Box className="problem-meta-bar">
-                <Box className={`difficulty-chip ${getDifficultyColorClass(problem.difficulty)}`}>
+                <Typography className={`difficulty-chip ${getDifficultyColorClass(problem.difficulty)}`}>
                     {problem.difficulty}
-                </Box>
+                </Typography>
                 <Button 
                     className='problem-tags-button'
                     variant="outlined"
