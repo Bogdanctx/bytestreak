@@ -256,7 +256,7 @@ function ProblemBuilder() {
             codeTemplates: JSON.stringify(codeTemplates),
             testCases: testCases,
             tags: tags,
-            validationScript: validationTabActive ? validationCode : undefined
+            validationScript: validationCode !== DEFAULT_VALIDATION_CODE ? validationCode : undefined
         };
         
         submitCodingProblemMutation.mutate(problemData);

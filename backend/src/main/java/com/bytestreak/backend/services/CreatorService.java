@@ -12,6 +12,7 @@ import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.enums.Difficulty;
+import com.bytestreak.backend.enums.Role;
 import com.bytestreak.backend.enums.Visibility;
 import com.bytestreak.backend.exceptions.ResourceAlreadyExistsException;
 import com.bytestreak.backend.exceptions.ResourceNotFoundException;
@@ -102,7 +103,7 @@ public class CreatorService {
         Problem existingProblem = problemRepository.findById(problemId)
             .orElseThrow(() -> new ResourceNotFoundException("Problem not found"));
 
-        if (!existingProblem.getCreator().getId().equals(me.getId())) {
+        if (!existingProblem.getCreator().getId().equals(me.getId()) || me.getRole() != Role.MODERATOR || me.getRole() != Role.ADMIN) {
             throw new UnauthorizedActionException("You are not the creator of this problem"); 
         }
 

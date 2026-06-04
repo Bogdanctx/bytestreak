@@ -52,7 +52,13 @@ export default function QuizManagement() {
             queryClient.setQueryData(['quizQueue'], (oldQueue: IQuiz[] = []) => [...oldQueue, ...newQuizzes]);
             setSelectedIndex(quizQueue.length + newQuizzes.length - 1);
             setQuizzesListModified(true);
-            notify(`${newQuizzes.length} quizzes generated successfully!`, 'success');
+
+            if (newQuizzes.length > 0) {
+                notify(`${newQuizzes.length} quizzes generated successfully!`, 'success');
+            }
+            else {
+                notify('No quizzes were generated. Please try again.', 'info');
+            }
         }
     });
 

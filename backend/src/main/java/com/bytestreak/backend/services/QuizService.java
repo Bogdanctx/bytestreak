@@ -49,17 +49,42 @@ public class QuizService {
 
         int judge0LangId = programmingLanguage.equals("Python") ? 71 : 54;
 
-        List<String> pythonTopics = List.of("list comprehensions", "generators", "decorators", "regular expressions",
-            "recursion", "binary search", "dynamic programming", "exceptions handling", "classes and objects",
-            "inheritance", "polymorphism", "abstract base classes", "loops and conditionals",
-            "global vs local variables", "graph algorithms", "string manipulation", "stack",
-            "queue", "sort algorithms", "greedy algorithms", "bit manipulation"
+        List<String> pythonTopics = List.of(
+            // Core Python & Syntax
+            "list comprehensions", "dictionary comprehensions", "generator functions (yield)", 
+            "decorators", "regular expressions", "exceptions handling (try/except/finally)", 
+            "global vs local scope",
+            // OOP
+            "classes and instance variables", "inheritance and super()", "polymorphism", 
+            "abstract base classes (abc module)",
+            // Data Structures
+            "stack operations using lists", "queue operations using collections.deque",
+            // Specific Algorithms
+            "recursion base cases", "binary search on a sorted list", 
+            "merge sort", "quick sort", "insertion sort",
+            "DFS (Depth-First Search) on graphs", "BFS (Breadth-First Search) on graphs", "topological sorting",
+            "dynamic programming (memoization)", "dynamic programming (tabulation)", "0/1 knapsack problem",
+            "greedy algorithm (activity selection)", 
+            "bit manipulation (counting set bits)", "string manipulation (anagrams/palindromes)"
         );
-        List<String> cppTopics = List.of("pointers and references", "recursion", "binary search", "dynamic programming",
-            "exceptions handling", "classes and objects", "inheritance", "polymorphism",
-            "abstract classes and interfaces", "loops and conditionals", "graph algorithms", "string manipulation",
-            "stack", "queue", "sort algorithms", "greedy algorithms",
-            "bit manipulation", "memory management"
+
+        List<String> cppTopics = List.of(
+            // Core C++ & Memory
+            "pointer arithmetic and dereferencing", "pass by reference vs pass by value", 
+            "exceptions handling (try/catch)", "memory management (new/delete)", 
+            "smart pointers (std::unique_ptr, std::shared_ptr)", "RAII paradigm",
+            // OOP
+            "classes and encapsulation", "inheritance", "polymorphism (virtual functions)", 
+            "abstract classes and pure virtual functions",
+            // Data Structures
+            "std::stack operations", "std::queue operations", "std::vector manipulation",
+            // Specific Algorithms
+            "recursion base cases", "binary search", 
+            "merge sort", "quick sort", "insertion sort",
+            "DFS (Depth-First Search)", "BFS (Breadth-First Search)", "Dijkstra's shortest path",
+            "dynamic programming (memoization)", "dynamic programming (tabulation)", "longest common subsequence",
+            "greedy algorithm (coin change)", 
+            "bit manipulation (XOR/bitwise AND)", "string manipulation (std::string methods)"
         );
 
         boolean quizGenerated = false;
@@ -81,23 +106,22 @@ public class QuizService {
             String snippetPrompt = "You are an expert " + programmingLanguage + " developer.\n" +
                             "Create a complete, runnable " + programmingLanguage + " program demonstrating: " + randomTopic + ".\n\n" +
 
-                            "Requirements:\n" +
-                            "1. The code may be deterministic and include a correct behavior related to the topic.\n" +
-                            "2. Keep the program concise (max 40-50 lines).\n" +
-                            "3. Define all imports, classes, and variables. No undeclared entities.\n" +
-                            "4. It must execute cleanly and print exactly one line of output.\n" +
-                            "5. Do not include comments.\n" +
-                            "6. If C++, include main(). If Python, include executable top-level code.\n\n" +
+                            "CRITICAL REQUIREMENTS:\n" +
+                            "1. The code is deterministic and include a correct behavior related to the topic.\n" +
+                            "2. Define all imports, classes, and variables. No undeclared entities.\n" +
+                            "3. It must execute cleanly and print exactly ONE line of output.\n" +
+                            "4. STRICTLY PROHIBITED: Do not include ANY comments (no //, no #, no /* */).\n" +
+                            "5. If C++, include main(). If Python, include executable top-level code.\n\n" +
 
-                            "Output format:\n" +
-                            "Return ONLY valid JSON with this structure:\n" +
-                            "{\"codeSnippet\": \"...\"}\n" +
-                            "The code must be properly escaped for JSON.\n\n";
+                            "OUTPUT FORMAT:\n" +
+                            "You must return ONLY a raw JSON object. Do not wrap it in markdown blocks. Do not add conversational text.\n" +
+                            "{\"codeSnippet\": \"<your_code_here>\"}\n";
 
             
             try {
                 // call Ollama API to get the code snippet
                 String snippetAnswer = callOllama(snippetPrompt);
+                System.out.println("Code snippet response from Ollama API: " + snippetAnswer);
                 JSONObject snippetJson = new JSONObject(snippetAnswer);
                 
                 String snippet = snippetJson.getString("codeSnippet");
@@ -162,6 +186,8 @@ public class QuizService {
     }
 
     private String callOllama(String prompt) throws Exception {
+        LogsService.log("Calling Ollama API with prompt: " + prompt);
+
         JSONObject payload = new JSONObject();
         payload.put("model", "qwen2.5-coder:7b");
         payload.put("prompt", prompt);
