@@ -67,7 +67,7 @@ function Problem() {
 
             const pageBounds = problemPageRef.current.getBoundingClientRect();
             const leftBoundary = 320;
-            const rightBoundary = Math.max(leftBoundary, pageBounds.width - 480);
+            const rightBoundary = Math.max(leftBoundary, pageBounds.width);
             const nextWidth = event.clientX - pageBounds.left;
             const constrainedWidth = Math.min(Math.max(nextWidth, leftBoundary), rightBoundary);
 

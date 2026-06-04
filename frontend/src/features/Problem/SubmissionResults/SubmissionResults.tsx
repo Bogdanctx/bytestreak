@@ -1,11 +1,30 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, LinearProgress, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 import { type ISubmissionResult } from '../../../types/problem.types';
+import PreviewTestcase from './PreviewTestcase';
 import './SubmissionResults.style.css';
 
+const findFirstFailedTestCase = (results: ISubmissionResult[]): ISubmissionResult | null => {
+    for (const result of results) {
+        if (result.statusId !== 3) {
+            return result;
+        }
+    }
+    return null;
+}
+
 function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
+    const [selectedTestCase, setSelectedTestCase] = useState<ISubmissionResult | null>(null);
+
+    useEffect(() => {
+        if (results && results.length > 0) {
+            setSelectedTestCase(findFirstFailedTestCase(results));
+        }
+    }, [results]);
+
     if (results.length === 0) {
         return (
             <Box className="submission-result-container">
@@ -19,7 +38,6 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
     const totalTests = results.length;
     const passedTests = results.filter(tc => tc.statusId === 3).length;
     const passPercentage = (passedTests / totalTests) * 100;
-
 
     return (
         <Box className="submission-result-container">
@@ -49,7 +67,12 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
 
             <Box className="submission-testcases-results">
                 {results.map((testCase) => (
-                    <Box key={testCase.testCaseId} className="submission-result-testcase">
+                    <Box 
+                        key={testCase.testCaseId} 
+                        className="submission-result-testcase"
+                        onClick={() => setSelectedTestCase(testCase)}
+                        sx={{ cursor: 'pointer' }}
+                    >
                         <Box mr={1}>
                             {testCase.statusId === 3 ? 
                                 <CheckIcon sx={{ fontSize: "0.6rem" }} color="success" /> 
@@ -67,6 +90,13 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
                     </Box>
                 ))}
             </Box>
+
+            {selectedTestCase && (
+                <PreviewTestcase 
+                    testcase={selectedTestCase} 
+                    onClose={() => setSelectedTestCase(null)}
+                />
+            )}
         </Box>
     )
 }
