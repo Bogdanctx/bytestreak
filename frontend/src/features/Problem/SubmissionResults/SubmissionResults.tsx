@@ -38,6 +38,18 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
     const totalTests = results.length;
     const passedTests = results.filter(tc => tc.statusId === 3).length;
     const passPercentage = (passedTests / totalTests) * 100;
+    
+    let progressColor = "";
+    if (passPercentage < 33) {
+        progressColor = "var(--difficulty-hard)";
+    }
+    else if (33 <= passPercentage && passPercentage < 100) {
+        progressColor = "var(--difficulty-medium)";
+    }
+    else {
+        progressColor = "var(--difficulty-easy)";
+    }
+    
 
     return (
         <Box className="submission-result-container">
@@ -51,18 +63,23 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
                         {passedTests}/{totalTests}
                     </Typography>
                 </Box>
-                <LinearProgress 
-                    variant="determinate" 
-                    value={passPercentage} 
-                    sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: '#424242',
-                        '& .MuiLinearProgress-bar': {
-                            backgroundColor: passPercentage === 100 ? '#66bb6a' : '#2196f3'
-                        }
-                    }}
-                />
+                <Box className="results-pass-percentage-container">
+                    <Typography className="results-pass-percentage" variant="body2">
+                        {passPercentage.toFixed(2)}%
+                    </Typography>
+                    <LinearProgress 
+                        variant="determinate" 
+                        value={passPercentage} 
+                        sx={{
+                            height: 8,
+                            borderRadius: 4,
+                            backgroundColor: '#424242',
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: `${progressColor}`
+                            }
+                        }}
+                    />
+                </Box>
             </Box>
 
             <Box className="submission-testcases-results">
