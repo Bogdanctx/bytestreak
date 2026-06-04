@@ -46,6 +46,9 @@ export interface ISubmissionResult {
     testCaseId: number;
     statusId: number;
     statusDescription: string;
+    testCaseInput: string;
+    testCaseOutput: string;
+    testCaseExpectedOutput: string;
 }
 
 export interface ISolution {

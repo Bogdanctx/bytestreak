@@ -11,4 +11,7 @@ public class ExecutionResultDTO {
     private int statusId;
     private String statusDescription;
     private int testCaseId;
+    private String testCaseInput;
+    private String testCaseOutput;
+    private String testCaseExpectedOutput;
 }

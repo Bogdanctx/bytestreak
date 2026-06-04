@@ -114,14 +114,14 @@ public class CodeExecution {
             int statusId = (int) jsonResponse.getJSONObject("status").getInt("id");
             String executionStatus = (String) jsonResponse.getJSONObject("status").get("description");
 
-            if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
-                return new ExecutionResultDTO(statusId, executionStatus, testCaseId); 
-            }
-
-            // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
             String base64Stdout = (String) jsonResponse.get("stdout");
             String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
 
+            if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
+                return new ExecutionResultDTO(statusId, executionStatus, testCaseId, input, userOutput, expectedOutput); 
+            }
+
+            // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
             String validationStdin = input + "@@@USER_OUTPUT@@@" + userOutput;
             String encodedValidationStdin = Base64.getEncoder().encodeToString(validationStdin.getBytes());
             String encodedValidationScript = Base64.getEncoder().encodeToString(validationScriptCode.getBytes());
@@ -139,16 +139,16 @@ public class CodeExecution {
             String valStdout = valStdoutBase64 != null ? new String(Base64.getMimeDecoder().decode(valStdoutBase64)).trim() : "";
 
             if ("True".equalsIgnoreCase(valStdout)) {
-                return new ExecutionResultDTO(3, "Accepted", testCaseId);
+                return new ExecutionResultDTO(3, "Accepted", testCaseId, input, userOutput, expectedOutput);
             } 
             else {
-                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId);
+                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId, input, userOutput, expectedOutput);
             }
 
         }
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());
-            return new ExecutionResultDTO(0, "System Error", testCaseId);
+            return new ExecutionResultDTO(0, "System Error", testCaseId, input, "", expectedOutput);
         }
     }
 
