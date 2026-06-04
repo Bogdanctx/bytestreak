@@ -19,7 +19,6 @@ import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.AccountService;
-import com.bytestreak.backend.services.TimedMethodsService;
 
 import java.util.List;
 import java.util.Map;
