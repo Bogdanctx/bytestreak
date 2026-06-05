@@ -36,7 +36,7 @@ function ActivitySection() {
     const { data: streaksData = [] } = useQuery<IStreak[]>({
         queryKey: ['activeStreaks'],
         queryFn: async () => {
-            const response = await api.get('/streaks/fetch-streaks');
+            let response = await api.get('/streaks/fetch-streaks');
             return response.data;
         },
         enabled: !!account
@@ -150,7 +150,7 @@ function ActivitySection() {
 
                                 <Box className="streak-actions">
                                     <Box className="streak-flame-container">
-                                        <Typography variant="body1" fontWeight="bold">
+                                        <Typography variant="body1" fontWeight="bold" fontFamily="Jetbrains Mono">
                                             {streak.length}
                                         </Typography>
                                         <LocalFireDepartmentIcon />

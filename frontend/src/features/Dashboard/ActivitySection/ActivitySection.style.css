@@ -12,9 +12,10 @@
 
 .activity-section-title {
     color: var(--text-primary);
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     margin-bottom: 16px !important;
     flex-shrink: 0;
+    z-index: 4 !important;
 }
 
 .daily-items-container {
@@ -50,12 +51,13 @@
     font-weight: bold !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-family: "Momo Trust Display" !important;
 }
 
 .daily-item-title {
     color: var(--text-primary);
     font-size: 1rem !important;
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .friends-section {
@@ -86,6 +88,7 @@
     padding: 8px 8px 0;
     text-align: center;
     opacity: 0.85;
+    font-family: "Momo Trust Display" !important;
 }
 
 .streak-list-item {
@@ -140,6 +143,7 @@
     font-size: 0.75rem;
     margin-top: 4px;
     font-weight: 500;
+    font-family: "Momo Trust Display" !important;
 }
 
 .streak-status.completed {
