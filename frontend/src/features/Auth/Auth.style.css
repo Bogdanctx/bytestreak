@@ -72,7 +72,7 @@
 .forgot-password-link {
     color: var(--text-secondary);
     cursor: pointer;
-    transition: color 0.2s ease;
+    font-family: "Momo Trust Display" !important;
     font-weight: 500 !important;
 }
 
