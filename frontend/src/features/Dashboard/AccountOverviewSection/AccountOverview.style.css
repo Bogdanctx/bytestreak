@@ -52,7 +52,7 @@
 
 .account-overview-coin-value {
     color: #E7BB41;
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "JetBrains Mono", sans-serif !important;
     font-weight: 700 !important;
     font-size: 0.95rem !important;
 }
@@ -69,11 +69,13 @@
     font-weight: 800 !important;
     text-transform: uppercase;
     letter-spacing: 1.5px;
+    font-family: "Momo Trust Display" !important;
 }
 
 .account-overview-level-text {
     color: var(--text-secondary);
     font-weight: 600 !important;
+    font-family: "JetBrains Mono" !important;
 }
 
 .account-overview-xp-progress-bar {
@@ -111,7 +113,7 @@
 }
 
 .account-overview-stat-value {
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "JetBrains Mono" !important;
     color: var(--text-primary);
     margin-bottom: 6px !important;
     display: flex;
