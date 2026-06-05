@@ -40,7 +40,7 @@ public class TimedMethodsService {
     private void resetDailyQuiz() {
         Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
         if (currentDailyQuiz != null) {
-            // quizRepository.delete(currentDailyQuiz);
+            quizRepository.delete(currentDailyQuiz);
         }
 
         List<Streak> activeStreaks = streakRepository.findAll();

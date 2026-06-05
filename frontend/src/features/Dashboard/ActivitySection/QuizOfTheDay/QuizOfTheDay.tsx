@@ -146,7 +146,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                 {step === 'SUCCESS' && (
                     <Box className="qotd-success-screen qotd-fade-in">
                         <CheckCircleOutlineIcon className="qotd-success-icon" />
-                        <Typography variant="h4" className="qotd-title">Quiz Completed!</Typography>
+                        <Typography variant="h4" className="qotd-title">Quiz completed!</Typography>
                         
                         <Box className="qotd-coins-reward">
                             <Typography className="qotd-coins-text">+10 🪙</Typography>
@@ -167,33 +167,41 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                         <Box display="flex" alignItems="center" gap={1.5}>
                                             <AccountAvatar avatarUrl={friend.profilePictureUrl} cssEffectStyle={friend.cssEffectStyle} width={32} height={32} />
 
-                                            <Typography color="var(--text-primary)">{friend.username}</Typography>
+                                            <Typography color="var(--text-primary)" fontFamily={"Momo Trust Display"}>{friend.username}</Typography>
                                         </Box>
                                         
                                         {(friend.solvedDailyQuizToday && !friendSolvedInStreak) ? (
-                                            <Typography color="var(--text-secondary)" fontSize="0.8rem">
+                                            <Typography color="var(--text-secondary)" fontSize="0.8rem" fontFamily={"Momo Trust Display"}>
                                                 Already solved today
                                             </Typography>
                                         ) : (
                                             <>
                                                 {!friendSolvedInStreak && (
-                                                    <Typography color="var(--text-secondary)" fontSize="0.8rem">
+                                                    <Typography color="var(--text-secondary)" fontSize="0.8rem" fontFamily={"Momo Trust Display"}>
                                                         Waiting for friend...
                                                     </Typography>
                                                 )}
 
                                                 {friendSolvedInStreak && !friendSolvedCorrectly && (
-                                                    <Typography sx={{ color: 'var(--difficulty-hard)' }} fontSize="0.8rem">
+                                                    <Typography sx={{ color: 'var(--difficulty-hard)' }} fontSize="0.8rem" fontFamily={"Momo Trust Display"}>
                                                         Friend missed it 😢
                                                     </Typography>
                                                 )}
 
                                                 {friendSolvedInStreak && friendSolvedCorrectly && (
                                                     <Box className="qotd-streak-increase-anim">
-                                                        <Typography color="var(--text-secondary)" sx={{ textDecoration: 'line-through', mr: 1 }}>
+                                                        <Typography color="var(--text-secondary)" 
+                                                                    sx={{ 
+                                                                        textDecoration: 'line-through', 
+                                                                        mr: 1,
+                                                                        fontFamily: "JetBrains Mono"
+                                                                    }}
+                                                        >
                                                             {streak.length - 1}
                                                         </Typography>
-                                                        <Typography color="var(--accent-main)" fontWeight="bold">
+                                                        <Typography color="var(--accent-main)" 
+                                                                    fontWeight="bold"
+                                                                    fontFamily="JetBrains Mono">
                                                             {streak.length}
                                                         </Typography>
                                                         <LocalFireDepartmentIcon sx={{ color: '#ff9800', ml: 0.5 }} />
@@ -228,9 +236,14 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                         
                         <Box>
                             <Typography variant="h4" className="qotd-title" sx={{ fontWeight: 700, mb: 1 }}>
-                                Not Quite...
+                                Not quite...
                             </Typography>
-                            <Typography variant="body1" sx={{ color: 'var(--text-secondary)' }}>
+                            <Typography variant="body1" 
+                                        sx={{ 
+                                            color: 'var(--text-secondary)',
+                                            fontFamily: "Momo Trust Display"
+                                        }}
+                            >
                                 Your answer was incorrect.
                             </Typography>
                         </Box>
@@ -249,7 +262,13 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                             }}
                         >
                             <LocalFireDepartmentIcon sx={{ color: '#FF4444' }} />
-                            <Typography variant="body2" sx={{ color: '#FF4444', fontWeight: 600 }}>
+                            <Typography variant="body2" 
+                                        sx={{ 
+                                            color: '#FF4444', 
+                                            fontWeight: 600,
+                                            fontFamily: "Momo Trust Display" 
+                                        }}
+                            >
                                 The streak is now over!
                             </Typography>
                         </Box>
@@ -259,31 +278,26 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                                 Accept Defeat
                             </Button>
 
-                            <Button 
-                                variant="contained"
-                                onClick={() => saveStreakMutation.mutate()}
-                                disabled={account.coins < 200 || saveStreakMutation.isPending}
-                                sx={{ 
-                                    backgroundColor: '#E7BB41', // Gold coin color
-                                    color: '#000',
-                                    fontWeight: 700,
-                                    fontFamily: '"Momo Trust Display", sans-serif',
-                                    px: 3,
-                                    '&:hover': {
-                                        backgroundColor: '#d4a936'
-                                    },
-                                    '&.Mui-disabled': {
-                                        backgroundColor: 'rgba(231, 187, 65, 0.2)',
-                                        color: 'rgba(255, 255, 255, 0.3)'
-                                    }
-                                }}
-                            >
-                                {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (200 Coins)'}
-                            </Button>
+                            {streaks.length > 0 && (
+                                <Button 
+                                    variant="contained"
+                                    onClick={() => saveStreakMutation.mutate()}
+                                    className="qotd-save-streak-btn"
+                                    disabled={account.coins < 200 || saveStreakMutation.isPending}
+                                >
+                                    {saveStreakMutation.isPending ? 'Saving...' : 'Save Streak (200 Coins)'}
+                                </Button>
+                            )}
                         </Box>
-                        {account.coins < 200 && (
-                            <Typography variant="caption" sx={{ color: 'var(--difficulty-hard)', mt: 1 }}>
-                                Not enough coins. You have {account.coins}.
+                        {(account.coins < 200 && streaks.length > 0 ) && (
+                            <Typography variant="caption" 
+                                        sx={{ 
+                                            color: 'var(--difficulty-hard)', 
+                                            mt: 1,
+                                            fontFamily: "Momo Trust Display" 
+                                        }}
+                            >
+                                Not enough coins, you have {account.coins}.
                             </Typography>
                         )}
                     </Box>
