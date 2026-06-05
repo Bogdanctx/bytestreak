@@ -4,7 +4,7 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { api } from '../../../api';
 import notify from '../../../components/ui/ToastNotification';
 import { type LoginFormInputs } from '../../../types/auth.types';
-import './LoginForm.style.css';
+import '../Auth.style.css';
 import { useMutation } from '@tanstack/react-query';
 
 interface ILoginFormProps {

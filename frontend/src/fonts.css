@@ -1,3 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=VT323&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@500;700&display=swap');
+@font-face {
+    font-family: "VT323";
+    src: url("./assets/fonts/VT323-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Momo Trust Display";
+    src: url("./assets/fonts/MomoTrustDisplay-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("./assets/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+}

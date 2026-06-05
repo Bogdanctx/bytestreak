@@ -16,7 +16,7 @@
 }
 
 .auth-title {
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     color: var(--text-primary);
     font-size: 28px !important;
     font-weight: 700 !important;
@@ -24,6 +24,7 @@
 }
 
 .auth-subtitle {
+    font-family: "Momo Trust Display" !important;
     color: var(--text-secondary);
     font-size: 14px !important;
 }
@@ -87,9 +88,9 @@
 }
 
 .auth-primary-btn {
-    font-family: "Momo Trust Display", sans-serif !important;
-    background-color: var(--accent-main) !important;
-    color: #000 !important;
+    font-family: "Momo Trust Display" !important;
+    background-color: #23ce6a94 !important;
+    color: var(--text-primary) !important;
     font-weight: 700 !important;
     padding: 12px 0 !important;
     border-radius: 10px !important;
@@ -109,7 +110,7 @@
 }
 
 .auth-secondary-btn {
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     color: var(--text-primary) !important;
     border-color: var(--bg-6) !important;
     padding: 10px 0 !important;
