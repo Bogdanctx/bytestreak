@@ -22,6 +22,7 @@ import UserProfile from './pages/UserProfile/UserProfile.tsx';
 import QuizManagement from './features/Administration/QuizManagement/QuizManagement.tsx';
 import UsersManagement from './features/Administration/UsersManagement/UsersManagement.tsx';
 import ReportsManagement from './features/Administration/ReportsManagement/ReportsManagement.tsx';
+import TimedFeaturesManagement from './features/Administration/TimedFeaturesManagement/TimedFeaturesManagement.tsx';
 import RoleRoute from './components/RoleRoute.tsx';
 import Shop from './pages/Shop/Shop.tsx';
 
@@ -63,6 +64,7 @@ function App() {
                                     <Route path="/admin/manage-users" element={<RoleRoute allowedRoles={['ADMIN']}><UsersManagement /></RoleRoute>} />
                                     <Route path="/admin/manage-quizzes" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><QuizManagement /></RoleRoute>} />
                                     <Route path="/admin/manage-reports" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><ReportsManagement /></RoleRoute>} />
+                                    <Route path="/admin/manage-timed-features" element={<RoleRoute allowedRoles={['MODERATOR', 'ADMIN']}><TimedFeaturesManagement /></RoleRoute>} />
                                 </Route>
                             </Route>
                         </Routes>

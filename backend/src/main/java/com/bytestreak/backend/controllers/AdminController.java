@@ -13,6 +13,18 @@ public class AdminController {
     @Autowired
     private TimedMethodsService timedMethodsService;
     
+    @GetMapping("/reset-daily-quiz")
+    public String resetDailyQuiz() {
+        timedMethodsService.resetDailyQuiz();
+        return "Daily quiz reset successfully.";
+    }
+
+    @GetMapping("/reset-daily-coding-problem")
+    public String resetDailyCodingProblem() {
+        timedMethodsService.resetDailyCodingProblem();
+        return "Daily coding problem reset successfully.";
+    }
+
     @GetMapping("/reset-dailies")
     public String resetDailies() {
         timedMethodsService.generateDailyChallenges();

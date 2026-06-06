@@ -1,0 +1,42 @@
+.timed-features-management-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+.timed-features-management-title {
+    font-family: "Momo Trust Display" !important;
+    color: white;
+}
+
+.timed-features-management-header {
+    padding: 20px;
+    background-color: var(--bg-1);
+    border-radius: 20px;
+}
+
+.timed-feature-button {
+    background-color: #23ce6a94;
+    color: white;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: "Momo Trust Display" !important;
+    width: 500px;
+}
+
+.timed-features-management-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--bg-1);
+    border-radius: 20px;
+}

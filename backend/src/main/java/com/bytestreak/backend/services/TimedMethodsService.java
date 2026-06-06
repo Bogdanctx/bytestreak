@@ -37,7 +37,7 @@ public class TimedMethodsService {
     private StreakRepository streakRepository;
 
 
-    private void resetDailyQuiz() {
+    public void resetDailyQuiz() {
         Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
         if (currentDailyQuiz != null) {
             quizRepository.delete(currentDailyQuiz);
@@ -64,7 +64,7 @@ public class TimedMethodsService {
         accountRepository.saveAll(accounts);
     }
 
-    private void resetDailyCodingProblem() {
+    public void resetDailyCodingProblem() {
         Problem dailyProblem = problemRepository.findByIsDailyChallangeTrue();
         
         if (dailyProblem != null) {

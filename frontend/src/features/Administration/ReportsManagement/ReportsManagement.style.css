@@ -1,3 +1,16 @@
+.reports-header {
+    background-color: var(--bg-1);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.reports-content {
+    background-color: var(--bg-1);
+    padding: 20px;
+    border-radius: 20px;
+    overflow-y: auto;
+}
+
 .report-account-underline:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -8,6 +21,9 @@
     margin: 0 auto;
     height: 100%;
     overflow-y: auto;
+    gap: 24px;
+    display: flex;
+    flex-direction: column;
 }
 
 .reports-loading {
@@ -17,7 +33,6 @@
 }
 
 .reports-title {
-    margin-bottom: 24px !important;
     color: var(--text-primary);
     font-family: 'Momo Trust Display' !important;
 }
@@ -131,4 +146,39 @@
 .report-action-dismiss {
     color: var(--text-secondary) !important;
     border-color: var(--bg-4) !important;
+}
+
+.reports-inspect-button {
+    background-color: var(--bg-3) !important;
+    color: #fff !important;
+    font-family: 'Momo Trust Display' !important;
+    border-radius: 6px !important;
+    border: 4px solid var(--bg-5) !important;
+    box-shadow: none !important;
+}
+
+.reports-inspect-button:hover {
+    background-color: var(--bg-4) !important;
+    border-color: var(--bg-5) !important;
+    box-shadow: 0 0 8px var(--bg-5) !important;
+    scale: 1.05 !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: none !important;
+}
+
+.reports-solved-button {
+    background-color: #23ce6a94 !important;
+    color: var(--text-primary) !important;
+    font-family: 'Momo Trust Display' !important;
+    border-radius: 6px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.reports-solved-button:hover {
+    background-color: var(--accent-hover) !important;
+    box-shadow: 0 0 8px var(--accent-hover) !important;
+    scale: 1.05 !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: none !important;
 }

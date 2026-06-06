@@ -9,7 +9,7 @@ export default function Administration() {
     return (
         <Box id="admin-container">
             <Box id="admin-sidebar">
-                <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: "Momo Trust Display" }}>
+                <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: "Momo Trust Display", textAlign: 'center' }}>
                     Admin Panel
                 </Typography>
                 <Divider sx={{ backgroundColor: 'var(--bg-3)', marginBottom: 2 }} />
@@ -34,6 +34,13 @@ export default function Administration() {
                         onClick={() => navigate("/admin/manage-reports")}
                     >
                         <ListItemText primary="Manage reports" />
+                    </ListItemButton>
+                    <ListItemButton 
+                        className="admin-menu-item"
+                        selected={location.pathname.includes('/manage-timed-features')} 
+                        onClick={() => navigate("/admin/manage-timed-features")}
+                    >
+                        <ListItemText primary="Manage timed features" />
                     </ListItemButton>
                 </List>
             </Box>
