@@ -157,7 +157,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                         secondary={`Level ${level} • ${rank}`}
                                         slotProps={{
                                             primary: {
-                                                fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
+                                                fontSize: "0.9rem", color: "var(--text-primary)", fontFamily: "Momo Trust Display"
                                             },
                                             secondary: {
                                                 fontSize: "0.8rem", color: "var(--text-secondary)"
@@ -236,7 +236,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                     }
                 }}
             >
-                <DialogTitle>Remove Friend?</DialogTitle>
+                <DialogTitle>Remove friend?</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ color: 'var(--text-secondary)' }}>
                         Are you sure you want to remove <strong>{friendToRemove?.username}</strong> from your friends list?
