@@ -29,11 +29,12 @@
 
 .chat-dialog-user-name {
     color: var(--text-primary) !important;
-    font-weight: 600 !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .chat-dialog-user-level {
     color: var(--text-secondary) !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .chat-dialog-header-close {
@@ -76,6 +77,7 @@
 
 .chat-dialog-empty-state-text {
     color: var(--text-secondary) !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .chat-dialog-message-container {
