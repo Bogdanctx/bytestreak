@@ -24,7 +24,7 @@
     border: 1px solid var(--bg-3) !important;
     border-radius: 12px !important;
     color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     font-size: 0.875rem !important;
     padding: 6px 16px !important;
     transition: all 0.2s ease !important;
@@ -37,7 +37,7 @@
 
 .problems-section-footer-text {
     color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display", sans-serif;
+    font-family: "Momo Trust Display" !important;
     font-size: 0.875rem !important;
 }
 
@@ -92,12 +92,13 @@
 
 .problems-section-title {
     color: var(--text-primary) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     font-weight: 700 !important;
 }
 
 .problems-section-subtitle {
     color: var(--text-secondary) !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .problems-section-controls {
@@ -129,6 +130,7 @@
     letter-spacing: 0.5px !important;
     margin-left: 8px !important;
     text-transform: uppercase;
+    font-family: "Momo Trust Display" !important;
 }
 
 #problems-section-list {
@@ -152,6 +154,7 @@
 .problems-section-status {
     color: var(--text-secondary) !important;
     text-align: center;
+    font-family: "Momo Trust Display" !important;
 }
 
 .problems-section-pagination .MuiPaginationItem-root {

@@ -71,7 +71,7 @@
 
 .problem-card-title {
     color: #d4d4d4 !important;
-    font-family: 'Syne', sans-serif !important;
+    font-family: 'JetBrains Mono', monospace !important;
     font-weight: 500 !important;
     font-size: 14.5px !important;
     letter-spacing: 0.3px;
@@ -83,7 +83,7 @@
 }
 
 .tag-chip {
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'JetBrains Mono' !important;
     font-size: 10px !important;
     height: 18px !important;
     letter-spacing: 0.3px;
