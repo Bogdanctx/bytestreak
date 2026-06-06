@@ -100,10 +100,12 @@ public class CreatorService {
     }
 
     public Problem editCodingProblem(Long problemId, EditCodingProblemDTO updatedProblem, Account me) {
-        Problem existingProblem = problemRepository.findById(problemId)
-            .orElseThrow(() -> new ResourceNotFoundException("Problem not found"));
+        Problem existingProblem = problemRepository.findById(problemId).orElseThrow(() -> new ResourceNotFoundException("Problem not found"));
 
-        if (!existingProblem.getCreator().getId().equals(me.getId()) || me.getRole() != Role.MODERATOR || me.getRole() != Role.ADMIN) {
+        boolean isCreator = existingProblem.getCreator().getId().equals(me.getId());
+        boolean isModerator = me.getRole() == Role.MODERATOR;
+        boolean isAdmin = me.getRole() == Role.ADMIN;
+        if (!isCreator && !isModerator && !isAdmin) {
             throw new UnauthorizedActionException("You are not the creator of this problem"); 
         }
 
