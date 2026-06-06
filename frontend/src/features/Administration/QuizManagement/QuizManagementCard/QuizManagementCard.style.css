@@ -23,10 +23,10 @@
 }
 
 .quiz-preview-title {
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 1.1rem !important;
-    color: var(--text-primary) !important;
-    font-weight: 700 !important;
+    font-family: "Momo Trust Display", sans-serif ;
+    font-size: 1.1rem ;
+    color: var(--text-primary) ;
+    font-weight: 700 ;
 }
 
 .quiz-preview-badge {
@@ -82,9 +82,9 @@
 }
 
 .quiz-section-label {
-    color: var(--text-secondary) !important;
-    font-size: 0.8rem !important;
-    font-weight: 700 !important;
+    color: var(--text-secondary) ;
+    font-size: 0.8rem ;
+    font-weight: 700 ;
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
@@ -149,9 +149,9 @@
 }
 
 .quiz-answer-text {
-    font-family: 'Courier New', monospace !important;
-    font-size: 0.9rem !important;
-    color: var(--text-primary) !important;
+    font-family: 'Courier New', monospace ;
+    font-size: 0.9rem ;
+    color: var(--text-primary) ;
 }
 
 @media screen and (max-width: 1300px) {

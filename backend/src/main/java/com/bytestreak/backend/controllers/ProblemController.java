@@ -108,11 +108,15 @@ public class ProblemController {
         }
 
         Account account = accountRepository.findByEmail(authentication.getName());
-
         ProblemVote vote = problemVoteRepository.findByProblemAndAccount(problem, account);
 
         if (vote != null) {
             problem.setUserVote(vote.isLike() ? "like" : "dislike");
+        }
+
+        if (problem.getValidationScriptPath() != null) {
+            String validationScriptContent = fileStorageService.getValidationScriptContent(problem.getValidationScriptPath());
+            problem.setValidationScriptContent(validationScriptContent);
         }
 
         return ResponseEntity.ok(problem);

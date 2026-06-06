@@ -32,7 +32,7 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
     const { data: friend, isLoading: isFriendLoading } = useQuery<IAccount>({
         queryKey: ['friend', friendId],
         queryFn: async () => {
-            const response = await api.get(`/accounts/get?accountId=${friendId}`);
+            const response = await api.get(`/accounts/${friendId}`);
             return response.data;
         }
     });

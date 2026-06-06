@@ -20,25 +20,25 @@
 }
 
 .problems-sections-load-more-button {
-    background-color: var(--bg-2) !important;
-    border: 1px solid var(--bg-3) !important;
-    border-radius: 12px !important;
-    color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display" !important;
-    font-size: 0.875rem !important;
-    padding: 6px 16px !important;
-    transition: all 0.2s ease !important;
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
+    font-size: 0.875rem;
+    padding: 6px 16px;
+    transition: all 0.2s ease;
 }
 .problems-sections-load-more-button:hover {
-    background-color: var(--bg-3) !important;
-    border-color: var(--text-secondary) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-3);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .problems-section-footer-text {
-    color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display" !important;
-    font-size: 0.875rem !important;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
+    font-size: 0.875rem;
 }
 
 .problems-search-input {
@@ -91,14 +91,14 @@
 }
 
 .problems-section-title {
-    color: var(--text-primary) !important;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 700 !important;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display";
+    font-weight: 700;
 }
 
 .problems-section-subtitle {
-    color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display" !important;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
 }
 
 .problems-section-controls {
@@ -109,7 +109,7 @@
 
 .problems-section-switch {
     color: var(--text-secondary);
-    margin-bottom: 4px !important;
+    margin-bottom: 4px;
 }
 
 .problems-section-switch .MuiFormControlLabel-label {
@@ -125,12 +125,12 @@
 }
 
 .problems-section-filter-label {
-    color: var(--text-secondary) !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
-    margin-left: 8px !important;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
     text-transform: uppercase;
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
 }
 
 #problems-section-list {
@@ -152,9 +152,10 @@
 }
 
 .problems-section-status {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     text-align: center;
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
+    margin-top: 32px;
 }
 
 .problems-section-pagination .MuiPaginationItem-root {
@@ -163,26 +164,26 @@
 }
 
 .problems-section-pagination .Mui-selected {
-    background-color: var(--bg-4) !important;
+    background-color: var(--bg-4);
     color: var(--text-primary);
     font-weight: 700;
 }
 
 .problems-section-switch-filter .MuiSwitch-track {
-    background-color: var(--bg-9) !important;
+    background-color: var(--bg-9);
 }
 
 .problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked:hover {
-    background-color: rgba(35, 206, 107, 0.08) !important;
+    background-color: rgba(35, 206, 107, 0.08);
 }
 
 .problems-section-switch-filter .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-    background-color: var(--bg-4) !important;
-    opacity: 1 !important;
+    background-color: var(--bg-4);
+    opacity: 1;
 }
 
 .difficulty-filter-group {

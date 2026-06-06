@@ -157,6 +157,11 @@ function ProblemBuilder() {
             setDifficulty(data.difficulty);
             setTags(data.tags);
 
+            if (data.validationScriptContent) {
+                setValidationTabActive(true);
+                setValidationCode(data.validationScriptContent);
+            }
+
             const parsedTemplates = JSON.parse(data.codeTemplates);
 
             setStarterCode({

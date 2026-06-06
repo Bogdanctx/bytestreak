@@ -7,7 +7,7 @@
 }
 
 .timed-features-management-title {
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
     color: white;
 }
 
@@ -26,7 +26,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
     width: 500px;
 }
 

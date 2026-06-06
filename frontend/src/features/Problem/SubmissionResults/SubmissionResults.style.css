@@ -22,7 +22,7 @@
 .testcase {
     border-radius: 12px;
     color: white;
-    font-size: 0.75rem !important;
+    font-size: 0.75rem;
 }
 
 .submission-result-testcase {
@@ -30,8 +30,8 @@
 }
 
 .testcase-status {
-    font-size: 0.55rem !important;
-    font-weight: 500 !important;
+    font-size: 0.55rem;
+    font-weight: 500;
 }
 
 .submission-result-overview {

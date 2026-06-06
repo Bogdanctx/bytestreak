@@ -12,6 +12,7 @@
     color: var(--difficulty-medium);
     margin-bottom: 2rem;
     font-size: 1.2rem;
+    font-family: "Momo Trust Display";
 }
 
 .shop-grid {
@@ -45,35 +46,37 @@
 .item-price {
     color: var(--text-secondary);
     font-size: 0.9rem;
+    font-family: "JetBrains Mono";
 }
 
 .shop-btn {
     width: 100%;
-    border-radius: 8px !important;
-    text-transform: none !important;
-    font-weight: 600 !important;
+    border-radius: 8px;
+    text-transform: none;
+    font-weight: 600;
 }
 
 .buy-btn {
-    background-color: var(--accent-main) !important;
-    color: var(--bg-0) !important;
+    background-color: #23ce6a94;
+    color: white;
+    font-family: "Momo Trust Display";
 }
 
 .buy-btn:hover {
-    background-color: var(--accent-hover) !important;
+    background-color: var(--accent-hover);
 }
 
 .buy-btn:disabled {
-    background-color: var(--bg-5) !important;
-    color: var(--text-secondary) !important;
+    background-color: var(--bg-5);
+    color: var(--text-secondary);
 }
 
 .equip-btn {
-    border-color: var(--accent-main) !important;
-    color: var(--accent-main) !important;
+    border-color: var(--accent-main);
+    color: var(--accent-main);
 }
 
 .active-btn {
-    background-color: var(--bg-5) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-5);
+    color: var(--text-primary);
 }

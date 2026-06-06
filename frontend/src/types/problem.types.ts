@@ -24,6 +24,7 @@ export interface IProblem {
     dislikes: number;
     userVote: "like" | "dislike" | null;
     dailyChallange: boolean;
+    validationScriptContent?: string;
 }
 
 export interface IProblemCreateDTO {

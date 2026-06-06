@@ -31,11 +31,11 @@
 }
 
 .streak-invite-accept {
-	color: var(--accent-main) !important;
+	color: var(--accent-main);
 }
 
 .streak-invite-decline {
-	color: var(--difficulty-hard) !important;
+	color: var(--difficulty-hard);
 }
 
 .streak-invite-timestamp {

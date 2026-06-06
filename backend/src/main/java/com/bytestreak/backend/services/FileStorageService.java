@@ -27,6 +27,15 @@ public class FileStorageService {
         }
     }
 
+    public String getValidationScriptContent(String validationScriptPath) {
+        try {
+            return Files.readString(Paths.get(validationScriptPath));
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to read validation script content: " + e.getMessage());
+        }
+    }
+
     public String saveTestCases(String slug, List<TestCaseDTO> testCases) {
         Path problemDirectory = root.resolve(slug);
 

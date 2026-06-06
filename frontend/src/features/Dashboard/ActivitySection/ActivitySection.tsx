@@ -95,7 +95,7 @@ function ActivitySection() {
                         sx={{ display: 'flex', justifyContent: 'space-between' }}
                     >
                         <Box className="daily-item-content">
-                            <Typography className="daily-item-title" color="#E7BB41">Quiz of the Day</Typography>
+                            <Typography color="#E7BB41 !important" className="daily-item-title">Quiz of the Day</Typography>
                         
                             {account.solvedDailyQuizToday ? (
                                 <CheckCircleOutlineIcon sx={{ color: 'var(--accent-main)' }} />

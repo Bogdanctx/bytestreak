@@ -116,9 +116,7 @@ function AccountOverview() {
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" 
                                 className={`account-overview-stat-value`}
-                                sx={{
-                                    color: account.streakLength > 0 ? '#ff9800;' : 'var(--text-primary)',
-                                }}
+                                color={account.streakLength > 0 ? '#ff9800 !important;' : 'var(--text-primary)'}
                     >
                         {account.streakLength}
                         {account.streakLength > 0 && <LocalFireDepartmentIcon />}

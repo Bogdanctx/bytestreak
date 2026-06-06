@@ -175,8 +175,8 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                             disabled={isInvitePending}
                                             sx={{
                                                 mr: 1,
-                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-main)',
-                                                color: isInvitePending ? 'var(--text-secondary)' : '#000',
+                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : '#23ce6a94',
+                                                color: isInvitePending ? 'var(--text-secondary)' : 'white',
                                                 textTransform: 'none',
                                                 fontWeight: '600',
                                                 borderRadius: '6px',

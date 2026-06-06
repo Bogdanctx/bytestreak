@@ -23,24 +23,24 @@
 }
 
 .leaderboard-title {
-    color: var(--text-primary) !important;
-    font-weight: 700 !important;
-    font-size: 2.2rem !important;
-    margin-bottom: 8px !important;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
 }
 
 .leaderboard-subtitle {
-    color: var(--text-secondary) !important;
-    font-size: 0.9rem !important;
-    font-weight: 400 !important;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 400;
     letter-spacing: 0.3px;
 }
 
 .current-rank-label {
-    color: var(--text-secondary) !important;
-    font-size: 1.2rem !important;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
     letter-spacing: 1px;
-    font-weight: 600 !important;
+    font-weight: 600;
 }
 
 /* Countdown Box */
@@ -58,8 +58,8 @@
 }
 
 .countdown-icon {
-    color: var(--accent-main) !important;
-    font-size: 36px !important;
+    color: var(--accent-main);
+    font-size: 36px;
     transition: transform 0.3s ease;
 }
 
@@ -74,17 +74,17 @@
 }
 
 .countdown-label {
-    color: var(--text-secondary) !important;
-    font-size: 0.75rem !important;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 600 !important;
+    font-weight: 600;
 }
 
 .countdown-value {
-    color: var(--accent-main) !important;
-    font-weight: 800 !important;
-    font-size: 1.8rem !important;
+    color: var(--accent-main);
+    font-weight: 800;
+    font-size: 1.8rem;
     line-height: 1;
 }
 
@@ -112,7 +112,7 @@
 }
 
 .leaderboard-search-field .Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(--accent-main) !important;
+    border-color: var(--accent-main);
     border-width: 2px;
 }
 
@@ -129,9 +129,9 @@
 }
 
 .podium-label {
-    color: var(--text-secondary) !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
@@ -236,32 +236,32 @@
 }
 
 .podium-username {
-    color: var(--text-primary) !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1rem;
     text-align: center;
     cursor: pointer;
     transition: color 0.2s ease;
     position: relative;
     z-index: 1;
-    font-family: 'Momo Trust Display' !important;
+    font-family: 'Momo Trust Display';
 }
 
 .podium-username:hover {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .podium-xp {
-    color: var(--accent-main) !important;
-    font-weight: 700 !important;
-    font-size: 1.1rem !important;
+    color: var(--accent-main);
+    font-weight: 700;
+    font-size: 1.1rem;
     text-align: center;
     position: relative;
     z-index: 1;
 }
 
 .podium-xp .xp-label {
-    font-size: 0.75rem !important;
+    font-size: 0.75rem;
     margin-left: 4px;
     opacity: 0.8;
     font-weight: 500;
@@ -289,9 +289,9 @@
 }
 
 .leaderboard-section-label {
-    color: var(--text-secondary) !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
@@ -300,9 +300,9 @@
 }
 
 .leaderboard-table-container {
-    background-color: rgba(26, 26, 26, 0.4) !important;
+    background-color: rgba(26, 26, 26, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px !important;
+    border-radius: 12px;
     flex: 1;
     overflow: auto;
     display: flex;
@@ -325,18 +325,18 @@
 }
 
 .table-header-row {
-    border-bottom: 2px solid rgba(35, 206, 107, 0.2) !important;
+    border-bottom: 2px solid rgba(35, 206, 107, 0.2);
 }
 
 .leaderboard-table-container thead th {
-    background: transparent !important;
-    color: var(--text-secondary) !important;
-    font-size: 0.75rem !important;
-    font-weight: 700 !important;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 16px !important;
-    border-bottom: none !important;
+    padding: 16px;
+    border-bottom: none;
 }
 
 /* Table Rows */
@@ -372,9 +372,9 @@
 .leaderboard-cell-user,
 .leaderboard-cell-rank-badge,
 .leaderboard-cell-xp {
-    color: var(--text-primary) !important;
-    padding: 14px 16px !important;
-    border-bottom: none !important;
+    color: var(--text-primary);
+    padding: 14px 16px;
+    border-bottom: none;
 }
 
 .leaderboard-cell-rank {
@@ -388,8 +388,8 @@
 }
 
 .rank-number {
-    font-weight: 700 !important;
-    font-size: 1rem !important;
+    font-weight: 700;
+    font-size: 1rem;
     min-width: 28px;
     text-align: center;
     color: var(--accent-main);
@@ -403,16 +403,16 @@
 }
 
 .leaderboard-username {
-    color: var(--text-primary) !important;
-    font-weight: 500 !important;
-    font-size: 0.95rem !important;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
     transition: color 0.2s ease;
     position: relative;
-    font-family: 'Momo Trust Display' !important;
+    font-family: 'Momo Trust Display';
 }
 
 .leaderboard-username::after {
@@ -427,7 +427,7 @@
 }
 
 .leaderboard-username:hover {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .leaderboard-username:hover::after {
@@ -448,14 +448,14 @@
 }
 
 .level-badge {
-    font-weight: 600 !important;
+    font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 .xp-value {
-    color: var(--accent-main) !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
+    color: var(--accent-main);
+    font-weight: 700;
+    font-size: 0.95rem;
     font-family: 'Courier New', monospace;
     letter-spacing: 0.5px;
 }
@@ -471,26 +471,26 @@
 }
 
 .empty-state-icon {
-    font-size: 64px !important;
+    font-size: 64px;
     color: var(--text-secondary);
     opacity: 0.4;
 }
 
 .empty-state-text {
-    color: var(--text-secondary) !important;
-    font-size: 1rem !important;
+    color: var(--text-secondary);
+    font-size: 1rem;
 }
 
 .load-more-button {
-    border: 2px solid var(--accent-main) !important;
-    color: var(--accent-main) !important;
-    padding: 12px 32px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
+    border: 2px solid var(--accent-main);
+    color: var(--accent-main);
+    padding: 12px 32px;
+    font-weight: 700;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
-    background: transparent !important;
+    background: transparent;
     position: relative;
     overflow: hidden;
 }
@@ -508,8 +508,8 @@
 }
 
 .load-more-button:hover:not(:disabled) {
-    background-color: rgba(35, 206, 107, 0.15) !important;
-    border-color: var(--accent-main) !important;
+    background-color: rgba(35, 206, 107, 0.15);
+    border-color: var(--accent-main);
     box-shadow: 0 0 20px rgba(35, 206, 107, 0.3);
 }
 
@@ -529,7 +529,7 @@
     }
     
     .leaderboard-title { 
-        font-size: 2.2rem !important; 
+        font-size: 2.2rem; 
     }
     
     .podium-container { 
@@ -553,8 +553,8 @@
 @media screen and (max-width: 768px) {
     .leaderboard-container { padding: 16px; gap: 16px; }
     .leaderboard-header-section { gap: 12px; }
-    .leaderboard-title { font-size: 1.8rem !important; }
-    .leaderboard-subtitle { font-size: 0.9rem !important; }
+    .leaderboard-title { font-size: 1.8rem; }
+    .leaderboard-subtitle { font-size: 0.9rem; }
     
     .podium-container { 
         grid-template-columns: repeat(2, 1fr); 
@@ -567,39 +567,39 @@
     }
     .podium-card { padding: 16px 12px; gap: 8px; min-height: 140px; }
     .podium-medal { font-size: 2rem; }
-    .podium-username { font-size: 0.9rem !important; }
+    .podium-username { font-size: 0.9rem; }
     
     .leaderboard-search-field { max-width: none; width: 100%; }
     .leaderboard-cell-rank, .leaderboard-cell-user, .leaderboard-cell-rank-badge, .leaderboard-cell-xp {
-        padding: 10px 8px !important;
-        font-size: 0.8rem !important;
+        padding: 10px 8px;
+        font-size: 0.8rem;
     }
-    .rank-number { font-size: 0.9rem !important; }
-    .leaderboard-username { font-size: 0.8rem !important; }
-    .xp-value { font-size: 0.85rem !important; }
-    .leaderboard-title { -webkit-text-fill-color: var(--text-primary) !important; background: none !important; }
+    .rank-number { font-size: 0.9rem; }
+    .leaderboard-username { font-size: 0.8rem; }
+    .xp-value { font-size: 0.85rem; }
+    .leaderboard-title { -webkit-text-fill-color: var(--text-primary); background: none; }
 }
 
 @media screen and (max-width: 480px) {
     .leaderboard-container { padding: 12px; gap: 12px; }
-    .leaderboard-title { font-size: 1.5rem !important; }
+    .leaderboard-title { font-size: 1.5rem; }
     .leaderboard-header-content { flex-direction: column; gap: 12px; }
     .leaderboard-countdown { width: 100%; padding: 8px 12px; }
-    .countdown-value { font-size: 1.5rem !important; }
-    .countdown-icon { font-size: 28px !important; }
+    .countdown-value { font-size: 1.5rem; }
+    .countdown-icon { font-size: 28px; }
     .podium-container { grid-template-columns: 1fr; gap: 10px; }
     .podium-card { min-height: 120px; padding: 12px; }
     .podium-card.position-3 { width: 100%; }
     .podium-medal { font-size: 1.8rem; }
-    .podium-username { font-size: 0.75rem !important; }
+    .podium-username { font-size: 0.75rem; }
     .leaderboard-cell-rank, .leaderboard-cell-user, .leaderboard-cell-rank-badge, .leaderboard-cell-xp {
-        padding: 8px 6px !important; font-size: 0.7rem !important;
+        padding: 8px 6px; font-size: 0.7rem;
     }
     .user-info { gap: 8px; }
-    .leaderboard-username { font-size: 0.7rem !important; }
-    .rank-number { font-size: 0.8rem !important; }
-    .xp-value { font-size: 0.75rem !important; }
-    .leaderboard-section-label, .podium-label { font-size: 0.8rem !important; }
+    .leaderboard-username { font-size: 0.7rem; }
+    .rank-number { font-size: 0.8rem; }
+    .xp-value { font-size: 0.75rem; }
+    .leaderboard-section-label, .podium-label { font-size: 0.8rem; }
 }
 
 /* Scrollbar Styling */

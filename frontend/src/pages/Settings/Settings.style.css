@@ -16,11 +16,11 @@
 }
 
 .settings-left-panel-title {
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 1.5rem !important;
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 1.5rem;
     font-weight: bold;
     color: var(--text-primary);
-    margin-bottom: 24px !important;
+    margin-bottom: 24px;
     text-align: center;
 }
 
@@ -33,28 +33,28 @@
 }
 
 .settings-menu-button {
-    height: 48px !important;
+    height: 48px;
     width: 100%;
-    justify-content: flex-start !important;
-    padding: 0 16px !important;
-    background-color: transparent !important;
-    border-radius: 8px !important;
-    color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display" !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    margin-bottom: 8px !important;
-    transition: all 0.2s ease-in-out !important;
+    justify-content: flex-start;
+    padding: 0 16px;
+    background-color: transparent;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease-in-out;
 }
 
 .settings-menu-button:hover {
-    background-color: var(--bg-5) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-5);
+    color: var(--text-primary);
 }
 
 .settings-menu-button.active {
-    background-color: var(--bg-3) !important;
-    color: #fff !important;
+    background-color: var(--bg-3);
+    color: #fff;
 }

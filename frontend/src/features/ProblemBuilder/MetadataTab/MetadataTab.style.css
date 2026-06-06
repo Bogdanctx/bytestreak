@@ -14,8 +14,8 @@
 
 .metadata-label {
     color: #888;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -45,14 +45,14 @@
 }
 
 .metadata-chip {
-    background-color: rgba(35, 206, 107, 0.15) !important;
-    color: var(--accent-main) !important;
-    border: 1px solid rgba(35, 206, 107, 0.3) !important;
-    font-weight: 600 !important;
+    background-color: rgba(35, 206, 107, 0.15);
+    color: var(--accent-main);
+    border: 1px solid rgba(35, 206, 107, 0.3);
+    font-weight: 600;
 }
 
 .metadata-chip .MuiChip-deleteIcon {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
     opacity: 0.7;
 }
 
@@ -62,82 +62,82 @@
 
 .difficulty-select {
     background-color: var(--bg-1);
-    color: var(--text-primary) !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    border-radius: 8px !important;
-    height: 40px !important;
-    min-width: 150px !important;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 8px;
+    height: 40px;
+    min-width: 150px;
 }
 
 .difficulty-select .MuiSvgIcon-root {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .difficulty-select .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.08);
     transition: border-color 0.2s;
 }
 
 .difficulty-select:hover .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .difficulty-select.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(--accent-main) !important;
-    border-width: 1px !important;
+    border-color: var(--accent-main);
+    border-width: 1px;
 }
 
 .difficulty-select-item {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    padding: 8px 16px !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 8px 16px;
 }
 
 .difficulty-select-item:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: var(--accent-main) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-main);
 }
 
 .difficulty-select-item.Mui-selected {
-    background-color: rgba(35, 206, 107, 0.1) !important;
+    background-color: rgba(35, 206, 107, 0.1);
 }
 
 
 .MuiAutocomplete-paper {
-    background-color: var(--bg-4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5) !important;
-    border-radius: 8px !important;
-    margin-top: 8px !important;
+    background-color: var(--bg-4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    margin-top: 8px;
 }
 
 .MuiAutocomplete-listbox {
-    padding: 4px !important;
+    padding: 4px;
 }
 
 .MuiAutocomplete-option {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.8rem !important;
-    padding: 6px 12px !important; 
-    color: var(--text-secondary) !important;
-    border-radius: 4px !important;
-    transition: all 0.1s !important;
-    margin-bottom: 2px !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    padding: 6px 12px; 
+    color: var(--text-secondary);
+    border-radius: 4px;
+    transition: all 0.1s;
+    margin-bottom: 2px;
 }
 
 .MuiAutocomplete-option[aria-selected="true"],
 .MuiAutocomplete-option.Mui-focused,
 .MuiAutocomplete-option:hover {
-    background-color: rgba(35, 206, 107, 0.1) !important;
-    color: var(--accent-main) !important;
+    background-color: rgba(35, 206, 107, 0.1);
+    color: var(--accent-main);
 }
 
 .MuiAutocomplete-noOptions {
-    background-color: var(--bg-4) !important;
-    color: var(--text-secondary) !important;
-    font-size: 0.8rem !important;
+    background-color: var(--bg-4);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
 }
 
 /* Switch Styling */
@@ -148,22 +148,22 @@
 }
 
 .metadata-switch .MuiSwitch-root {
-    padding: 8px !important;
+    padding: 8px;
 }
 
 .metadata-switch .MuiSwitch-switchBase {
-    color: rgba(255, 255, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .metadata-switch .MuiSwitch-switchBase.Mui-checked {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .metadata-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-    background-color: var(--accent-main) !important;
-    opacity: 0.3 !important;
+    background-color: var(--accent-main);
+    opacity: 0.3;
 }
 
 .metadata-switch .MuiSwitch-track {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1);
 }

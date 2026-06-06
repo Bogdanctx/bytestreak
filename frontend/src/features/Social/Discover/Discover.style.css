@@ -13,10 +13,10 @@
 }
 
 .discover-title {
-	margin-bottom: 8px !important;
+	margin-bottom: 8px;
 	color: var(--text-primary);
-	font-size: 1.2rem !important;
-	font-family: 'Momo Trust Display' !important;
+	font-size: 1.2rem;
+	font-family: 'Momo Trust Display';
 }
 
 .discover-search-field .MuiInputBase-input {
@@ -47,10 +47,10 @@
 }
 
 .discover-section-label {
-	margin-bottom: 16px !important;
+	margin-bottom: 16px;
 	color: var(--text-secondary);
 	text-transform: uppercase;
-	font-family: 'Momo Trust Display' !important;
+	font-family: 'Momo Trust Display';
 	text-align: center;
 }
 
@@ -103,7 +103,7 @@
 .discover-user-name {
 	color: var(--text-primary);
 	font-weight: 600;
-	font-family: 'Momo Trust Display' !important;
+	font-family: 'Momo Trust Display';
 }
 
 .discover-user-role {
@@ -138,11 +138,11 @@
 	margin-top: 32px;
 	color: var(--text-secondary);
 	text-align: center;
-	font-family: 'Momo Trust Display' !important;
+	font-family: 'Momo Trust Display';
 }
 
 .discover-load-more-button {
-	color: var(--accent-main) !important;
+	color: var(--accent-main);
 }
 
 .discover-load-more-button:hover {
@@ -153,5 +153,5 @@
 .discover-pending-connection {
 	color: var(--text-secondary);
 	font-size: 0.75rem;
-	font-family: 'Momo Trust Display' !important;
+	font-family: 'Momo Trust Display';
 }

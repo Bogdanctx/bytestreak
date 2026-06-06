@@ -16,17 +16,17 @@
 }
 
 .auth-title {
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
     color: var(--text-primary);
-    font-size: 28px !important;
-    font-weight: 700 !important;
-    margin-bottom: 8px !important;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
 .auth-subtitle {
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
     color: var(--text-secondary);
-    font-size: 14px !important;
+    font-size: 14px;
 }
 
 .auth-form-container {
@@ -72,8 +72,8 @@
 .forgot-password-link {
     color: var(--text-secondary);
     cursor: pointer;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 500 !important;
+    font-family: "Momo Trust Display";
+    font-weight: 500;
 }
 
 .forgot-password-link:hover {
@@ -88,36 +88,36 @@
 }
 
 .auth-primary-btn {
-    font-family: "Momo Trust Display" !important;
-    background-color: #23ce6a94 !important;
-    color: var(--text-primary) !important;
-    font-weight: 700 !important;
-    padding: 12px 0 !important;
-    border-radius: 10px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    box-shadow: 0 4px 15px rgba(35, 206, 107, 0.3) !important;
+    font-family: "Momo Trust Display";
+    background-color: #23ce6a94;
+    color: var(--text-primary);
+    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(35, 206, 107, 0.3);
 }
 
 .auth-primary-btn:hover {
-    background-color: var(--accent-hover) !important;
-    box-shadow: 0 6px 20px rgba(35, 206, 107, 0.4) !important;
+    background-color: var(--accent-hover);
+    box-shadow: 0 6px 20px rgba(35, 206, 107, 0.4);
 }
 
 .auth-primary-btn.Mui-disabled {
-    background-color: rgba(35, 206, 107, 0.5) !important;
-    color: rgba(0, 0, 0, 0.5) !important;
+    background-color: rgba(35, 206, 107, 0.5);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .auth-secondary-btn {
-    font-family: "Momo Trust Display" !important;
-    color: var(--text-primary) !important;
-    border-color: var(--bg-6) !important;
-    padding: 10px 0 !important;
-    border-radius: 10px !important;
+    font-family: "Momo Trust Display";
+    color: var(--text-primary);
+    border-color: var(--bg-6);
+    padding: 10px 0;
+    border-radius: 10px;
 }
 
 .auth-secondary-btn:hover {
-    background-color: var(--bg-3) !important;
-    border-color: var(--text-secondary) !important;
+    background-color: var(--bg-3);
+    border-color: var(--text-secondary);
 }

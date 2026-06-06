@@ -20,11 +20,11 @@
 
 /* Input Styling */
 .feed-header-text-input {
-    color: var(--text-primary) !important;
-    font-size: 1rem !important;
-    line-height: 1.5 !important;
-    padding: 0 !important;
-    font-family: "Momo Trust Display" !important;
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0;
+    font-family: "Momo Trust Display";
 }
 
 .feed-header-text-input textarea::placeholder {
@@ -52,38 +52,38 @@
 }
 
 .feed-header-action-btn {
-    color: var(--text-secondary) !important;
-    transition: all 0.2s ease !important;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
 }
 
 .feed-header-action-btn:hover {
-    background-color: var(--bg-4) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-4);
+    color: var(--text-primary);
 }
 
 .feed-header-action-btn.active {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .feed-header-file-count {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
 /* Send Button */
 .feed-header-send-btn {
-    color: var(--text-secondary) !important;
-    background-color: var(--bg-3) !important;
-    transition: all 0.2s ease !important;
+    color: var(--text-secondary);
+    background-color: var(--bg-3);
+    transition: all 0.2s ease;
 }
 
 .feed-header-send-btn.enabled {
-    color: var(--bg-0) !important;
-    background-color: var(--accent-main) !important;
+    color: var(--bg-0);
+    background-color: var(--accent-main);
 }
 
 .feed-header-send-btn.enabled:hover {
-    background-color: var(--accent-hover) !important;
+    background-color: var(--accent-hover);
 }
 
 /* Files List */
@@ -108,7 +108,7 @@
 }
 
 .feed-header-file-name {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
@@ -116,13 +116,13 @@
 }
 
 .feed-header-remove-file-btn {
-    color: var(--text-secondary) !important;
-    padding: 4px !important;
+    color: var(--text-secondary);
+    padding: 4px;
 }
 
 .feed-header-remove-file-btn:hover {
-    color: var(--difficulty-hard) !important;
-    background-color: rgba(255, 55, 95, 0.1) !important;
+    color: var(--difficulty-hard);
+    background-color: rgba(255, 55, 95, 0.1);
 }
 
 /* Scrollbar */

@@ -1,9 +1,9 @@
 .preview-testcase-container {
-    background-color: var(--bg-3) !important;
-    border-left: 4px solid var(--accent-main) !important;
+    background-color: var(--bg-3);
+    border-left: 4px solid var(--accent-main);
     margin-top: 12px;
-    padding: 0 !important;
-    color: var(--text-primary) !important;
+    padding: 0;
+    color: var(--text-primary);
 }
 
 .preview-testcase-header {
@@ -15,8 +15,8 @@
 }
 
 .preview-testcase-header h6 {
-    margin: 0 !important;
-    font-weight: 600 !important;
+    margin: 0;
+    font-weight: 600;
 }
 
 .preview-testcase-content {
@@ -33,9 +33,9 @@
 }
 
 .preview-label {
-    color: var(--text-secondary) !important;
-    font-size: 0.875rem !important;
-    font-weight: 600 !important;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -49,10 +49,10 @@
 }
 
 .preview-value pre {
-    margin: 0 !important;
-    color: var(--text-primary) !important;
-    font-family: 'Courier New', monospace !important;
-    font-size: 0.875rem !important;
+    margin: 0;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
     white-space: pre-wrap;
     word-wrap: break-word;
 }

@@ -9,16 +9,16 @@
 
 .view-post-back-btn {
     align-self: flex-start;
-    color: var(--text-secondary) !important;
-    text-transform: none !important;
-    font-weight: 600 !important;
-    margin-bottom: 16px !important;
-    font-family: "Momo Trust Display" !important;
+    color: var(--text-secondary);
+    text-transform: none;
+    font-weight: 600;
+    margin-bottom: 16px;
+    font-family: "Momo Trust Display";
 }
 
 .view-post-back-btn:hover {
-    background-color: var(--bg-4) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-4);
+    color: var(--text-primary);
 }
 
 .view-post-main {
@@ -39,31 +39,31 @@
 }
 
 .view-post-avatar {
-    width: 48px !important;
-    height: 48px !important;
+    width: 48px;
+    height: 48px;
 }
 
 .view-post-author-name {
     color: var(--text-primary);
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    font-family: "Momo Trust Display" !important;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: "Momo Trust Display";
 }
 
 .view-post-date {
     color: var(--text-secondary);
-    font-size: 0.75rem !important;
-    font-family: "JetBrains Mono" !important;
+    font-size: 0.75rem;
+    font-family: "JetBrains Mono";
 }
 
 .view-post-text {
     color: var(--text-primary);
-    font-size: 1rem !important;
-    line-height: 1.6 !important;
+    font-size: 1rem;
+    line-height: 1.6;
     white-space: pre-wrap;
     word-break: break-word;
-    margin-bottom: 16px !important;
-    font-family: "Momo Trust Display" !important;
+    margin-bottom: 16px;
+    font-family: "Momo Trust Display";
 }
 
 .view-post-attachments {
@@ -102,12 +102,12 @@
 
 .comments-header {
     color: var(--text-primary);
-    font-weight: 600 !important;
-    font-size: 1.1rem !important;
-    margin-bottom: 16px !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--bg-4);
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
 }
 
 .comments-list {
@@ -148,7 +148,7 @@
 
 .compose-attachment-name {
     color: var(--text-primary);
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     max-width: 150px;
     white-space: nowrap;
     overflow: hidden;
@@ -162,9 +162,9 @@
 }
 
 .compose-text-input {
-    color: var(--text-primary) !important;
-    font-size: 0.95rem !important;
-    padding: 4px 0 !important;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    padding: 4px 0;
 }
 
 .compose-actions {
@@ -173,23 +173,23 @@
 }
 
 .compose-action-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .compose-action-btn:hover {
-    color: var(--text-primary) !important;
-    background-color: var(--bg-4) !important;
+    color: var(--text-primary);
+    background-color: var(--bg-4);
 }
 
 .compose-send-btn {
-    color: var(--text-secondary) !important;
-    transition: all 0.2s ease !important;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
 }
 
 .compose-send-btn.enabled {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .compose-send-btn.enabled:hover {
-    background-color: rgba(35, 206, 107, 0.1) !important;
+    background-color: rgba(35, 206, 107, 0.1);
 }

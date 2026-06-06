@@ -6,8 +6,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-
-    flex: 0 0 auto;
     min-width: 10%;
 }
 
@@ -19,6 +17,7 @@
     align-items: center;
     padding: 0 16px;
     gap: 24px;
+    overflow-x: auto;
 }
 
 .problem-tab {
@@ -71,14 +70,14 @@
 }
 
 .problem-data-feedback-button {
-    color: #888 !important;
-    font-size: 0.75rem !important;
-    font-weight: 500 !important;
-    transition: background-color 0.2s ease, border-color 0.2s ease !important;
-    min-width: 0 !important;
+    color: #888;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    min-width: 0;
 }
 
 .problem-data-feedback-button:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
 }

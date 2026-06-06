@@ -12,7 +12,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,12 +22,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Entity
 @Table(name = "Problems")
@@ -66,6 +63,8 @@ public class Problem {
 
     private String testCasesPath = null;
     private String validationScriptPath = null;
+    @Transient
+    private String validationScriptContent = null;
 
     @Formula("(SELECT COUNT(*) FROM problem_votes pv WHERE pv.problem_id = id AND pv.is_like = true)")
     private int likes;

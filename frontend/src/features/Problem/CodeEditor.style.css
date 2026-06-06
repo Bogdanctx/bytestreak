@@ -22,8 +22,8 @@
 }
 
 .problem-editor-title {
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 0.7rem !important;
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 0.7rem;
     color: #F7F7F9;
     display: flex;
     align-items: center;
@@ -31,61 +31,61 @@
 }
 
 .problem-editor-light-switch .MuiSwitch-track {
-    background-color: black !important;
-    opacity: 1 !important;
+    background-color: black;
+    opacity: 1;
 }
 
 .problem-editor-light-switch .Mui-checked + .MuiSwitch-track {
-    background-color: #23CE6B !important;
+    background-color: #23CE6B;
 }
 
 .language-select {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    color: #F7F7F9 !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    border-radius: 12px !important;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #F7F7F9;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
     border: 0;
-    height: 30px !important;
+    height: 30px;
 }
 
 .language-select .MuiSvgIcon-root {
-    color: #F7F7F9 !important;
+    color: #F7F7F9;
 }
 
 .language-select .MuiOutlinedInput-notchedOutline {
-    border: 0 !important;
+    border: 0;
 }
 
 .language-select-item {
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    color: #cfcfcf !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #cfcfcf;
 }
 
 .language-select-item {
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    color: #cfcfcf !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #cfcfcf;
 }
 
 .language-select-item:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .language-select-item.Mui-selected {
-    background-color: rgba(35, 206, 107, 0.1) !important;
-    color: #23CE6B !important;
+    background-color: rgba(35, 206, 107, 0.1);
+    color: #23CE6B;
 }
 
 .reset-button {
-    color: #F7F7F9 !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    padding: 8px 16px !important;
-    border-radius: 12px !important;
-    border: 2px solid rgba(255, 255, 255, 0.08) !important;
-    height: 32px !important;
+    color: #F7F7F9;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    height: 32px;
 }
 
 .problem-editor-container {
@@ -105,20 +105,20 @@
 }
 
 .problem-submit-button {
-    color: #F7F7F9 !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    padding: 8px 16px !important;
-    border-radius: 12px !important;
-    border: 2px solid rgba(35, 206, 107, 0.7) !important;
-    height: 32px !important;
+    color: #F7F7F9;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(35, 206, 107, 0.7);
+    height: 32px;
 }
 
 .problem-submit-button:disabled {
-    border-color: rgba(35, 206, 107, 0.3) !important;
-    color: rgba(247, 247, 249, 0.5) !important;
+    border-color: rgba(35, 206, 107, 0.3);
+    color: rgba(247, 247, 249, 0.5);
 }
 
 .monaco-editor {
-    position: absolute !important;
+    position: absolute;
 }

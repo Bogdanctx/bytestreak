@@ -31,20 +31,20 @@
 }
 
 .qotd-title {
-    color: var(--text-primary) !important;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 700 !important;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display";
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 24px !important;
+    margin-bottom: 24px;
 }
 
 .qotd-subtitle {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 600 !important;
+    font-weight: 600;
     display: block;
-    margin-bottom: 12px !important;
+    margin-bottom: 12px;
 }
 
 .qotd-code-block {
@@ -68,31 +68,31 @@
 }
 
 .qotd-option-btn {
-    background-color: var(--bg-2) !important;
-    border: 1px solid var(--bg-4) !important;
-    border-radius: 8px !important;
-    color: var(--text-primary) !important;
-    font-family: 'Courier New' !important;
-    padding: 16px !important;
-    transition: all 0.2s ease !important;
-    justify-content: center !important;
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-4);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Courier New';
+    padding: 16px;
+    transition: all 0.2s ease;
+    justify-content: center;
 }
 
 .qotd-option-btn:hover {
-    background-color: var(--bg-3) !important;
-    border-color: var(--bg-6) !important;
+    background-color: var(--bg-3);
+    border-color: var(--bg-6);
 }
 
 .qotd-option-btn.correct {
-    background-color: rgba(35, 206, 107, 0.15) !important;
-    border-color: var(--accent-main) !important;
-    color: var(--accent-main) !important;
+    background-color: rgba(35, 206, 107, 0.15);
+    border-color: var(--accent-main);
+    color: var(--accent-main);
 }
 
 .qotd-option-btn.wrong {
-    background-color: rgba(255, 55, 95, 0.15) !important;
-    border-color: var(--difficulty-hard) !important;
-    color: var(--difficulty-hard) !important;
+    background-color: rgba(255, 55, 95, 0.15);
+    border-color: var(--difficulty-hard);
+    color: var(--difficulty-hard);
     animation: shake 0.4s;
 }
 
@@ -111,7 +111,7 @@
 }
 
 .qotd-success-icon {
-    font-size: 80px !important;
+    font-size: 80px;
     color: var(--accent-main);
     margin-bottom: 16px;
 }
@@ -131,17 +131,17 @@
 }
 
 .qotd-coins-text {
-    color: var(--difficulty-medium) !important;
-    font-family: "JetBrains Mono" !important;
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
+    color: var(--difficulty-medium);
+    font-family: "JetBrains Mono";
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .qotd-xp-text {
-    color: var(--difficulty-easy) !important;
-    font-family: "JetBrains Mono" !important;
-    font-size: 1.2rem !important;
-    font-weight: 600 !important;
+    color: var(--difficulty-easy);
+    font-family: "JetBrains Mono";
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .qotd-streaks-list {
@@ -179,43 +179,43 @@
 }
 
 .qotd-close-btn {
-    background-color: #23ce6a94 !important;
-    color: white !important;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 500 !important;
-    padding: 10px 40px !important;
-    border-radius: 8px !important;
+    background-color: #23ce6a94;
+    color: white;
+    font-family: "Momo Trust Display";
+    font-weight: 500;
+    padding: 10px 40px;
+    border-radius: 8px;
 }
 
 .qotd-close-btn:hover {
-    background-color: var(--accent-hover) !important;
+    background-color: var(--accent-hover);
 }
 
 .qotd-accept-defeat-btn {
-    background-color: #ff375f9a !important;
-    color: #fff !important;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 700 !important;
-    padding: 10px 40px !important;
-    border-radius: 8px !important;
-    text-transform: uppercase !important;
+    background-color: #ff375f9a;
+    color: #fff;
+    font-family: "Momo Trust Display";
+    font-weight: 700;
+    padding: 10px 40px;
+    border-radius: 8px;
+    text-transform: uppercase;
 }
 
 .qotd-save-streak-btn {
-    background-color: #e7bb41a8 !important;
-    font-family: "Momo Trust Display" !important;
-    font-weight: 700 !important;
-    padding: 10px 40px !important;
-    border-radius: 8px !important;
-    text-transform: uppercase !important;
+    background-color: #e7bb41a8;
+    font-family: "Momo Trust Display";
+    font-weight: 700;
+    padding: 10px 40px;
+    border-radius: 8px;
+    text-transform: uppercase;
 }
 
 .qotd-save-streak-btn:hover {
-    background-color: #e4b42fc3 !important;
+    background-color: #e4b42fc3;
 }
 
 .qotd-save-streak-btn:disabled {
-    background-color: rgba(231, 187, 65, 0.2) !important;
-    color: rgba(255, 255, 255, 0.3) !important;
-    cursor: not-allowed !important;
+    background-color: rgba(231, 187, 65, 0.2);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
 }

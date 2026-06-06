@@ -47,7 +47,7 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
         progressColor = "var(--difficulty-medium)";
     }
     else {
-        progressColor = "var(--difficulty-easy)";
+        progressColor = "#66bb6a";
     }
     
 

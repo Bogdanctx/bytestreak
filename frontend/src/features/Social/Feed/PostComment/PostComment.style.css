@@ -9,20 +9,20 @@
 }
 
 .comment-avatar {
-    width: 36px !important;
-    height: 36px !important;
+    width: 36px;
+    height: 36px;
 }
 
 .comment-author {
     color: var(--text-primary);
-    font-size: 0.9rem !important;
-    font-family: "Momo Trust Display" !important;
+    font-size: 0.9rem;
+    font-family: "Momo Trust Display";
 }
 
 .comment-date {
     color: var(--text-secondary);
-    font-size: 0.75rem !important;
-    font-family: "JetBrains Mono" !important;
+    font-size: 0.75rem;
+    font-family: "JetBrains Mono";
 }
 
 .comment-content {
@@ -34,8 +34,8 @@
 
 .comment-text {
     color: var(--text-secondary);
-    font-size: 0.95rem !important;
+    font-size: 0.95rem;
     white-space: pre-wrap;
     word-break: break-word;
-    font-family: "Momo Trust Display" !important;
+    font-family: "Momo Trust Display";
 }

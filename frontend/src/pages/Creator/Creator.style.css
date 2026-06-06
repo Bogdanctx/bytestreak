@@ -25,20 +25,20 @@
 }
 
 .creator-page-header-title {
-    color: white !important;
-    font-family: "Momo Trust Display" !important;
-    font-size: 2.5rem !important;
+    color: white;
+    font-family: "Momo Trust Display";
+    font-size: 2.5rem;
 }
 
 .creator-page-header-description {
-    color: #AAAAAA !important;
-    font-size: 0.8rem !important;
-    font-family: "Momo Trust Display" !important;
+    color: #AAAAAA;
+    font-size: 0.8rem;
+    font-family: "Momo Trust Display";
 }
 
 .creator-page-create-new {
-    border: 1px solid #23CE6B !important;
-    color: #23CE6B !important;
+    border: 1px solid #23CE6B;
+    color: #23CE6B;
 }
 
 .creator-page-content {
@@ -51,9 +51,9 @@
 }
 
 .creator-table-container {
-    background-color: transparent !important;
+    background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px !important;
+    border-radius: 12px;
     flex: 1;
     overflow: auto;
     display: flex;
@@ -61,28 +61,28 @@
 }
 
 .creator-table-header-cell {
-    background-color: var(--bg-4) !important;
-    color: #888 !important;
-    font-size: 0.75rem !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: var(--bg-4);
+    color: #888;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .creator-table-cell {
-    color: #F7F7F9 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-    font-family: 'Inter', sans-serif !important;
+    color: #F7F7F9;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: 'Inter', sans-serif;
 }
 
 .creator-table-row:hover {
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .creator-table-action-button {
-    text-transform: none !important;
-    padding: 4px 12px !important;
-    font-size: 0.8rem !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
+    text-transform: none;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .creator-page-footer {

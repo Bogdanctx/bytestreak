@@ -25,15 +25,15 @@
 }
 
 .user-username {
-    color: var(--text-primary) !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1rem;
     word-break: break-word;
 }
 
 .user-email {
-    color: var(--text-secondary) !important;
-    font-size: 0.875rem !important;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
     word-break: break-word;
 }
 
@@ -52,8 +52,8 @@
 }
 
 .user-stat {
-    color: var(--text-secondary) !important;
-    font-size: 0.8rem !important;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
     white-space: nowrap;
 }
 
@@ -65,29 +65,29 @@
 }
 
 .user-role-select {
-    background-color: var(--bg-3) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-3);
+    color: var(--text-primary);
     min-width: 120px;
 }
 
 .user-role-display {
-    color: var(--text-primary) !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
     min-width: 100px;
     text-align: center;
 }
 
 .user-delete-button {
-    background-color: transparent !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--text-secondary) !important;
-    transition: all 0.2s ease !important;
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
+    transition: all 0.2s ease;
 }
 
 .user-delete-button:hover {
-    background-color: rgba(255, 0, 0, 0.1) !important;
-    border-color: var(--text-primary) !important;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: var(--text-primary);
 }
 
 @media screen and (max-width: 768px) {

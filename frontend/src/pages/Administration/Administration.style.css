@@ -26,20 +26,20 @@
 }
 
 .admin-menu-item * {
-    border-radius: 8px !important;
-    margin-bottom: 8px !important;
-    transition: background-color 0.2s !important;
-    color: var(--text-secondary) !important;
-    font-family: "Momo Trust Display" !important;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
 }
 
 .admin-menu-item:hover {
-    background-color: var(--bg-4) !important;
+    background-color: var(--bg-4);
 }
 
 .admin-menu-item.Mui-selected {
-    background-color: var(--bg-4) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-4);
+    color: var(--text-primary);
     font-weight: bold;
 }
 

@@ -20,7 +20,7 @@ function Problem() {
     const [activeTab, setActiveTab] = useState("description");
     const [results, setResults] = useState<ISubmissionResult[]>([]);
     const [solvedCodingProblem, setSolvedCodingProblem] = useState(false);
-    const [problemPanelWidth, setProblemPanelWidth] = useState(440);
+    const [problemPanelWidth, setProblemPanelWidth] = useState(600);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
     const [earnedDailyChallengeReward, setEarnedDailyChallengeReward] = useState(false);
     const lastTriggeredResultsRef = useRef<ISubmissionResult[]>([]);
@@ -58,6 +58,14 @@ function Problem() {
             queryClient.invalidateQueries({ queryKey: ['account'] });
         }
     }, [results, codingProblem, account, queryClient]);
+
+    useEffect(() => {
+
+        if (activeTab === 'submissions') {
+            setProblemPanelWidth(900);
+        }
+
+    }, [activeTab]);
 
     useEffect(() => {
         const handlePointerMove = (event: PointerEvent) => {
