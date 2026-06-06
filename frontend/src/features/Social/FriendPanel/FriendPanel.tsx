@@ -201,10 +201,25 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                             className={`chat-bubble-container ${message.sender.id === account.id ? 'chat-mine' : 'chat-theirs'}`}
                             sx={{
                                 '&:hover #report-flag-container': {
-                                    display: 'flex',
+                                    opacity: 1,
                                 }
                             }}
                         >
+                            <IconButton
+                                id="report-flag-container"
+                                size="small"
+                                onClick={() => {
+                                    if (message.id == null) {
+                                        return;
+                                    }
+                                    reportMessageMutation.mutate(message.id)
+                                }}
+                                sx={{ opacity: 0, transition: 'opacity 0.3s' }}
+                                disabled={reportMessageMutation.isPending}
+                                aria-label="Report message"
+                            >
+                                <FlagIcon fontSize="small" className="report-flag" />
+                            </IconButton>
                             <Paper className={`chat-bubble ${message.sender.id === account.id ? 'bubble-mine' : 'bubble-theirs'}`}>
                                 {/* render each attachment */}
                                 {message.attachments?.map((file, index) => {
@@ -241,28 +256,6 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                                     </Typography>
                                 )}
                             </Paper>
-
-                            <Box id="report-flag-container" className="report-flag" 
-                                sx={{ 
-                                    display: 'none', 
-                                    justifyContent: 'flex-end', 
-                                    mb: 0.5 ,
-                                }}
-                                >
-                                <IconButton
-                                    size="small"
-                                    onClick={() => {
-                                        if (message.id == null) {
-                                            return;
-                                        }
-                                        reportMessageMutation.mutate(message.id)
-                                    }}
-                                    disabled={reportMessageMutation.isPending}
-                                    aria-label="Report message"
-                                >
-                                    <FlagIcon fontSize="small" sx={{color: 'var(--difficulty-hard)'}} />
-                                </IconButton>
-                            </Box>
                         </Box>
                     ))
                 )}

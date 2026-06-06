@@ -49,6 +49,7 @@
     color: var(--text-primary);
     font-weight: 700;
     line-height: 1.2;
+    font-family: "Momo Trust Display";
 }
 
 .friend-panel-rank {
