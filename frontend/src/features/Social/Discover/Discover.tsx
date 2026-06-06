@@ -85,7 +85,7 @@ function Discover({ account }: { account: IAccount }) {
         <Box className="discover-container">
             <Box className="discover-header">
                 <Typography variant="h6" className="discover-title">
-                    Connect with the Community
+                    Connect with the community
                 </Typography>
 
                 <TextField
@@ -171,7 +171,7 @@ function Discover({ account }: { account: IAccount }) {
 
                 {discoverAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
-                        No members found matching "{searchQuery}"
+                        No members found matching "{searchQuery}".
                     </Typography>
                 )}
 

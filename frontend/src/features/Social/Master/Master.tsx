@@ -220,7 +220,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                     })}
 
                     {accountFriends.length === 0 && (
-                        <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>
+                        <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4} fontFamily="Momo Trust Display">
                             No friends yet. Start connecting!
                         </Typography>
                     )}

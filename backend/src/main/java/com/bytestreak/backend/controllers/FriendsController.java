@@ -65,8 +65,8 @@ public class FriendsController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{friendId}")
-    public ResponseEntity<?> removeFriend(@PathVariable Long friendId, Authentication authentication) {
+    @DeleteMapping
+    public ResponseEntity<?> removeFriend(@RequestParam Long friendId, Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
         friendService.removeFriend(me, friendId);
         return ResponseEntity.ok().build();
