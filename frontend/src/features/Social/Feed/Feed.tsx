@@ -37,6 +37,20 @@ function Feed() {
         }
     });
 
+    const deletePostMutation = useMutation({
+        mutationFn: async (postId) => {
+            const response = await api.delete(`/social/feed/posts/${postId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Post deleted successfully', 'success');
+            queryClient.invalidateQueries({ queryKey: ['feedPosts'] });
+        },
+        onError: () => {
+            notify('Failed to delete post', 'error');
+        }
+    });
+
     const handleCreateNewPost = (text: string, attachments: IAttachment[]) => {
         newPostMutation.mutate({ text, attachments });
     }
@@ -52,7 +66,8 @@ function Feed() {
                             feedPosts.map(post => (
                                 <FeedPost key={post.id} 
                                             post={post}
-                                            onClick={() => setViewingPost(post)}                               
+                                            onClick={() => setViewingPost(post)}
+                                            deletePostMutation={deletePostMutation}                               
                                 />
                             ))
                         ) : (

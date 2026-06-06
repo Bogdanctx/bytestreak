@@ -5,15 +5,17 @@ import { type IPost } from "../../../../types/post.types";
 import './FeedPost.style.css';
 import { useNavigate } from "react-router-dom";
 import { api } from '../../../../api';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
 import notify from '../../../../components/ui/ToastNotification';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface IFeedPostProps {
     post: IPost;
     onClick: () => void;
+    deletePostMutation: UseMutationResult<any, Error, void, unknown>;
 }
 
-function FeedPost({ post, onClick }: IFeedPostProps) {
+function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
     const navigate = useNavigate();
 
     const reportPostMutation = useMutation({
@@ -85,18 +87,34 @@ function FeedPost({ post, onClick }: IFeedPostProps) {
                     {post.comments?.length || 0} Comments
                 </Typography>
 
-                <IconButton 
-                    size="small" 
-                    className="feed-post-report-btn report-flag"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        reportPostMutation.mutate();
-                    }}
-                    disabled={reportPostMutation.isPending}
-                    aria-label="Report post"
-                >
-                    <FlagIcon fontSize="small" />
-                </IconButton>
+
+                <Box sx={{ marginLeft: 'auto' }}>
+                    <IconButton 
+                        size="small" 
+                        className="feed-post-report-btn report-flag"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deletePostMutation.mutate(post.id);
+                        }}
+                        disabled={reportPostMutation.isPending}
+                        aria-label="Report post"
+                    >
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+
+                    <IconButton 
+                        size="small" 
+                        className="feed-post-report-btn report-flag"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            reportPostMutation.mutate();
+                        }}
+                        disabled={reportPostMutation.isPending}
+                        aria-label="Report post"
+                    >
+                        <FlagIcon fontSize="small" />
+                    </IconButton>
+                </Box>
             </Box>
         </Box>
     );

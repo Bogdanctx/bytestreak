@@ -3,16 +3,25 @@ import { useNavigate } from "react-router-dom";
 import FlagIcon from '@mui/icons-material/Flag';
 import "./PostComment.style.css";
 import type { IPost, IPostComment } from "../../../../types/post.types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, type UseMutationResult } from "@tanstack/react-query";
+import { useAccount } from "../../../../hooks/useAccount";
 import { api } from "../../../../api";
 import notify from "../../../../components/ui/ToastNotification";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const isImage = (filedata: string, filename: string) => {
     return filedata?.startsWith('data:image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
 };
 
-function PostComment({ comment, post }: { comment: IPostComment, post: IPost } ) {
+interface IPostCommentProps {
+    comment: IPostComment;
+    post: IPost;
+    deleteCommentMutation: UseMutationResult<any, Error, number, unknown>
+}
+
+function PostComment({ comment, post, deleteCommentMutation }: IPostCommentProps) {
     const navigate = useNavigate();
+    const { data: account } = useAccount();
 
     const reportCommentMutation = useMutation({
         mutationFn: async (commentId: number) => {
@@ -48,6 +57,25 @@ function PostComment({ comment, post }: { comment: IPostComment, post: IPost } )
                     </Typography>
                     <Typography className="comment-date">{new Date(comment.createdAt).toLocaleString()}</Typography>
                     
+
+                    {comment.author.id === account?.id && (
+                        <IconButton
+                            size="small"
+                            sx={{ color: "var(--difficulty-hard)" }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (comment.id == null) {
+                                    return;
+                                }
+                                deleteCommentMutation.mutate(comment.id);
+                            }}
+                            disabled={reportCommentMutation.isPending}
+                            aria-label="Report comment"
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    )}
+
                     <IconButton
                         size="small"
                         className="report-flag"
@@ -60,7 +88,7 @@ function PostComment({ comment, post }: { comment: IPostComment, post: IPost } )
                         }}
                         disabled={reportCommentMutation.isPending}
                         aria-label="Report comment"
-                        sx={{ marginLeft: "auto" }}
+                        sx={{ marginLeft: "auto", opacity: 0 }}
                     >
                         <FlagIcon fontSize="small" />
                     </IconButton>

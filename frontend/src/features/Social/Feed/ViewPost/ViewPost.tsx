@@ -14,6 +14,7 @@ import notify from "../../../../components/ui/ToastNotification";
 import { useNavigate } from "react-router-dom";
 import './ViewPost.style.css';
 import PostComment from "../PostComment/PostComment";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface IViewPostProps {
     post: IPost;
@@ -48,6 +49,22 @@ function ViewPost({ post, goBack } : IViewPostProps) {
         },
         onError: () => {
             notify('Failed to post comment', 'error');
+        }
+    });
+
+    const deleteCommentMutation = useMutation({
+        mutationFn: async (commentId: number) => {
+            const response = await api.delete(`/social/feed/posts/${post.id}/comments/${commentId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Comment deleted successfully', 'success');
+
+            queryClient.invalidateQueries({ queryKey: ['postComments', post.id] });
+            queryClient.invalidateQueries({ queryKey: ['feedPosts'] });
+        },
+        onError: () => {
+            notify('Failed to delete comment', 'error');
         }
     });
 
@@ -167,7 +184,7 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                 
                 <Box className="comments-list">
                     {postComments?.map(comment => (
-                        <PostComment key={comment.id} comment={comment} post={post} />
+                        <PostComment key={comment.id} comment={comment} post={post} deleteCommentMutation={deleteCommentMutation} />
                     ))}
                 </Box>
             </Box>
