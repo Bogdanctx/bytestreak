@@ -19,11 +19,12 @@
 .reports-title {
     margin-bottom: 24px !important;
     color: var(--text-primary);
-    font-weight: bold !important;
+    font-family: 'Momo Trust Display' !important;
 }
 
 .reports-empty {
     color: var(--text-secondary);
+    font-family: 'Momo Trust Display' !important;
 }
 
 .report-card {

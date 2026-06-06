@@ -40,7 +40,7 @@
 
 .users-search-field {
     background-color: var(--bg-2);
-    color: var(--text-primary);
+    color: white;
     flex: 1;
     min-width: 250px;
 }

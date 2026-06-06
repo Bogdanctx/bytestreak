@@ -9,7 +9,7 @@ export default function Administration() {
     return (
         <Box id="admin-container">
             <Box id="admin-sidebar">
-                <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: '"Momo Trust Display", sans-serif' }}>
+                <Typography variant="h6" sx={{ color: 'var(--text-primary)', fontFamily: "Momo Trust Display" }}>
                     Admin Panel
                 </Typography>
                 <Divider sx={{ backgroundColor: 'var(--bg-3)', marginBottom: 2 }} />

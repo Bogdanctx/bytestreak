@@ -25,15 +25,16 @@
     min-width: 15%;
 }
 
-.admin-menu-item {
+.admin-menu-item * {
     border-radius: 8px !important;
     margin-bottom: 8px !important;
     transition: background-color 0.2s !important;
     color: var(--text-secondary) !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .admin-menu-item:hover {
-    background-color: var(--bg-3) !important;
+    background-color: var(--bg-4) !important;
 }
 
 .admin-menu-item.Mui-selected {

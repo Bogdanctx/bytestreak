@@ -140,16 +140,40 @@ export default function QuizManagement() {
                             size="small" 
                             value={programmingLanguage} 
                             onChange={(e) => setProgrammingLanguage(e.target.value)}
+                            sx={{
+                                '& .MuiSelect-icon': { color: 'white' },
+                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--bg-4)' },
+                                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--bg-3)' },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--bg-3)' }
+                            }}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        backgroundColor: 'var(--bg-4)',
+                                        color: 'white',
+                                        '& .MuiMenuItem-root:hover': { backgroundColor: 'var(--bg-3)' },
+                                        '& .MuiMenuItem-root.Mui-selected': { backgroundColor: 'var(--bg-3)' }
+                                    }
+                                }
+                            }}
                         >
                         <MenuItem value="Any">Any</MenuItem>
                         <MenuItem value="Python">Python</MenuItem>
                         <MenuItem value="C++">C++</MenuItem>
                     </Select>
-                    <TextField id="quiz-custom-topic" 
-                                size="small" 
-                                placeholder="Custom Topic (Optional)" 
-                                value={customTopic} 
-                                onChange={(e) => setCustomTopic(e.target.value)}
+                    <TextField 
+                        id="quiz-custom-topic" 
+                        size="small" 
+                        placeholder="Custom Topic (Optional)" 
+                        value={customTopic} 
+                        onChange={(e) => setCustomTopic(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: 'var(--bg-4)' },
+                                '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                                '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                            }
+                        }}
                     />
                     <Button className={"quiz-generate-button"} 
                             onClick={() => generateQuizMutation.mutate()} 
@@ -165,6 +189,13 @@ export default function QuizManagement() {
                                 value={bulkCount} 
                                 onChange={(e) => setBulkCount(Number(e.target.value))} 
                                 slotProps={{ htmlInput: { min: 1, max: 50 } }}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': { borderColor: 'var(--bg-4)' },
+                                        '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                                        '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                                    }
+                                }}
                     />
                     <Button className={"quiz-generate-button"} onClick={() => generateBulkMutation.mutate()} disabled={generateBulkMutation.isPending}>
                         {generateBulkMutation.isPending ? <CircularProgress size={20} /> : "Generate Bulk"}

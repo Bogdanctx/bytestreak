@@ -90,12 +90,19 @@ export default function UsersManagement() {
                     Users Management
                 </Typography>
                 <TextField
-                    id="users-search-input"
+                    className="users-search-field"
                     size="small"
                     placeholder="Search by username or email..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="users-search-field"
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            color: 'var(--text-primary)',
+                            '& fieldset': { borderColor: 'var(--bg-6)' },
+                            '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                            '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                        }
+                    }}
                 />
             </Box>
 
