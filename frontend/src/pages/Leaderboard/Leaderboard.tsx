@@ -59,7 +59,7 @@ function Leaderboard() {
             </Box>
 
             <Typography className="current-rank-label" align="center">
-                {currentAccount.username}, you are #{currentAccount.globalRank} globally
+                {currentAccount.username}, you are #{currentAccount.globalRank} globally!
             </Typography>
             
             <LeaderboardPodium topThree={topThree} currentAccount={currentAccount} />

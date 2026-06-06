@@ -10,13 +10,8 @@
 
 .social-box {
     background-color: var(--bg-2);
-    min-width: 15%;
     border-radius: 12px;
     flex: 1;
-}
-
-.feed-box {
-    min-width: 70%;
 }
 
 @media screen and (max-width: 768px) {

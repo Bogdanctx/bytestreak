@@ -2,41 +2,45 @@ import { Box, Typography, Button } from "@mui/material";
 import './TimedFeaturesManagement.style.css';
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../../api";
+import notify from "../../../components/ui/ToastNotification";
 
 export default function TimedFeaturesManagement() {
     const resetDailyQuizMutation = useMutation({
         mutationFn: async () => {
             await api.post("/admin/reset-daily-quiz");
+            notify("Resetting daily quiz...", "info");
         },
         onSuccess: () => {            
-            alert("Daily quiz reset successfully!");
+            notify("Daily quiz reset successfully!", "success");
         },
         onError: () => {
-            alert("Failed to reset daily quiz.");
+            notify("Failed to reset daily quiz.", "error");
         }
     });
 
     const resetDailyCodingProblemMutation = useMutation({
         mutationFn: async () => {
             await api.post("/admin/reset-daily-coding-problem");
+            notify("Resetting daily coding problem...", "info");
         },
         onSuccess: () => {            
-            alert("Daily coding problem reset successfully!");
+            notify("Daily coding problem reset successfully!", "success");
         },
         onError: () => {
-            alert("Failed to reset daily coding problem.");
+            notify("Failed to reset daily coding problem.", "error");
         }
     });
 
     const resetSeasonalLeaderboardMutation = useMutation({
         mutationFn: async () => {
             await api.post("/admin/reset-season");
+            notify("Resetting seasonal leaderboard and awarding season rewards...", "info");
         },
         onSuccess: () => {            
-            alert("Seasonal leaderboard reset successfully!");
+            notify("Seasonal leaderboard reset successfully!", "success");
         },
         onError: () => {
-            alert("Failed to reset seasonal leaderboard.");
+            notify("Failed to reset seasonal leaderboard.", "error");
         }
     });
 
