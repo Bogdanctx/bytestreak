@@ -71,11 +71,6 @@
     color: var(--text-secondary);
 }
 
-.equip-btn {
-    border-color: var(--accent-main);
-    color: var(--accent-main);
-}
-
 .active-btn {
     background-color: var(--bg-5);
     color: var(--text-primary);

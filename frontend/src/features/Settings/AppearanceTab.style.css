@@ -1,0 +1,15 @@
+.equip-btn {
+    background-color: #23ce6a94;
+    color: white;
+    font-family: "Momo Trust Display";
+    border: 0;
+}
+
+.equip-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.active-btn:disabled {
+    background-color: var(--bg-5);
+    color: var(--text-secondary);
+}

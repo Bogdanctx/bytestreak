@@ -4,6 +4,7 @@ import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
 import AccountAvatar from '../../components/ui/AccountAvatar';
 import { SHOP_ITEMS } from '../../utils/constants';
+import './AppearanceTab.style.css';
 
 function AppearanceTab() {
     const queryClient = useQueryClient();
