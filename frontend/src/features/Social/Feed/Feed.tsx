@@ -71,7 +71,7 @@ function Feed() {
                                 />
                             ))
                         ) : (
-                            <Typography variant="body1" sx={{ color: "var(--text-primary)" }}>
+                            <Typography variant="body1" sx={{ color: "var(--text-primary)", textAlign: "center", fontFamily: "Momo Trust Display" }}>
                                 No posts to display. Start by creating a new post!
                             </Typography>
                         )}
