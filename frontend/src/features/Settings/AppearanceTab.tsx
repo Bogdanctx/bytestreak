@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Divider } from '@mui/material';
 import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
 import AccountAvatar from '../../components/ui/AccountAvatar';
@@ -23,7 +23,9 @@ function AppearanceTab() {
 
     return (
         <Box sx={{ padding: '2rem', color: 'var(--text-primary)' }}>
-            <Typography variant="h5" sx={{ mb: 3 }}>Avatar Appearance</Typography>
+            <Typography variant="h5" sx={{ mb: 3 }} fontFamily="Momo Trust Display" >APPEARANCE</Typography>
+
+            <Divider className="account-header-separator" />
 
             <Box className="shop-grid">
                 {ownedItems.map((item) => {

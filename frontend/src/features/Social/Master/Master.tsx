@@ -115,7 +115,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                 <Box mb={2}>
                     <AccountAvatar avatarUrl={account?.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={64} height={64} />
                 </Box>
-                <Typography variant="h6" fontWeight="600" color="var(--text-primary)" lineHeight={1}>
+                <Typography variant="h6" fontWeight="600" color="var(--text-primary)" lineHeight={1} fontFamily="Momo Trust Display">
                     {account.username}
                 </Typography>
                 <Typography variant="body2" color={rankColor} mt={0.5}>

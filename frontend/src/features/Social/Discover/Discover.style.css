@@ -103,6 +103,7 @@
 .discover-user-name {
 	color: var(--text-primary);
 	font-weight: 600;
+	font-family: 'Momo Trust Display' !important;
 }
 
 .discover-user-role {

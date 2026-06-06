@@ -244,6 +244,7 @@
     transition: color 0.2s ease;
     position: relative;
     z-index: 1;
+    font-family: 'Momo Trust Display' !important;
 }
 
 .podium-username:hover {
@@ -411,6 +412,7 @@
     cursor: pointer;
     transition: color 0.2s ease;
     position: relative;
+    font-family: 'Momo Trust Display' !important;
 }
 
 .leaderboard-username::after {

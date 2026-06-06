@@ -26,24 +26,20 @@
 
 .creator-page-header-title {
     color: white !important;
-    font-family: "Momo Trust Display", sans-serif !important;
+    font-family: "Momo Trust Display" !important;
     font-size: 2.5rem !important;
 }
 
 .creator-page-header-description {
     color: #AAAAAA !important;
-    font-size: 0.8rem;
+    font-size: 0.8rem !important;
+    font-family: "Momo Trust Display" !important;
 }
 
 .creator-page-create-new {
     border: 1px solid #23CE6B !important;
     color: #23CE6B !important;
 }
-
-.creator-page-create-new:hover {
-    border-color: #E7BB41 !important;
-}
-
 
 .creator-page-content {
     padding: 24px;
@@ -65,7 +61,7 @@
 }
 
 .creator-table-header-cell {
-    background-color: #1a1a1a !important;
+    background-color: var(--bg-4) !important;
     color: #888 !important;
     font-size: 0.75rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
