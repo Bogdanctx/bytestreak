@@ -27,7 +27,7 @@ export default function UsersManagement() {
 
     const deleteUserMutation = useMutation({
         mutationFn: async (userId: number) => {
-            const response = await api.delete(`/accounts/delete/${userId}`);
+            const response = await api.delete(`/accounts/${userId}`);
             return response.data;
         },
         onSuccess: () => {

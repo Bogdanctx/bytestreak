@@ -100,8 +100,17 @@ public class TimedMethodsService {
     public void resetSeason() {
         List<Account> allAccounts = accountRepository.findAll();
         
-        for(Account account : allAccounts) {
-            long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
+        allAccounts.sort((a1, a2) -> {
+            int xpCompare = Integer.compare(a2.getCurrentXP(), a1.getCurrentXP());
+            if (xpCompare != 0) {
+                return xpCompare;
+            }
+            return Long.compare(a1.getId(), a2.getId());
+        });
+
+        for (int i = 0; i < allAccounts.size(); i++) {
+            Account account = allAccounts.get(i);
+            long globalRank = i + 1;
 
             SeasonEndNotificationPayload payload = new SeasonEndNotificationPayload();
 
