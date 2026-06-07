@@ -31,7 +31,7 @@ function UserRow({ user, onDeleteClick, onRoleChangeClick }: IUserRowProps) {
             </Box>
             <Box className="user-stats">
                 <Typography className="user-stat">Level: {Math.floor(user.currentXP / 1000) + 1}</Typography>
-                <Typography className="user-stat">Problems Solved: {user.codingProblemsSolved}</Typography>
+                <Typography className="user-stat">Problems Solved: {user.solvedProblems.length}</Typography>
                 <Typography className="user-stat">Quizzes Solved: {user.quizzesSolved}</Typography>
             </Box>
             <Box className="user-actions" onClick={(e) => e.stopPropagation()}>

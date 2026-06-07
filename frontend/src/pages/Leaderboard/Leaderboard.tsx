@@ -12,7 +12,6 @@ import LeaderboardPodium from './LeaderboardPodium';
 import LeaderboardList from './LeaderboardList';
 import './Leaderboard.style.css';
 import type { IAccount } from '../../types/account.types';
-import { getRank } from '../../utils/rankUtils';
 
 function Leaderboard() {
     const { data: currentAccount, isSuccess: currentAccountQuerySuccess } = useAccount();

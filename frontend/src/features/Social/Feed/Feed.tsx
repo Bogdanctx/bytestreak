@@ -38,7 +38,7 @@ function Feed() {
     });
 
     const deletePostMutation = useMutation({
-        mutationFn: async (postId) => {
+        mutationFn: async (postId: number) => {
             const response = await api.delete(`/social/feed/posts/${postId}`);
             return response.data;
         },

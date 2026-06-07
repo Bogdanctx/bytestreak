@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 interface IFeedPostProps {
     post: IPost;
     onClick: () => void;
-    deletePostMutation: UseMutationResult<any, Error, void, unknown>;
+    deletePostMutation: UseMutationResult<any, Error, number, unknown>;
 }
 
 function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
@@ -94,7 +94,9 @@ function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
                         className="feed-post-report-btn report-flag"
                         onClick={(e) => {
                             e.stopPropagation();
-                            deletePostMutation.mutate(post.id);
+                            if (post.id != null) {
+                                deletePostMutation.mutate(post.id);    
+                            }
                         }}
                         disabled={reportPostMutation.isPending}
                         aria-label="Report post"

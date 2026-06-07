@@ -14,7 +14,6 @@ import notify from "../../../../components/ui/ToastNotification";
 import { useNavigate } from "react-router-dom";
 import './ViewPost.style.css';
 import PostComment from "../PostComment/PostComment";
-import DeleteIcon from '@mui/icons-material/Delete';
 
 interface IViewPostProps {
     post: IPost;
