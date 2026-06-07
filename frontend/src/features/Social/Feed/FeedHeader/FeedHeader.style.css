@@ -72,14 +72,13 @@
 
 /* Send Button */
 .feed-header-send-btn {
-    color: var(--text-secondary);
-    background-color: #23ce6a94 !important;
+    background-color: var(--bg-5) !important;
     transition: all 0.2s ease;
 }
 
 .feed-header-send-btn.enabled {
     color: var(--bg-0);
-    background-color: var(--accent-main);
+    background-color: #23ce6a94 !important;
 }
 
 .feed-header-send-btn.enabled:hover {
