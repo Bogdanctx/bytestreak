@@ -5,6 +5,7 @@
     width: 100%;
     position: relative;
     padding-bottom: 24px;
+    overflow-y: auto;
 }
 
 .view-post-back-btn {
@@ -27,8 +28,6 @@
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 24px;
-    overflow: auto;
-    max-height: 60%;
 }
 
 .view-post-header {
@@ -97,7 +96,6 @@
 .view-post-comments-section {
     display: flex;
     flex-direction: column;
-    min-height: 0px;
 }
 
 .comments-header {
@@ -118,7 +116,6 @@
 }
 
 .view-post-compose-box {
-    position: sticky;
     bottom: 0;
     background-color: var(--bg-2);
     border: 1px solid var(--bg-4);

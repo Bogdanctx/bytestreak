@@ -6,8 +6,10 @@ import './FeedPost.style.css';
 import { useNavigate } from "react-router-dom";
 import { api } from '../../../../api';
 import { useMutation, type UseMutationResult } from '@tanstack/react-query';
+import { useAccount } from "../../../../hooks/useAccount";
 import notify from '../../../../components/ui/ToastNotification';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Loading from "../../../../components/ui/Loading";
 
 interface IFeedPostProps {
     post: IPost;
@@ -17,7 +19,7 @@ interface IFeedPostProps {
 
 function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
     const navigate = useNavigate();
-
+    const { data: account, isSuccess: accountIsSuccess } = useAccount();
     const reportPostMutation = useMutation({
         mutationFn: async () => {
             const response = await api.post(`/reports/submit/post/${post.id}`);
@@ -34,6 +36,10 @@ function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
     const isImage = (filedata: string, filename: string) => {
         return filedata?.startsWith('data:image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
     };
+
+    if (!accountIsSuccess) {
+        return <Loading />;
+    }
 
     return (
         <Box className={`feed-post-container`} onClick={onClick}>
@@ -89,20 +95,22 @@ function FeedPost({ post, onClick, deletePostMutation }: IFeedPostProps) {
 
 
                 <Box sx={{ marginLeft: 'auto' }}>
-                    <IconButton 
-                        size="small" 
-                        className="feed-post-report-btn report-flag"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (post.id != null) {
-                                deletePostMutation.mutate(post.id);    
-                            }
-                        }}
-                        disabled={reportPostMutation.isPending}
-                        aria-label="Report post"
-                    >
-                        <DeleteIcon fontSize="small" />
-                    </IconButton>
+                    {post.author.id === account.id && (
+                        <IconButton 
+                            size="small" 
+                            className="feed-post-report-btn report-flag"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (post.id != null) {
+                                    deletePostMutation.mutate(post.id);    
+                                }
+                            }}
+                            disabled={reportPostMutation.isPending}
+                            aria-label="Report post"
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    )}
 
                     <IconButton 
                         size="small" 

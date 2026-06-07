@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,7 @@ public class PostComment {
     @JoinColumn(name = "author_id", nullable = false)
     private Account author;
     
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     @OneToMany(mappedBy = "postComment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

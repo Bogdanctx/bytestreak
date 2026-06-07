@@ -126,65 +126,69 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                 <ArrowBackIcon fontSize="small" sx={{ mr: 1 }} /> Back to Feed
             </Button>
 
-            <Box className="view-post-main">
-                <Box className="view-post-header">
-                    <Avatar src={post.author.profilePictureUrl} className="view-post-avatar" />
-                    <Box>
-                        <Typography className="view-post-author-name"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/accounts/profile/${post.author.username}`);
-                                }}
-                                sx={{
-                                    "&:hover": {
-                                        textDecoration: "underline",
-                                        cursor: "pointer"
-                                    }
-                                }}
+            <Box sx={{
+                overflowY: 'auto',
+            }}>
+                <Box className="view-post-main">
+                    <Box className="view-post-header">
+                        <Avatar src={post.author.profilePictureUrl} className="view-post-avatar" />
+                        <Box>
+                            <Typography className="view-post-author-name"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/accounts/profile/${post.author.username}`);
+                                    }}
+                                    sx={{
+                                        "&:hover": {
+                                            textDecoration: "underline",
+                                            cursor: "pointer"
+                                        }
+                                    }}
+                            >
+                                {post.author.username}
+                            </Typography>
+                            <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
+                        </Box>
+                        <IconButton
+                            className="report-flag"
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                reportPostMutation.mutate();
+                            }}
+                            disabled={reportPostMutation.isPending}
+                            aria-label="Report post"
+                            sx={{ marginLeft: "auto" }}
                         >
-                            {post.author.username}
-                        </Typography>
-                        <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
+                            <FlagIcon fontSize="small" />
+                        </IconButton>
                     </Box>
-                    <IconButton
-                        className="report-flag"
-                        size="small"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            reportPostMutation.mutate();
-                        }}
-                        disabled={reportPostMutation.isPending}
-                        aria-label="Report post"
-                        sx={{ marginLeft: "auto" }}
-                    >
-                        <FlagIcon fontSize="small" />
-                    </IconButton>
+                    
+                    <Typography className="view-post-text">{post.text}</Typography>
+                    
+                    {post.attachments && post.attachments.length > 0 && (
+                        <Box className="view-post-attachments">
+                            {post.attachments.map((att, idx) => (
+                                isImage(att.filedata, att.filename) ? (
+                                    <img key={idx} src={att.filedata} alt="attachment" className="view-post-image" />
+                                ) : (
+                                    <a key={idx} href={att.filedata} download={att.filename} className="view-post-file-link">
+                                        {att.filename}
+                                    </a>
+                                )
+                            ))}
+                        </Box>
+                    )}
                 </Box>
-                
-                <Typography className="view-post-text">{post.text}</Typography>
-                
-                {post.attachments && post.attachments.length > 0 && (
-                    <Box className="view-post-attachments">
-                        {post.attachments.map((att, idx) => (
-                            isImage(att.filedata, att.filename) ? (
-                                <img key={idx} src={att.filedata} alt="attachment" className="view-post-image" />
-                            ) : (
-                                <a key={idx} href={att.filedata} download={att.filename} className="view-post-file-link">
-                                    {att.filename}
-                                </a>
-                            )
+
+                <Box className="view-post-comments-section">
+                    <Typography className="comments-header">Comments ({postComments?.length || 0})</Typography>
+                    
+                    <Box className="comments-list">
+                        {postComments?.map(comment => (
+                            <PostComment key={comment.id} comment={comment} post={post} deleteCommentMutation={deleteCommentMutation} />
                         ))}
                     </Box>
-                )}
-            </Box>
-
-            <Box className="view-post-comments-section">
-                <Typography className="comments-header">Comments ({postComments?.length || 0})</Typography>
-                
-                <Box className="comments-list">
-                    {postComments?.map(comment => (
-                        <PostComment key={comment.id} comment={comment} post={post} deleteCommentMutation={deleteCommentMutation} />
-                    ))}
                 </Box>
             </Box>
 
