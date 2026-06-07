@@ -1,14 +1,14 @@
-export function getLevel(xp: number) {
-    return Math.floor(Math.sqrt(xp / 100));
+export function getRank(xp: number) {
+    if (xp >= 6000) return "Terabyte";
+    if (xp >= 3000) return "Gigabyte";
+    if (xp >= 1500) return "Megabyte";
+    if (xp >= 600)  return "Kilobyte";
+    if (xp >= 200)  return "Byte";
+    return "Bit";
 }
 
-export function getRank(level: number) {
-    if (level >= 36) return "Terabyte";
-    if (level >= 24) return "Gigabyte";
-    if (level >= 16) return "Megabyte";
-    if (level >= 8)  return "Kilobyte";
-    if (level >= 4)  return "Byte";
-    return "Bit";
+export function getLevel(xp: number) {
+    return Math.floor(Math.sqrt(xp / 100)) + 1;
 };
 
 export function getRankColor(rank: string) {
@@ -23,8 +23,9 @@ export function getRankColor(rank: string) {
 
 export function getXPProgress(xp: number) {
     const level = getLevel(xp);
-    const currentLevelMinXP = 100 * Math.pow(level, 2);
-    const nextLevelMinXP = 100 * Math.pow(level + 1, 2);
+    
+    const currentLevelMinXP = 100 * Math.pow(level - 1, 2);
+    const nextLevelMinXP = 100 * Math.pow(level, 2);
     
     const progressInLevel = xp - currentLevelMinXP;
     const totalLevelXP = nextLevelMinXP - currentLevelMinXP;
@@ -34,4 +35,4 @@ export function getXPProgress(xp: number) {
         currentLevelXP: progressInLevel,
         neededXP: totalLevelXP
     };
-};
+}

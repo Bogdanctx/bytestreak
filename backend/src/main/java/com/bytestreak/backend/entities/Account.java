@@ -2,15 +2,14 @@ package com.bytestreak.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
@@ -25,12 +24,12 @@ import org.hibernate.type.SqlTypes;
 import com.bytestreak.backend.enums.Role;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "Accounts")
@@ -62,23 +61,21 @@ public class Account {
     private String password;
 
     private int currentXP = 0;
-
-    private int codingProblemsSolved = 0;
+    private int xpAchievedToday = 0;
     private int quizzesSolved = 0;
 
     private int streakLength = 0;
 
     private int coins = 0;
     private String bio = "";
-    private LocalDate lastDailyQuizDate;
-    private LocalDate lastDailyProblemDate;
+    private boolean solvedDailyQuizToday = false;
+    private boolean solvedDailyCodingProblemToday = false;
 
     private String cssEffectStyle; // default effect
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<String> purchasedEffects = new ArrayList<>();
- 
     
     @Transient
     private Long globalRank;
@@ -92,4 +89,12 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @ManyToMany
+    @JoinTable(
+        name = "account_solved_problems",
+        joinColumns = @JoinColumn(name = "account_id"),
+        inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    private Set<Problem> solvedProblems = new HashSet<>();
 }

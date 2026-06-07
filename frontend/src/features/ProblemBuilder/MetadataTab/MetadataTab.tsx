@@ -11,9 +11,17 @@ interface MetadataTabProps {
     setDifficulty: (difficulty: string) => void;
     setTags: (tags: string[]) => void;
     setValidationTabActive: (active: boolean) => void;
+    isValidationTabActive: boolean;
 }
 
-function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags, setValidationTabActive }: MetadataTabProps) {
+function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags, setValidationTabActive, isValidationTabActive }: MetadataTabProps) {
+    const codingProblemTags = ["Dynamic Programming", "Sliding Window", "Two pointers", "Graph", 
+                                "Tree", "Array", "String", "Hash Table", "Math", "Greedy", "Backtracking", 
+                                "Divide and Conquer", "Linked List", "Stack", "Queue", "Heap", "Bit Manipulation", "Recursion",
+                                "Sorting", "Searching", "Design", "Geometry", "Probability", "Combinatorics",
+                                "Game Theory", "Number Theory", "Brute Force", "Memoization", "Topological Sort",
+                                "Trie", "Segment Tree", "Union Find", "Others"];
+
     return (
         <Box className="metadata-container">
             <Box sx={{ width: '600px', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -57,7 +65,7 @@ function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags
                     <Autocomplete
                         multiple
                         freeSolo
-                        options={["Dynamic Programming", "Sliding Window", "Two pointers", "Graph", "Tree", "Array", "String", "Hash Table", "Math", "Greedy", "Backtracking", "Divide and Conquer"]}
+                        options={codingProblemTags}
                         value={tags}
                         onChange={(_, newValue) => setTags(newValue)}
                         renderValue={(value: string[], getTagProps) =>
@@ -85,9 +93,10 @@ function MetadataTab({ title, difficulty, tags, setTitle, setDifficulty, setTags
                 </Box>
 
                 <Box className="metadata-field-group">
-                    <Typography className="metadata-label">Multiple right answers?</Typography>
+                    <Typography className="metadata-label">Needs validation script?</Typography>
                     <Box className="metadata-switch-container">
                         <Switch
+                            checked={isValidationTabActive}
                             onChange={(e) => setValidationTabActive(e.target.checked)}
                             className="metadata-switch"
                         />

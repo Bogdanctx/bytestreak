@@ -2,10 +2,25 @@
     height: 100%;
     width: 100%;
     display: flex;
+    flex-direction: row;
     gap: 0;
     padding: 12px;
     background-color: #0C0C0C;
     overflow: hidden;
+}
+
+.problem-solved-close-btn {
+    background-color: #23ce6a94;
+    color: white;
+    font-family: "Momo Trust Display";
+    font-weight: 700;
+    padding: 10px 40px;
+    border-radius: 8px;
+    text-transform: uppercase;
+}
+
+.problem-solved-close-btn:hover {
+    background-color: var(--accent-hover);
 }
 
 .problem-page-container.is-resizing {
@@ -39,4 +54,15 @@
 .problem-page-container.is-resizing .problem-resize-handle::before {
     background: rgba(35, 206, 107, 0.7);
     box-shadow: 0 0 10px rgba(35, 206, 107, 0.35);
+}
+
+@media screen and (max-width: 1024px) {
+    .problem-page-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .problem-data-panel-container {
+        max-height: 30%;
+    }
 }

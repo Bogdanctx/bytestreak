@@ -22,6 +22,9 @@ export interface IProblem {
     visibility: "PUBLIC" | "HIDDEN";
     likes: number;
     dislikes: number;
+    userVote: "like" | "dislike" | null;
+    dailyChallange: boolean;
+    validationScriptContent?: string;
 }
 
 export interface IProblemCreateDTO {
@@ -44,7 +47,9 @@ export interface ISubmissionResult {
     testCaseId: number;
     statusId: number;
     statusDescription: string;
-    executionTime: number;
+    testCaseInput: string;
+    testCaseOutput: string;
+    testCaseExpectedOutput: string;
 }
 
 export interface ISolution {

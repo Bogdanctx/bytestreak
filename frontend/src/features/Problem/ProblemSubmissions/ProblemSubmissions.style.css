@@ -14,22 +14,22 @@
 }
 
 .submission-scope-button {
-    color: #cfcfcf !important;
-    background-color: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 999px !important;
-    padding: 8px 16px !important;
-    min-height: 34px !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.02em !important;
-    text-transform: none !important;
+    color: #cfcfcf;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 8px 16px;
+    min-height: 34px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: none;
 }
 
 .submission-scope-button.active {
-    color: #f7f7f9 !important;
-    border-color: rgba(35, 206, 107, 0.55) !important;
-    background: linear-gradient(135deg, rgba(35, 206, 107, 0.16), rgba(35, 206, 107, 0.06)) !important;
+    color: #f7f7f9;
+    border-color: rgba(35, 206, 107, 0.55);
+    background: linear-gradient(135deg, rgba(35, 206, 107, 0.16), rgba(35, 206, 107, 0.06));
 }
 
 .submission-empty-state {
@@ -71,28 +71,28 @@
 
 .submission-card {
     width: 100%;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-    padding: 14px !important;
-    border-radius: 16px !important;
-    text-transform: none !important;
-    color: #f7f7f9 !important;
-    background: rgba(255, 255, 255, 0.035) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    border-radius: 16px;
+    text-transform: none;
+    color: #f7f7f9;
+    background-color: var(--bg-3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .submission-card:hover {
     transform: translateY(-1px);
-    border-color: rgba(35, 206, 107, 0.25) !important;
-    background: rgba(255, 255, 255, 0.055) !important;
+    border-color: rgba(35, 206, 107, 0.25);
+    background: rgba(255, 255, 255, 0.055);
 }
 
 .submission-card.selected {
-    border-color: rgba(35, 206, 107, 0.6) !important;
-    background: linear-gradient(135deg, rgba(35, 206, 107, 0.14), rgba(255, 255, 255, 0.04)) !important;
+    border-color: rgba(35, 206, 107, 0.6);
+    background: linear-gradient(135deg, rgba(35, 206, 107, 0.14), rgba(255, 255, 255, 0.04));
 }
 
 .submission-card-header {
@@ -104,8 +104,8 @@
 }
 
 .submission-author {
-    color: #f7f7f9 !important;
-    font-weight: 600 !important;
+    color: #f7f7f9;
+    font-weight: 600;
     text-align: left;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .submission-card-date {
-    color: #9a9a9a !important;
+    color: #9a9a9a;
     text-align: left;
 }
 
@@ -148,17 +148,17 @@
 .submission-detail-label,
 .submission-code-label {
     display: block;
-    color: #9a9a9a !important;
-    letter-spacing: 0.08em !important;
-    text-transform: uppercase !important;
-    margin-bottom: 4px !important;
+    color: #9a9a9a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
 }
 
 .submission-detail-score {
-    color: #f7f7f9 !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 2rem !important;
-    line-height: 1 !important;
+    color: #f7f7f9;
+    font-family: "Momo Trust Display";
+    font-size: 2rem;
+    line-height: 1;
 }
 
 .submission-detail-meta {
@@ -170,7 +170,8 @@
 }
 
 .submission-detail-meta-line {
-    color: #cfcfcf !important;
+    color: #cfcfcf;
+    font-family: "Momo Trust Display";
 }
 
 .submission-code-section {
@@ -208,7 +209,7 @@
     }
 
     .submission-card {
-        padding: 12px !important;
+        padding: 12px;
     }
 
     .submission-code-editor-shell {

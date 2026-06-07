@@ -14,9 +14,8 @@ import com.bytestreak.backend.entities.FriendInvite;
 import com.bytestreak.backend.entities.Friendship;
 import com.bytestreak.backend.enums.InviteStatus;
 import com.bytestreak.backend.enums.NotificationTypes;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
 import com.bytestreak.backend.repositories.FriendshipRepository;
-
-import java.util.List;
 
 @Service
 public class FriendService {
@@ -105,12 +104,12 @@ public class FriendService {
         Account friend = accountRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend not found");
+            throw new ResourceNotFoundException("Friend account not found");
         }
 
         Friendship friendship = friendshipRepository.findByAccount1AndAccount2(me, friend);
         if (friendship == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friendship not found");
+            throw new ResourceNotFoundException("Friendship not found");
         }
 
         friendshipRepository.delete(friendship);

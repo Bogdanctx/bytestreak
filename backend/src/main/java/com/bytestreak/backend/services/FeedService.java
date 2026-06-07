@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bytestreak.backend.entities.Post;
 import com.bytestreak.backend.entities.PostComment;
+import com.bytestreak.backend.exceptions.UnauthorizedActionException;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Attachment;
 import com.bytestreak.backend.entities.Friendship;
@@ -31,8 +32,8 @@ public class FeedService {
 
     public List<Post> getFeedPosts(Account account) {
         List<Friendship> friendships = friendshipRepository.findFriendshipsOfAccount(account);
-
         List<Post> feedPosts = new ArrayList<>();
+        
         for (Friendship friendship : friendships) {
             Account friendAccount = friendship.getAccount1();
 
@@ -72,20 +73,14 @@ public class FeedService {
         return postRepository.save(newPost);
     }
 
-    public PostComment createComment(Account author, Long postId, PostCommentDTO postComment) {
-        // Check if the author is friend with the post's author
-        Post post = postRepository.findById(postId).orElse(null);
-        if (post == null) {
-            throw new RuntimeException("Post not found");
-        }
-
+    public PostComment createComment(Account author, Post post, PostCommentDTO postComment) {
         Account postAuthor = post.getAuthor();
 
         boolean isOwnPost = postAuthor.getId().equals(author.getId());
         boolean isFriendPost = friendshipRepository.findByAccount1AndAccount2(author, postAuthor) != null;
 
         if (!isOwnPost && !isFriendPost) {
-            throw new RuntimeException("You can only comment on your or your friends' posts");
+            throw new UnauthorizedActionException("You can only comment on your own posts or posts of your friends");
         }
 
         PostComment newComment = new PostComment();

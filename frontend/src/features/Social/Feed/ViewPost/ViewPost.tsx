@@ -13,6 +13,7 @@ import Loading from "../../../../components/ui/Loading";
 import notify from "../../../../components/ui/ToastNotification";
 import { useNavigate } from "react-router-dom";
 import './ViewPost.style.css';
+import PostComment from "../PostComment/PostComment";
 
 interface IViewPostProps {
     post: IPost;
@@ -50,6 +51,22 @@ function ViewPost({ post, goBack } : IViewPostProps) {
         }
     });
 
+    const deleteCommentMutation = useMutation({
+        mutationFn: async (commentId: number) => {
+            const response = await api.delete(`/social/feed/posts/${post.id}/comments/${commentId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Comment deleted successfully', 'success');
+
+            queryClient.invalidateQueries({ queryKey: ['postComments', post.id] });
+            queryClient.invalidateQueries({ queryKey: ['feedPosts'] });
+        },
+        onError: () => {
+            notify('Failed to delete comment', 'error');
+        }
+    });
+
     const reportPostMutation = useMutation({
         mutationFn: async () => {
             const response = await api.post(`/reports/submit/post/${post.id}`);
@@ -60,19 +77,6 @@ function ViewPost({ post, goBack } : IViewPostProps) {
         },
         onError: () => {
             notify('Failed to report post', 'error');
-        }
-    });
-
-    const reportCommentMutation = useMutation({
-        mutationFn: async (commentId: number) => {
-            const response = await api.post(`/reports/submit/comment/${commentId}`);
-            return response.data;
-        },
-        onSuccess: () => {
-            notify('Comment reported successfully', 'success');
-        },
-        onError: () => {
-            notify('Failed to report comment', 'error');
         }
     });
 
@@ -122,111 +126,69 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                 <ArrowBackIcon fontSize="small" sx={{ mr: 1 }} /> Back to Feed
             </Button>
 
-            <Box className="view-post-main">
-                <Box className="view-post-header">
-                    <Avatar src={post.author.profilePictureUrl} className="view-post-avatar" />
-                    <Box>
-                        <Typography className="view-post-author-name"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/accounts/profile/${post.author.username}`);
-                                }}
-                                sx={{
-                                    "&:hover": {
-                                        textDecoration: "underline",
-                                        cursor: "pointer"
-                                    }
-                                }}
+            <Box sx={{
+                overflowY: 'auto',
+            }}>
+                <Box className="view-post-main">
+                    <Box className="view-post-header">
+                        <Avatar src={post.author.profilePictureUrl} className="view-post-avatar" />
+                        <Box>
+                            <Typography className="view-post-author-name"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate(`/accounts/profile/${post.author.username}`);
+                                    }}
+                                    sx={{
+                                        "&:hover": {
+                                            textDecoration: "underline",
+                                            cursor: "pointer"
+                                        }
+                                    }}
+                            >
+                                {post.author.username}
+                            </Typography>
+                            <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
+                        </Box>
+                        <IconButton
+                            className="report-flag"
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                reportPostMutation.mutate();
+                            }}
+                            disabled={reportPostMutation.isPending}
+                            aria-label="Report post"
+                            sx={{ marginLeft: "auto" }}
                         >
-                            {post.author.username}
-                        </Typography>
-                        <Typography className="view-post-date">{new Date(post.createdAt).toLocaleString()}</Typography>
+                            <FlagIcon fontSize="small" />
+                        </IconButton>
                     </Box>
-                    <IconButton
-                        className="report-flag"
-                        size="small"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            reportPostMutation.mutate();
-                        }}
-                        disabled={reportPostMutation.isPending}
-                        aria-label="Report post"
-                    >
-                        <FlagIcon fontSize="small" />
-                    </IconButton>
+                    
+                    <Typography className="view-post-text">{post.text}</Typography>
+                    
+                    {post.attachments && post.attachments.length > 0 && (
+                        <Box className="view-post-attachments">
+                            {post.attachments.map((att, idx) => (
+                                isImage(att.filedata, att.filename) ? (
+                                    <img key={idx} src={att.filedata} alt="attachment" className="view-post-image" />
+                                ) : (
+                                    <a key={idx} href={att.filedata} download={att.filename} className="view-post-file-link">
+                                        {att.filename}
+                                    </a>
+                                )
+                            ))}
+                        </Box>
+                    )}
                 </Box>
-                
-                <Typography className="view-post-text">{post.text}</Typography>
-                
-                {post.attachments && post.attachments.length > 0 && (
-                    <Box className="view-post-attachments">
-                        {post.attachments.map((att, idx) => (
-                            isImage(att.filedata, att.filename) ? (
-                                <img key={idx} src={att.filedata} alt="attachment" className="view-post-image" />
-                            ) : (
-                                <a key={idx} href={att.filedata} download={att.filename} className="view-post-file-link">
-                                    {att.filename}
-                                </a>
-                            )
+
+                <Box className="view-post-comments-section">
+                    <Typography className="comments-header">Comments ({postComments?.length || 0})</Typography>
+                    
+                    <Box className="comments-list">
+                        {postComments?.map(comment => (
+                            <PostComment key={comment.id} comment={comment} post={post} deleteCommentMutation={deleteCommentMutation} />
                         ))}
                     </Box>
-                )}
-            </Box>
-
-            <Box className="view-post-comments-section">
-                <Typography className="comments-header">Comments ({postComments?.length || 0})</Typography>
-                
-                <Box className="comments-list">
-                    {postComments?.map(comment => (
-                        <Box key={comment.id} className="comment-item">
-                            <Avatar src={comment.author?.profilePictureUrl} className="comment-avatar" />
-                            <Box className="comment-content">
-                                <Box className="comment-meta">
-                                    <Typography className="comment-author"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigate(`/accounts/profile/${post.author.username}`);
-                                                }}
-                                                sx={{
-                                                    "&:hover": {
-                                                        textDecoration: "underline",
-                                                        cursor: "pointer"
-                                                    }
-                                                }}
-                                    >
-                                        {comment.author.username}
-                                    </Typography>
-                                    <Typography className="comment-date">{new Date(comment.createdAt).toLocaleString()}</Typography>
-                                    <IconButton
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            reportCommentMutation.mutate(comment.id);
-                                        }}
-                                        disabled={reportCommentMutation.isPending}
-                                        aria-label="Report comment"
-                                    >
-                                        <FlagIcon fontSize="small" />
-                                    </IconButton>
-                                </Box>
-                                <Typography className="comment-text">{comment.text}</Typography>
-                                
-                                {comment.attachments && comment.attachments.length > 0 && (
-                                    <Box className="view-post-attachments" sx={{ mt: 1 }}>
-                                        {comment.attachments.map((att, idx) => (
-                                            isImage(att.filedata, att.filename) ? (
-                                                <img key={idx} src={att.filedata} alt="attachment" className="view-post-image" style={{ maxHeight: '200px' }}/>
-                                            ) : (
-                                                <a key={idx} href={att.filedata} download={att.filename} className="view-post-file-link">
-                                                    {att.filename}
-                                                </a>
-                                            )
-                                        ))}
-                                    </Box>
-                                )}
-                            </Box>
-                        </Box>
-                    ))}
                 </Box>
             </Box>
 

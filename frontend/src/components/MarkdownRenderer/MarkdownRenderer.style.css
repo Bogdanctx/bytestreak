@@ -1,42 +1,190 @@
-.markdown-renderer-container h1, 
-.markdown-renderer-container h2, 
-.markdown-renderer-container h3 {
-    margin-top: 24px;
-    margin-bottom: 16px;
-    color: #F7F7F9;
-}
-
-.markdown-renderer-container h1 { 
-    font-size: 1.2rem; 
-    border-bottom: 1px solid #333; 
-    padding-bottom: 8px; 
-}
-.markdown-renderer-container h2 { 
-    font-size: 1.5rem; 
-}
-.markdown-renderer-container h3 { 
-    font-size: 1.25rem; 
+/* =========================================
+   Typography & Paragraphs
+========================================= */
+.markdown-renderer-container {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    word-wrap: break-word;
 }
 
 .markdown-renderer-container p {
-    color: #cfcfcf;
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--text-secondary);
 }
 
-.markdown-renderer-container hr {
-    border: none;
-    border-top: 2px solid rgba(255, 255, 255, 0.08);
+.markdown-renderer-container strong,
+.markdown-renderer-container b {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
+.markdown-renderer-container em,
+.markdown-renderer-container i {
+    font-style: italic;
+}
 
-.markdown-renderer-container code {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.95em;
+/* Links */
+.markdown-renderer-container a {
+    color: var(--accent-main);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.markdown-renderer-container a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+/* =========================================
+   Headings
+========================================= */
+.markdown-renderer-container h1, 
+.markdown-renderer-container h2, 
+.markdown-renderer-container h3,
+.markdown-renderer-container h4,
+.markdown-renderer-container h5,
+.markdown-renderer-container h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.markdown-renderer-container h1 { 
+    font-size: 2rem; 
+    border-bottom: 1px solid var(--bg-6); 
+    padding-bottom: 8px; 
+}
+
+.markdown-renderer-container h2 { 
+    font-size: 1.5rem; 
+    border-bottom: 1px solid var(--bg-6); 
+    padding-bottom: 6px;
+}
+
+.markdown-renderer-container h3 { font-size: 1.25rem; }
+.markdown-renderer-container h4 { font-size: 1rem; }
+
+/* =========================================
+   Blockquotes
+========================================= */
+.markdown-renderer-container blockquote {
+    margin: 0 0 16px 0;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    background-color: var(--bg-1);
+    border-left: 4px solid var(--bg-6);
+    border-radius: 0 4px 4px 0;
+}
+
+.markdown-renderer-container blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* =========================================
+   Lists & Task Lists
+========================================= */
+.markdown-renderer-container ul,
+.markdown-renderer-container ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 2em;
 }
 
 .markdown-renderer-container li {
-    margin-bottom: 8px;
-    color: #cfcfcf;
+    margin-bottom: 4px;
 }
 
+/* GitHub Flavored Markdown Task Lists */
+.markdown-renderer-container li.task-list-item {
+    list-style-type: none;
+    margin-left: -1.5em;
+}
+
+.markdown-renderer-container input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: var(--accent-main);
+}
+
+/* =========================================
+   Code & Preformatted Text
+========================================= */
+.markdown-renderer-container code {
+    background-color: var(--bg-3);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.85em;
+    color: var(--text-primary);
+}
+
+.markdown-renderer-container pre {
+    background-color: var(--bg-1); 
+    padding: 16px;
+    overflow: auto;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    border: 1px solid var(--bg-4);
+}
+
+.markdown-renderer-container pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: inherit;
+    border: none;
+}
+
+/* =========================================
+   Tables
+========================================= */
+.markdown-renderer-container table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.markdown-renderer-container table th,
+.markdown-renderer-container table td {
+    padding: 8px 13px;
+    border: 1px solid var(--bg-5);
+}
+
+.markdown-renderer-container table tr {
+    background-color: var(--bg-0);
+}
+
+.markdown-renderer-container table tr:nth-child(2n) {
+    background-color: var(--bg-1);
+}
+
+.markdown-renderer-container table th {
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: var(--bg-2);
+}
+
+/* =========================================
+   Images, Dividers & Math Components
+========================================= */
+.markdown-renderer-container img {
+    max-width: 100%;
+    border-radius: 6px;
+}
+
+.markdown-renderer-container hr {
+    height: 2px;
+    padding: 0;
+    margin: 24px 0;
+    background-color: var(--bg-6);
+    border: 0;
+}
+
+/* Prevent long KaTeX math blocks from breaking the container layout */
+.markdown-renderer-container .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0;
+}

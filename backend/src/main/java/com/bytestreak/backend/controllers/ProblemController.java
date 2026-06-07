@@ -12,22 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 
 import com.bytestreak.backend.dto.ExecutionResultDTO;
 import com.bytestreak.backend.dto.SolutionDTO;
 import com.bytestreak.backend.dto.TestCaseDTO;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.ProblemRepository;
+import com.bytestreak.backend.repositories.ProblemVoteRepository;
 import com.bytestreak.backend.repositories.SubmissionRepository;
 import com.bytestreak.backend.services.ProblemService;
 import com.bytestreak.backend.CodeExecution;
 import com.bytestreak.backend.services.ActivityTrackerService;
 import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.entities.ProblemVote;
 import com.bytestreak.backend.entities.Submission;
+import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.enums.Visibility;
 import com.bytestreak.backend.entities.Account;
 
@@ -37,7 +39,7 @@ import org.json.JSONObject;
 @RequestMapping("/problems")
 public class ProblemController {
     @Autowired
-    private ProblemRepository repository;
+    private ProblemRepository problemRepository;
 
     @Autowired
     private CodeExecution executionService;
@@ -57,25 +59,28 @@ public class ProblemController {
     @Autowired
     private SubmissionRepository submissionRepository;
 
+    @Autowired
+    private ProblemVoteRepository problemVoteRepository;
 
-    @GetMapping("")
-    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
 
-        List<Problem> problems = problemService.getPublicProblems(difficulty);
+    @GetMapping("/public")
+    public ResponseEntity<?> getPublicProblems(@RequestParam(required = false) String difficulty, @RequestParam(required = false) String query, @RequestParam(required = false) Long cursor, 
+                                                @RequestParam(required = false) boolean hideSolved, Authentication authentication) 
+    {
+        List<Problem> problems = problemService.getPublicProblems(difficulty, query, cursor, hideSolved, authentication);
 
         return ResponseEntity.ok(problems);
     }
 
-    @PutMapping("/{id}/toggle-problem-visibility")
-    public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
+    @GetMapping("/total-count")
+    public ResponseEntity<?> getTotalPublicProblemsCount() {
+        long count = problemRepository.findByVisibility(Visibility.PUBLIC).size();
+        return ResponseEntity.ok(count);
+    }
 
-        Problem problem = repository.findById(id).orElse(null);
+    @PutMapping("/{id}/toggle-problem-visibility")
+    public ResponseEntity<Problem> toggleProblemVisibility(@PathVariable Long id) {
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
@@ -88,7 +93,7 @@ public class ProblemController {
             problem.setVisibility(Visibility.PUBLIC);
         }
 
-        repository.save(problem);
+        problemRepository.save(problem);
 
         return ResponseEntity.ok(problem);
     }
@@ -96,14 +101,22 @@ public class ProblemController {
 
     @GetMapping("/{id}/description")
     public ResponseEntity<Problem> getProblemDescription(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
-        Problem problem = repository.findById(id).orElse(null);
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
+        }
+
+        Account account = accountRepository.findByEmail(authentication.getName());
+        ProblemVote vote = problemVoteRepository.findByProblemAndAccount(problem, account);
+
+        if (vote != null) {
+            problem.setUserVote(vote.isLike() ? "like" : "dislike");
+        }
+
+        if (problem.getValidationScriptPath() != null) {
+            String validationScriptContent = fileStorageService.getValidationScriptContent(problem.getValidationScriptPath());
+            problem.setValidationScriptContent(validationScriptContent);
         }
 
         return ResponseEntity.ok(problem);
@@ -111,7 +124,7 @@ public class ProblemController {
 
     @GetMapping("/testcases")
     public ResponseEntity<?> getProblemTestCases(@RequestParam Long problemId) {
-        Problem problem = repository.findById(problemId).orElse(null);
+        Problem problem = problemRepository.findById(problemId).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
@@ -122,11 +135,7 @@ public class ProblemController {
     }
 
     @GetMapping("/problem-of-the-day")
-    public ResponseEntity<Problem> getProblemOfTheDay(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
+    public ResponseEntity<Problem> getProblemOfTheDay() {
         try {
             Problem problemOfTheDay = problemService.getProblemOfTheDay();
             return ResponseEntity.ok(problemOfTheDay);
@@ -136,18 +145,29 @@ public class ProblemController {
         }
     }
 
+    @PostMapping("/{id}/feedback")
+    public ResponseEntity<Problem> submitFeedback(@PathVariable Long id, @RequestBody Map<String, String> feedbackMap, Authentication authentication) {
+        Account account = accountRepository.findByEmail(authentication.getName());
+
+        String feedback = feedbackMap.get("feedback");
+        try {
+            Problem updatedProblem = problemService.submitFeedback(id, feedback, account);
+            return ResponseEntity.ok(updatedProblem);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Error submitting feedback: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/submit")
     public ResponseEntity<List<ExecutionResultDTO>> submitSolution(@RequestBody SolutionDTO solutionDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
         if (solutionDTO.getCode() == null || solutionDTO.getProgrammingLanguage() == null || solutionDTO.getProblemId() == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
         Long id = solutionDTO.getProblemId();
-        Problem problem = repository.findById(id).orElse(null);
+        Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return ResponseEntity.notFound().build();
@@ -189,23 +209,51 @@ public class ProblemController {
                 }
             }
 
-            // if the solution is correct and solved the problem of the day, update the user's streak
-            if (problem.isProblemOfTheDay()) {
-                LocalDate today = LocalDate.now(ZoneOffset.UTC);
+            // if we reached this point, it means all test cases passed and the solution is correct
+            account.getSolvedProblems().add(problem);
 
-                if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {
-                    account.setStreakLength(account.getStreakLength() + 1);
-                    account.setLastDailyProblemDate(today);
-                    account.setCurrentXP(account.getCurrentXP() + 20);
-                    account.setCoins(account.getCoins() + 10);
+            // if the solution is correct and solved the problem of the day, update the user's streak
+            if (problem.isDailyChallange() && !account.isSolvedDailyCodingProblemToday()) {
+                account.setStreakLength(account.getStreakLength() + 1);
+                account.setSolvedDailyCodingProblemToday(true);
                     
-                    accountRepository.save(account);
+                account.setCurrentXP(account.getCurrentXP() + 50);
+                account.setCoins(account.getCoins() + 20);
+                    
+                accountRepository.save(account);
+            }
+            else { // if it's not the problem of the day, just give them some XP for solving it
+                int currentXP = account.getCurrentXP();
+                int xpGained = account.getXpAchievedToday();
+
+                if (xpGained <= 280) {
+                    if(problem.getDifficulty() == Difficulty.EASY) {
+                        account.setCurrentXP(currentXP + 10);
+                        account.setXpAchievedToday(xpGained + 10);
+
+                        account.setCoins(account.getCoins() + 5);
+                    }
+                    else if(problem.getDifficulty() == Difficulty.MEDIUM) {
+                        account.setCurrentXP(currentXP + 20);
+                        account.setXpAchievedToday(xpGained + 20);
+
+                        account.setCoins(account.getCoins() + 10);
+                    }
+                    else if(problem.getDifficulty() == Difficulty.HARD) {
+                        account.setCurrentXP(currentXP + 40);
+                        account.setXpAchievedToday(xpGained + 40);
+
+                        account.setCoins(account.getCoins() + 15);
+                    }
                 }
+
+                accountRepository.save(account);
             }
 
             return ResponseEntity.ok(results);
 
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             System.out.println("Error parsing code templates JSON: " + e.getMessage());
         }
 

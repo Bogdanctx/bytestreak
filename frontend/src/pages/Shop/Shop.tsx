@@ -21,7 +21,7 @@ export default function Shop() {
         <Box className="shop-container">
             <Typography variant="h4" className="shop-title">Avatar Shop</Typography>
             <Typography variant="subtitle1" className="shop-coins">
-                Your Coins: 🪙 {account?.coins || 0}
+                Your coins: 🪙 <span style={{"fontFamily": 'JetBrains Mono'}} >{account?.coins || 0}</span>
             </Typography>
 
             <Box className="shop-grid">

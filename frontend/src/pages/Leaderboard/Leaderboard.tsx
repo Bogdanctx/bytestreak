@@ -1,70 +1,28 @@
 import { useState, useEffect } from 'react';
 import {
     Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-    Avatar,
-    CircularProgress,
-    Paper,
-    Button,
-    Divider,
-    TextField,
-    InputAdornment
+    Typography
 } from '@mui/material';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import SearchIcon from '@mui/icons-material/Search';
-
 import { api } from '../../api';
 import { useAccount } from '../../hooks/useAccount';
-import { useNavigate } from 'react-router-dom';
-import { getLevel, getRank, getRankColor } from '../../utils/rankUtils';
-import type { IAccount } from '../../types/account.types';
 import Loading from '../../components/ui/Loading';
+import LeaderboardPodium from './LeaderboardPodium';
+import LeaderboardList from './LeaderboardList';
 import './Leaderboard.style.css';
-import AccountAvatar from '../../components/ui/AccountAvatar';
+import type { IAccount } from '../../types/account.types';
 
-interface LeaderboardPage {
-    accounts: IAccount[];
-    totalPages: number;
-    myRank: number;
-    myAccount: IAccount;
-}
-
-export default function Leaderboard() {
-    const navigate = useNavigate();
+function Leaderboard() {
     const { data: currentAccount, isSuccess: currentAccountQuerySuccess } = useAccount();
     const [daysLeft, setDaysLeft] = useState<number>(0);
-    const [searchValue, setSearchValue] = useState('');
-    const [debouncedSearchValue, setDebouncedSearchValue] = useState('');
-    const { data: leaderboardPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<LeaderboardPage>({
-        queryKey: ['leaderboard', debouncedSearchValue],
-        queryFn: async ({ pageParam = 0 }) => {
-            const response = await api.get(`/accounts/leaderboard?page=${pageParam}&size=20&query=${encodeURIComponent(debouncedSearchValue)}`);
+    const { data: leaderboardAccounts, isSuccess: leaderBoardAccountsSuccess } = useQuery<IAccount[]>({
+        queryKey: ['leaderboard'],
+        queryFn: async () => {
+            const response = await api.get('/accounts/leaderboard');
             return response.data;
-        },
-        getNextPageParam: (lastPage, pages) => {
-            if (!lastPage.accounts || lastPage.accounts.length < 20) {
-                return undefined;
-            }
-            return pages.length;
-        },
-        initialPageParam: 0,
-        staleTime: 1000 * 60 * 5,
+        }
     });
-
-    useEffect(() => {
-        const timeout = window.setTimeout(() => {
-            setDebouncedSearchValue(searchValue.trim());
-        }, 350);
-
-        return () => window.clearTimeout(timeout);
-    }, [searchValue]);
 
     useEffect(() => {
         const today = new Date();
@@ -73,152 +31,43 @@ export default function Leaderboard() {
         setDaysLeft(Math.max(0, remaining));
     }, []);
 
-    if (!currentAccountQuerySuccess) {
+    if (!currentAccountQuerySuccess || !leaderBoardAccountsSuccess) {
         return <Loading />;
     }
 
-    const loadedAccounts = leaderboardPages?.pages.flatMap((page) => page.accounts) || [];
-
+    const topThree = leaderboardAccounts.slice(0, 3);
+    
     return (
         <Box className="leaderboard-container">
-            <Box className="leaderboard-header">
+            <Box className="leaderboard-header-content">
+
                 <Box>
-                    <Typography variant="h4" className="leaderboard-title">
-                        Leaderboard
-                    </Typography>
+                    <Typography variant="h3" className="leaderboard-title">Leaderboard</Typography>
                     <Typography variant="body2" className="leaderboard-subtitle">
-                        Compete and climb the ranks
+                        Compete globally and claim your place at the top
                     </Typography>
                 </Box>
 
                 <Box className="leaderboard-countdown">
                     <LocalFireDepartmentIcon className="countdown-icon" />
                     <Box className="countdown-content">
-                        <Typography variant="body2" className="countdown-label">
-                            Days Left in Month
-                        </Typography>
-                        <Typography variant="h5" className="countdown-value">
-                            {daysLeft}
-                        </Typography>
+                        <Typography variant="body2" className="countdown-label">Days Left</Typography>
+                        <Typography variant="h4" className="countdown-value">{daysLeft}</Typography>
                     </Box>
                 </Box>
             </Box>
 
-            <Box className="leaderboard-toolbar">
-                <TextField
-                    value={searchValue}
-                    onChange={(event) => setSearchValue(event.target.value)}
-                    placeholder="Search accounts by username"
-                    fullWidth
-                    size="small"
-                    className="leaderboard-search-field"
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" sx={{ color: "white" }} />
-                                </InputAdornment>
-                            )
-                        }
-                    }}
-                />
-            </Box>
+            <Typography className="current-rank-label" align="center">
+                {currentAccount.username}, you are #{currentAccount.globalRank} globally!
+            </Typography>
+            
+            <LeaderboardPodium topThree={topThree} currentAccount={currentAccount} />
 
-            <Divider sx={{ borderColor: 'var(--bg-3)', margin: '16px 0' }} />
-
-            <Box className="leaderboard-content">
-                {isLoading && loadedAccounts.length === 0 ? (
-                    <Loading />
-                ) : (
-                    <TableContainer component={Paper} className="leaderboard-table-container">
-                        <Table stickyHeader>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell className="leaderboard-cell-rank">#</TableCell>
-                                    <TableCell className="leaderboard-cell-user">User</TableCell>
-                                    <TableCell className="leaderboard-cell-rank-badge">Level</TableCell>
-                                    <TableCell className="leaderboard-cell-xp" align="right">
-                                        XP
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {isLoading && loadedAccounts.length > 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={4} align="center" sx={{ py: 1 }}>
-                                            <CircularProgress size={24} />
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-
-                                {loadedAccounts.length === 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={4} align="center" className="leaderboard-empty-cell">
-                                            <Typography className="leaderboard-empty-text">
-                                                No accounts found.
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-
-                                {loadedAccounts.map((account) => {
-                                    const level = getLevel(account.currentXP);
-                                    const rank = getRank(level);
-                                    const rankColor = getRankColor(rank);
-
-                                    return (
-                                        <TableRow
-                                            key={account.id}
-                                            className={`leaderboard-row ${currentAccount.id === account.id ? 'current-user' : ''}`}
-                                        >
-                                            <TableCell className="leaderboard-cell-rank">
-                                                <Typography className="rank-number">
-                                                    {account.globalRank}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-user">
-                                                <Box className="user-info">
-                                                    <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={28} height={28} />
-                                                
-                                                    <Typography className="leaderboard-username"
-                                                                onClick={() => navigate(`/accounts/profile/${account.username}`)}
-                                                    >
-                                                        {account.username}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-rank-badge">
-                                                <Typography className="rank-name" sx={{ color: rankColor }}>
-                                                    Level {level} • {rank}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell className="leaderboard-cell-xp" align="right">
-                                                <Typography className="xp-value">
-                                                    {account.currentXP.toLocaleString()}
-                                                </Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                )}
-
-                {hasNextPage && (
-                    <Box className="load-more-container">
-                        <Button
-                            onClick={() => fetchNextPage()}
-                            disabled={isFetchingNextPage}
-                            variant="outlined"
-                            className="load-more-button"
-                        >
-                            {isFetchingNextPage ? <CircularProgress size={20} /> : 'Load More'}
-                        </Button>
-                    </Box>
-                )}
+            <Box className="leaderboard-list-section">
+                <LeaderboardList accounts={leaderboardAccounts.slice(3)} currentAccount={currentAccount}/>
             </Box>
         </Box>
     );
 }
+
+export default Leaderboard;

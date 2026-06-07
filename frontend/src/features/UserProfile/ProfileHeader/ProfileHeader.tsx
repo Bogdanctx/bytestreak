@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -25,7 +25,7 @@ interface IProfileHeaderProps {
 
 function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemove, friendList }: IProfileHeaderProps) {
     const level = getLevel(target.account.currentXP);
-    const rank = getRank(level);
+    const rank = getRank(target.account.currentXP);
     const rankColor = getRankColor(rank);
     const isMyProfile = myAccount?.id === target.account.id;
     const isFriend = friendList.some(friend => friend.id === myAccount?.id);
@@ -87,10 +87,11 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                         {target.account.username}
                     </Typography>
                     <Box className="profile-rank-container">
-                        <Typography className="profile-rank" variant="body2" sx={{ color: rankColor }}>
+                        <Typography className="profile-rank" variant="caption" sx={{ color: rankColor }}>
                             {rank.toUpperCase()}
                         </Typography>
-                        <Typography className="profile-level" variant="body2">
+                        •
+                        <Typography className="profile-level" variant="caption">
                             Level {level}
                         </Typography>
                     </Box>
@@ -108,7 +109,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                     <Typography className="profile-meta-item">
                         Joined on {new Date(target.account.joinedDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                     </Typography>
-                    {isFriend && (
+                    {(isFriend && friendship)  && (
                         <Typography className="profile-meta-item">
                             Friends since {new Date(friendship.friendsSince).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>
@@ -125,7 +126,7 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                             startIcon={<MessageIcon />}
                             onClick={() => setMessageChatOpen(true)}
                             sx={{
-                                backgroundColor: 'var(--accent-main)',
+                                backgroundColor: '#23ce6a94',
                                 '&:hover': { backgroundColor: 'var(--accent-hover)' }
                             }}
                         >
@@ -149,35 +150,37 @@ function ProfileHeader({ target, myAccount, setMessageChatOpen, setFriendToRemov
                         </Button>
                     </>
                 )}
-                {!isMyProfile && !isFriend && !pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
-                    <Button
-                        variant="contained"
-                        startIcon={<PersonAddIcon />}
-                        onClick={() => addFriendMutation.mutate(target.account.id)}
-                        sx={{
-                            backgroundColor: 'var(--accent-main)',
-                            '&:hover': { backgroundColor: 'var(--accent-hover)' }
-                        }}
-                    >
-                        Add Friend
-                    </Button>
-                )}
-                {!isMyProfile && !isFriend && pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
-                    <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
-                        Pending Connection
-                    </Typography>
-                )}
-                {!isMyProfile && (
-                    <Button
-                        variant="text"
-                        startIcon={<FlagIcon className='report-flag' />}
-                        onClick={() => reportAccountMutation.mutate()}
-                        disabled={reportAccountMutation.isPending}
-                        sx={{ color: 'var(--text-secondary)' }}
-                    >
-                        Report Account
-                    </Button>
-                )}
+                <Box display="flex" flexDirection="row" alignItems="center" gap={2} mt={2}>
+                    {!isMyProfile && !isFriend && !pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
+                        <Button
+                            variant="contained"
+                            startIcon={<PersonAddIcon />}
+                            onClick={() => addFriendMutation.mutate(target.account.id)}
+                            sx={{
+                                backgroundColor: '#23ce6a94',
+                                '&:hover': { backgroundColor: 'var(--accent-hover)' }
+                            }}
+                        >
+                            Send request
+                        </Button>
+                    )}
+                    {!isMyProfile && !isFriend && pendingConnections.some(invite => invite.receiver.id === target.account.id) && (
+                        <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
+                            Pending connection
+                        </Typography>
+                    )}
+                    {!isMyProfile && (
+                        <Button
+                            variant="text"
+                            startIcon={<FlagIcon className='report-flag' />}
+                            onClick={() => reportAccountMutation.mutate()}
+                            disabled={reportAccountMutation.isPending}
+                            sx={{ color: 'var(--text-secondary)' }}
+                        >
+                            Report account
+                        </Button>
+                    )}
+                </Box>
             </Box>
         </Box>
     )

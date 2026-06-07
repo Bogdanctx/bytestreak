@@ -32,8 +32,22 @@ function Feed() {
                 return [newPost, ...(oldPosts || [])];
             });
         },
-        onError: (error) => {
+        onError: () => {
             notify('Failed to create post. Please try again.', 'error');
+        }
+    });
+
+    const deletePostMutation = useMutation({
+        mutationFn: async (postId: number) => {
+            const response = await api.delete(`/social/feed/posts/${postId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            notify('Post deleted successfully', 'success');
+            queryClient.invalidateQueries({ queryKey: ['feedPosts'] });
+        },
+        onError: () => {
+            notify('Failed to delete post', 'error');
         }
     });
 
@@ -52,11 +66,12 @@ function Feed() {
                             feedPosts.map(post => (
                                 <FeedPost key={post.id} 
                                             post={post}
-                                            onClick={() => setViewingPost(post)}                               
+                                            onClick={() => setViewingPost(post)}
+                                            deletePostMutation={deletePostMutation}                               
                                 />
                             ))
                         ) : (
-                            <Typography variant="body1" sx={{ color: "var(--text-primary)" }}>
+                            <Typography variant="body1" sx={{ color: "var(--text-primary)", textAlign: "center", fontFamily: "Momo Trust Display" }}>
                                 No posts to display. Start by creating a new post!
                             </Typography>
                         )}

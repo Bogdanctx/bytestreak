@@ -18,7 +18,7 @@ export default function UsersManagement() {
     const { data: users, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['users', debounceSearchQuery],
         queryFn: async ({ pageParam = "" }) => {
-            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+            const response = await api.get(`/accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
             return response.data;
         },
         getNextPageParam: (lastPage) => lastPage.nextCursor || null,
@@ -27,7 +27,7 @@ export default function UsersManagement() {
 
     const deleteUserMutation = useMutation({
         mutationFn: async (userId: number) => {
-            const response = await api.delete(`/accounts/delete/${userId}`);
+            const response = await api.delete(`/accounts/${userId}`);
             return response.data;
         },
         onSuccess: () => {
@@ -43,7 +43,7 @@ export default function UsersManagement() {
 
     const setRoleMutation = useMutation({
         mutationFn: async ({ userId, role }: { userId: number; role: AccountRole }) => {
-            const response = await api.put(`/accounts/set-role`, { accountId: userId, newRole: role });
+            const response = await api.put(`/accounts/${userId}/set-role`, { newRole: role });
             return response.data;
         },
         onSuccess: () => {
@@ -90,12 +90,19 @@ export default function UsersManagement() {
                     Users Management
                 </Typography>
                 <TextField
-                    id="users-search-input"
+                    className="users-search-field"
                     size="small"
-                    placeholder="Search by username or email..."
+                    placeholder="Search by username..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="users-search-field"
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            color: 'var(--text-primary)',
+                            '& fieldset': { borderColor: 'var(--bg-6)' },
+                            '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                            '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                        }
+                    }}
                 />
             </Box>
 

@@ -4,7 +4,7 @@ import Editor from '@monaco-editor/react';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import PublishIcon from '@mui/icons-material/Publish';
 import { Box, Button, FormControl, MenuItem, Select, Tab, Tabs } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import notify from '../../components/ui/ToastNotification';
 import MarkdownRenderer from '../../components/MarkdownRenderer/MarkdownRenderer';
@@ -21,7 +21,7 @@ const DEFAULT_STARTER_CODE = {
 // >> Define the function signature that the user is expected to implement <<
 // >> Any libraries that the user needs to import must be included in this starter code <<
 // >> Make sure to match the function signature exactly, as the driver code relies on it << 
-// >> The code below is just a placeholder and should be replaced with the actual function signature <<
+// >> The code below is just an example and should be replaced with the actual function signature <<
 // ===============================
 
 int solve(vector<int>& nums) {
@@ -36,7 +36,7 @@ int solve(vector<int>& nums) {
 # >> Define the function signature that the user is expected to implement <<
 # >> Any libraries that the user needs to import must be included in this starter code <<
 # >> Make sure to match the function signature exactly, as the driver code relies on it << 
-# >> The code below is just a placeholder and should be replaced with the actual function signature <<
+# >> The code below is just an example and should be replaced with the actual function signature <<
 # ===============================
 
 def solve(nums):
@@ -120,21 +120,21 @@ type CodeTemplateMap = Record<ProgrammingLanguage, string>;
 
 function ProblemBuilder() {
     const { id } = useParams();
-    const isEditMode = Boolean(id);
-
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("markdown");
-    const [validationTabActive, setValidationTabActive] = useState(false);
 
     const [programmingLanguage, setProgrammingLanguage] = useState<ProgrammingLanguage>("cpp");
     const [starterCode, setStarterCode] = useState<CodeTemplateMap>(DEFAULT_STARTER_CODE);
     const [driverCode, setDriverCode] = useState<CodeTemplateMap>(DEFAULT_DRIVER_CODE);
     const [validationCode, setValidationCode] = useState(DEFAULT_VALIDATION_CODE);
+    const [validationTabActive, setValidationTabActive] = useState(validationCode !== DEFAULT_VALIDATION_CODE);
     
     const [description, setDescription] = useState("# Problem Description\n\nWrite your problem description here...");
     const [testCases, setTestCases] = useState<ITestCase[]>([]);
     const [title, setTitle] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const isEditMode = Boolean(id);
 
     useEffect(() => {
         if (!isEditMode) {
@@ -156,6 +156,11 @@ function ProblemBuilder() {
             setDescription(data.description);
             setDifficulty(data.difficulty);
             setTags(data.tags);
+
+            if (data.validationScriptContent) {
+                setValidationTabActive(true);
+                setValidationCode(data.validationScriptContent);
+            }
 
             const parsedTemplates = JSON.parse(data.codeTemplates);
 
@@ -195,13 +200,19 @@ function ProblemBuilder() {
             }
         },
         onSuccess: () => {
-            notify(isEditMode ? "Problem updated successfully!" : "Problem created successfully!", "success");
+            if (isEditMode) {
+                notify("Problem updated successfully!", "success");
+            }
+            else {
+                notify("Problem created successfully!", "success");
+                navigate("/creator");
+            }
         },
         onError: (error) => {
             console.error('Error saving problem:', error);
             notify("Failed to save problem. Please try again.", "error");
         }
-    })
+    });
 
     const handleSubmitProblem = async () => {
         if (!title || !difficulty || tags.length === 0 || testCases.length === 0) {
@@ -209,15 +220,39 @@ function ProblemBuilder() {
             return;
         }
 
-        if (validationTabActive && !validationCode) {
-            notify("Validation script cannot be empty if the Validation Script tab is active.", "error");
-            return;
+        if (validationTabActive) {
+            if (!validationCode) {
+                notify("Validation script cannot be empty if the Validation Script tab is active.", "error");
+                return;
+            }
+            if (!validationCode.includes("@@@USER_OUTPUT@@@")) {
+                notify("Validation script must include the marker '@@@USER_OUTPUT@@@' to separate original input and user output.", "error");
+                return;
+            }
+            if (!validationCode.includes("def check_logic")) {
+                notify("Validation script must define a function named 'check_logic' that takes original_input and user_output as parameters.", "error");
+                return;
+            }
+            if (!validationCode.includes("print(\"True\")") || !validationCode.includes("print(\"False\")")) {
+                notify("Validation script must print 'True' if the user's solution is valid and 'False' otherwise.", "error");
+                return;
+            }
+            if (validationCode === DEFAULT_VALIDATION_CODE) {
+                notify("Please customize the validation script or disable the Validation Script tab.", "error");
+                return;
+            }
         }
+
 
         const codeTemplates = {
             cpp: { starter_code: starterCode.cpp, driver_code: driverCode.cpp },
             python: { starter_code: starterCode.python, driver_code: driverCode.python }
         };
+
+        if (!driverCode.cpp.includes("{{CODE}}") || !driverCode.python.includes("{{CODE}}")) {
+            notify("Driver code must include the marker '{{CODE}}' to indicate where the user's code will be injected.", "error");
+            return;
+        }
 
         const problemData: IProblemCreateDTO = {
             title,
@@ -226,14 +261,16 @@ function ProblemBuilder() {
             codeTemplates: JSON.stringify(codeTemplates),
             testCases: testCases,
             tags: tags,
-            validationScript: validationTabActive ? validationCode : undefined
+            validationScript: validationCode !== DEFAULT_VALIDATION_CODE ? validationCode : undefined
         };
         
         submitCodingProblemMutation.mutate(problemData);
     }
 
     const handleEditorChange = (value: string | undefined) => {
-        if (!value) return;
+        if (!value) {
+            return;
+        }
 
         if (activeTab === "markdown") {
             setDescription(value);
@@ -246,6 +283,18 @@ function ProblemBuilder() {
         }
     }
 
+    const handleChangeActiveTab = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: string) => {
+        event.stopPropagation();
+
+        if (activeTab === "validation" && newValue !== "validation") {
+            if (validationCode === DEFAULT_VALIDATION_CODE) {
+                setValidationTabActive(false);
+            }
+        }
+
+        setActiveTab(newValue);
+    }
+
     return (
         <Box className="problem-builder-container">
 
@@ -254,13 +303,13 @@ function ProblemBuilder() {
                 <Box className="problem-builder-header">
                     <Box className="problem-builder-header-left">
                         <Tabs value={activeTab} className="problem-builder-tabs">
-                            <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={() => setActiveTab("markdown")} />
-                            <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={() => setActiveTab("starter-code")} />
-                            <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={() => setActiveTab("driver-code")} />
-                            <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={() => setActiveTab("testcases")} />
-                            <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={() => setActiveTab("metadata")} />
+                            <Tab className='problem-builder-tab' label="Markdown" value="markdown" onClick={(event) => handleChangeActiveTab(event, "markdown") } />
+                            <Tab className='problem-builder-tab' label="Starter code" value="starter-code" onClick={(event) => handleChangeActiveTab(event, "starter-code")} />
+                            <Tab className='problem-builder-tab' label="Driver code" value="driver-code" onClick={(event) => handleChangeActiveTab(event, "driver-code")} />
+                            <Tab className='problem-builder-tab' label="Test Cases" value="testcases" onClick={(event) => handleChangeActiveTab(event, "testcases")} />
+                            <Tab className='problem-builder-tab' label="Metadata" value="metadata" onClick={(event) => handleChangeActiveTab(event, "metadata")} />
                             {validationTabActive && 
-                                <Tab className='problem-builder-tab' label="Validation script" value="validation" onClick={() => setActiveTab("validation")} />
+                                <Tab className='problem-builder-tab' label="Validation script" value="validation" onClick={(event) => handleChangeActiveTab(event, "validation")} />
                             }
                         </Tabs>
 
@@ -327,6 +376,7 @@ function ProblemBuilder() {
                     {activeTab === "metadata" && ( <MetadataTab title={title} difficulty={difficulty} tags={tags}
                                                                 setTitle={setTitle} setDifficulty={setDifficulty} setTags={setTags} 
                                                                 setValidationTabActive={setValidationTabActive}
+                                                                isValidationTabActive={validationTabActive}
                                                                 /> )}
 
                     {activeTab === "validation" && (

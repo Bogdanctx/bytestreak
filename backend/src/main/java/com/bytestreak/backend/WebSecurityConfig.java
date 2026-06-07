@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                     "/auth/login", 
                     "/auth/register", 
                     "/auth/request-recovery-link", 
-                    "/auth/recover-account", 
+                    "/auth/recover-account",
                     "/ws/**"
                 ).permitAll()
                 .requestMatchers("/creator/**").hasAnyAuthority("CREATOR", "MODERATOR", "ADMIN")

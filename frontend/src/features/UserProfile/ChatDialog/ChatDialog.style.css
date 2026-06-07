@@ -1,10 +1,10 @@
 .chat-dialog-container {
-    background-color: var(--bg-1) !important;
-    color: var(--text-primary) !important;
-    border-radius: 12px !important;
-    height: 600px !important;
-    display: flex !important;
-    flex-direction: column !important;
+    background-color: var(--bg-1);
+    color: var(--text-primary);
+    border-radius: 12px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-dialog-header {
@@ -28,16 +28,17 @@
 }
 
 .chat-dialog-user-name {
-    color: var(--text-primary) !important;
-    font-weight: 600 !important;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display";
 }
 
 .chat-dialog-user-level {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
 }
 
 .chat-dialog-header-close {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .chat-dialog-messages {
@@ -75,7 +76,8 @@
 }
 
 .chat-dialog-empty-state-text {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
+    font-family: "Momo Trust Display";
 }
 
 .chat-dialog-message-container {
@@ -99,13 +101,13 @@
 }
 
 .chat-dialog-message-bubble-mine {
-    background-color: var(--accent-main) !important;
-    color: var(--bg-0) !important;
+    background-color: var(--accent-main);
+    color: var(--bg-0);
 }
 
 .chat-dialog-message-bubble-theirs {
-    background-color: var(--bg-3) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-3);
+    color: var(--text-primary);
 }
 
 .chat-dialog-code-snippet {
@@ -136,7 +138,7 @@
 }
 
 .chat-dialog-file-download-btn {
-    color: inherit !important;
+    color: inherit;
 }
 
 .chat-dialog-image-attachment {
@@ -205,10 +207,10 @@
     position: absolute;
     top: -10px;
     right: -10px;
-    background-color: var(--bg-4) !important;
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
+    background-color: var(--bg-4);
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
 }
 
 .chat-dialog-file-remove-icon {
@@ -226,16 +228,16 @@
 }
 
 .chat-dialog-attach-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .chat-dialog-attach-btn-active {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .chat-dialog-text-input {
-    background-color: var(--bg-1) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-1);
+    color: var(--text-primary);
 }
 
 .chat-dialog-text-input .MuiOutlinedInput-root {
@@ -256,11 +258,11 @@
 }
 
 .chat-dialog-send-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .chat-dialog-send-btn-enabled {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 @keyframes chat-dialog-fadeIn {
@@ -276,7 +278,7 @@
 
 @media (max-width: 480px) {
     .chat-dialog-container {
-        height: 500px !important;
+        height: 500px;
     }
 
     .chat-dialog-message-bubble {

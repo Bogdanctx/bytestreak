@@ -24,7 +24,7 @@ function RecoverAccountForm(props: IRecoverAccountProps) {
             return response;
         },
         onSuccess: () => {
-            notify("If an account exists, a recovery link was sent to your email. Be sure to check your spam folder.", "success");
+            notify("If an account exists, a recovery link was sent to that email. Be sure to check your spam folder.", "success");
             props.setShowAuthState("login");
         },
         onError: (error) => {

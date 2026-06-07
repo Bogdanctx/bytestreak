@@ -26,7 +26,7 @@ function AccountOverview() {
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
         queryKey: ['accountFriends'],
         queryFn: async () => {
-            const response = await api.get(`/friends/get-friends?accountId=${account.id}`);
+            const response = await api.get(`/friends/get-friends?accountId=${account?.id}`);
             return response.data;
         },
         enabled: !!account
@@ -53,7 +53,7 @@ function AccountOverview() {
     }
 
     const level = getLevel(account.currentXP);
-    const rank = getRank(level);
+    const rank = getRank(account.currentXP);
     const { percentage, currentLevelXP, neededXP } = getXPProgress(account.currentXP);
     const color = getRankColor(rank);
 
@@ -80,11 +80,11 @@ function AccountOverview() {
                         
                         <Box>
                             <Box className="account-overview-actions">
-                                <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <IconButton size="small" onClick={() => navigate("/settings")} sx={{ color: '#9e9e9e', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
                                     <SettingsIcon fontSize="small" />
                                 </IconButton>
 
-                                <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: color, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+                                <IconButton size="small" onClick={() => logoutMutation.mutate()} sx={{ color: '#9e9e9e', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
                                     <LogoutIcon fontSize="small" />
                                 </IconButton>
                             </Box>
@@ -116,9 +116,7 @@ function AccountOverview() {
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" 
                                 className={`account-overview-stat-value`}
-                                sx={{
-                                    color: account.streakLength > 0 ? '#ff9800;' : 'var(--text-primary)',
-                                }}
+                                color={account.streakLength > 0 ? '#ff9800 !important;' : 'var(--text-primary)'}
                     >
                         {account.streakLength}
                         {account.streakLength > 0 && <LocalFireDepartmentIcon />}
@@ -130,7 +128,7 @@ function AccountOverview() {
 
                 <Box className="account-overview-stat-card">
                     <Typography variant="h4" className="account-overview-stat-value">
-                        {account.codingProblemsSolved}
+                        {account.solvedProblems.length}
                     </Typography>
                     <Typography variant="caption" className="account-overview-stat-label">
                         Problems

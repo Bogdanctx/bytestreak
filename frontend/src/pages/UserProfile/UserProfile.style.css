@@ -21,17 +21,17 @@
 }
 
 .stat-label {
-    font-size: 0.75rem !important;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     font-weight: 600;
 }
 
 .stat-value {
-    font-size: 1.5rem !important;
-    color: var(--text-primary) !important;
-    font-weight: 700 !important;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
 
@@ -44,12 +44,12 @@
 }
 
 .profile-tabs {
-    background-color: var(--bg-2) !important;
+    background-color: var(--bg-2);
     min-height: 64px;
 }
 
 .profile-tabs .MuiTab-root {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     font-weight: 600;
     text-transform: none;
     min-height: 64px;
@@ -58,12 +58,12 @@
 }
 
 .profile-tabs .MuiTab-root:hover {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
     background-color: rgba(255, 255, 255, 0.02);
 }
 
 .profile-tabs .Mui-selected {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 /* Tab Content */
@@ -93,10 +93,10 @@
 
 /* Empty State */
 .empty-state {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     text-align: center;
     padding: 48px 24px;
-    font-style: italic;
+    font-family: "Momo Trust Display";
 }
 
 /* Friends Tab */
@@ -108,17 +108,17 @@
 }
 
 .friend-item {
-    padding: 0 !important;
+    padding: 0;
 }
 
 .friend-button {
-    background-color: var(--bg-2) !important;
-    transition: all 0.2s ease !important;
-    padding: 16px !important;
-    border-radius: 0 !important;
+    background-color: var(--bg-2);
+    transition: all 0.2s ease;
+    padding: 16px;
+    border-radius: 0;
 
     &:hover {
-        background-color: var(--bg-3) !important;
+        background-color: var(--bg-3);
         cursor: pointer;
     }
 }
@@ -138,20 +138,20 @@
 }
 
 .streak-item {
-    padding: 0 !important;
+    padding: 0;
 }
 
 .streak-button {
-    background-color: var(--bg-2) !important;
-    transition: all 0.2s ease !important;
-    padding: 16px !important;
-    border-radius: 0 !important;
+    background-color: var(--bg-2);
+    transition: all 0.2s ease;
+    padding: 16px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     &:hover {
-        background-color: var(--bg-3) !important;
+        background-color: var(--bg-3);
         cursor: pointer;
     }
 }
@@ -168,10 +168,10 @@
 
 /* Activity Tab */
 .activity-section {
-    background-color: var(--bg-2) !important;
-    border: 1px solid var(--bg-3) !important;
-    border-radius: 12px !important;
-    padding: 24px !important;
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: 12px;
+    padding: 24px;
 }
 
 .activity-header {
@@ -179,9 +179,9 @@
 }
 
 .activity-header .MuiTypography-root {
-    color: var(--text-primary) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-weight: 700 !important;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 700;
 }
 
 .activity-stats {
@@ -189,6 +189,12 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
+}
+
+.activity-section-title {
+    color: var(--text-primary);
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 700;
 }
 
 .activity-stat {
@@ -208,17 +214,17 @@
 }
 
 .activity-stat-label {
-    color: var(--text-secondary) !important;
-    font-size: 0.85rem !important;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
 }
 
 .activity-stat-value {
-    color: var(--text-primary) !important;
-    font-size: 1.75rem !important;
-    font-weight: 700 !important;
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
 }
 
 .streak-display {
@@ -281,7 +287,7 @@
 
 /* Dialogs */
 .MuiDialog-paper {
-    border-radius: 12px !important;
+    border-radius: 12px;
 }
 
 /* Chat Styles */
@@ -324,8 +330,8 @@
     }
 
     .profile-avatar {
-        width: 100px !important;
-        height: 100px !important;
+        width: 100px;
+        height: 100px;
     }
 
     .profile-stats {
@@ -362,11 +368,11 @@
     }
 
     .profile-username {
-        font-size: 1.5rem !important;
+        font-size: 1.5rem;
     }
 
     .stat-value {
-        font-size: 1.25rem !important;
+        font-size: 1.25rem;
     }
 
     .profile-tabs .MuiTab-root {

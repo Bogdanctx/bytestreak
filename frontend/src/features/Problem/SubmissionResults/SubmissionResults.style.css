@@ -10,7 +10,7 @@
 
 .submission-testcases-results {
     border-radius: 12px;
-    padding: 4px;
+    padding: 8px;
     background-color: #181818;
 
     display: grid;
@@ -22,18 +22,16 @@
 .testcase {
     border-radius: 12px;
     color: white;
-    font-size: 0.75rem !important;
+    font-size: 0.75rem;
 }
 
 .submission-result-testcase {
-    display: flex;
-    flex-direction: column;
-    padding: 6px;
+    display: flex;   
 }
 
 .testcase-status {
-    font-size: 0.55rem !important;
-    font-weight: 500 !important;
+    font-size: 0.55rem;
+    font-weight: 500;
 }
 
 .submission-result-overview {
@@ -42,4 +40,14 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+}
+
+.results-pass-percentage-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.results-pass-percentage {
+    color: white;
+    text-align: right;
 }

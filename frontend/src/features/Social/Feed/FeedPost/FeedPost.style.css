@@ -22,19 +22,19 @@
 }
 
 .feed-post-back-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
     margin-right: 4px;
 }
 
 .feed-post-back-btn:hover {
-    color: var(--text-primary) !important;
-    background-color: var(--bg-4) !important;
+    color: var(--text-primary);
+    background-color: var(--bg-4);
 }
 
 .feed-post-avatar {
-    width: 40px !important;
-    height: 40px !important;
-    background-color: var(--bg-4) !important;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-4);
 }
 
 .feed-post-meta {
@@ -44,13 +44,15 @@
 
 .feed-post-author-name {
     color: var(--text-primary);
-    font-weight: 600 !important;
-    font-size: 0.95rem !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: "Momo Trust Display";
 }
 
 .feed-post-date {
     color: var(--text-secondary);
-    font-size: 0.8rem !important;
+    font-size: 0.8rem;
+    font-family: "JetBrains Mono";
 }
 
 /* Body */
@@ -62,10 +64,11 @@
 
 .feed-post-text {
     color: var(--text-primary);
-    font-size: 0.95rem !important;
-    line-height: 1.5 !important;
+    font-size: 0.95rem;
+    line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
+    font-family: "Momo Trust Display";
 }
 
 .feed-post-attachments {
@@ -113,20 +116,20 @@
 }
 
 .feed-post-comment-count {
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .feed-post-report-btn {
-    margin-left: auto !important;
-    color: #ff6b6b !important;
-    padding: 6px !important;
+    margin-left: auto;
+    color: #ff6b6b;
+    padding: 6px;
     transition: all 0.2s ease;
 }
 
 .feed-post-report-btn:hover {
-    background-color: rgba(255, 107, 107, 0.1) !important;
-    color: #ff5252 !important;
+    background-color: rgba(255, 107, 107, 0.1);
+    color: #ff5252;
 }
 
 /* Comments Section */
@@ -138,8 +141,8 @@
 
 .comments-header {
     color: var(--text-primary);
-    font-weight: 600 !important;
-    margin-bottom: 16px !important;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
 
 .comments-list {
@@ -155,8 +158,8 @@
 }
 
 .comment-avatar {
-    width: 32px !important;
-    height: 32px !important;
+    width: 32px;
+    height: 32px;
 }
 
 .comment-content {
@@ -169,14 +172,14 @@
 
 .comment-author {
     color: var(--text-primary);
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 4px !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .comment-text {
     color: var(--text-secondary);
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
     word-break: break-word;
 }
 
@@ -196,20 +199,20 @@
 }
 
 .comment-text-input {
-    color: var(--text-primary) !important;
-    font-size: 0.95rem !important;
-    padding: 4px 0 !important;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    padding: 4px 0;
 }
 
 .comment-send-btn {
-    color: var(--text-secondary) !important;
-    padding: 6px !important;
+    color: var(--text-secondary);
+    padding: 6px;
 }
 
 .comment-send-btn.enabled {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .comment-send-btn.enabled:hover {
-    background-color: rgba(35, 206, 107, 0.1) !important;
+    background-color: rgba(35, 206, 107, 0.1);
 }

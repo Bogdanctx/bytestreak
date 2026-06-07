@@ -1,6 +1,7 @@
 package com.bytestreak.backend.entities;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -29,6 +30,7 @@ public class Post {
     @JoinColumn(name = "author_id", nullable = false)
     private Account author;
 
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

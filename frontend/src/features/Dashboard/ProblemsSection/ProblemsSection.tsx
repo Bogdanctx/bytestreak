@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Box, ButtonBase, FormControlLabel, Switch, Typography } from '@mui/material';
+import { Box, Button, ButtonBase, FormControlLabel, Switch, Typography, TextField } from '@mui/material';
 import { api } from '../../../api';
 import { type IProblem } from '../../../types/problem.types';
 import ProblemCard from './ProblemCard/ProblemCard';
@@ -10,20 +10,53 @@ import './ProblemsSection.style.css';
 function ProblemsSection() {
     const navigate = useNavigate();
     const [showTags, setShowTags] = useState(false);    
+    const [hideSolved, setHideSolved] = useState(false);
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
-    const { data: codingProblems = [], isLoading } = useQuery<IProblem[]>({
-        queryKey: ['codingProblems', selectedDifficulty],
-        queryFn: async () => {
-            let url = `/problems`;
-            
-            if (selectedDifficulty !== "ALL") {
-                url += `?difficulty=${selectedDifficulty}`;
-            }
+    const [searchInput, setSearchInput] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
 
-            const response = await api.get(url);
-            return response.data;        
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(searchInput);
+        }, 500);
+        
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+
+    const { data: totalProblemsCount } = useQuery({
+        queryKey: ['totalProblemsCount'],
+        queryFn: async () => {
+            const response = await api.get('/problems/total-count');
+            return response.data;
         }
     });
+
+    const { data: codingProblemsPage, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery<IProblem[]>({
+        queryKey: ['problems', 'public', selectedDifficulty, debouncedQuery, hideSolved],
+        initialPageParam: 0,
+        queryFn: async ({ pageParam }) => {
+            const params = new URLSearchParams();
+            if (selectedDifficulty !== 'ALL') {
+                params.append('difficulty', selectedDifficulty);
+            }
+            if (debouncedQuery) {
+                params.append('query', debouncedQuery);
+            }
+            if (hideSolved) {
+                params.append('hideSolved', 'true');
+            }
+            if (pageParam) {
+                params.append('cursor', pageParam.toString());
+            }
+
+            const response = await api.get(`/problems/public?${params.toString()}`);
+            return response.data;
+        },
+        getNextPageParam: (lastPage) => lastPage.length === 21 ? lastPage[19].id : undefined
+    });
+
+    const codingProblems = codingProblemsPage?.pages.flatMap(page => page.length === 21 ? page.slice(0, 20) : page) || [];
 
     return (
         <Box id="problems-section-container">
@@ -38,10 +71,24 @@ function ProblemsSection() {
                 </Box>
 
                 <Box className="problems-section-controls">
+                    <TextField
+                        placeholder="Search problems by title..."
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        variant="outlined"
+                        className="problems-search-input"
+                    />
+                    
                     <FormControlLabel
                         className="problems-section-switch"
-                        control={<Switch className="show-tags-switch" checked={showTags} onChange={() => setShowTags(!showTags)} />}
+                        control={<Switch className="problems-section-switch-filter" checked={showTags} onChange={() => setShowTags(!showTags)} />}
                         label="Show Tags"
+                    />
+
+                    <FormControlLabel
+                        className="problems-section-switch"
+                        control={<Switch className="problems-section-switch-filter" checked={hideSolved} onChange={() => setHideSolved(!hideSolved)} />}
+                        label="Hide Solved"
                     />
 
                     <Box className="problems-section-filter-block">
@@ -72,15 +119,28 @@ function ProblemsSection() {
 
                 {codingProblems.map((problem) => (
                     <ButtonBase key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)}>
-                        <ProblemCard
-                            key={problem.id}
-                            title={problem.title}
-                            difficulty={problem.difficulty}
-                            showTags={showTags}
-                            tags={problem.tags}
+                        <ProblemCard key={problem.id} problem={problem} showTags={showTags}
                         />
                     </ButtonBase>
                 ))}
+
+                {hasNextPage && !isFetchingNextPage && (
+                    <Box padding={2} display="flex" justifyContent="center">
+                        <Button className="problems-sections-load-more-button" variant="outlined" onClick={() => fetchNextPage()}>
+                            Load More
+                        </Button>
+                    </Box>
+                )}
+
+                {isFetchingNextPage && (
+                    <Typography className="problems-section-status">Loading more problems...</Typography>
+                )}
+            </Box>
+
+            <Box id="problems-section-footer">
+                <Typography className="problems-section-footer-text">
+                    There are currently <strong>{totalProblemsCount}</strong> coding problems available for you to solve. Keep practicing to earn XP and climb the leaderboard!
+                </Typography>
             </Box>
         </Box>
     )

@@ -23,12 +23,11 @@ import org.springframework.security.core.Authentication;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.dto.LoginFormDTO;
 import com.bytestreak.backend.entities.Account;
-import com.bytestreak.backend.entities.MagicLinkToken;
-import com.bytestreak.backend.repositories.MagicLinkRepository;
+import com.bytestreak.backend.entities.OneTimeAccessToken;
+import com.bytestreak.backend.repositories.OneTimeTokenRepository;
 import com.bytestreak.backend.services.AuthService;
 import com.bytestreak.backend.services.JWTService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -42,18 +41,15 @@ public class AuthController {
     private AccountRepository accountRepository;
 
     @Autowired
-    private MagicLinkRepository magicLinkRepository;
+    private OneTimeTokenRepository oneTimeTokenRepository;
 
     @Autowired
     private JWTService jwtService;
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         Account account = authService.getCurrentUser(authentication);
+        account.setGlobalRank(accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1);
 
         return ResponseEntity.ok(account);
     }
@@ -75,16 +71,7 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginFormDTO loginRequest, HttpServletResponse response) {
-        Map<String, Object> responseBody;
-
-        try {
-            responseBody = authService.loginUser(loginRequest, response);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        
-        
+        Map<String, Object> responseBody = authService.loginUser(loginRequest, response);
         response = (HttpServletResponse) responseBody.get("response");
         Account account = (Account) responseBody.get("account");
 
@@ -94,14 +81,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterAccountDTO registerRequest) {
-        Account newAccount;
-
-        try {
-            newAccount = authService.registerUser(registerRequest);
-        } 
-        catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        Account newAccount = authService.registerUser(registerRequest);
 
         return ResponseEntity.ok(newAccount);
     }
@@ -115,30 +95,30 @@ public class AuthController {
         }
 
         String tokenString = UUID.randomUUID().toString();
-        MagicLinkToken token = new MagicLinkToken();
+        OneTimeAccessToken token = new OneTimeAccessToken();
         token.setToken(tokenString);
         token.setAccount(account);
         token.setExpiryDate(LocalDateTime.now().plusMinutes(15));
 
-        magicLinkRepository.save(token);
+        oneTimeTokenRepository.save(token);
         authService.sendRecoveryLink(email, tokenString);
         return ResponseEntity.ok("If the email exists, a link was sent.");
     }
 
     @PostMapping("/recover-account")
     public ResponseEntity<?> recoverAccount(@RequestParam String token, HttpServletResponse response) {
-        MagicLinkToken magicToken = magicLinkRepository.findByToken(token);
+        OneTimeAccessToken oneTimeAccessToken = oneTimeTokenRepository.findByToken(token);
 
-        if (magicToken == null) {
+        if (oneTimeAccessToken == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if (magicToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            magicLinkRepository.delete(magicToken);
+        if (oneTimeAccessToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            oneTimeTokenRepository.delete(oneTimeAccessToken);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Account account = magicToken.getAccount();
+        Account account = oneTimeAccessToken.getAccount();
         String jwtToken = jwtService.generateToken(account);
 
         ResponseCookie cookie = ResponseCookie.from("bytestreak_jwt", jwtToken)
@@ -151,7 +131,7 @@ public class AuthController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        magicLinkRepository.delete(magicToken);
+        oneTimeTokenRepository.delete(oneTimeAccessToken);
 
         return ResponseEntity.ok(account);
     }

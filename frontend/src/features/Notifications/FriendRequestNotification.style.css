@@ -30,9 +30,9 @@
 }
 
 .friend-request-accept {
-	color: var(--accent-main) !important;
+	color: var(--accent-main);
 }
 
 .friend-request-decline {
-	color: var(--difficulty-hard) !important;
+	color: var(--difficulty-hard);
 }

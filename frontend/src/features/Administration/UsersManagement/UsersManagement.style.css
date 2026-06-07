@@ -32,15 +32,15 @@
 }
 
 #users-management-title {
-    color: var(--text-primary) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-weight: 700 !important;
+    color: var(--text-primary);
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 .users-search-field {
     background-color: var(--bg-2);
-    color: var(--text-primary);
+    color: white;
     flex: 1;
     min-width: 250px;
 }

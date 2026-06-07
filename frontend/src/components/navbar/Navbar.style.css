@@ -33,22 +33,22 @@
 }
 
 .navbar-link-button {
-    color: #888888 !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 0.75rem !important;
-    letter-spacing: 1px !important;
+    color: #888888;
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 8px 16px !important;
-    border-radius: 8px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
 .navbar-link-button:hover {
-    color: #F7F7F9 !important;
-    background-color: transparent !important;
+    color: #F7F7F9;
+    background-color: transparent;
 }
 
 .navbar-link-button::after {
@@ -68,5 +68,5 @@
 }
 
 .navbar-selected-link {
-    color: white !important;
+    color: white;
 }

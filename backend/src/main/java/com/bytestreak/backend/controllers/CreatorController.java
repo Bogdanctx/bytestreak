@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 import com.bytestreak.backend.services.CreatorService;
+
+import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Problem;
+import com.bytestreak.backend.repositories.AccountRepository;
+import com.bytestreak.backend.repositories.ProblemRepository;
 import com.bytestreak.backend.dto.EditCodingProblemDTO;
 import com.bytestreak.backend.dto.NewCodingProblemDTO;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,68 +32,47 @@ public class CreatorController {
     @Autowired
     private CreatorService creatorService;
 
-    @GetMapping("/fetch-by-creator")
-    public List<Problem> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
+    @Autowired
+    private AccountRepository accountRepository;
 
-        try {
-            List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
-            return problems;
+    @Autowired
+    private ProblemRepository problemRepository;
+
+    // This endpoint is used by the frontend to fetch all problems created by a specific creator. 
+    // The creatorId is passed as a query parameter, and the service layer handles the logic to retrieve the corresponding problems from the database.
+    // If the user is a moderator or admin, all the problems will be returned, otherwise only the problems created by the user will be returned.
+    @GetMapping("/problems")
+    public ResponseEntity<?> getProblemsByCreatorId(@RequestParam Long creatorId, Authentication authentication) {
+        Account account = accountRepository.findByEmail(authentication.getName());
+
+        if (account.getRole().name().equals("MODERATOR") || account.getRole().name().equals("ADMIN")) {
+            List<Problem> problems = problemRepository.findAll();
+            return ResponseEntity.ok(problems);
         }
-        catch (Exception e) {
-            throw new RuntimeException("Error fetching problems for creator with ID: " + creatorId, e);
-        }
+        
+        List<Problem> problems = creatorService.getProblemsByCreatorId(creatorId);
+        return ResponseEntity.ok(problems);
     }
 
-    @DeleteMapping("/delete-problem")
-    public ResponseEntity<?> deleteProblem(@RequestParam Long problemId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
-        try {
-            Problem problem = creatorService.deleteProblem(problemId);
-            return ResponseEntity.ok(problem);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+    @DeleteMapping("/delete-coding-problem/{problemId}")
+    public ResponseEntity<?> deleteProblem(@PathVariable Long problemId) {
+        Problem problem = creatorService.deleteProblem(problemId);
+        return ResponseEntity.ok(problem);
     }
 
     @PostMapping("/new-problem")
     public ResponseEntity<?> createNewCodingProblem(@RequestBody NewCodingProblemDTO newCodingProblemDTO, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
+        Account account = accountRepository.findByEmail(authentication.getName());
+        Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, account);
 
-        try {
-            Problem newCodingProblem = creatorService.createNewCodingProblem(newCodingProblemDTO, authentication);
-            return ResponseEntity.ok(newCodingProblem);
-        }
-        catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error creating problem");
-        }
+        return ResponseEntity.ok(newCodingProblem);
     }
     
 
     @PutMapping("/edit-problem/{id}")
-    public ResponseEntity<?> editProblem(
-        @PathVariable Long id, 
-        @RequestBody EditCodingProblemDTO updatedProblem,
-        Authentication authentication) 
-    {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
-        try {
-            Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, authentication);
-            return ResponseEntity.ok(editedProblem);
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+    public ResponseEntity<?> editProblem(@PathVariable Long id, @RequestBody EditCodingProblemDTO updatedProblem, Authentication authentication) {
+        Account account = accountRepository.findByEmail(authentication.getName());
+        Problem editedProblem = creatorService.editCodingProblem(id, updatedProblem, account);
+        return ResponseEntity.ok(editedProblem);
     }
 }

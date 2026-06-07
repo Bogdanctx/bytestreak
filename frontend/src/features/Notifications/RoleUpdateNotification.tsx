@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 
-import { type INotification } from '../../types/notification.types';
+import { type INotification, type IRoleUpdateNotificationPayload } from '../../types/notification.types';
 import './RoleUpdateNotification.style.css';
 
 interface IRoleUpdateNotificationProps {
@@ -8,7 +8,7 @@ interface IRoleUpdateNotificationProps {
 };
 
 function RoleUpdateNotification({ notification }: IRoleUpdateNotificationProps) {
-    const payload: any = notification.payload || {};
+    const payload = notification.payload as IRoleUpdateNotificationPayload;
     const message = payload.message || 'Your role has been updated.';
 
     const avatarUrl = notification.receiver?.profilePictureUrl || '';

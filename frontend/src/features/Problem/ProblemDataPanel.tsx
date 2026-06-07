@@ -3,7 +3,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 import ProblemDescription from './ProblemDescription/ProblemDescription';
 import SubmissionResults from './SubmissionResults/SubmissionResults';
@@ -11,6 +11,9 @@ import { type IProblem, type ISubmissionResult } from '../../types/problem.types
 import ProblemSubmissions from './ProblemSubmissions/ProblemSubmissions';
 import './ProblemDataPanel.style.css';
 import AccountAvatar from '../../components/ui/AccountAvatar';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '../../api';
+import notify from '../../components/ui/ToastNotification';
 
 interface ProblemDataPanelProps {
     problem: IProblem;
@@ -22,8 +25,20 @@ interface ProblemDataPanelProps {
 
 function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidth }: ProblemDataPanelProps) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    // To do: add like/dislike functionality, and display the number of likes/dislikes for the problem
+    const handleCodingProblemFeedback = useMutation({
+        mutationFn: async (feedbackType: 'like' | 'dislike') => {
+            const response = await api.post(`/problems/${problem.id}/feedback`, { feedback: feedbackType });
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['codingProblem'] });
+        },
+        onError: () => {
+            notify('Failed to submit feedback', 'error');
+        }
+    });
 
     return (
         <Box className="problem-data-panel-container" sx={{ flexBasis: `${panelWidth}px` }}>
@@ -58,15 +73,25 @@ function ProblemDataPanel({ problem, activeTab, setActiveTab, results, panelWidt
 
             <Box className="problem-footer">
                 <Box display={"flex"} alignItems={"center"}>
-                    <Button className='problem-data-feedback-button'>
-                        <ThumbUpIcon className='problem-data-feedback-icon' fontSize="small" />
+                    <Button className='problem-data-feedback-button' onClick={() => handleCodingProblemFeedback.mutate('like')}>
+                        <ThumbUpIcon className='problem-data-feedback-icon' 
+                                    fontSize="small" 
+                                    sx={{
+                                        color: problem.userVote === 'like' ? 'white' : 'inherit'
+                                    }}            
+                        />
                         <Typography variant="body2" sx={{ ml: 0.5 }}>
                             {problem.likes}
                         </Typography>
                     </Button>
 
-                    <Button className='problem-data-feedback-button'>
-                        <ThumbDownIcon className='problem-data-feedback-icon' fontSize="small" />
+                    <Button className='problem-data-feedback-button' onClick={() => handleCodingProblemFeedback.mutate('dislike')}>
+                        <ThumbDownIcon className='problem-data-feedback-icon' 
+                                        fontSize="small" 
+                                        sx={{
+                                            color: problem.userVote === 'dislike' ? 'white' : 'inherit'
+                                        }} 
+                        />
                         <Typography variant="body2" sx={{ ml: 0.5 }}>
                             {problem.dislikes}
                         </Typography>

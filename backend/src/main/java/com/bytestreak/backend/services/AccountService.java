@@ -2,8 +2,11 @@ package com.bytestreak.backend.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.ScrollPosition;
+import org.springframework.data.domain.Window;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -11,13 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bytestreak.backend.NotificationPayload;
 import com.bytestreak.backend.RoleUpdateNotificationPayload;
 import com.bytestreak.backend.dto.AccountUpdateDTO;
 import com.bytestreak.backend.dto.UserProfileDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.enums.NotificationTypes;
 import com.bytestreak.backend.enums.Role;
+import com.bytestreak.backend.exceptions.ResourceNotFoundException;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.repositories.StreakRepository;
 
@@ -38,68 +41,73 @@ public class AccountService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public Map<String, Object> fetchAccountsWithCursor(String query, Long cursor, String authenticatedUserEmail) {
-        int pageSize = 20;
-        Long startId = (cursor == null) ? 0L : cursor;
-        List<Account> accounts;
+    public Map<String, Object> fetchAccounts(String query, Long cursor) {
+        ScrollPosition position;
 
-        if (query == null || query.isBlank()) {
-            accounts = accountRepository.findByIdGreaterThanOrderByIdAsc(startId, PageRequest.of(0, pageSize));
-        } 
+        if (cursor == null) {
+            position = ScrollPosition.keyset();
+        }
         else {
-            accounts = accountRepository.findByUsernameStartingWithIgnoreCase(query, PageRequest.of(0, pageSize));
+            position = ScrollPosition.of(Map.of("id", cursor), ScrollPosition.Direction.FORWARD);
+        }
+
+        Window<Account> window;
+        if (query != null && !query.isBlank()) {
+            window = accountRepository.findFirst20ByUsernameStartingWithIgnoreCaseOrderByIdAsc(query, position);
+        }
+        else {
+            window = accountRepository.findFirst20ByOrderByIdAsc(position);
         }
 
         Long nextCursor = null;
-        if (!accounts.isEmpty() && accounts.size() == pageSize) {
-            nextCursor = accounts.get(accounts.size() - 1).getId();
+        if (!window.isEmpty() && window.hasNext()) {
+            nextCursor = window.getContent().get(window.getContent().size() - 1).getId();
         }
-
-        Account me = accountRepository.findByEmail(authenticatedUserEmail);
-        accounts.removeIf(account -> account.getId().equals(me.getId()));
 
         Map<String, Object> response = new HashMap<>();
-        response.put("accounts", accounts);
+        response.put("accounts", window.getContent());
         response.put("nextCursor", nextCursor);
-
-        return response;
+        
+        return response;    
     }
 
-    public Account updateAccount(AccountUpdateDTO updates, Authentication authentication) {
-        Account me = accountRepository.findByEmail(authentication.getName());
+    public List<Account> fetchLeaderboard() {
+        List<Account> leaderboardAccounts;
 
-        if (me == null) {
-            throw new RuntimeException("User not found");
+        leaderboardAccounts = accountRepository.findAllByOrderByCurrentXPDescIdAsc();
+
+        for(int i = 0; i < leaderboardAccounts.size(); i++) {
+            Account account = leaderboardAccounts.get(i);
+            Long globalRank = accountRepository.calculateGlobalRank(account.getCurrentXP(), account.getId()) + 1;
+            account.setGlobalRank(globalRank);
         }
+
+        return leaderboardAccounts;
+    }
+
+    public Account updateAccount(Account account, AccountUpdateDTO updates) {
         if (!updates.getUsername().isBlank()) {
-            me.setUsername(updates.getUsername());
+            account.setUsername(updates.getUsername());
         }
         if (!updates.getPassword().isBlank()) {
-            me.setPassword(passwordEncoder.encode(updates.getPassword()));
+            account.setPassword(passwordEncoder.encode(updates.getPassword()));
         }
         if(!updates.getProfilePictureUrl().isBlank()) {
-            me.setProfilePictureUrl(updates.getProfilePictureUrl());
+            account.setProfilePictureUrl(updates.getProfilePictureUrl());
         }
         if(!updates.getEmail().isBlank()) {
-            me.setEmail(updates.getEmail());
+            account.setEmail(updates.getEmail());
         }
         if(!updates.getBio().isBlank()) {
-            me.setBio(updates.getBio());
+            account.setBio(updates.getBio());
         }
         
-        accountRepository.save(me);
-
-        return me;
+        Account updated = accountRepository.save(account);
+        return updated;
     }
 
-    public UserProfileDTO getUserProfile(String username) {
-        Account target = accountRepository.findByUsername(username);
-
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        Long globalRank = accountRepository.countByCurrentXPGreaterThan(target.getCurrentXP()) + 1;
+    public UserProfileDTO getUserProfile(Account target) {
+        Long globalRank = accountRepository.calculateGlobalRank(target.getCurrentXP(), target.getId()) + 1;
         target.setGlobalRank(globalRank);
 
         List<Integer> activityGraph = activityTrackerService.getYearlyActivityGraph(target.getId());
@@ -110,24 +118,17 @@ public class AccountService {
             activityGraph
         );
 
-
         return userProfile;
     }
 
-    public void setUserRole(Long accountId, String newRole) {
-        Account target = accountRepository.findById(accountId).orElse(null);
-
-        if (target == null) {
-            throw new RuntimeException("User not found");
-        }
-
+    public void setUserRole(Account target, String newRole) {
         Role roleEnum = Role.valueOf(newRole.toUpperCase());
 
         target.setRole(roleEnum);
         accountRepository.save(target);
 
         RoleUpdateNotificationPayload payload = new RoleUpdateNotificationPayload();
-        payload.setMessage("Your role has been updated to " + newRole + ". Permissions and access may have changed accordingly.");
+        payload.setMessage("Your role has been updated to " + newRole + ". Permissions and access may have changed accordingly. Please log in again to see the changes.");
 
         notificationService.sendNotification(target, NotificationTypes.ROLE_UPDATE, payload);
     }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-    Box, Avatar, Typography, List, ListItem, ListItemButton, 
+    Box, Typography, List, ListItem, ListItemButton, 
     ListItemAvatar, ListItemText, IconButton,
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button
 } from '@mui/material';
@@ -55,7 +55,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
 
     const deleteFriendMutation = useMutation({
         mutationFn: async (friendId: number) => {
-            const response = await api.post(`/friends/remove?friendId=${friendId}`);
+            const response = await api.delete(`/friends?friendId=${friendId}`);
             return response.data;
         },
         onSuccess: () => {
@@ -115,7 +115,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                 <Box mb={2}>
                     <AccountAvatar avatarUrl={account?.profilePictureUrl} cssEffectStyle={account?.cssEffectStyle} width={64} height={64} />
                 </Box>
-                <Typography variant="h6" fontWeight="600" color="var(--text-primary)" lineHeight={1}>
+                <Typography variant="h6" fontWeight="600" color="var(--text-primary)" lineHeight={1} fontFamily="Momo Trust Display">
                     {account.username}
                 </Typography>
                 <Typography variant="body2" color={rankColor} mt={0.5}>
@@ -157,7 +157,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                         secondary={`Level ${level} • ${rank}`}
                                         slotProps={{
                                             primary: {
-                                                fontSize: "1rem", fontWeight: "500", color: "var(--text-primary)"
+                                                fontSize: "0.9rem", color: "var(--text-primary)", fontFamily: "Momo Trust Display"
                                             },
                                             secondary: {
                                                 fontSize: "0.8rem", color: "var(--text-secondary)"
@@ -175,8 +175,8 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                                             disabled={isInvitePending}
                                             sx={{
                                                 mr: 1,
-                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : 'var(--accent-main)',
-                                                color: isInvitePending ? 'var(--text-secondary)' : '#000',
+                                                backgroundColor: isInvitePending ? 'var(--bg-4)' : '#23ce6a94',
+                                                color: isInvitePending ? 'var(--text-secondary)' : 'white',
                                                 textTransform: 'none',
                                                 fontWeight: '600',
                                                 borderRadius: '6px',
@@ -220,7 +220,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                     })}
 
                     {accountFriends.length === 0 && (
-                        <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4}>
+                        <Typography variant="body2" color="var(--text-secondary)" textAlign="center" mt={4} fontFamily="Momo Trust Display">
                             No friends yet. Start connecting!
                         </Typography>
                     )}
@@ -236,7 +236,7 @@ function Master({ account, setSelectedFriend }: IMasterProps) {
                     }
                 }}
             >
-                <DialogTitle>Remove Friend?</DialogTitle>
+                <DialogTitle>Remove friend?</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ color: 'var(--text-secondary)' }}>
                         Are you sure you want to remove <strong>{friendToRemove?.username}</strong> from your friends list?

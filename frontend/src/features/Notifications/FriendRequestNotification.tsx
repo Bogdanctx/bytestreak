@@ -1,8 +1,8 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { Avatar, Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 
-import { type INotification } from '../../types/notification.types';
+import { type IFriendRequestNotificationPayload, type INotification } from '../../types/notification.types';
 import './FriendRequestNotification.style.css';
 
 import { api } from '../../api';
@@ -31,27 +31,28 @@ function FriendRequestNotification({ notification }: FriendRequestNotificationPr
             console.error('Error responding to friend request:', error);
         }
     });
+    const payload = notification.payload as IFriendRequestNotificationPayload;
 
     return (
         <Box key={notification.id} className='friend-request-notification'>
-            <AccountAvatar avatarUrl={notification.payload.profilePictureUrl} cssEffectStyle={notification.payload.cssEffectStyle} width={40} height={40} />
+            <AccountAvatar avatarUrl={payload.profilePictureUrl} cssEffectStyle={payload.cssEffectStyle} width={40} height={40} />
 {/* 
             <Avatar src={notification.payload.profilePictureUrl} className='friend-request-avatar'>
                 {notification.payload.username.charAt(0).toUpperCase()}
             </Avatar> */}
             <Box className='friend-request-content'>
                 <Typography variant="body2" className='friend-request-text'>
-                    <strong>{notification.payload.username}</strong> wants to connect.
+                    <strong>{payload.username}</strong> wants to connect.
                 </Typography>
                 <Typography variant="caption" className="friend-request-timestamp">
                     {new Date(notification.timestamp).toLocaleString()}
                 </Typography>
             </Box>
             <Box className='friend-request-actions'>
-                <IconButton size="small" className='friend-request-accept' onClick={() => friendInviteMutation.mutate({ accepted: true, inviteId: notification.payload.inviteId, notificationId: notification.id })}>
+                <IconButton size="small" className='friend-request-accept' onClick={() => friendInviteMutation.mutate({ accepted: true, inviteId: payload.inviteId, notificationId: notification.id })}>
                     <CheckIcon fontSize="small" />
                 </IconButton>
-                <IconButton size="small" className='friend-request-decline' onClick={() => friendInviteMutation.mutate({ accepted: false, inviteId: notification.payload.inviteId, notificationId: notification.id })}>
+                <IconButton size="small" className='friend-request-decline' onClick={() => friendInviteMutation.mutate({ accepted: false, inviteId: payload.inviteId, notificationId: notification.id })}>
                     <CloseIcon fontSize="small" />
                 </IconButton>
             </Box>

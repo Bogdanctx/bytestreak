@@ -1,11 +1,30 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, LinearProgress, Tooltip, Typography, Zoom } from '@mui/material';
+import { Box, LinearProgress, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 import { type ISubmissionResult } from '../../../types/problem.types';
+import PreviewTestcase from './PreviewTestcase';
 import './SubmissionResults.style.css';
 
+const findFirstFailedTestCase = (results: ISubmissionResult[]): ISubmissionResult | null => {
+    for (const result of results) {
+        if (result.statusId !== 3) {
+            return result;
+        }
+    }
+    return null;
+}
+
 function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
+    const [selectedTestCase, setSelectedTestCase] = useState<ISubmissionResult | null>(null);
+
+    useEffect(() => {
+        if (results && results.length > 0) {
+            setSelectedTestCase(findFirstFailedTestCase(results));
+        }
+    }, [results]);
+
     if (results.length === 0) {
         return (
             <Box className="submission-result-container">
@@ -19,7 +38,18 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
     const totalTests = results.length;
     const passedTests = results.filter(tc => tc.statusId === 3).length;
     const passPercentage = (passedTests / totalTests) * 100;
-
+    
+    let progressColor = "";
+    if (passPercentage < 33) {
+        progressColor = "var(--difficulty-hard)";
+    }
+    else if (33 <= passPercentage && passPercentage < 100) {
+        progressColor = "var(--difficulty-medium)";
+    }
+    else {
+        progressColor = "#66bb6a";
+    }
+    
 
     return (
         <Box className="submission-result-container">
@@ -33,40 +63,57 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
                         {passedTests}/{totalTests}
                     </Typography>
                 </Box>
-                <LinearProgress 
-                    variant="determinate" 
-                    value={passPercentage} 
-                    sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: '#424242',
-                        '& .MuiLinearProgress-bar': {
-                            backgroundColor: passPercentage === 100 ? '#66bb6a' : '#2196f3'
-                        }
-                    }}
-                />
+                <Box className="results-pass-percentage-container">
+                    <Typography className="results-pass-percentage" variant="body2">
+                        {passPercentage.toFixed(2)}%
+                    </Typography>
+                    <LinearProgress 
+                        variant="determinate" 
+                        value={passPercentage} 
+                        sx={{
+                            height: 8,
+                            borderRadius: 4,
+                            backgroundColor: '#424242',
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: `${progressColor}`
+                            }
+                        }}
+                    />
+                </Box>
             </Box>
 
             <Box className="submission-testcases-results">
                 {results.map((testCase) => (
-                    <Tooltip key={testCase.testCaseId} 
-                            title={`Execution Time: ${testCase.executionTime} ms`} 
-                            placement="top" 
-                            slots={{ transition: Zoom }}
-                            arrow>
-                        <Box className="submission-result-testcase">
-                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                                {testCase.statusId === 3 ? <CheckIcon sx={{ fontSize: "0.5rem" }} color="success" /> : <CloseIcon sx={{ fontSize: "0.5rem" }} color="error" />}
-                                <Typography className="testcase" variant="body1">
-                                    Test Case {testCase.testCaseId}
-                                    <Typography className="testcase-status">{testCase.statusDescription}</Typography>
-                                </Typography>
-                            </Box>
-
+                    <Box 
+                        key={testCase.testCaseId} 
+                        className="submission-result-testcase"
+                        onClick={() => setSelectedTestCase(testCase)}
+                        sx={{ cursor: 'pointer' }}
+                    >
+                        <Box mr={1}>
+                            {testCase.statusId === 3 ? 
+                                <CheckIcon sx={{ fontSize: "0.6rem" }} color="success" /> 
+                                : 
+                                <CloseIcon sx={{ fontSize: "0.6rem" }} color="error" />
+                            }
                         </Box>
-                    </Tooltip>
+                        <Box >
+                            <Typography className="testcase" variant="body1" component="div">
+                                Test Case {testCase.testCaseId}
+                                <Typography className="testcase-status">{testCase.statusDescription}</Typography>
+                            </Typography>
+                        </Box>
+
+                    </Box>
                 ))}
             </Box>
+
+            {selectedTestCase && (
+                <PreviewTestcase 
+                    testcase={selectedTestCase} 
+                    onClose={() => setSelectedTestCase(null)}
+                />
+            )}
         </Box>
     )
 }

@@ -15,7 +15,7 @@ import com.bytestreak.backend.entities.Account;
 @Service
 public class JWTService {
     private String secret = "847b14c1fe6a7add809954e0b8f44cb3e93419223e2909050f540e23865b986f";
-    private long expiration = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+    private long expiration = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
     private SecretKey secretKey;
 

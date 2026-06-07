@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Box, Typography, Avatar, IconButton, TextField, Paper } from '@mui/material';
+import { Box, Typography, IconButton, TextField, Paper } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -32,7 +32,7 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
     const { data: friend, isLoading: isFriendLoading } = useQuery<IAccount>({
         queryKey: ['friend', friendId],
         queryFn: async () => {
-            const response = await api.get(`/accounts/get?accountId=${friendId}`);
+            const response = await api.get(`/accounts/${friendId}`);
             return response.data;
         }
     });
@@ -201,10 +201,25 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                             className={`chat-bubble-container ${message.sender.id === account.id ? 'chat-mine' : 'chat-theirs'}`}
                             sx={{
                                 '&:hover #report-flag-container': {
-                                    display: 'flex',
+                                    opacity: 1,
                                 }
                             }}
                         >
+                            <IconButton
+                                id="report-flag-container"
+                                size="small"
+                                onClick={() => {
+                                    if (message.id == null) {
+                                        return;
+                                    }
+                                    reportMessageMutation.mutate(message.id)
+                                }}
+                                sx={{ opacity: 0, transition: 'opacity 0.3s' }}
+                                disabled={reportMessageMutation.isPending}
+                                aria-label="Report message"
+                            >
+                                <FlagIcon fontSize="small" className="report-flag" />
+                            </IconButton>
                             <Paper className={`chat-bubble ${message.sender.id === account.id ? 'bubble-mine' : 'bubble-theirs'}`}>
                                 {/* render each attachment */}
                                 {message.attachments?.map((file, index) => {
@@ -241,23 +256,6 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                                     </Typography>
                                 )}
                             </Paper>
-
-                            <Box id="report-flag-container" className="report-flag" 
-                                sx={{ 
-                                    display: 'none', 
-                                    justifyContent: 'flex-end', 
-                                    mb: 0.5 ,
-                                }}
-                                >
-                                <IconButton
-                                    size="small"
-                                    onClick={() => reportMessageMutation.mutate(message.id)}
-                                    disabled={reportMessageMutation.isPending}
-                                    aria-label="Report message"
-                                >
-                                    <FlagIcon fontSize="small" sx={{color: 'var(--difficulty-hard)'}} />
-                                </IconButton>
-                            </Box>
                         </Box>
                     ))
                 )}
@@ -306,6 +304,13 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                             }
                         }}
                         className="friend-panel-message-input"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: 'var(--bg-4)' },
+                                '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                                '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                            }
+                        }}
                     />
                     
                     <IconButton onClick={handleSendMessage} 

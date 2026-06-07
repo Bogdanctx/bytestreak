@@ -33,6 +33,7 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    border: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     color: #888;
     transition: all 0.2s;
@@ -57,19 +58,19 @@
 }
 
 .add-testcase-button {
-    color: var(--text-primary) !important;
-    border-color: var(--accent-main) !important;
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 11px !important;
+    color: var(--text-primary);
+    border-color: var(--accent-main);
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 11px;
     letter-spacing: 0.2px;
-    text-transform: none !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
+    text-transform: none;
+    padding: 6px 10px;
+    border-radius: 8px;
 }
 
 .add-testcase-button:hover {
-    border-color: var(--accent-hover) !important;
-    color: var(--text-primary) !important;
+    border-color: var(--accent-hover);
+    color: var(--text-primary);
 }
 
 .testcases-right-panel {
@@ -88,17 +89,17 @@
 }
 
 .input-label {
-    color: var(--text-secondary) !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 8px !important;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .code-input-field .MuiInputBase-root {
     background-color: rgba(0, 0, 0, 0.3);
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
     font-family: 'Fira Code', monospace;
     font-size: 0.9rem;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -116,6 +117,6 @@
 }
 
 .code-input-field .Mui-focused {
-    border-color: var(--accent-main) !important;
+    border-color: var(--accent-main);
     box-shadow: 0 0 0 1px rgba(35, 206, 107, 0.2);
 }

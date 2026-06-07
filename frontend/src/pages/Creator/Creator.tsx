@@ -27,13 +27,13 @@ function Creator() {
                 return [];
             }
 
-            const response = await api.get(`/creator/fetch-by-creator?creatorId=${account.id}`);
+            const response = await api.get(`/creator/problems?creatorId=${account.id}`);
             return response.data;
         }
     });
     const deleteCodingProblemMutation = useMutation({
         mutationFn: async (problemId: number) => {
-            return api.delete(`/creator/delete-problem?problemId=${problemId}`);
+            return api.delete(`/creator/delete-coding-problem/${problemId}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['createdProblems'] });
@@ -103,7 +103,7 @@ function Creator() {
                             {createdProblems.map((problem) => (
                                 <TableRow key={problem.id} onClick={() => navigate(`/problems/${problem.id}/description`)} className="creator-table-row">
                                     <TableCell className="creator-table-cell">
-                                        <Typography variant="body1">
+                                        <Typography variant="body1" fontFamily={"Momo Trust Display"}>
                                             {problem.title}
                                         </Typography>
                                     </TableCell>
@@ -122,6 +122,14 @@ function Creator() {
                                     
                                     <TableCell className="creator-table-cell">
                                         <Box display="flex" justifyContent={"flex-end"} gap={1}>
+                                            <Button variant="outlined"
+                                                    className="creator-table-action-button"
+                                                    onClick={(event) => { event.stopPropagation(); navigate(`/problems/${problem.id}/description`); }}
+                                                    sx={{ color: "white" }}
+                                            >
+                                                Try it           
+                                            </Button>
+                                            
                                             <Button variant="outlined"
                                                     startIcon={problem.visibility === "PUBLIC" ? <EyeOffIcon /> : <EyeIcon />}
                                                     className="creator-table-action-button"
@@ -158,7 +166,7 @@ function Creator() {
                 <Box display="flex" alignItems="center" gap={2}>
                     <AccountAvatar avatarUrl={account.profilePictureUrl} cssEffectStyle={account.cssEffectStyle} width={42} height={42} />
                     <Box display="flex" flexDirection="column">
-                        <Typography variant="subtitle1" color="white" fontWeight="600" lineHeight="1">
+                        <Typography variant="subtitle1" color="white" fontWeight="600" lineHeight="1" fontFamily={"Momo Trust Display"}>
                             {account.username}
                         </Typography>
                         <Typography variant="caption" color="#888">

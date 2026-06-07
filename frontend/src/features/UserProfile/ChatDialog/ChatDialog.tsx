@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Typography, Avatar, Dialog, TextField, CircularProgress, IconButton, Paper } from '@mui/material';
+import { Box, Typography, Dialog, TextField, CircularProgress, IconButton, Paper } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import SendIcon from '@mui/icons-material/Send';
 import ClearIcon from '@mui/icons-material/Clear';

@@ -37,22 +37,22 @@
 }
 
 .quiz-drag-icon {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary) ;
     cursor: grab;
 }
 
 .quiz-queue-index {
-    color: var(--text-secondary) !important;
-    font-size: 0.8rem !important;
-    font-weight: bold !important;
-    font-family: "Momo Trust Display", sans-serif !important;
+    color: var(--text-secondary) ;
+    font-size: 0.8rem ;
+    font-weight: bold ;
+    font-family: "Momo Trust Display", sans-serif ;
     min-width: 28px;
 }
 
 .quiz-queue-lang {
-    color: var(--text-secondary) !important;
-    font-size: 0.85rem !important;
-    font-family: 'Courier New', monospace !important;
+    color: var(--text-secondary) ;
+    font-size: 0.85rem ;
+    font-family: 'Courier New', monospace ;
 }
 
 .quiz-queue-card-right {
@@ -61,5 +61,5 @@
 }
 
 .quiz-delete-icon {
-    color: var(--difficulty-hard) !important;
+    color: var(--difficulty-hard) ;
 }

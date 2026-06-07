@@ -39,15 +39,11 @@ public class MessageController {
 
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestParam Long receiverId, @RequestBody MessageDTO payload, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
         Account sender = accountRepository.findByEmail(authentication.getName());
         Account receiver = accountRepository.findById(receiverId).orElse(null);
 
         if (sender == null || receiver == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         // Check if sender and receiver are friends
@@ -61,7 +57,7 @@ public class MessageController {
         }
 
         if (!isFriendWithReceiver) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only message your friends");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only send messages to friends.");
         }
 
         Message sentMessage = messageService.sendMessage(sender, receiver, payload);
@@ -71,17 +67,15 @@ public class MessageController {
 
     @GetMapping("/conversation")
     public ResponseEntity<?> getConversation(@RequestParam Long otherUserId, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
         Account currentUser = accountRepository.findByEmail(authentication.getName());
         Account otherUser = accountRepository.findById(otherUserId).orElse(null);
 
         if (currentUser == null || otherUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(messageService.getConversation(currentUser, otherUser));
+        List<Message> conversation = messageService.getConversation(currentUser, otherUser);
+
+        return ResponseEntity.ok(conversation);
     }
 }

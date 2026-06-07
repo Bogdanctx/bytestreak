@@ -13,10 +13,10 @@
 }
 
 .problem-title {
-    font-family: "Momo Trust Display", sans-serif !important;
-    font-size: 1.8rem !important;
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 1.8rem;
     color: #F7F7F9;
-    margin-bottom: 8px !important;
+    margin-bottom: 8px;
 }
 
 .problem-meta-bar {
@@ -28,13 +28,16 @@
 
 
 .difficulty-chip {
-    font-family: "Inter", sans-serif !important;
-    font-size: 0.6rem !important;
-    font-weight: 600 !important;
-    padding: 4px 12px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
     border-radius: 12px;
     background-color: rgba(255, 255, 255, 0.05);
     letter-spacing: 0.5px;
+
+    display: inline-flex;
+    align-items: center;
+    padding: 0px 12px;
 }
 
 
@@ -53,14 +56,14 @@
 
 
 .problem-tags-button {
-    color: #F7F7F9 !important;
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    font-size: 0.7rem !important;
-    font-weight: 600 !important;
-    padding: 4px 12px !important;
-    border-radius: 12px !important;
+    color: #F7F7F9;
+    background-color: rgba(255, 255, 255, 0.05);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
     transition: background-color 0.2s ease, color 0.2s ease;
-    border: 2px solid rgba(255, 255, 255, 0.08) !important;
+    border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
 

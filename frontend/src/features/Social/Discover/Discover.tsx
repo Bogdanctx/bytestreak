@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { 
     Box, 
     Typography, 
-    Avatar, 
     Button, 
     TextField, 
     InputAdornment 
@@ -25,12 +24,18 @@ function Discover({ account }: { account: IAccount }) {
     const navigate = useNavigate();
     const { data: discoverableAccounts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
-        queryFn: async ({ pageParam = "" }) => {
-            const response = await api.get(`/accounts/fetch-accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
+        queryFn: async ({ pageParam = null }) => {
+            const response = await api.get('/accounts', {
+                params: {
+                    query: debounceSearchQuery || undefined,
+                    cursor: pageParam || undefined
+                }
+            });
+
             return response.data;
         },
         getNextPageParam: (lastPage) => lastPage.nextCursor || null,
-        initialPageParam: ""
+        initialPageParam: null
     });
 
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
@@ -80,7 +85,7 @@ function Discover({ account }: { account: IAccount }) {
         <Box className="discover-container">
             <Box className="discover-header">
                 <Typography variant="h6" className="discover-title">
-                    Connect with the Community
+                    Connect with the community
                 </Typography>
 
                 <TextField
@@ -166,7 +171,7 @@ function Discover({ account }: { account: IAccount }) {
 
                 {discoverAccounts.length === 0 && searchQuery.trim() !== "" && (
                     <Typography variant="body2" className="discover-empty-state">
-                        No members found matching "{searchQuery}"
+                        No members found matching "{searchQuery}".
                     </Typography>
                 )}
 

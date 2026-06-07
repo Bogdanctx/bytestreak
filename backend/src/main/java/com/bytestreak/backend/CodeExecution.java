@@ -109,20 +109,25 @@ public class CodeExecution {
 
             // send request 
             ResponseEntity<Map> response = restTemplate.postForEntity(judge0ApiUrl, request, Map.class);
-            Map<String, Object> responseBody = response.getBody();
+            JSONObject jsonResponse = new JSONObject(response.getBody());
 
-            Map<String, Object> status = (Map<String, Object>) responseBody.get("status");
-            int statusId = (int) status.get("id");
-            String executionStatus = (String) status.get("description");
+            int statusId = (int) jsonResponse.getJSONObject("status").getInt("id");
+            // String executionStatus = (String) jsonResponse.getJSONObject("status").get("description");
 
-            if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
-                return new ExecutionResultDTO(statusId, executionStatus, testCaseId, 0); 
+            String base64Stdout = (String) jsonResponse.get("stdout");
+            String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
+
+
+            if (validationScriptCode == null) {
+                if (statusId == 3) { // 3 = Accepted
+                    return new ExecutionResultDTO(3, "Accepted", testCaseId, input, userOutput, expectedOutput);
+                } 
+                else {
+                    return new ExecutionResultDTO(statusId, "Wrong answer", testCaseId, input, userOutput, expectedOutput); 
+                }
             }
 
             // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
-            String base64Stdout = (String) responseBody.get("stdout");
-            String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
-
             String validationStdin = input + "@@@USER_OUTPUT@@@" + userOutput;
             String encodedValidationStdin = Base64.getEncoder().encodeToString(validationStdin.getBytes());
             String encodedValidationScript = Base64.getEncoder().encodeToString(validationScriptCode.getBytes());
@@ -135,21 +140,21 @@ public class CodeExecution {
 
             HttpEntity<String> validationReq = new HttpEntity<>(objectMapper.writeValueAsString(validationRequestBody), headers);
             ResponseEntity<Map> validationRes = restTemplate.postForEntity(judge0ApiUrl, validationReq, Map.class);
-            
-            String valStdoutBase64 = (String) validationRes.getBody().get("stdout");
+            JSONObject validationJsonResponse = new JSONObject(validationRes.getBody());
+            String valStdoutBase64 = (String) validationJsonResponse.get("stdout");
             String valStdout = valStdoutBase64 != null ? new String(Base64.getMimeDecoder().decode(valStdoutBase64)).trim() : "";
 
             if ("True".equalsIgnoreCase(valStdout)) {
-                return new ExecutionResultDTO(3, "Accepted", testCaseId, 0);
+                return new ExecutionResultDTO(3, "Accepted", testCaseId, input, userOutput, expectedOutput);
             } 
             else {
-                return new ExecutionResultDTO(4, "Wrong Answer", testCaseId, 0);
+                return new ExecutionResultDTO(4, "Wrong answer", testCaseId, input, userOutput, expectedOutput);
             }
 
         }
         catch (Exception e) {
             System.out.println("Error executing code: " + e.getMessage());
-            return new ExecutionResultDTO(0, "System Error", testCaseId, 0);
+            return new ExecutionResultDTO(0, "Wrong answer", testCaseId, input, "", expectedOutput);
         }
     }
 

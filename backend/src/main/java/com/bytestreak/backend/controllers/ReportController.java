@@ -46,14 +46,10 @@ public class ReportController {
 
     @PostMapping("/submit/account/{id}")
     public ResponseEntity<?> reportAccount(@PathVariable Long id,  Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account reporter = accountRepository.findByEmail(authentication.getName());
         Account reportedAccount = accountRepository.findById(id).orElse(null);
         if (reportedAccount == null) {
-            return ResponseEntity.status(404).body("Reported account not found");
+            return ResponseEntity.notFound().build();
         }
         Report report = new Report();
         report.setReporter(reporter);
@@ -63,24 +59,16 @@ public class ReportController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllReports(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-        
+    public ResponseEntity<?> getAllReports() {        
         return ResponseEntity.ok(reportRepository.findAll());
     }
 
     @PostMapping("/submit/post/{id}")
     public ResponseEntity<?> reportPost(@PathVariable Long id,  Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account reporter = accountRepository.findByEmail(authentication.getName());
         Post reportedPost = postRepository.findById(id).orElse(null);
         if (reportedPost == null) {
-            return ResponseEntity.status(404).body("Reported post not found");
+            return ResponseEntity.notFound().build();
         }
         Report report = new Report();
         report.setReporter(reporter);
@@ -91,14 +79,10 @@ public class ReportController {
 
     @PostMapping("/submit/message/{id}")
     public ResponseEntity<?> reportMessage(@PathVariable Long id,  Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account reporter = accountRepository.findByEmail(authentication.getName());
         Message reportedMessage = messageRepository.findById(id).orElse(null);
         if (reportedMessage == null) {
-            return ResponseEntity.status(404).body("Reported message not found");
+            return ResponseEntity.notFound().build();
         }
         Report report = new Report();
         report.setReporter(reporter);
@@ -109,14 +93,10 @@ public class ReportController {
 
     @PostMapping("/submit/comment/{id}")
     public ResponseEntity<?> reportComment(@PathVariable Long id,  Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account reporter = accountRepository.findByEmail(authentication.getName());
         PostComment reportedComment = postCommentRepository.findById(id).orElse(null);
         if (reportedComment == null) {
-            return ResponseEntity.status(404).body("Reported comment not found");
+            return ResponseEntity.notFound().build();
         }
         Report report = new Report();
         report.setReporter(reporter);
@@ -127,14 +107,10 @@ public class ReportController {
 
     @PostMapping("/submit/coding-problem/{id}")
     public ResponseEntity<?> reportCodingProblem(@PathVariable Long id,  Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
         Account reporter = accountRepository.findByEmail(authentication.getName());
         Problem reportedCodingProblem = problemRepository.findById(id).orElse(null);
         if (reportedCodingProblem == null) {
-            return ResponseEntity.status(404).body("Reported coding problem not found");
+            return ResponseEntity.notFound().build();
         }
 
         Report report = new Report();
@@ -146,14 +122,10 @@ public class ReportController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteReport(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
+    public ResponseEntity<?> deleteReport(@PathVariable Long id) {
         Report report = reportRepository.findById(id).orElse(null);
         if (report == null) {
-            return ResponseEntity.status(404).body("Report not found");
+            return ResponseEntity.notFound().build();
         }
 
         reportRepository.delete(report);

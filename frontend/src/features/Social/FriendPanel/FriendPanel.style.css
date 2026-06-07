@@ -16,7 +16,7 @@
 }
 
 .friend-panel-progress {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .friend-panel-header {
@@ -30,12 +30,12 @@
 }
 
 .friend-panel-back-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .friend-panel-avatar {
-    width: 48px !important;
-    height: 48px !important;
+    width: 48px;
+    height: 48px;
     margin-left: 8px;
     margin-right: 16px;
     border: 2px solid var(--rank-color);
@@ -47,13 +47,14 @@
 
 .friend-panel-username {
     color: var(--text-primary);
-    font-weight: 700 !important;
-    line-height: 1.2 !important;
+    font-weight: 700;
+    line-height: 1.2;
+    font-family: "Momo Trust Display";
 }
 
 .friend-panel-rank {
     color: var(--rank-color);
-    font-weight: 500 !important;
+    font-weight: 500;
 }
 
 .friend-panel-streak {
@@ -67,18 +68,18 @@
 
 .friend-panel-streak-icon {
     color: #ff9800;
-    font-size: 1.2rem !important;
+    font-size: 1.2rem;
 }
 
 .friend-panel-streak-text {
     color: #ff9800;
-    font-weight: 700 !important;
+    font-weight: 700;
 }
 
 .friend-panel-empty-chat {
     text-align: center;
     color: var(--text-secondary);
-    margin-top: 32px !important;
+    margin-top: 32px;
 }
 
 .friend-panel-chat {
@@ -116,14 +117,14 @@
 }
 
 .bubble-mine {
-    background-color: var(--accent-main) !important;
-    color: var(--bg-0) !important;
+    background-color: var(--accent-main);
+    color: var(--bg-0);
     border-bottom-right-radius: 4px;
 }
 
 .bubble-theirs {
-    background-color: var(--bg-3) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-3);
+    color: var(--text-primary);
     border-bottom-left-radius: 4px;
 }
 
@@ -140,7 +141,7 @@
 .chat-file-icon {
     margin-right: 8px;
     color: var(--text-secondary);
-    font-size: 1.2rem !important;
+    font-size: 1.2rem;
 }
 
 .chat-file-name {
@@ -151,13 +152,13 @@
 }
 
 .chat-file-download-btn {
-    background-color: var(--bg-3) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--bg-3);
+    color: var(--text-primary);
 }
 
 .chat-file-download-btn:hover {
-    background-color: var(--accent-main) !important;
-    color: var(--bg-0) !important;
+    background-color: var(--accent-main);
+    color: var(--bg-0);
 }
 
 .chat-attachment {
@@ -207,7 +208,7 @@
 }
 
 .friend-panel-preview-file-icon {
-    font-size: 1.2rem !important;
+    font-size: 1.2rem;
     color: var(--text-secondary);
 }
 
@@ -217,8 +218,8 @@
 }
 
 .friend-panel-clear-files-btn {
-    margin-left: auto !important;
-    padding: 4px !important;
+    margin-left: auto;
+    padding: 4px;
 }
 
 .friend-panel-input-row {
@@ -232,11 +233,11 @@
 }
 
 .friend-panel-attach-btn {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .friend-panel-attach-btn-active {
-    color: var(--accent-main) !important;
+    color: var(--accent-main);
 }
 
 .friend-panel-message-input .MuiOutlinedInput-root {
@@ -246,21 +247,21 @@
 }
 
 .friend-panel-send-btn {
-    color: var(--bg-0) !important;
+    color: var(--bg-0);
 }
 
 .friend-panel-send-btn-enabled {
-    background-color: var(--accent-main) !important;
+    background-color: var(--accent-main);
 }
 
 .friend-panel-send-btn-enabled:hover {
-    background-color: var(--accent-hover) !important;
+    background-color: var(--accent-hover);
 }
 
 .friend-panel-send-btn-disabled,
 .friend-panel-send-btn.Mui-disabled {
-    background-color: var(--bg-3) !important;
-    color: var(--text-secondary) !important;
+    background-color: var(--bg-3);
+    color: var(--text-secondary);
 }
 
 .friend-panel-send-icon {

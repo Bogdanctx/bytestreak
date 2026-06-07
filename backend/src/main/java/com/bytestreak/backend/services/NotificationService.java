@@ -2,6 +2,7 @@ package com.bytestreak.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bytestreak.backend.NotificationPayload;
 import com.bytestreak.backend.entities.Account;
@@ -34,6 +35,11 @@ public class NotificationService {
                 notificationRepository.save(notification);
             }
         }
+    }
+
+    @Transactional
+    public void deleteNotifications(Account account) {
+        notificationRepository.deleteAll(notificationRepository.findByReceiverOrderByTimestampDesc(account));
     }
 
     public List<Notification> getNotificationsForAccount(Account account) {

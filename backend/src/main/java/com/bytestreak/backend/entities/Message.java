@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,6 +41,7 @@ public class Message {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account receiver;
 
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL)

@@ -1,3 +1,16 @@
+.reports-header {
+    background-color: var(--bg-1);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.reports-content {
+    background-color: var(--bg-1);
+    padding: 20px;
+    border-radius: 20px;
+    overflow-y: auto;
+}
+
 .report-account-underline:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -8,6 +21,9 @@
     margin: 0 auto;
     height: 100%;
     overflow-y: auto;
+    gap: 24px;
+    display: flex;
+    flex-direction: column;
 }
 
 .reports-loading {
@@ -17,13 +33,13 @@
 }
 
 .reports-title {
-    margin-bottom: 24px !important;
     color: var(--text-primary);
-    font-weight: bold !important;
+    font-family: 'Momo Trust Display';
 }
 
 .reports-empty {
     color: var(--text-secondary);
+    font-family: 'Momo Trust Display';
 }
 
 .report-card {
@@ -42,12 +58,12 @@
 
 .report-reporter-text {
     color: #ef5350;
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
 .report-type-text {
     color: var(--text-secondary);
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
 /* Account Rendering */
@@ -58,13 +74,13 @@
 }
 
 .report-account-avatar {
-    width: 56px !important;
-    height: 56px !important;
+    width: 56px;
+    height: 56px;
 }
 
 .report-account-username {
     color: var(--text-primary);
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
 .report-account-bio {
@@ -80,14 +96,14 @@
 }
 
 .report-content-avatar {
-    width: 32px !important;
-    height: 32px !important;
+    width: 32px;
+    height: 32px;
 }
 
 .report-content-username {
     color: var(--text-primary);
-    font-weight: bold !important;
-    font-size: 14px !important;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .report-content-text {
@@ -117,9 +133,9 @@
 }
 
 .report-divider {
-    margin-top: 16px !important;
-    margin-bottom: 16px !important;
-    border-color: var(--bg-3) !important;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border-color: var(--bg-3);
 }
 
 .report-actions {
@@ -128,6 +144,41 @@
 }
 
 .report-action-dismiss {
-    color: var(--text-secondary) !important;
-    border-color: var(--bg-4) !important;
+    color: var(--text-secondary);
+    border-color: var(--bg-4);
+}
+
+.reports-inspect-button {
+    background-color: var(--bg-3);
+    color: #fff;
+    font-family: 'Momo Trust Display';
+    border-radius: 6px;
+    border: 4px solid var(--bg-5);
+    box-shadow: none;
+}
+
+.reports-inspect-button:hover {
+    background-color: var(--bg-4);
+    border-color: var(--bg-5);
+    box-shadow: 0 0 8px var(--bg-5);
+    scale: 1.05;
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
+}
+
+.reports-solved-button {
+    background-color: #23ce6a94;
+    color: var(--text-primary);
+    font-family: 'Momo Trust Display';
+    border-radius: 6px;
+    border: none;
+    box-shadow: none;
+}
+
+.reports-solved-button:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 8px var(--accent-hover);
+    scale: 1.05;
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
 }

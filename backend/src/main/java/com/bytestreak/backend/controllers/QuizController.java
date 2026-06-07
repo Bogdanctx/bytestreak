@@ -34,11 +34,7 @@ public class QuizController {
 
     
     @PostMapping("/generate-quiz")
-    public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-        
+    public ResponseEntity<?> generateQuiz(@RequestBody GenerateQuizRequest request) {
         try {
             Quiz quiz = quizService.generateQuiz(request.getProgrammingLanguage(), request.getCustomTopic());
             return ResponseEntity.ok(quiz);
@@ -49,11 +45,8 @@ public class QuizController {
     }
 
     @PostMapping("/generate-bulk")
-    public ResponseEntity<?> generateBulkQuizzes(@RequestParam(required = false) Integer numberOfQuizzes, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-        
+    public ResponseEntity<?> generateBulkQuizzes(@RequestParam(required = false) Integer numberOfQuizzes) {
+        System.out.println("Received request to generate " + numberOfQuizzes + " quizzes");
         try {
             if (numberOfQuizzes == null || numberOfQuizzes <= 0) {
                 numberOfQuizzes = 5;
@@ -69,21 +62,13 @@ public class QuizController {
     
     
     @GetMapping("/queue")
-    public ResponseEntity<?> getDrafts(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-        
+    public ResponseEntity<?> getDrafts() {
         List<Quiz> drafts = quizRepository.findAllByOrderByQueuePriorityAsc();
         return ResponseEntity.ok(drafts);
     }
 
     @PutMapping("/save")
-    public ResponseEntity<?> saveQuizzes(@RequestBody List<Quiz> quizzes, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-
+    public ResponseEntity<?> saveQuizzes(@RequestBody List<Quiz> quizzes) {
         try {
             for(int i = 0; i < quizzes.size(); i++) {
                 quizzes.get(i).setQueuePriority(i + 1);
@@ -98,11 +83,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteQuiz(@RequestParam Long id, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-    
+    public ResponseEntity<?> deleteQuiz(@RequestParam Long id) {
         try {
             quizRepository.deleteById(id);
             return ResponseEntity.ok("Quiz deleted successfully");
@@ -112,11 +93,7 @@ public class QuizController {
     }
 
     @GetMapping("/daily")
-    public ResponseEntity<?> getDailyQuiz(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-    
+    public ResponseEntity<?> getDailyQuiz() {
         try {
             Quiz dailyQuiz = quizRepository.findTopByOrderByQueuePriority();
 
@@ -138,10 +115,6 @@ public class QuizController {
 
     @PostMapping("/daily/submit-answer")
     public ResponseEntity<?> submitDailyQuizAnswer(@RequestBody QuizSubmissionRequestDTO request, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("Unauthorized");
-        }
-    
         try {
             boolean isCorrect = quizService.solveDailyQuiz(request.getQuizId(), request.getSelectedAnswer(), authentication.getName());
 

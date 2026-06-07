@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Avatar, Divider, Button, Tooltip, IconButton, Dialog, Paper } from '@mui/material';
+import { Box, Tab, Tabs, Typography, List, ListItem, ListItemButton, Divider, Button, Tooltip, IconButton, Dialog, Paper } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -38,6 +38,10 @@ function UserProfile() {
     const { data: accountFriends = [] } = useQuery<IAccount[]>({
         queryKey: ['accountFriends', userData?.account.id],
         queryFn: async () => {
+            if (!userData) {
+                return [];
+            }
+
             const response = await api.get(`/friends/get-friends?accountId=${userData.account.id}`);
             return response.data;
         },
@@ -45,7 +49,7 @@ function UserProfile() {
     });
 
     const removeFriendMutation = useMutation({
-        mutationFn: async (friendId: number) => api.post(`/friends/remove?friendId=${friendId}`),
+        mutationFn: async (friendId: number) => api.delete(`/friends?friendId=${friendId}`),
         onSuccess: () => {
             setFriendToRemove(null);
     
@@ -72,9 +76,9 @@ function UserProfile() {
 
     const getActivityClass = (count: number) => {
         if (count === 0) return 'activity-day';
-        if (count < 3) return 'activity-day activity-level-1';
-        if (count < 6) return 'activity-day activity-level-2';
-        if (count < 10) return 'activity-day activity-level-3';
+        if (count < 7) return 'activity-day activity-level-1';
+        if (count < 14) return 'activity-day activity-level-2';
+        if (count < 30) return 'activity-day activity-level-3';
         return 'activity-day activity-level-4';
     };
 
@@ -109,7 +113,7 @@ function UserProfile() {
                                                 </Box>
                                                 <Box sx={{ flex: 1 }}>
                                                     <Typography variant="body2" sx={{ color: 'var(--text-primary)' }}>{friend.username}</Typography>
-                                                    <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.codingProblemsSolved} problems solved</Typography>
+                                                    <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>{friend.solvedProblems.length} problems solved</Typography>
                                                 </Box>
                                                 {currentAccount.id !== friend.id && (
                                                     <Button size="small" 
@@ -179,19 +183,24 @@ function UserProfile() {
                 {activeTab === 2 && (
                     <Box className="profile-tab-content">
                         <Paper className="activity-section" elevation={0}>
-                            <Typography variant="h6" sx={{ mb: 3 }}>Activity Overview</Typography>
+                            <Typography className='activity-section-title' variant="h6">Activity overview</Typography>
                             <Box className="activity-stats">
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.codingProblemsSolved}</Typography></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Problems Solved</Typography><Typography className="activity-stat-value">{userData.account.solvedProblems.length}</Typography></Box>
                                 <Box className="activity-stat"><Typography className="activity-stat-label">Quizzes Solved</Typography><Typography className="activity-stat-value">{userData.account.quizzesSolved}</Typography></Box>
-                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{userData.account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
+                                <Box className="activity-stat"><Typography className="activity-stat-label">Current Coding Problems Streak</Typography><Box className="streak-display"><Typography className="activity-stat-value">{userData.account.streakLength}</Typography><LocalFireDepartmentIcon sx={{ color: '#FF6B35' }} /></Box></Box>
                             </Box>
                             <Box className="activity-graph-container">
                                 <Box className="activity-grid">
-                                    {userData.activityGraph?.map((count: number, index: number) => (
-                                        <Tooltip key={index} title={`${count} contributions`}>
-                                            <Box className={getActivityClass(count)} />
-                                        </Tooltip>
-                                    ))}
+                                    {userData.activityGraph?.map((count: number, index: number) => {
+                                    // Format: [day] [Full month name], [year]
+                                    let dateLabel = new Date(Date.now() - (userData.activityGraph.length - 1 - index) * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+
+                                        return (
+                                            <Tooltip key={index} title={`${count} actions on ${dateLabel}`}>
+                                                <Box className={getActivityClass(count)} />
+                                            </Tooltip>
+                                        )
+                                    })}
                                 </Box>
                             </Box>
                         </Paper>
