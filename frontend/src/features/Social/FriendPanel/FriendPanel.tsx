@@ -16,6 +16,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Loading from '../../../components/ui/Loading';
 import notify from '../../../components/ui/ToastNotification';
 import AccountAvatar from '../../../components/ui/AccountAvatar';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface IFriendPanelProps {
     account: IAccount;
@@ -279,7 +280,7 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                             )
                         })}
                         <IconButton size="small" onClick={() => setSelectedFiles([])} className="friend-panel-clear-files-btn">
-                            &times;
+                            <CloseIcon fontSize="small" sx={{ color: 'white' }} />
                         </IconButton>
                     </Box>
                 )}

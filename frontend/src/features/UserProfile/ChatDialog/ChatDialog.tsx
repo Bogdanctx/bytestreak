@@ -119,7 +119,9 @@ function ChatDialog({ open, onClose, targetAccount, currentAccount }: IChatDialo
                         <Typography variant="caption" className="chat-dialog-user-level">Level {getLevel(targetAccount.currentXP)}</Typography>
                     </Box>
                 </Box>
-                <IconButton onClick={onClose} size="small" className="chat-dialog-header-close"><ClearIcon /></IconButton>
+                <IconButton onClick={onClose} size="small" className="chat-dialog-header-close">
+                    <ClearIcon />
+                </IconButton>
             </Box>
 
             <Box className="chat-dialog-messages">
@@ -154,11 +156,17 @@ function ChatDialog({ open, onClose, targetAccount, currentAccount }: IChatDialo
                     <Box className="chat-dialog-file-preview-list">
                         {selectedFiles.map((file, index) => (
                             <Box key={index} className="chat-dialog-file-preview-item">
-                                {file.filedata.startsWith('data:image') 
-                                    ? <img src={file.filedata} alt={file.filename} className="chat-dialog-file-preview-image" />
-                                    : <Box className="chat-dialog-file-preview-file"><AttachFileIcon fontSize="small" /><Typography variant="caption" className="chat-dialog-file-preview-name">{file.filename}</Typography></Box>
-                                }
-                                <IconButton size="small" onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))} className="chat-dialog-file-remove-btn"><ClearIcon className="chat-dialog-file-remove-icon" /></IconButton>
+                                {file.filedata.startsWith('data:image') ? (
+                                    <img src={file.filedata} alt={file.filename} className="chat-dialog-file-preview-image" />
+                                ) : (
+                                    <Box className="chat-dialog-file-preview-file">
+                                        <AttachFileIcon fontSize="small" />
+                                        <Typography variant="caption" className="chat-dialog-file-preview-name">{file.filename}</Typography>
+                                    </Box>
+                                )}
+                                <IconButton size="small" onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))} className="chat-dialog-file-remove-btn">
+                                    <ClearIcon className="chat-dialog-file-remove-icon" />
+                                </IconButton>
                             </Box>
                         ))}
                     </Box>

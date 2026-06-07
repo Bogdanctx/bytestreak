@@ -125,7 +125,7 @@ function FeedHeader({ onPost }: IFeedHeaderProps) {
                         disabled={isFormEmpty}
                         className={`feed-header-send-btn ${!isFormEmpty ? 'enabled' : ''}`}
                     >
-                        <SendIcon fontSize="small" />
+                        <SendIcon fontSize="small" sx={{ color: 'white' }} />
                     </IconButton>
                 </Box>
             </Box>

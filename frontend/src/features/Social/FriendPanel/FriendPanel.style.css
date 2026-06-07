@@ -251,7 +251,7 @@
 }
 
 .friend-panel-send-btn-enabled {
-    background-color: var(--accent-main);
+    background-color: #23ce6a94;
 }
 
 .friend-panel-send-btn-enabled:hover {
@@ -266,6 +266,7 @@
 
 .friend-panel-send-icon {
     margin-left: 4px;
+    color: white;
 }
 
 .rank-bit {

@@ -205,7 +205,7 @@
 
 .chat-dialog-file-remove-btn {
     position: absolute;
-    top: -10px;
+    top: -5px;
     right: -10px;
     background-color: var(--bg-4);
     width: 20px;
@@ -213,8 +213,13 @@
     min-width: 20px;
 }
 
+.chat-dialog-file-remove-btn:hover {
+    background-color: var(--bg-4);
+}
+
 .chat-dialog-file-remove-icon {
     font-size: 14px;
+    color: white;
 }
 
 .chat-dialog-input-row {

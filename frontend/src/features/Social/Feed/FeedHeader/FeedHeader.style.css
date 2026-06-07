@@ -73,7 +73,7 @@
 /* Send Button */
 .feed-header-send-btn {
     color: var(--text-secondary);
-    background-color: var(--bg-3);
+    background-color: #23ce6a94 !important;
     transition: all 0.2s ease;
 }
 

@@ -201,7 +201,7 @@ function ViewPost({ post, goBack } : IViewPostProps) {
                                     {file.filename}
                                 </Typography>
                                 <IconButton size="small" onClick={() => setCommentAttachments(prev => prev.filter((_, i) => i !== index))}>
-                                    <CloseIcon fontSize="small" />
+                                    <CloseIcon fontSize="small" sx={{ color: 'white' }} />
                                 </IconButton>
                             </Box>
                         ))}
