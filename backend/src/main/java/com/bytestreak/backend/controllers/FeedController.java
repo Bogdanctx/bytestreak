@@ -20,6 +20,7 @@ import com.bytestreak.backend.dto.PostCreateDTO;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.entities.PostComment;
+import com.bytestreak.backend.enums.Role;
 import com.bytestreak.backend.repositories.PostCommentRepository;
 import com.bytestreak.backend.services.FeedService;
 import com.bytestreak.backend.repositories.PostRepository;
@@ -81,7 +82,11 @@ public class FeedController {
 
         Account me = accountRepository.findByEmail(authentication.getName());
 
-        if (!post.getAuthor().getId().equals(me.getId())) {
+        boolean isAdmin = me.getRole() == Role.ADMIN;
+        boolean isModerator = me.getRole() == Role.MODERATOR;
+        boolean isAuthor = post.getAuthor().getId().equals(me.getId());
+
+        if (!isAuthor && !isAdmin && !isModerator) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only delete your own posts");
         }
 
@@ -136,7 +141,12 @@ public class FeedController {
         }
 
         Account me = accountRepository.findByEmail(authentication.getName());
-        if (!comment.getAuthor().getId().equals(me.getId())) {
+        boolean isAuthor = comment.getAuthor().getId().equals(me.getId());
+        boolean isAdmin = me.getRole() == Role.ADMIN;
+        boolean isModerator = me.getRole() == Role.MODERATOR;
+
+
+        if (!isAuthor && !isAdmin && !isModerator) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only delete your own comments");
         }
 
@@ -144,4 +154,25 @@ public class FeedController {
         return ResponseEntity.ok("Comment deleted successfully");
     }
 
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Authentication authentication) {
+        PostComment comment = postCommentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        System.out.println("[LOGS] Attempting to delete comment with ID: " + commentId);
+
+        Account me = accountRepository.findByEmail(authentication.getName());
+        boolean isAuthor = comment.getAuthor().getId().equals(me.getId());
+        boolean isAdmin = me.getRole() == Role.ADMIN;
+        boolean isModerator = me.getRole() == Role.MODERATOR;
+
+        if (!isAuthor && !isAdmin && !isModerator) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only delete your own comments");
+        }
+
+        postCommentRepository.delete(comment);
+        return ResponseEntity.ok("Comment deleted successfully");
+    }
 }

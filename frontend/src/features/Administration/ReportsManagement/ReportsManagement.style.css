@@ -141,6 +141,7 @@
 .report-actions {
     display: flex;
     gap: 16px;
+    margin-bottom: 12px;
 }
 
 .report-action-dismiss {
@@ -181,4 +182,10 @@
     scale: 1.05;
     transition: all 0.2s ease-in-out;
     box-shadow: none;
+}
+
+.report-timestamp {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: "JetBrains Mono";
 }

@@ -9,7 +9,9 @@ import com.bytestreak.backend.repositories.AccountRepository;
 import com.bytestreak.backend.services.MessageService;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,8 +22,9 @@ import org.springframework.http.HttpStatus;
 import com.bytestreak.backend.entities.Account;
 import com.bytestreak.backend.entities.Friendship;
 import com.bytestreak.backend.entities.Message;
-
+import com.bytestreak.backend.enums.Role;
 import com.bytestreak.backend.repositories.FriendshipRepository;
+import com.bytestreak.backend.repositories.MessageRepository;
 
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @Autowired
     private FriendshipRepository friendshipRepository;
@@ -77,5 +83,27 @@ public class MessageController {
         List<Message> conversation = messageService.getConversation(currentUser, otherUser);
 
         return ResponseEntity.ok(conversation);
+    }
+
+    @DeleteMapping("/{messageId}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Long messageId, Authentication authentication) {
+        Account currentUser = accountRepository.findByEmail(authentication.getName());
+        Message message = messageRepository.findById(messageId).orElse(null);
+
+        if (message == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        System.out.println("[LOGS] User " + currentUser.getEmail() + " is attempting to delete message with ID: " + messageId);
+
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        boolean isModerator = currentUser.getRole() == Role.MODERATOR;
+
+        if (!isAdmin && !isModerator) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only delete messages if you are an admin or moderator.");
+        }
+
+        messageRepository.delete(message);
+        return ResponseEntity.ok("Message deleted successfully");
     }
 }

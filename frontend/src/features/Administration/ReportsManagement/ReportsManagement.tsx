@@ -29,9 +29,27 @@ export default function ReportsManagement() {
     });
 
     const deleteEntityMutation = useMutation({
-        mutationFn: async ({ endpoint, reportId }: { endpoint: string, reportId: number }) => {
-            await api.delete(endpoint); 
-            await api.delete(`/reports/delete/${reportId}`); 
+        mutationFn: async ({ type, targetId, reportId }: { type: string, targetId: number, reportId: number }) => {
+            const response = await api.delete(`/reports/delete/${reportId}`);
+
+            if (response.status === 200) {   
+                switch (type) {
+                    case 'ACCOUNT':
+                        await api.delete(`/accounts/${targetId}`);
+                        break;
+                    case 'POST':
+                        await api.delete(`/social/feed/posts/${targetId}`);
+                        break;
+                    case 'COMMENT':
+                        await api.delete(`/social/feed/comments/${targetId}`);
+                        break;
+                    case 'MESSAGE':
+                        await api.delete(`/social/messages/${targetId}`);
+                        break;
+                    default:
+                        throw new Error('Unknown content type');
+                }
+            }
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['reports'] });
@@ -47,15 +65,7 @@ export default function ReportsManagement() {
     };
 
     const handleDelete = (reportId: number, type: string, targetId: number) => {
-        let endpoint = '';
-        if (type === 'ACCOUNT') endpoint = `/accounts/${targetId}`;
-        else if (type === 'POST') endpoint = `/social/feed/posts/${targetId}`;
-        else if (type === 'COMMENT') endpoint = `/social/feed/comments/${targetId}`; 
-        else if (type === 'MESSAGE') endpoint = `/messages/${targetId}`;
-        
-        if (endpoint) {
-            deleteEntityMutation.mutate({ endpoint, reportId });
-        }
+        deleteEntityMutation.mutate({ type, targetId, reportId });
     };
 
     if (isLoading) {
@@ -224,6 +234,10 @@ export default function ReportsManagement() {
                                     </>
                                 )}
                             </Box>
+
+                            <Typography variant="caption" className="report-timestamp">
+                                Reported on: {new Date(report.createdAt).toLocaleString()}
+                            </Typography>
                         </Box>
                     );
                 })}
