@@ -304,6 +304,13 @@ function FriendPanel({ account, friendId, onBack }: IFriendPanelProps) {
                             }
                         }}
                         className="friend-panel-message-input"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: 'var(--bg-4)' },
+                                '&:hover fieldset': { borderColor: 'var(--bg-3)' },
+                                '&.Mui-focused fieldset': { borderColor: 'var(--bg-3)' },
+                            }
+                        }}
                     />
                     
                     <IconButton onClick={handleSendMessage} 

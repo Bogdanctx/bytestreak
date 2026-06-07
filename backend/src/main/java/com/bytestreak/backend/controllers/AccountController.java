@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -32,7 +33,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getAllAccounts(@RequestParam(required = false) String query, @RequestParam(required = false) Long cursor) {
         Map<String, Object> response = accountService.fetchAccounts(query, cursor);
 
@@ -78,7 +79,7 @@ public class AccountController {
         }
     }
 
-    @PatchMapping("/{id}/set-role")
+    @PutMapping("/{id}/set-role")
     public ResponseEntity<?> setUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Account target = accountRepository.findById(id).orElse(null);
 

@@ -25,7 +25,7 @@ function Discover({ account }: { account: IAccount }) {
     const { data: discoverableAccounts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['discoverAccounts', debounceSearchQuery],
         queryFn: async ({ pageParam = null }) => {
-            const response = await api.get('/accounts/', {
+            const response = await api.get('/accounts', {
                 params: {
                     query: debounceSearchQuery || undefined,
                     cursor: pageParam || undefined
