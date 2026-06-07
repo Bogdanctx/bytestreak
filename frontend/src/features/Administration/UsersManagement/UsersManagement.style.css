@@ -79,3 +79,10 @@
     color: var(--text-secondary);
     min-height: 200px;
 }
+
+.delete-user-header-separator {
+    height: 2px;
+    border: none;
+    background: linear-gradient(90deg, #23CE6B 0%, rgba(35, 206, 107, 0) 100%);
+    opacity: 0.7;
+}

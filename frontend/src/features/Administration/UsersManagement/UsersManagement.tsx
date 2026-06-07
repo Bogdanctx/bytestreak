@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { Box, Typography, TextField, CircularProgress, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, TextField, CircularProgress, Button, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '@mui/material';
 import { api } from '../../../api';
 import { type AccountRole, type IAccount } from '../../../types/account.types';
 import notify from '../../../components/ui/ToastNotification';
@@ -119,16 +119,36 @@ export default function UsersManagement() {
                 </Box>
             </Box>
 
-            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-                <DialogTitle>Delete User</DialogTitle>
+            <Dialog open={deleteDialogOpen} 
+                    onClose={() => setDeleteDialogOpen(false)}
+                    sx={{
+                        '& .MuiDialog-paper': {
+                            backgroundColor: 'var(--bg-1)',
+                            color: 'var(--text-primary)',
+                            border: '1px solid var(--bg-6)'
+                        }
+                    }}
+            >
+                <DialogTitle fontFamily={"Momo Trust Display"}>DELETE ACCOUNT</DialogTitle>
+                <Divider className="delete-user-header-separator" />
                 <DialogContent>
                     <Typography>
-                        Are you sure you want to delete user <strong>{userToDelete?.username}</strong>? This action cannot be undone.
+                        Are you sure you want to delete user <strong style={{ fontFamily: "Momo Trust Display" }}>{userToDelete?.username}</strong>? This action cannot be undone.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setDeleteDialogOpen(false)}
+                            sx={{
+                                color: 'var(--text-primary)',
+                                '&:hover': {
+                                    backgroundColor: 'var(--bg-6)',
+                                }
+                            }}
+                    >
+                        Cancel
+                    </Button>
                     <Button
+                        variant="contained"
                         onClick={handleConfirmDelete}
                         color="error"
                         disabled={deleteUserMutation.isPending}
