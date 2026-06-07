@@ -46,6 +46,7 @@ public class QuizController {
 
     @PostMapping("/generate-bulk")
     public ResponseEntity<?> generateBulkQuizzes(@RequestParam(required = false) Integer numberOfQuizzes) {
+        System.out.println("Received request to generate " + numberOfQuizzes + " quizzes");
         try {
             if (numberOfQuizzes == null || numberOfQuizzes <= 0) {
                 numberOfQuizzes = 5;

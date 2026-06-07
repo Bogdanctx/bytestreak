@@ -42,7 +42,7 @@ export default function QuizManagement() {
 
     const generateBulkMutation = useMutation({
         mutationFn: async () => {
-            const response = await api.post(`/quizzes/generate-bulk?count=${bulkCount}`);
+            const response = await api.post(`/quizzes/generate-bulk?numberOfQuizzes=${bulkCount}`);
             return response.data as IQuiz[];
         },
         onSuccess: (newQuizzes) => {
