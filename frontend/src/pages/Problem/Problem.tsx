@@ -23,7 +23,6 @@ function Problem() {
     const [problemPanelWidth, setProblemPanelWidth] = useState(600);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
     const [earnedDailyChallengeReward, setEarnedDailyChallengeReward] = useState(false);
-    const lastTriggeredResultsRef = useRef<ISubmissionResult[]>([]);
 
     const { data: codingProblem, isLoading } = useQuery<IProblem>({
         queryKey: ['codingProblem'],
@@ -36,28 +35,6 @@ function Problem() {
             return response.data;
         },
     });
-
-    useEffect(() => {
-        if (!results || results.length === 0 || results === lastTriggeredResultsRef.current) {
-            return;
-        }
-
-        const allTestsPassed = results.every(result => result.statusId === 3);
-
-        if (allTestsPassed) {
-            lastTriggeredResultsRef.current = results;
-
-            if (codingProblem?.dailyChallange && !account?.solvedDailyCodingProblemToday) {
-                setEarnedDailyChallengeReward(true);
-            }
-            else {
-                setEarnedDailyChallengeReward(false);
-            }
-
-            setSolvedCodingProblem(true);
-            queryClient.invalidateQueries({ queryKey: ['account'] });
-        }
-    }, [results, codingProblem, account, queryClient]);
 
     useEffect(() => {
 
@@ -99,13 +76,24 @@ function Problem() {
         return <Loading />;
     }
 
+    const handleSubmissionComplete = (newResults: ISubmissionResult[]) => {
+        setResults(newResults);
+        const allTestsPassed = newResults.length > 0 && newResults.every(r => r.statusId === 3);
+
+        if (allTestsPassed) {
+            const isDaily = codingProblem.dailyChallange && !account.solvedDailyCodingProblemToday;
+            setEarnedDailyChallengeReward(!!isDaily);
+            setSolvedCodingProblem(true);
+            queryClient.invalidateQueries({ queryKey: ['account'] });
+        }
+
+    };
+
     const handleResizeStart = () => {
         setIsResizingPanels(true);
     };
 
-    const editorPanelWidth = isResizingPanels
-        ? 'calc(100% - 452px)'
-        : 'auto';
+    const editorPanelWidth = isResizingPanels ? 'calc(100% - 452px)' : 'auto';
 
     return (
         <Box className={`problem-page-container ${isResizingPanels ? 'is-resizing' : ''}`} ref={problemPageRef}>
@@ -207,7 +195,7 @@ function Problem() {
                 problemId={codingProblem.id}
                 codeTemplates={codingProblem.codeTemplates}
                 setActiveTab={setActiveTab}
-                setResults={setResults}
+                onSubmissionComplete={handleSubmissionComplete}
                 editorWidth={editorPanelWidth}
             />
         </Box>

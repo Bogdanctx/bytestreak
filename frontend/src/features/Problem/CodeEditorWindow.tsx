@@ -14,11 +14,11 @@ interface CodeEditorWindowProps {
     problemId: number;
     codeTemplates: any;
     setActiveTab: (tab: string) => void;
-    setResults: (results: ISubmissionResult[]) => void;
+    onSubmissionComplete: (results: ISubmissionResult[]) => void;
     editorWidth: string;
 }
 
-function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, editorWidth }: CodeEditorWindowProps) {
+function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, onSubmissionComplete, editorWidth }: CodeEditorWindowProps) {
     const [code, setCode] = useState("");
     const [programmingLanguage, setProgrammingLanguage] = useState("cpp");
     const [lightMode, setLightMode] = useState(false);
@@ -31,7 +31,7 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, 
             return api.post(`/problems/submit`, submissionData);
         },
         onSuccess: (response) => {
-            setResults(response.data);
+            onSubmissionComplete(response.data);
             setSubmissionInProgress(false);
             notify("Submission successful! Check the results tab for details.", "success");
         },
@@ -59,7 +59,6 @@ function CodeEditorWindow({ problemId, codeTemplates, setActiveTab, setResults, 
             problemId: problemId,
         };
         
-        setResults([]);
         setActiveTab("results");
 
         submitSolutionMutation.mutate(submissionData);
