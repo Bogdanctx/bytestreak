@@ -10,9 +10,9 @@
 }
 
 .problem-solved-close-btn {
-    background-color: var(--accent-main);
-    color: #000;
-    font-family: "Momo Trust Display", sans-serif;
+    background-color: #23ce6a94;
+    color: white;
+    font-family: "Momo Trust Display";
     font-weight: 700;
     padding: 10px 40px;
     border-radius: 8px;

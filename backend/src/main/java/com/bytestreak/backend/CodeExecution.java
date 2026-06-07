@@ -117,8 +117,14 @@ public class CodeExecution {
             String base64Stdout = (String) jsonResponse.get("stdout");
             String userOutput = base64Stdout != null ? new String(Base64.getMimeDecoder().decode(base64Stdout)) : "";
 
-            if (validationScriptCode == null || (statusId != 3 && statusId != 4)) {
-                return new ExecutionResultDTO(statusId, "Wrong answer", testCaseId, input, userOutput, expectedOutput); 
+
+            if (validationScriptCode == null) {
+                if (statusId == 3) { // 3 = Accepted
+                    return new ExecutionResultDTO(3, "Accepted", testCaseId, input, userOutput, expectedOutput);
+                } 
+                else {
+                    return new ExecutionResultDTO(statusId, "Wrong answer", testCaseId, input, userOutput, expectedOutput); 
+                }
             }
 
             // VALIDATE USER OUTPUT WITH CUSTOM SCRIPT
