@@ -1,0 +1,191 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{apetrei2025}{article}{}
+      \name{author}{1}{}{%
+        {{hash=7ee64fc508169b4d95692ada5f51c36b}{%
+           family={Apetrei},
+           familyi={A\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{7ee64fc508169b4d95692ada5f51c36b}
+      \strng{fullhash}{7ee64fc508169b4d95692ada5f51c36b}
+      \strng{bibnamehash}{7ee64fc508169b4d95692ada5f51c36b}
+      \strng{authorbibnamehash}{7ee64fc508169b4d95692ada5f51c36b}
+      \strng{authornamehash}{7ee64fc508169b4d95692ada5f51c36b}
+      \strng{authorfullhash}{7ee64fc508169b4d95692ada5f51c36b}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Revista cadrelor didactice}
+      \field{month}{2}
+      \field{note}{[accesat: 31.05.2026]}
+      \field{number}{116}
+      \field{title}{Joc, gamificare și învățarea prin gamificare}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.didactic.ro/revista-cadrelor-didactice/joc-gamificare-si-invatarea-prin-gamificare
+      \endverb
+      \verb{url}
+      \verb https://www.didactic.ro/revista-cadrelor-didactice/joc-gamificare-si-invatarea-prin-gamificare
+      \endverb
+    \endentry
+    \entry{dosilovic2020}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=cd30fe69ec5b27e340c7e900f1dbdb75}{%
+           family={Došilović},
+           familyi={D\bibinitperiod},
+           given={H.\bibnamedelimi Z.},
+           giveni={H\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+        {{hash=2d43b8d9e1b42415139565ae039334fa}{%
+           family={Mekterović},
+           familyi={M\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \strng{fullhash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \strng{bibnamehash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \strng{authorbibnamehash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \strng{authornamehash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \strng{authorfullhash}{9bec0f9cf7f8d65580c87805e1604f91}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{43rd International Convention on Information, Communication and Electronic Technology (MIPRO)}
+      \field{title}{Robust and Scalable Online Code Execution System}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.23919/MIPRO48935.2020.9245310
+      \endverb
+    \endentry
+    \entry{laaksonen2017}{book}{}
+      \name{author}{1}{}{%
+        {{hash=0b88ddd762011a7b31ba9a0e81286389}{%
+           family={Laaksonen},
+           familyi={L\bibinitperiod},
+           given={Antti},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{0b88ddd762011a7b31ba9a0e81286389}
+      \strng{fullhash}{0b88ddd762011a7b31ba9a0e81286389}
+      \strng{bibnamehash}{0b88ddd762011a7b31ba9a0e81286389}
+      \strng{authorbibnamehash}{0b88ddd762011a7b31ba9a0e81286389}
+      \strng{authornamehash}{0b88ddd762011a7b31ba9a0e81286389}
+      \strng{authorfullhash}{0b88ddd762011a7b31ba9a0e81286389}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Guide to Competitive Programming}
+      \field{year}{2017}
+      \verb{doi}
+      \verb 10.1007/978-3-319-72547-5
+      \endverb
+    \endentry
+    \entry{mui2026}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=aaab8627ee7b7082b01c75a8ce4e6511}{%
+           family={{MUI Core}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \strng{fullhash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \strng{bibnamehash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \strng{authorbibnamehash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \strng{authornamehash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \strng{authorfullhash}{aaab8627ee7b7082b01c75a8ce4e6511}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[accesat: 31.05.2026]}
+      \field{title}{Material UI: A popular React UI framework}
+      \verb{urlraw}
+      \verb https://mui.com/material-ui/
+      \endverb
+      \verb{url}
+      \verb https://mui.com/material-ui/
+      \endverb
+    \endentry
+    \entry{typescript2026}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=558b544cf685f39d34e4903e39c38b67}{%
+           family={{TypeScript}},
+           familyi={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{558b544cf685f39d34e4903e39c38b67}
+      \strng{fullhash}{558b544cf685f39d34e4903e39c38b67}
+      \strng{bibnamehash}{558b544cf685f39d34e4903e39c38b67}
+      \strng{authorbibnamehash}{558b544cf685f39d34e4903e39c38b67}
+      \strng{authornamehash}{558b544cf685f39d34e4903e39c38b67}
+      \strng{authorfullhash}{558b544cf685f39d34e4903e39c38b67}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[accesat: 31.05.2026]}
+      \field{title}{TypeScript is JavaScript with syntax for types}
+      \verb{urlraw}
+      \verb https://www.typescriptlang.org/
+      \endverb
+      \verb{url}
+      \verb https://www.typescriptlang.org/
+      \endverb
+    \endentry
+    \entry{w3c_css}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=66c3509f57565d7fbe270a57a403004c}{%
+           family={{World Wide Web Consortium (W3C)}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{66c3509f57565d7fbe270a57a403004c}
+      \strng{fullhash}{66c3509f57565d7fbe270a57a403004c}
+      \strng{bibnamehash}{66c3509f57565d7fbe270a57a403004c}
+      \strng{authorbibnamehash}{66c3509f57565d7fbe270a57a403004c}
+      \strng{authornamehash}{66c3509f57565d7fbe270a57a403004c}
+      \strng{authorfullhash}{66c3509f57565d7fbe270a57a403004c}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[accesat: 31.05.2026]}
+      \field{title}{Cascading Style Sheets (CSS)}
+      \verb{urlraw}
+      \verb https://www.w3.org/Style/CSS/
+      \endverb
+      \verb{url}
+      \verb https://www.w3.org/Style/CSS/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,49 @@
+\selectlanguage *{romanian}
+\selectlanguage *{romanian}
+\selectlanguage *{romanian}
+\selectlanguage *{english}
+\selectlanguage *{romanian}
+\contentsline {chapter}{\numberline {1}Introducere}{4}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivația lucrării}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Obiectivele platformei}{4}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Structura lucrării}{5}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Preliminarii}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Programare competitivă}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Gamificare}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Tehnologii utilizate}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Frontend}{8}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Backend}{9}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Baza de date}{9}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Judge0}{10}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Modele generative de limbaj}{10}{subsection.2.3.5}%
+\contentsline {chapter}{\numberline {3}Analiza și proiectarea sistemului}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Arhitectura de ansamblu}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Modelul conceptual al datelor}{12}{section.3.2}%
+\contentsline {chapter}{\numberline {4}Implementarea sistemului}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Sistemul de autentificare}{15}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Înregistrarea}{15}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Conectarea}{16}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Sistemul de gestionare a problemelor algoritmice}{16}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Crearea și stocarea problemelor}{16}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Sistemul de validare a unei soluții}{17}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Publicarea problemelor}{17}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Sistemul de chestionare generate automat}{17}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Fluxul de generare și validare}{18}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Administrarea chestionarelor}{19}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Sistemul de recompense}{19}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Sistemul de gamificare}{20}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Experiența și rangurile}{20}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Monedele virtuale}{20}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Clasamentul}{21}{subsection.4.4.3}%
+\contentsline {section}{\numberline {4.5}Sistemul de serii}{21}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Seria individuală (problema zilei)}{21}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Seria colaborativă (chestionarul zilei)}{22}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}Sistemul de interacțiune socială}{22}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Relațiile de prietenie}{22}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Fluxul de postări}{23}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Mesagerie privată}{23}{subsection.4.6.3}%
+\contentsline {section}{\numberline {4.7}Sistemul de moderare a conținutului}{23}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Mecanismul de raportare și soluționare}{23}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Gestionarea drepturilor de acces}{24}{subsection.4.7.2}%
+\contentsline {chapter}{\numberline {5}Concluzii}{25}{chapter.5}%
+\contentsline {chapter}{Bibliografie}{27}{chapter*.2}%

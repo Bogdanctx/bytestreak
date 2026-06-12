@@ -1,0 +1,26 @@
+\chapter{Introducere}
+
+\section{Motivația lucrării}
+
+Platformele tradiționale de programare se concentrează exclusiv pe rezolvarea unor probleme lungi și complexe. Această abordare devine adesea plictisitoare, anostă și solicitantă din punct de vedere cognitiv, ducând la abandon din partea utilizatorilor. Pentru a combate această monotonie, platforma propune o diversificare a dinamicii de învățare prin introducerea unui sistem mixt. Alternarea între scrierea de cod și rezolvarea unor chestionare îmbinate cu o componentă de comunitate menține motivația utilizatorului de a continua învățarea. 
+
+\section{Obiectivele platformei}
+
+Principalul obiectiv al lucrării este implementarea unei platforme web interactive care îmbină execuția sigură a codului cu tehnici de gamificare și inteligență artificială. Pentru atingerea scopului, au fost stabilite următoarele obiective:
+\begin{itemize}
+    \item Automatizarea generării de conținut: Integrarea modelelor de limbaj (Large Language Models) prin intermediul Ollama și Qwen2.5:coder permite generarea dinamică a chestionarelor zilnice și a distractorilor (variante greșite, dar plauzibile).  
+    \item Evaluarea securizată și deterministă a codului: Implementarea unui motor de evaluare bazat pe medii izolate (integrarea cu Judge0) care să permită rularea sigură și validarea precisă a algoritmilor scriși de utilizatori în C++ și Python.
+    \item Retenția utilizatorilor prin gamificare și mecanisme sociale: Creare unei economii virtuale (sistem de experiență, monede, clasamente) și dezvoltarea unor mecanisme de interacțiune socială, precum seriile individuale și de grup sau de interacțiune pe pagina de postări.
+    \item Asigurarea calității și scalabilității conținutului: Dezvoltarea unui modul dedicat creatorilor și moderatorilor, cu suport pentru formatare Markdown, scrierea de scripturi customizate în Python pentru validarea output-urilor multiple și gestionarea eficientă a raportărilor conținutului din cadrul comunității.
+\end{itemize}
+
+\section{Structura lucrării}
+
+Lucrarea este împărțită în 5 capitole, organizate după cum urmează:
+\begin{itemize}
+    \item Capitolul 1 – Introducerea. Definește contextul general al proiectului, prezentând motivația din spatele alegerii temei, obiectivele principale ale platformei și structura de ansamblu a documentului 
+    \item Capitolul 2 – Preliminarii. Abordează conceptele fundamentale ale domeniului (programare competitivă și gamificarea) și justifică alegerea stivei tehnologice utilizate pentru dezvoltarea componentelor de frontend și backend. 
+    \item Capitolul 3 – Analiza și proiectarea sistemului. Detaliază aspectele de arhitectură software, descriind structura de ansamblu client-server decuplată și modelul conceptual al datelor prin intermediul diagramei entitate-relație. 
+    \item Capitolul 4 – Implementarea sistemului. Reprezintă nucleul tehnic al lucrării și descrie în detaliu funcționalitățile dezvoltate: mecanismul de generare automată a chestionarelor prin LLM și validarea lor prin motorul de execuție Judge0, sisteme de gamificare și serii (streaks), modulul social și cel de moderare a conținutului.
+    \item Capitolul 5 – Concluzii. Sintetizează modul de realizare a temei, evidențiază relevanța rezultatelor obținute, aplicabilitatea practică a platformei și propune direcții viitoare pentru extinderea și optimizarea aplicației. 
+\end{itemize}

@@ -1,0 +1,51 @@
+\chapter{Preliminarii}
+
+\section{Programare competitivă}
+
+Programarea competitivă își are rădăcinile în studiul științific al algoritmilor. În timp ce un informatician scrie o demonstrație să arate că algoritmul său funcționează, un programator competitiv implementează acel algoritm și îl testează într-un sistem de competiții \cite{laaksonen2017}. Aceasta reprezintă o modalitate de a învăța noi algoritmi și structuri de date, dar și tehnici diferite de optimizare și avantajele sau dezavantajele fiecăreia. De asemenea, aceasta ajută programatorii să se gândească la diferite soluții în funcție de contextul și restricțiile avute. 
+
+În ultimii ani, programarea competitivă a devenit un instrument important pentru dezvoltarea competențelor algoritmice și pentru pregătirea interviurilor tehnice din industria software. Numeroase companii din domeniul tehnologiei utilizează probleme algoritmice în procesele de recrutare pentru un prim filtru al candidaților, iar platformele dedicate permit utilizatorilor să își exerseze cunoștințele de structuri de date, algoritmi și optimizare. 
+
+Un element specific platformelor de programare competitivă îl reprezintă sistemul de evaluare automată a unei soluții. Acesta primește codul sursă transmis de utilizator, îl compilează și îl execută într-un mediu izolat, verificând dacă soluția a fost corectă prin rularea acesteia pe mai multe seturi de date de test. Acest mecanism permite evaluarea obiectivă și rapidă a unei soluții pentru o problemă propusă. 
+
+Proiectul prezentat în această lucrare se încadrează în categoria platformelor de programare competitivă, însă adaugă noi mecanisme prin integrarea unor elemente de gamificare, funcționalități sociale și generare automată de conținut educațional folosind inteligența artificială.
+
+\section{Gamificare}
+
+Gamificarea presupune aplicarea principiilor de design al jocului în procesul educațional, cu scopul de a face învățarea mai captivantă, motivantă și eficientă \cite{apetrei2025}. În cadrul acestui proiect, gamificarea este implementată prin următoarele mecanisme:
+\begin{itemize}
+    \item Puncte de experiență: necesare pentru avansarea în nivel.
+    \item Serii de activitate (streaks): menținute atât individual, cât și în colaborare cu alți utilizatori de pe platformă.
+    \item Clasament: primii 10 utilizatori, clasați în funcție de experiența acumulată, sunt recompensați lunar cu monede virtuale.
+    \item Recompense zilnice: un sistem prin care utilizatorii primesc bonusuri pentru activitatea constantă.
+\end{itemize}
+
+\section{Tehnologii utilizate}
+\subsection{Frontend}
+
+Componenta de client a platformei a fost dezvoltată în React, utilizând limbajul TypeScript. React este o bibliotecă open-source ce permite programatorului să construiască interfețe văzute de utilizator în module individuale numite componente. TypeScript extinde limbajul de programare JavaScript prin adăugarea unui sistem static de tipuri de date, facilitând detectarea erorilor în faza de dezvoltare și scrierea unui cod mai robust \cite{typescript2026}.  
+
+Pentru stilizarea interfeței a fost folosită biblioteca Material UI (MUI). Aceasta oferă componente de React predefinite care implementează specificațiile sistemului vizual Google Material Design \cite{mui2026}. Personalizarea suplimentară a componentelor și a structurii vizuale s-a realizat prin intermediul limbajului standard de stilizare CSS (Cascading Style Sheets) \cite{w3c_css}.
+
+\subsection{Backend}
+
+Componenta de server a platformei a fost dezvoltată în limbajul de programare Java utilizând biblioteca Spring Boot. Java a fost ales datorită robusteții sale, a ecosistemului matur și a paradigmei orientate pe obiecte, fiind un standard recunoscut pentru dezvoltarea aplicațiilor de tip enterprise scalabile. Utilizarea bibliotecii Spring Boot a eficientizat considerabil procesul de dezvoltare prin mecanismele sale de auto-configurare și injectare a dependențelor (Dependency Injection). Prin intermediul acestuia, componenta de backend expune un API (Application Programming Interface) de tip RESTful, permițând comunicarea cu aplicația client prin intermediul formatului de date JSON.
+
+\subsection{Baza de date}
+
+Pentru stocarea și gestionarea datelor a fost ales sistemul de gestiune a bazelor de date relaționale (SGBD) PostgreSQL. Persistența datelor este realizată prin intermediul Hibernate, o bibliotecă de tip ORM (Object-Relational Mapping), integrat în aplicație prin Spring Data JPA. 
+
+Acest mecanism permite asocierea directă a obiectelor din mediul de programare orientat pe obiecte (entitățile) în tabele relaționale. Pe baza acestor entități, schema bazei de date este generată automat la rulare. De asemenea, instrumentul ORM gestionează crearea tabelelor asociative necesare pentru modelarea relațiilor complexe, cum ar fi stocarea submisilor sau cererile de prietenie.
+
+\subsection{Judge0}
+
+O componentă importantă pentru toate platformele de programare competitivă o reprezintă posibilitatea de a compila și rula codul sursă într-un mediu izolat și sigur (de tip sandbox). Pentru acest mecanism proiectul integrează Judge0, un motor de execuție a codului robust, scalabil și cu suport pentru multiple limbaje de programare \cite{dosilovic2020}, care a fost instanțiat local.  
+
+Pentru a evalua o soluție, componenta de backend (controller-ul) apelează API-ul expus de Judge0 printr-o cerere de tip POST. Corpul cererii (payload-ul) conține: codul sursă, datele de intrare, rezultatul așteptat, codul de identificare al limbajelor C++ sau Python, limita de memorie de 12.800 KB și o limită de timp de 2 secunde.
+
+\subsection{Modele generative de limbaj}
+
+Proiectul integrează inteligența artificială pentru a crearea automată de chestionare (quiz-uri). Această funcționalitate este realizată prin intermediul unui model de limbaj de mari dimensiuni (LLM – Large Language Model), rulat local cu ajutorul mediului de execuție Ollama. A fost selectat modelul Qwen2.5-coder, în varianta cu 7 miliarde de parametri. 
+
+Rolul acestuia este de a formula secvențe scurte de cod pe un subiect extras aleatoriu dintr-o listă predefinită, precum și de a concepe variante de răspuns incorecte, dar plauzibile (distractori). Deoarece execuția are loc local, calitatea și complexitatea textului rezultat sunt direct constrânse de dimensiunea relativ redusă a parametrilor modelului utilizat.
+

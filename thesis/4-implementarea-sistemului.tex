@@ -1,0 +1,184 @@
+\chapter{Implementarea sistemului}
+
+\section{Sistemul de autentificare}
+
+Accesul la funcționalitățile platformei este securizat printr-un modul de identificare, autentificare și autorizare a utilizatorilor, structurat pe două fluxuri: înregistrarea și conectarea.
+
+\subsection{Înregistrarea}
+
+Crearea unui cont necesită furnizarea unui nume de utilizator, adresă de email și a unei parole. Pentru integritatea sistemului, validarea datelor se realizează atât pe partea de client, cât și pe server, utilizatorul primind erori dacă informațiile introduse sunt necorespunzătoare. Numele este folosit în platformă pentru afișarea contului de utilizator, iar email-ul este folosit pentru recuperarea contului în cazul în care parola a fost uitată. Un nume de utilizator este valid dacă lungimea este între 5 și 20 de caractere alfanumerice. Validarea email-ului se face prin librăria React Hook Form folosind expresii regulate, iar un email este valid dacă respectă șablonul \verb|/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|. Validarea parolei constă în verificarea lungimii acesteia și este validă dacă are cel puțin 6 caractere și cel mult 100 de caractere. 
+
+Pentru securizarea confidențialității, parolele nu sunt stocate în text clar. Înainte de stocare, parola este trecută printr-o funcție de hashing criptografic folosind algoritmul Bcrypt, generându-se un hash ireversibil ce include automat un salt pentru a preveni atacurile de tip rainbow table.
+
+\subsection{Conectarea}
+
+Pentru conectare este necesară furnizarea unei adrese de email și parole corespunzătoare contului. Parola introdusă este validată prin compararea hash-ului cu cel stocat. În caz de succes, sistemul generează un token de tip JWT (Json Web Token) folosit pentru menținerea stării sesiunii (stateless). Pentru a mitiga riscurile atacurilor de tip XSS (Cross-Site Scripting) și furtul de token-uri, JWT-ul nu este stocat în localStorage, ci este transmis și salvat exclusiv în cookie-uri securizate prin flag-ul HttpOnly. 
+
+În scenariul pierderii accesului, platforma dispune de un mecanism de recuperare a contului. La solicitarea utilizatorului, sistemul generează un token unic cu o valabilitate limitată la 15 minute, care este expediat sub forma unui link securizat către adresa de email asociată.
+
+\section{Sistemul de gestionare a problemelor algoritmice}
+
+\subsection{Crearea și stocarea problemelor}
+
+Platforma dispune de un mecanism prin care utilizatorii cu rolul de creator pot crea probleme de programare care pot fi rezolvate. Definirea enunțului se realizează prin intermediul unui editor Markdown cu suport pentru previzualizare. La nivel arhitectural, sursa unei probleme este decuplată în două componente distincte pentru ambele limbaje suportate (C++ și Python): Driver code (modulul ascuns responsabil de apelarea funcțiilor și evaluarea performanței) și Starter code (scheletul de cod expus utilizatorului). Integrarea celor două componente se realizează printr-un proces de injecție a codului, utilizând token-ul specific \verb|{{CODE}}| în cadrul Driver code-ului. 
+
+Pentru evaluare, sistemul permite crearea unui număr nelimitat de cazuri de testare (perechi de intrare și ieșire). Pentru a optimiza performanța bazei de date, testele nu sunt salvate ca obiecte, ci în baza de date va fi stocat doar calea la care se regăsesc acele teste. Entitatea problemei este completată de metadate esențiale indexării: denumire, nivel de dificultate și etichete algoritmice.
+
+\subsection{Sistemul de validare a unei soluții}
+
+Pentru scenariul în care o problemă de programare poate avea mai multe soluții corecte pentru aceleași date de intrare, platforma implementează un sistem de evaluare flexibil, bazat pe scripturi de validare. Creatorul poate să scrie un script de evaluare exclusiv în limbajul Python acesta urmând a fi rulat automat la fiecare test.  
+
+Comunicarea dintre mediul de evaluare și scriptul de validare se realizeaza prin trecerea datelor de intrare originale și a rezultatului generat de utilizator, separate prin delimitatorul \verb|@@@USER_OUTPUT@@@|. Scriptul analizează dacă rezultatul produs de soluția utilizatorului este valid, iar în caz afirmativ va trebui afișat la ieșirea standard mesajul True sau False în caz contrar. Similar testelor, acest script nu este salvat în baza de date, ci doar locația acestuia pe disc și este executat pentru fiecare caz de testare în parte. 
+
+\subsection{Publicarea problemelor}
+
+Pentru a asigura calitatea conținutului, orice problemă nou creată este inițializată cu un status privat (modul de vizibilitate ascuns). Această stare izoleaza problema de mediul de producție, permițând creatorului să o testeze prin motorul de execuție pentru a detecta eventuale erori de logică. Ulterior fazei de testare și depanare, creatorul poate seta vizibilitatea problemei ca public urmând să fie expusă în lista de probleme disponibile de pe platformă.
+
+\section{Sistemul de chestionare generate automat}
+
+Platforma dispune de un mecanism interactiv denumit ,,Chestionarul zilei”, prin care utilizatorilor li se cere să identifice rezultatul corect (output-ul) al unei secvențe de cod generate aleatoriu scrisă în C++ sau Python. Chestionarul conține o singură variantă corectă și trei variante incorecte (distractori). 
+
+Generarea conținutului este automatizată prin intermediul modelului de limbaj Qwen2.5-coder (7 miliarde de parametri), apelat prin API-ul mediului Ollama.
+
+\subsection{Fluxul de generare și validare}
+
+Crearea unui chestionar complet presupune un proces în două etape pentru a garanta corectitudinea tehnică:
+
+\begin{enumerate}
+    \item Generarea codului sursă: Backend-ul transmite un prompt în limba engleză către modelul LLM, solicitând un cod determinist, concis (maximum 40-50 de linii) și valid. Subiectele sunt alese aleatoriu din liste specifice:
+    \begin{itemize}
+        \item C++: Programare orientată pe obiecte (OOP), pointeri, referințe, algoritmi, excepții. 
+        \item Python: OOP, list comprehensions, generatori, decoratori, expresii regulate, algoritmi.
+    \end{itemize}
+    \item Validarea și generarea distractorilor: Codul rezultat este trimis către motorul de execuție Judge0 pentru compilare și execuție:
+    \begin{itemize}
+        \item Dacă execuția are succes, secvența și rezultatul ei sunt retrimise către LLM pentru a genera trei variante de răspuns greșite, dar plauzibile (distractori)
+        \item Dacă secvența nu compilează, sistemul declanșeaza automat până la două reîncercări. În cazul în care toate încercările eșuează, server-ul returnează fie o eroare, fie chestionarele generate cu succes până la acel moment (în cazul generarii în masă).
+    \end{itemize}
+\end{enumerate}
+
+Exemplu de structură a prompt-ului transmis modelului: ,,Ești un dezvoltator expert în [limbaj de programare]. Creează un program complet, executabil, care demonstrează [un subiect aleator]. Cerințe: comportament determinist, concis, entități declarate corect, fără comentarii, returnează exact o linie de output. Răspunsul trebuie să fie strict în format JSON.''
+
+\subsection{Administrarea chestionarelor}
+
+Această funcționalitate este controlată din panoul de administrare (,,Manage quizzes''), fiind accesibilă doar moderatorilor și administratorilor. Aceștia pot genera chestionare individual (pentru a corecta eventualele halucinații sau răspunsuri nedeterministe ale modelului) sau în masă. 
+
+Chestionarele generate sunt stocate într-o listă și pot fi reordonate manual de către administratori pentru a asigura diversitatea zilnică. Sistemul selectează automat chestionarul cu cea mai mare prioritate (prima poziție) pentru ziua curentă, ștergându-l din baza de date la finalul zilei.
+
+\subsection{Sistemul de recompense}
+
+Rezolvarea corectă a chestionarului zilei aduce utilizatorilor puncte de experiență (pentru clasament) și monede virtuale. Sistemul încurajează consecvența prin menținerea unei serii de activitate (streak), inclusiv în format colaborativ cu prietenii. 
+
+Dacă un utilizator ratează o zi sau răspunde greșit, seria întregului grup este resetată. Totuși, platforma oferă opțiunea de a salva seria (,,streak freeze'') în schimbul a 200 de monede, valabilă exclusiv în cazul unui răspuns greșit. 
+
+Atingerea anumitor praguri în menținerea seriei zilnice este recompensată cu bonusuri în monede, după cum urmează:
+
+\begin{itemize}
+    \item 7 zile: 20 de monede
+    \item 14 zile: 50 de monede
+    \item 30 zile: 150 de monede
+    \item 100 zile: 500 de monede
+    \item Peste 100 zile: 550 monede (acordate la fiecare 30 de zile suplimentare)
+\end{itemize}
+
+\section{Sistemul de gamificare}
+
+\subsection{Experiența și rangurile}
+
+Experiența (XP) reprezintă metrica principală pentru cuantificarea activității utilizatorilor și stabilirea poziției acestora în clasament. Punctele de experiență pot fi acumulate prin rezolvarea chestionarului zilei, a problemei zilei, precum și prin rezolvarea altor probleme algoritmice disponibile pe platformă. 
+
+Acumularea de experiență determină creșterea în nivel a contului. Pentru a reflecta tematica platformei, rangurile sunt denumite pe baza unităților de măsură a informației. Fiecărui rang îi este asociată o culoare distinctă pentru identificarea vizuală rapidă pe profilul utilizatorilor:
+
+\begin{itemize}
+    \item 0 - 199 XP: Bit (gri)
+    \item 200 - 599 XP: Byte (verde)
+    \item 600 - 1499 XP: Kilobyte (turcoaz)
+    \item 1500 - 2999 XP: Megabyte (mov)
+    \item 3000 - 5999 XP: Gigabyte (portocaliu)
+    \item Peste 6000 XP: Terabyte (roșu)
+\end{itemize}
+
+\subsection{Monedele virtuale}
+
+Monedele reprezintă valuta internă a platformei. Acestea se obțin în urma menținerii seriilor zilnice (streaks) alături de prieteni, rezolvării provocărilor zilnice (chestionar și problemă) și a clasării în top 10 la finalul lunii. 
+
+Utilizatorii pot folosi monedele în magazinul virtual al platformei pentru: 
+
+\begin{itemize}
+    \item Salvarea seriei cu prietenii („streak freeze”): costă 200 de monede și previne pierderea progresului zilnic în cadrul chestionarelor.
+    \item Efecte vizuale pentru avatar: personalizarea profilului cu efecte vizibile global (Fire effect - 1.000 monede, Ice effect - 1.500 monede, Lightning effect - 2.000 monede, Quantum Pulse effect - 3.000 monede).
+\end{itemize}
+
+\subsection{Clasamentul}
+
+Pentru a stimula competitivitatea, platforma integrează un clasament bazat pe experiența acumulată. Interfața evidențiază utilizatorii cu cele mai bune performanțe din top. 
+
+Clasamentul are un caracter recurent, fiind resetat în ultima zi a fiecărei luni. Odată cu această resetare, punctele de experiență și nivelul utilizatorilor revin la zero, iar performanțele de top sunt recompensate automat cu monede, după cum urmează:
+
+\begin{itemize}
+    \item Locul 1: 500 de monede
+    \item Locul 2 și 3: 250 de monede
+    \item Locurile 4 - 10: câte 100 de monede
+\end{itemize}
+
+\section{Sistemul de serii}
+
+Seriile de activitate (streaks) sunt utilizate pentru a monitoriza și stimula consecvența utilizatorilor pe platformă. Sistemul este împărțit în două categorii distincte: o serie individuală pentru rezolvarea problemelor și o serie colaborativă pentru rezolvarea chestionarelor.
+
+\subsection{Seria individuală (problema zilei)}
+
+Fiecare rezolvare succesivă a problemei zilei crește seria individuală a utilizatorului cu o zi. Această serie are un rol pur onorific și statistic, nefiind asociată cu recompense în monede la atingerea anumitor praguri.
+
+\subsection{Seria colaborativă (chestionarul zilei)}
+
+Această serie se bazează pe interacțiunea socială și se menține în pereche cu un prieten de pe platformă. Regulile de evoluție a seriei sunt următoarele:
+
+\begin{itemize}
+    \item Creșterea seriei: condiția de bază pentru ca seria să avanseze cu o zi este ca ambii utilizatori să completeze chestionarul în aceeași zi și să răspundă corect.
+    \item Resetarea seriei: dacă ambii utilizatori oferă un răspuns greșit sau dacă cel puțin unul dintre ei ratează completarea chestionarului în intervalul de 24 de ore, seria comună se resetează la 0.
+    \item Salvarea seriei: în cazul în care un utilizator completează chestionarul, dar răspunde greșit, acesta are posibilitatea exclusivă de a-și salva seria prin achitarea unei taxe de 200 de monede virtuale (,,streak freeze''). Opțiunea de salvare nu este disponibilă dacă ziua a fost ratată complet.
+\end{itemize}
+
+\section{Sistemul de interacțiune socială}
+
+Platforma încorporează o componentă de interacțiune socială între utilizatori. Această componentă este alcătuită din trei module: gestionarea relațiilor de prietenie, fluxul de postări și serviciul de mesagerie privată. 
+
+\subsection{Relațiile de prietenie}
+
+Utilizatorii pot căuta alte conturi în cadrul platformei pe baza numelui de utilizator (username) și pot trimite o cerere de prietenie. Trimiterea unei solicitări generează o notificare către contul țintă. Dacă destinatarul acceptă, relația de prietenie este stabilită, astfel aceasta este respinsă, iar expeditorul nu este notificat de decizia respingerii cererii. 
+
+Pentru optimizarea performanței, căutarea conturilor folosește o paginare bazată pe cursor (cursor-based pagination), API-ul returnând seturi de câte 20 de rezultate. De asemenea, interogarea bazei de date nu face distincție între majuscule și minuscule (case insensitive).
+
+\subsection{Fluxul de postări}
+
+Platforma permite utilizatorilor să publice conținut în cadrul unui flux dedicat (feed), postările fiind vizibile exclusiv utilizatorilor din lista de prieteni. O postare poate include un mesaj text și atașamente în diverse formate, cum ar fi: imagini, fișiere PDF, fișiere text simple (.txt) și documente Word (.doc, .docx). 
+
+Prietenii autorului au posibilitatea de a vizualiza aceste postări, de a descărca fișierele atașate și de a adăuga comentarii. Sistemul de comentarii este identic din punct de vedere funcțional, oferind suport atât pentru introducerea de text, cât și pentru atașarea de fișiere în aceleași formate menționate anterior.
+
+\subsection{Mesagerie privată}
+
+Comunicarea directă și privată este restricționată, fiind permisă exclusiv între utilizatorii care au stabilit o relație de prietenie. Mesajele text acceptă aceleași tipuri de atașamente menționate în cadrul modulului de postări. 
+
+Pentru a sigura transmiterea și afișarea mesajelor în timp real (fără reîncărcarea paginii), canalul de comunicare dintre client și server este implementat prin intermediul protocolului WebSocket.
+
+\section{Sistemul de moderare a conținutului}
+
+Pentru a asigura un mediu digital sigur și a preveni abuzurile, platforma integrează un modul dedicat raportării și moderării conținutului.
+
+\subsection{Mecanismul de raportare și soluționare}
+
+Utilizatorii au posibilitatea de a semnala nereguli legate de comportamentul altor conturi sau de conținutul publicat. Entitățile care pot fi raportate includ: problemele de programare, postările, comentariile, mesajele private și conturile de utilizator. 
+
+Soluționarea acestor sesizări este realizată de către moderatori sau administratori, care au la dispoziție următoarele acțiuni:
+
+\begin{itemize}
+    \item Ignorarea raportului: în cazul în care sesizarea este eronată sau nefondată.
+    \item Gestionarea conținutului: editarea sau eliminarea problemelor de programare neconforme, ștergerea mesajelor, postărilor sau a comentariilor neadecvate.
+    \item Sancționarea utilizatorului: suspendarea definitivă (ștergerea) contului în caz de abateri grave.
+\end{itemize}
+
+\subsection{Gestionarea drepturilor de acces}
+
+Acordarea rolurilor speciale de creator sau moderator este o permisiune exclusivă a administratorilor. În momentul în care unui utilizator îi sunt modificate privilegiile, acesta va primi o notificare automată.
+
+Din punct de vedere tehnic, pentru aplicarea noilor permisiuni, utilizatorul trebuie să se reconecteze. Acest proces este obligatoriu pentru a invalida token-ul de autentificare curent și a genera unul nou, care să conțina drepturile de acces actualizate. 
