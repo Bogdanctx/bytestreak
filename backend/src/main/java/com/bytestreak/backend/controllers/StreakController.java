@@ -109,10 +109,9 @@ public class StreakController {
     }
 
     @PostMapping("/save-streak")
-    public ResponseEntity<?> saveStreak(@RequestParam Long streakId, Authentication authentication) {
+    public ResponseEntity<?> saveStreak(Authentication authentication) {
         Account me = accountRepository.findByEmail(authentication.getName());
-    
-        streakService.saveStreakOfUser(me);
+        streakService.saveAllStreaksOfUser(me);
         return ResponseEntity.ok().build();
     }
 }

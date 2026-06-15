@@ -41,18 +41,22 @@ public class DailyChallangesService {
         // Reset the daily quiz
         Quiz currentDailyQuiz = quizRepository.findTopByOrderByQueuePriority();
         if (currentDailyQuiz != null) {
-            quizRepository.delete(currentDailyQuiz);
+            //quizRepository.delete(currentDailyQuiz);
         }
-        List<Streak> activeStreaks = streakRepository.findAll();
 
+        List<Streak> activeStreaks = streakRepository.findAll();
         for(Streak streak: activeStreaks) {
+            if (!streak.isParticipant1SolvedToday() || !streak.isParticipant2SolvedToday()) {
+                streak.setLength(0);
+                streak.setOldLength(0);
+            }
+
             streak.setParticipant1SolvedToday(false);
             streak.setParticipant2SolvedToday(false);
+            streak.setParticipant1SolvedCorrectly(false);
+            streak.setParticipant2SolvedCorrectly(false);
         }
         streakRepository.saveAll(activeStreaks);
-
-
-
 
         // Reset the daily coding problem
         Problem dailyProblem = problemRepository.findByIsDailyChallangeTrue();

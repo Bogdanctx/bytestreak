@@ -105,56 +105,68 @@ public class StreakService {
 
     public void handleSolvedDailyQuiz(Account solver, boolean isCorrect) {
         List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
-    
+
         for (Streak streak: activeStreaks) {
             boolean isParticipant1 = streak.getParticipant1().getId().equals(solver.getId());
         
             if (isParticipant1) {
                 streak.setParticipant1SolvedToday(true);
                 streak.setParticipant1SolvedCorrectly(isCorrect);
-            }
+            } 
             else {
                 streak.setParticipant2SolvedToday(true);
                 streak.setParticipant2SolvedCorrectly(isCorrect);
             }
 
-            streak.setOldLength(streak.getLength());
-
-            if (isCorrect) {
-                // increase the streak length if both participants have solved their daily quiz correctly today
+            if (!isCorrect) {
+                if (streak.getLength() > 0) {
+                    streak.setOldLength(streak.getLength());
+                }
+                streak.setLength(0);
+            } 
+            else {
                 if (streak.isParticipant1SolvedToday() && streak.isParticipant2SolvedToday()) {
                     if (streak.isParticipant1SolvedCorrectly() && streak.isParticipant2SolvedCorrectly()) {
                         streak.setLength(streak.getLength() + 1);
                     }
                 }
             }
-            else {
-                // reset the streak length if either participant got their daily quiz wrong
-                streak.setLength(0);
-            }
         }
 
         streakRepository.saveAll(activeStreaks);
     }
 
-    public void saveStreakOfUser(Account solver) {
+    public void saveAllStreaksOfUser(Account solver) {
         List<Streak> activeStreaks = streakRepository.findActiveStreaksForUser(solver.getId());
-        if (activeStreaks.isEmpty()) {
-            return;
-        }
-
+        
         if (solver.getCoins() < 200) {
-            throw new ValidationException("Not enough coins to save the streak. You need at least 200 coins.");
+            throw new ValidationException("Not enough coins.");
         }
 
-        // update the user's coins
+        boolean savedAny = false;
+
+        for (Streak streak : activeStreaks) {
+            if (streak.getOldLength() > 0 && streak.getLength() == 0) {
+                streak.setLength(streak.getOldLength());
+                
+                if (streak.getParticipant1().getId().equals(solver.getId())) {
+                    streak.setParticipant1SolvedCorrectly(true);
+                    streak.setParticipant1SolvedToday(true);
+                } 
+                else {
+                    streak.setParticipant2SolvedCorrectly(true);
+                    streak.setParticipant2SolvedToday(true);
+                }
+                savedAny = true;
+            }
+        }
+
+        if (!savedAny) {
+            throw new ValidationException("Nothing to restore.");
+        }
+
         solver.setCoins(solver.getCoins() - 200);
-
-        for (Streak streak: activeStreaks) {
-            streak.setLength(streak.getOldLength());
-            streakRepository.save(streak);
-        }
-
+        streakRepository.saveAll(activeStreaks);
         accountRepository.save(solver);
     }
 

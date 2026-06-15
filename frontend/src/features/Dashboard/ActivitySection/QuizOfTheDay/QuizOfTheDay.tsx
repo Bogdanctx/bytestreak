@@ -69,7 +69,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
     });
     const saveStreakMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post('/streaks/freeze-daily');
+            const res = await api.post('/streaks/save-streak');
             return res.data;
         },
         onSuccess: () => {
@@ -247,19 +247,7 @@ export default function QuizOfTheDay({ open, onClose, account, streaks, onComple
                         </Box>
 
                         <Box sx={{ display: 'flex', gap: 2, mt: 3, width: '100%', justifyContent: 'center' }}>
-                            <Button 
-                                className="qotd-close-btn" 
-                                variant="outlined"
-                                onClick={onClose}
-                                sx={{ 
-                                    borderColor: 'var(--text-secondary)', 
-                                    color: 'var(--text-secondary)',
-                                    '&:hover': {
-                                        borderColor: 'white',
-                                        color: 'white'
-                                    }
-                                }}
-                            >
+                            <Button className="qotd-accept-defeat-btn" onClick={onClose}>
                                 Accept Defeat
                             </Button>
 
