@@ -113,7 +113,7 @@ function Problem() {
                 >
                     <DialogTitle>
                         <EmojiEventsIcon sx={{ fontSize: 64, color: '#FFD700', mb: 1 }} />
-                        <Typography variant="h5" fontWeight="bold">
+                        <Typography variant="h5" fontWeight="bold" component="div">
                             Challenge Completed!
                         </Typography>
                     </DialogTitle>

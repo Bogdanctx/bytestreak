@@ -49,7 +49,7 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
 
             <Box className="submission-testcases-results">
                 {results.map((testCase) => (
-                    <Box className="submission-result-testcase">
+                    <Box key={testCase.testCaseId} className="submission-result-testcase">
                         <Box mr={1}>
                             {testCase.statusId === 3 ? 
                                 <CheckIcon sx={{ fontSize: "0.6rem" }} color="success" /> 
@@ -58,7 +58,7 @@ function SubmissionResults({ results }: { results: ISubmissionResult[] }) {
                             }
                         </Box>
                         <Box >
-                            <Typography className="testcase" variant="body1">
+                            <Typography className="testcase" variant="body1" component="div">
                                 Test Case {testCase.testCaseId}
                                 <Typography className="testcase-status">{testCase.statusDescription}</Typography>
                             </Typography>

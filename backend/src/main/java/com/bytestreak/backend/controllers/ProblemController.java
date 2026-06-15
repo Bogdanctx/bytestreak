@@ -31,6 +31,7 @@ import com.bytestreak.backend.services.FileStorageService;
 import com.bytestreak.backend.entities.Problem;
 import com.bytestreak.backend.entities.ProblemVote;
 import com.bytestreak.backend.entities.Submission;
+import com.bytestreak.backend.enums.Difficulty;
 import com.bytestreak.backend.enums.Visibility;
 import com.bytestreak.backend.entities.Account;
 
@@ -227,20 +228,25 @@ public class ProblemController {
                 int currentXP = account.getCurrentXP();
                 int xpGained = account.getXpAchievedToday();
 
+                System.out.println("============ CURRENT XP: " + xpGained + " ============");
+
                 if (xpGained <= 200) {
-                    if(problem.getDifficulty().name().equals("EASY")) {
+                    
+                    System.out.println("============ XP GAINED BEFORE SUBMISSION: " + xpGained + " ============");
+
+                    if(problem.getDifficulty() == Difficulty.EASY) {
                         account.setCurrentXP(currentXP + 10);
                         account.setXpAchievedToday(xpGained + 10);
 
                         account.setCoins(account.getCoins() + 5);
                     }
-                    else if(problem.getDifficulty().name().equals("MEDIUM")) {
+                    else if(problem.getDifficulty() == Difficulty.MEDIUM) {
                         account.setCurrentXP(currentXP + 20);
                         account.setXpAchievedToday(xpGained + 20);
 
                         account.setCoins(account.getCoins() + 10);
                     }
-                    else if(problem.getDifficulty().name().equals("HARD")) {
+                    else if(problem.getDifficulty() == Difficulty.HARD) {
                         account.setCurrentXP(currentXP + 40);
                         account.setXpAchievedToday(xpGained + 40);
 
