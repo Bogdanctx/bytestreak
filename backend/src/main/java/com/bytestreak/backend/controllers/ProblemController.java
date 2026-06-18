@@ -210,30 +210,23 @@ public class ProblemController {
             // if we reached this point, it means all test cases passed and the solution is correct
             account.getSolvedProblems().add(problem);
 
-            // if the solution is correct and solved the problem of the day, update the user's streak
-            if (problem.isDailyChallange()) {
-                LocalDate today = LocalDate.now(ZoneOffset.UTC);
+            LocalDate today = LocalDate.now(ZoneOffset.UTC);
 
-                if (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate())) {
-                    account.setStreakLength(account.getStreakLength() + 1);
-                    account.setLastDailyProblemDate(today);
+            // if the solution is correct and solved the problem of the day, update the user's streak
+            if (problem.isDailyChallange() && (account.getLastDailyProblemDate() == null || !today.equals(account.getLastDailyProblemDate()))) {
+                account.setStreakLength(account.getStreakLength() + 1);
+                account.setLastDailyProblemDate(today);
                     
-                    account.setCurrentXP(account.getCurrentXP() + 50);
-                    account.setCoins(account.getCoins() + 20);
+                account.setCurrentXP(account.getCurrentXP() + 50);
+                account.setCoins(account.getCoins() + 20);
                     
-                    accountRepository.save(account);
-                }
+                accountRepository.save(account);
             }
             else { // if it's not the problem of the day, just give them some XP for solving it
                 int currentXP = account.getCurrentXP();
                 int xpGained = account.getXpAchievedToday();
 
-                System.out.println("============ CURRENT XP: " + xpGained + " ============");
-
                 if (xpGained <= 200) {
-                    
-                    System.out.println("============ XP GAINED BEFORE SUBMISSION: " + xpGained + " ============");
-
                     if(problem.getDifficulty() == Difficulty.EASY) {
                         account.setCurrentXP(currentXP + 10);
                         account.setXpAchievedToday(xpGained + 10);

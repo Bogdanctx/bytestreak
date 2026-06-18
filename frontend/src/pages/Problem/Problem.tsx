@@ -24,6 +24,8 @@ function Problem() {
     const [solvedCodingProblem, setSolvedCodingProblem] = useState(false);
     const [problemPanelWidth, setProblemPanelWidth] = useState(440);
     const [isResizingPanels, setIsResizingPanels] = useState(false);
+    const [earnedDailyChallengeReward, setEarnedDailyChallengeReward] = useState(false);
+    const lastTriggeredResultsRef = useRef<ISubmissionResult[]>([]);
 
     const { data: codingProblem, isLoading } = useQuery<IProblem>({
         queryKey: ['codingProblem'],
@@ -37,20 +39,27 @@ function Problem() {
         },
     });
 
-    const isDailyCodingProblemDoneToday = account?.lastDailyProblemDate === todayUTCString;
-
     useEffect(() => {
-        if (!results || results.length === 0) {
+        if (!results || results.length === 0 || results === lastTriggeredResultsRef.current) {
             return;
         }
 
         const allTestsPassed = results.every(result => result.statusId === 3);
 
         if (allTestsPassed) {
+            lastTriggeredResultsRef.current = results;
+
+            if (codingProblem?.dailyChallange && account?.lastDailyProblemDate !== todayUTCString) {
+                setEarnedDailyChallengeReward(true);
+            }
+            else {
+                setEarnedDailyChallengeReward(false);
+            }
+
             setSolvedCodingProblem(true);
             queryClient.invalidateQueries({ queryKey: ['account'] });
         }
-    }, [results, codingProblem, isDailyCodingProblemDoneToday, queryClient]);
+    }, [results, codingProblem, account, queryClient]);
 
     useEffect(() => {
         const handlePointerMove = (event: PointerEvent) => {
@@ -118,7 +127,7 @@ function Problem() {
                         </Typography>
                     </DialogTitle>
                     
-                    {(codingProblem.dailyChallange && !isDailyCodingProblemDoneToday) ? (
+                    {earnedDailyChallengeReward ? (
                         <DialogContent>
                             <Typography variant="body1" sx={{ color: '#b0b0b0', mb: 3 }}>
                                 You successfully solved the Problem of the Day.

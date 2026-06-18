@@ -70,6 +70,12 @@ public class DailyChallangesService {
         Problem newDailyProblem = allProblems.get((int) (Math.random() * allProblems.size()));
         newDailyProblem.setDailyChallange(true);
         problemRepository.save(newDailyProblem);
+
+        List<Account> accounts = accountRepository.findAll();
+        for (Account account : accounts) {
+            account.setLastDailyProblemDate(null);
+        }
+        accountRepository.saveAll(accounts);
     }
 
 
