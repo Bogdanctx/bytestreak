@@ -7,8 +7,10 @@ import notify from '../../../components/ui/ToastNotification';
 import UserCard from './UserCard/UserCard';
 
 import './UsersManagement.style.css';
+import { useAccount } from '../../../hooks/useAccount';
 
 export default function UsersManagement() {
+    const { data: currentUser } = useAccount();
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [userToDelete, setUserToDelete] = useState<IAccount | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -16,10 +18,14 @@ export default function UsersManagement() {
     const [debounceSearchQuery, setDebounceSearchQuery] = useState(searchQuery);
 
     const { data: users, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ['users', debounceSearchQuery],
+        queryKey: ['users', debounceSearchQuery, currentUser?.id], 
         queryFn: async ({ pageParam = "" }) => {
             const response = await api.get(`/accounts?cursor=${pageParam}&query=${debounceSearchQuery}`);
-            return response.data;
+            
+            return {
+                ...response.data,
+                accounts: response.data.accounts.filter((user: IAccount) => user.id !== currentUser?.id)
+            };
         },
         getNextPageParam: (lastPage) => lastPage.nextCursor || null,
         initialPageParam: ""
@@ -81,7 +87,7 @@ export default function UsersManagement() {
         setRoleMutation.mutate({ userId: user.id, role: newRole });
     };
 
-    const searchableUsers = users?.pages.flatMap(page => page.accounts) || [];
+    let searchableUsers = users?.pages.flatMap(page => page.accounts) || [];
 
     return (
         <Box id="users-management-container">
