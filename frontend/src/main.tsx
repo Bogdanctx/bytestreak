@@ -7,9 +7,7 @@ import './fonts.css';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
-	<StrictMode>
-		<StyledEngineProvider injectFirst>
-			<App />
-		</StyledEngineProvider>
-	</StrictMode>
+	<StyledEngineProvider injectFirst>
+		<App />
+	</StyledEngineProvider>
 )

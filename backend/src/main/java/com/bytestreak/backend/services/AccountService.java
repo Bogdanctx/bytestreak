@@ -87,6 +87,12 @@ public class AccountService {
 
     public Account updateAccount(Account account, AccountUpdateDTO updates) {
         if (!updates.getUsername().isBlank()) {
+            String newUsername = updates.getUsername();
+            Account existingAccount = accountRepository.findByUsername(newUsername);
+            if (existingAccount != null && !existingAccount.getId().equals(account.getId())) {
+                throw new IllegalArgumentException("Username is already in use by another account.");
+            }
+
             account.setUsername(updates.getUsername());
         }
         if (!updates.getPassword().isBlank()) {
@@ -96,6 +102,12 @@ public class AccountService {
             account.setProfilePictureUrl(updates.getProfilePictureUrl());
         }
         if(!updates.getEmail().isBlank()) {
+            String newEmail = updates.getEmail();
+            Account existingAccount = accountRepository.findByEmail(newEmail);
+            if (existingAccount != null && !existingAccount.getId().equals(account.getId())) {
+                throw new IllegalArgumentException("Email is already in use by another account.");
+            }
+
             account.setEmail(updates.getEmail());
         }
         if(!updates.getBio().isBlank()) {

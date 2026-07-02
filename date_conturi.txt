@@ -1,0 +1,7 @@
+username: cr1st1_eu
+email: cristi@gmail.com
+pw: 123123
+
+username: Bogdan
+email: trifan.bogdan09@yahoo.com
+pw: 123123
