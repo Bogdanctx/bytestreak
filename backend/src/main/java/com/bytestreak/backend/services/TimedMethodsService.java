@@ -94,7 +94,6 @@ public class TimedMethodsService {
 
     // This method can be called at the end of each season to reset any season-specific data
     // automatically called at the end of each month
-    @Transactional // Ensures all or nothing saves
     @Scheduled(cron = "0 0 0 1 * ?") // every month on the 1st at midnight
     public void resetSeason() {
         List<Account> allAccounts = accountRepository.findAll();
