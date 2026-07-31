@@ -191,11 +191,16 @@ function UserProfile() {
                             </Box>
                             <Box className="activity-graph-container">
                                 <Box className="activity-grid">
-                                    {userData.activityGraph?.map((count: number, index: number) => (
-                                        <Tooltip key={index} title={`${count} contributions`}>
-                                            <Box className={getActivityClass(count)} />
-                                        </Tooltip>
-                                    ))}
+                                    {userData.activityGraph?.map((count: number, index: number) => {
+                                    // Format: [day] [Full month name], [year]
+                                    let dateLabel = new Date(Date.now() - (userData.activityGraph.length - 1 - index) * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+
+                                        return (
+                                            <Tooltip key={index} title={`${count} actions on ${dateLabel}`}>
+                                                <Box className={getActivityClass(count)} />
+                                            </Tooltip>
+                                        )
+                                    })}
                                 </Box>
                             </Box>
                         </Paper>

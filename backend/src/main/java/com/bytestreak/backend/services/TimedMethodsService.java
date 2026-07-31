@@ -85,7 +85,7 @@ public class TimedMethodsService {
         accountRepository.saveAll(accounts);
     }
 
-    @Scheduled(cron = "0 0 0 * * ?", zone = "UTC") // every day at midnight
+    @Scheduled(cron = "0 0 0 * * ?") // every day at midnight
     public void generateDailyChallenges() {
         resetDailyQuiz();
         resetDailyCodingProblem();
@@ -95,7 +95,7 @@ public class TimedMethodsService {
     // This method can be called at the end of each season to reset any season-specific data
     // automatically called at the end of each month
     @Transactional // Ensures all or nothing saves
-    @Scheduled(cron = "0 0 0 1 * ?", zone = "UTC") // every month on the 1st at midnight
+    @Scheduled(cron = "0 0 0 1 * ?") // every month on the 1st at midnight
     public void resetSeason() {
         List<Account> allAccounts = accountRepository.findAll();
         
@@ -106,18 +106,18 @@ public class TimedMethodsService {
 
             if (globalRank == 1) {
                 account.setCoins(account.getCoins() + 500);
-                payload.setMessage("Congratulations! You finished the season as the top player with a global rank of 1! You receive 500 coins!");
+                payload.setMessage("Congratulations! You finished the season as the top player with a global rank of 1! You won 500 coins!");
             }
             else if (globalRank == 2 || globalRank == 3) {
                 account.setCoins(account.getCoins() + 250);
-                payload.setMessage("Great job! You finished the season as one of the top players with a global rank of " + globalRank + "! You receive 250 coins!");
+                payload.setMessage("Great job! You finished the season as one of the top players with a global rank of " + globalRank + "! You won 250 coins!");
             }
             else if (4 <= globalRank && globalRank <= 10) {
                 account.setCoins(account.getCoins() + 100);
-                payload.setMessage("Well done! You finished the season with a global rank of " + globalRank + "! You receive 100 coins!");
+                payload.setMessage("Well done! You finished the season with a global rank of " + globalRank + "! You won 100 coins!");
             }
             else {
-                payload.setMessage("The season has ended! Your global rank was: " + account.getGlobalRank() + ".");
+                payload.setMessage("The season has ended! Your global rank was: " + globalRank + ".");
             }
             
             account.setCurrentXP(0);
